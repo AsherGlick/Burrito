@@ -6,7 +6,16 @@ var peers = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
-	ProjectSettings.set_setting("display/window/size/always_on_top", true)
+	#ProjectSettings.set_setting("display/window/size/always_on_top", true)
+	#OS.set_window_always_on_top(true)
+	
+	OS.window_maximized = false
+	OS.window_size = Vector2(1919, 1080)
+	OS.window_position = Vector2(1920, 0)
+	
+	var clickthrough: PoolVector2Array = [Vector2(100,100),Vector2(100,200),Vector2(200,200),Vector2(200,100)]
+	
+	OS.set_window_mouse_passthrough(clickthrough)
 	
 	server.listen(4242)
 
@@ -15,7 +24,6 @@ func _ready():
 func _process(delta):
 	#$MeshInstance.rotate(Vector3(0,1,0), .5 * delta)
 	#$MeshInstance.rotate_object_local(Vector3(1,0,0), 1 * delta)
-
 	server.poll() # Important
 	if server.is_connection_available():
 		var peer: PacketPeerUDP = server.take_connection()
