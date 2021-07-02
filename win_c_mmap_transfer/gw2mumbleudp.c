@@ -6,20 +6,44 @@
 struct LinkedMem {
     UINT32  uiVersion;
     DWORD   uiTick;
-    float   fAvatarPosition[3];
+    float   fAvatarPosition[3];  // The XYZ location of the player
     float   fAvatarFront[3];
     float   fAvatarTop[3];
-    wchar_t name[256];
-    float   fCameraPosition[3];
-    float   fCameraFront[3];
-    float   fCameraTop[3];
-    wchar_t identity[256];
-    UINT32  context_len;
-    unsigned char context[256];
-    wchar_t description[2048];
+    wchar_t name[256];           // The string "Guild Wars 2" [Ignored]
+    float   fCameraPosition[3];  // The XYZ position of the camera
+    float   fCameraFront[3];     // A unit vector extending out the front of the camera
+    float   fCameraTop[3];       // A perpendicular vector to fCameraFront, used for calculating roll [Ignored]
+    wchar_t identity[256];       // A json string containing json data
+    UINT32  context_len;         // A value that is always 48 [Ignored]
+    unsigned char context[256];  // See MumbleContext struct
+    wchar_t description[2048];   // Empty [Ignored]
 };
 
+struct MumbleContext {
+    unsigned char serverAddress[28]; // contains sockaddr_in or sockaddr_in6 // IGNORED
+    UINT32 mapId;
+    UINT32 mapType;
+    UINT32 shardId;
+    UINT32 instance;
+    UINT32 buildId;
+    // Additional data beyond the 48 bytes Mumble uses for identification
+    UINT32 uiState; // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
+    UINT16 compassWidth; // pixels
+    UINT16 compassHeight; // pixels
+    float compassRotation; // radians
+    float playerX; // continentCoords
+    float playerY; // continentCoords
+    float mapCenterX; // continentCoords
+    float mapCenterY; // continentCoords
+    float mapScale;
+    UINT32 processId;
+    UINT8 mountIndex;
+};
+
+
+
 struct LinkedMem *lm = NULL;
+struct MumbleContext *lc = NULL;
 
 void initMumble() {
 
@@ -34,6 +58,8 @@ void initMumble() {
         hMapObject = NULL;
         return;
     }
+
+    lc = (struct MumbleContext *) lm->context;
 #else
     char memname[256];
     snprintf(memname, 256, "/MumbleLink.%d", getuid());
@@ -107,32 +133,13 @@ int connect_and_or_send() {
 
      ReceiverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-     int count = 0;
+    
+    int count = 0;
 
     // Send data packages to the receiver(Server).
      do{
-      //       printf("\nPlease, type your message: "); //Ask user for message
-      //       fgets(SendBuf, sizeof(SendBuf), stdin); //Read user's input
-
-      //       //Print user's input and a progress message
-      //       printf("Client: Data to be sent: %s\n", SendBuf);
-      //       printf("Client: Sending data...\n");
-
-      //       //Send message to receiver(Server)
-      //       TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
-      //       //Print success message
-      //       printf("Client: sendto() looks OK!\n");
-      //       count += 1;
-      // /*Program is asking user for messages and sending the to Server,until you will close it.
-      // (You can replace while(1) with a condition to stop asking/sending messages.)*/
-            
-       // for (int i = 0; i < 100; i++) {
-        // printf("%f\n", );
-        
-
-        // int ret = snprintf(SendBuf, BufLength, "%f%f%f", lm->fCameraPosition[0], lm->fCameraPosition[1], lm->fCameraPosition[2])
-
-        BufLength = 0;
+        BufLength = 1;
+        SendBuf[0] = 1; // Per Frame Updater
 
         memcpy(SendBuf+BufLength, lm->fCameraPosition, sizeof(lm->fCameraPosition));
         BufLength += sizeof(lm->fCameraPosition);
@@ -143,15 +150,152 @@ int connect_and_or_send() {
         memcpy(SendBuf+BufLength, lm->fAvatarPosition, sizeof(lm->fAvatarPosition));
         BufLength += sizeof(lm->fAvatarPosition);
 
+        float map_offset_x = lc->playerX - lc->mapCenterX;
+        memcpy(SendBuf+BufLength, &map_offset_x, sizeof(map_offset_x));
+        BufLength += sizeof(map_offset_x);
+
+        float map_offset_y = lc->playerY - lc->mapCenterY;
+        memcpy(SendBuf+BufLength, &map_offset_y, sizeof(map_offset_y));
+        BufLength += sizeof(map_offset_y);
+
+        memcpy(SendBuf+BufLength, &lc->mapScale, sizeof(lc->mapScale));
+        BufLength += sizeof(lc->mapScale);
+
+        memcpy(SendBuf+BufLength, &lc->compassRotation, sizeof(lc->compassRotation));
+        BufLength += sizeof(lc->compassRotation);
+        
+        memcpy(SendBuf+BufLength, &lc->uiState, sizeof(lc->uiState));
+        BufLength += sizeof(lc->uiState);
+        
+
+        // UINT32
+
+        // printf("map_offset_x: %f\n", lc->playerX - lc->mapCenterX);
+        // printf("map_offset_y: %f\n", lc->playerY - lc->mapCenterY);
+        // printf("mapScale: %f\n", lc->mapScale);
+        // printf("compassRotation: %f\n", lc->compassRotation); // radians
+        // printf("UI State: %i\n", lc->uiState); // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
+
+
+
+
         TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+
+        if (count == 0) {
+            BufLength = 1;
+            SendBuf[0] = 2; // Heaver Context Updater
+
+
+
+            // printf("hello world\n");
+            // printf("%ls\n", lm->description);
+            printf("%ls\n", lm->identity);
+            // printf("%i\n", lc->mapId);
+
+            // printf("\n", lc->serverAddress); // contains sockaddr_in or sockaddr_in6
+            // printf("Map Id: %i\n", lc->mapId);
+            // printf("Map Type: %i\n", lc->mapType);
+            // printf("shardId: %i\n", lc->shardId);
+            // printf("instance: %i\n", lc->instance);
+            // printf("buildId: %i\n", lc->buildId);
+
+            // printf("UI State: %i\n", lc->uiState); // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
+            // printf("compassWidth %i\n", lc->compassWidth); // pixels
+            // printf("compassHeight %i\n", lc->compassHeight); // pixels
+            // printf("compassRotation: %f\n", lc->compassRotation); // radians
+            // printf("playerX: %f\n", lc->playerX); // continentCoords
+            // printf("playerY: %f\n", lc->playerY); // continentCoords
+            // printf("mapCenterX: %f\n", lc->mapCenterX); // continentCoords
+            // printf("mapCenterY: %f\n", lc->mapCenterY); // continentCoords
+            // printf("mapScale: %f\n", lc->mapScale);
+            // printf("\n", UINT32 processId;
+            // printf("mountIndex: %i\n", lc->mountIndex);
+
+
+
+
+            // New things for the normal packet
+            
+
+            // Things for the context packet
+            printf("compassWidth %i\n", lc->compassWidth); // pixels
+            printf("compassHeight %i\n", lc->compassHeight); // pixels
+            printf("Map Id: %i\n", lc->mapId);
+            printf("%ls\n", lm->identity);
+            
+
+            memcpy(SendBuf+BufLength, &lc->compassWidth, sizeof(lc->compassWidth));
+            BufLength += sizeof(lc->compassWidth);
+
+            memcpy(SendBuf+BufLength, &lc->compassHeight, sizeof(lc->compassHeight));
+            BufLength += sizeof(lc->compassHeight);
+
+            memcpy(SendBuf+BufLength, &lc->mapId, sizeof(lc->mapId));
+            BufLength += sizeof(lc->mapId);
+
+
+            char utf8str[1024];
+
+            UINT32 converted_size = WideCharToMultiByte(
+                CP_UTF8,
+                0,
+                lm->identity,
+                -1,
+                utf8str,
+                1024,
+                NULL,
+                NULL);
+
+            printf("UTF8 Length: %i\n", converted_size);
+            printf("%s\n", utf8str);
+
+            // UINT16 identity_size = wcslen(lm->identity);
+            memcpy(SendBuf+BufLength, &converted_size, sizeof(converted_size));
+            BufLength += sizeof(converted_size);
+
+            memcpy(SendBuf+BufLength, utf8str, converted_size);
+            BufLength += converted_size;
+
+            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+            
+            // break;
+        }
+
+
+
 
 
         Sleep(16); // Slightly faster then 60fps which would be 16.6666666...ms
-    // }
-        //count += 1;
+
+        count += 1;
+        if (count > 500) {
+            count = 0;
+        }
+
+        // TODO: Maybe make a way to break out of this loop beyond program termination
+     }while(TRUE);
 
 
-     }while(count < 500);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // Print some info on the receiver(Server) side...
