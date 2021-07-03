@@ -11,7 +11,6 @@ func _ready():
 	
 	OS.window_maximized = false
 	OS.window_size = Vector2(1920, 1080)
-	OS.window_position = Vector2(0, 0) # TODO: This does not seem to work
 	
 	var clickthrough: PoolVector2Array = [Vector2(100,100),Vector2(100,200),Vector2(200,200),Vector2(200,100)]
 	
@@ -22,8 +21,13 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	#OS.window_position = Vector2(1920, 0) # TODO: This does not seem to work	
+	#OS.set_window_position(Vector2(1920,0))
+	#print(OS.window_position)
+	
 	#$MeshInstance.rotate(Vector3(0,1,0), .5 * delta)
 	#$MeshInstance.rotate_object_local(Vector3(1,0,0), 1 * delta)
+	# print(delta)
 	server.poll() # Important
 	if server.is_connection_available():
 		var peer: PacketPeerUDP = server.take_connection()

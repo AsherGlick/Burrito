@@ -1,24 +1,72 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
-
-[sub_resource type="SpatialMaterial" id=3]
-flags_transparent = true
-params_blend_mode = 1
-albedo_color = Color( 0.796078, 0.0980392, 0.0980392, 1 )
-transmission_enabled = true
-transmission = Color( 1, 1, 1, 1 )
+[ext_resource path="res://tw_trail_mc.png" type="Texture" id=2]
 
 [sub_resource type="CubeMesh" id=1]
-material = SubResource( 3 )
 
 [sub_resource type="QuadMesh" id=2]
+
+[sub_resource type="Curve3D" id=3]
+_data = {
+"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, -0.314211, 2.05836, 4.77447, 0, 0, 0, 0, 0, 0, 2.27291, 2.24899, 6.90916, 0, 0, 0, 0, 0, 0, 4.95962, 2.23063, 2.70062, 0.0731506, -0.793185, 1.11402, -0.0731506, 0.793185, -1.11402, 8.01544, 4.27966, -9.30524, 0, 0, 0, 0, 0, 0, 2.14446, 5.42595, -17.6316, 0, 0, 0, 0, 0, 0, -11.2259, 5.88965, -18.5552, 0, 0, 0, 0, 0, 0, -14.6942, 8.27145, -19.6271 ),
+"tilts": PoolRealArray( 0, 0, 0, 0, 0, 0, 0 )
+}
+
+[sub_resource type="Shader" id=4]
+code = "shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : hint_color;
+uniform sampler2D texture_albedo : hint_albedo;
+uniform float specular;
+uniform float metallic;
+uniform float roughness : hint_range(0,1);
+uniform float point_size : hint_range(0,128);
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+}
+
+
+
+
+void fragment() {
+//	vec2 base_uv = vec2(UV.y/2.0+0.25, UV.x*2.0);
+	vec2 base_uv = vec2(UV.y, UV.x);
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	ALPHA = albedo_tex.a;
+	EMISSION = albedo_tex.rgb;
+	//METALLIC = metallic;
+	//ALPHA_SCISSOR = 0.1;
+//	ROUGHNESS = roughness;
+//	SPECULAR = specular;
+}
+"
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = SubResource( 4 )
+shader_param/albedo = Color( 1, 1, 1, 1 )
+shader_param/specular = 0.5
+shader_param/metallic = 0.0
+shader_param/roughness = 1.0
+shader_param/point_size = 1.0
+shader_param/uv1_scale = Vector3( 1, 1, 1 )
+shader_param/uv1_offset = Vector3( 0, 0, 0 )
+shader_param/uv2_scale = Vector3( 1, 1, 1 )
+shader_param/uv2_offset = Vector3( 0, 0, 0 )
+shader_param/texture_albedo = ExtResource( 2 )
 
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
-transform = Transform( 0.194862, 0, 0.0450412, 0, 0.2, 0, -0.0450412, 0, 0.194862, -14.6829, 24.0579, -19.9228 )
+transform = Transform( 0.974311, 0, 0.225206, 0, 1, 0, -0.225206, 0, 0.974311, -14.6967, 24.592, -19.9186 )
 mesh = SubResource( 1 )
 material/0 = null
 
@@ -39,38 +87,73 @@ margin_left = 100.0
 margin_top = 100.0
 margin_right = 200.0
 margin_bottom = 200.0
-color = Color( 0, 0, 0, 1 )
+color = Color( 0, 0, 0, 0.403922 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect5" type="ColorRect" parent="Control"]
+margin_right = 6.0
+margin_bottom = 6.0
+color = Color( 1, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="ColorRect2" type="ColorRect" parent="Control"]
-visible = false
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -40.0
-margin_bottom = 40.0
-color = Color( 0, 0, 0, 1 )
+margin_left = -6.0
+margin_bottom = 6.0
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ColorRect3" type="ColorRect" parent="Control"]
-visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_top = -40.0
-margin_right = 40.0
-color = Color( 0, 0, 0, 1 )
+margin_top = -6.0
+margin_right = 6.0
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ColorRect4" type="ColorRect" parent="Control"]
-visible = false
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -40.0
-margin_top = -40.0
-color = Color( 0, 0, 0, 1 )
+margin_left = -6.0
+margin_top = -6.0
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="MeshInstance2" type="MeshInstance" parent="."]
 transform = Transform( 10, 0, 0, 0, -4.37114e-07, 10, 0, -10, -4.37114e-07, 0, 48.9217, 0 )
+visible = false
 mesh = SubResource( 2 )
 material/0 = null
+
+[node name="Spatial" type="Spatial" parent="."]
+
+[node name="Path" type="Path" parent="Spatial"]
+transform = Transform( 1, 0, 0, 0, 0.999998, -0.00211185, 0, 0.00211185, 0.999998, 0, 16.0787, 0 )
+curve = SubResource( 3 )
+
+[node name="CSGPolygon" type="CSGPolygon" parent="Spatial/Path"]
+transform = Transform( 1, 0, 0, 0, 1, 2.32831e-09, 0, -2.32831e-09, 1, -1.0881, 0.358072, -0.655454 )
+invert_faces = true
+polygon = PoolVector2Array( 0, 0, 1, 0, 0, 0 )
+mode = 2
+path_node = NodePath("..")
+path_interval = 1.0
+path_rotation = 2
+path_local = false
+path_continuous_u = true
+path_joined = false
+smooth_faces = true
+material = SubResource( 5 )

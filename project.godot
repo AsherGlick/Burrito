@@ -16,6 +16,7 @@ _global_script_class_icons={
 
 config/name="Burrito"
 run/main_scene="res://Spatial.tscn"
+run/low_processor_mode=true
 config/icon="res://icon.png"
 
 [display]
@@ -25,6 +26,7 @@ window/size/height=874
 window/size/resizable=false
 window/size/borderless=true
 window/size/always_on_top=true
+window/vsync/use_vsync=false
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
 
