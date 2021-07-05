@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
+
+[node name="Icon" type="Sprite3D"]
+billboard = 2
+double_sided = false
+texture = ExtResource( 1 )
