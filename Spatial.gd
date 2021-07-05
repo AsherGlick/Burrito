@@ -100,7 +100,8 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var in_combat: bool = (ui_flags & 0x40) == 0x40;
 	var unchecked_flag = (ui_flags & 0xFFFFFF80) != 0x00000000;
 
-	$PathsAndIcons.visible = !map_is_open
+	$Paths.visible = !map_is_open
+	$Icons.visible = !map_is_open
 
 	if unchecked_flag:
 		print("Unchecked Flag", (ui_flags & 0xFFFFFF80))
@@ -129,11 +130,16 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 #	$MeshInstance.translation.z = -player_position.z
 
 #	print(map_is_open, map_rotation, map_offset)
+var global_compass_height = 0;
+var global_compass_width = 0;
 func decode_context_packet(spb: StreamPeerBuffer):
-	var compas_width: int = spb.get_16()
+	var compass_width: int = spb.get_16()
 	var compass_height: int = spb.get_16()
-	self.map_id = spb.get_32()
+	var old_map_id = self.map_id
+	self.map_id  = spb.get_32()
 	
+	
+
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result
@@ -144,6 +150,18 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# According to https://thatshaman.com/tools/fov/ the FOV range is (25 -> 70)
 	# This function maps a value between 0.436 and 1.222 to a value between 25 and 70
 	$CameraMount/Camera.fov = (((identity["fov"] - 0.436) / 0.786) * 45) + 25
+
+	if self.map_id != old_map_id:
+		print("New Map")
+		gen_map_markers()
+
+	
+	for child in $Paths.get_children():
+		child.get_node("CSGPolygon").material.set_shader_param("map_size", Vector2(compass_width, compass_height))
+	
+
+
+
 
 var markerdata = {}
 var marker_file_path = ""
@@ -162,22 +180,30 @@ var icon_scene = load("res://Icon.tscn")
 
 
 func gen_map_markers():
-	var paths_and_icons = $PathsAndIcons
+	var paths = $Paths
+	var icons = $Icons
+	
+	for child in paths.get_children():
+		child.queue_free()
+		
+	for icon in icons.get_children():
+		icon.queue_free()
+	
 
 	if str(map_id) in markerdata:
-		print("Found Map")
+#		print("Found Map")
 		var map_markerdata = markerdata[str(map_id)]
-		print("Paths Found:", len(map_markerdata["paths"]))
+#		print("Paths Found:", len(map_markerdata["paths"]))
 		for path in map_markerdata["paths"]:
 			#print("Path", path["texture"])
 			var new_path = path_scene.instance()
 			var new_curve = Curve3D.new()
 			for point in path["points"]:
 				new_curve.add_point(Vector3(point[0], point[1], -point[2]))
-			print(new_curve.get_point_count())
+#			print(new_curve.get_point_count())
 			new_path.curve = new_curve
 
-			paths_and_icons.add_child(new_path)
+			paths.add_child(new_path)
 			
 			var texture_file = File.new()
 			var image = Image.new()
@@ -188,12 +214,9 @@ func gen_map_markers():
 			
 			var texture = ImageTexture.new()
 			texture.create_from_image(image, 6)
-#			var texture = Image.new()
-#			texture.load(self.marker_file_path.get_base_dir() + "/"+ path["texture"])
-#			print(texture)
 			new_path.get_node("CSGPolygon").material.set_shader_param("texture_albedo", texture)
-#
 			# Create a new path instance
+
 		for icon in map_markerdata["icons"]:
 			var new_icon = icon_scene.instance()
 			new_icon.translation = Vector3(icon["position"][0], icon["position"][1], -icon["position"][2])
@@ -209,22 +232,14 @@ func gen_map_markers():
 			texture.create_from_image(image) #, 6)
 			new_icon.texture = texture
 			
-			paths_and_icons.add_child(new_icon)
-			#new_icon.translation = Vector3()
-			#print("Icon", icon["texture"])
-		#	pass
+			icons.add_child(new_icon)
 
 func _on_main_menu_toggle_pressed():
 	$Control/FileDialog.show()
 	set_maximal_mouse_block()
-	pass # Replace with function body.
-
 
 func _on_FileDialog_hide():
 	set_minimal_mouse_block()
-	pass # Replace with function body.
-
 
 func _on_FileDialog_file_selected(path):
 	load_taco_markers(path)
-	pass # Replace with function body.

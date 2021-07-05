@@ -90,7 +90,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PathsAndIcons" type="Spatial" parent="."]
+[node name="Paths" type="Spatial" parent="."]
+
+[node name="Icons" type="Spatial" parent="."]
 
 [connection signal="pressed" from="Control/ColorRect/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="file_selected" from="Control/FileDialog" to="." method="_on_FileDialog_file_selected"]

@@ -79,6 +79,8 @@ void initMumble() {
 #endif
 }
 
+int last_map_id = 0;
+
 #define MaxBufferSize 1024
 int connect_and_or_send() {
     WSADATA wsaData;
@@ -181,7 +183,8 @@ int connect_and_or_send() {
 
         TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
 
-        if (count == 0) {
+        if (count == 0 || lc->mapId != last_map_id) {
+            last_map_id = lc->mapId;
             BufLength = 1;
             SendBuf[0] = 2; // Heaver Context Updater
 
@@ -218,10 +221,10 @@ int connect_and_or_send() {
             
 
             // Things for the context packet
-            printf("compassWidth %i\n", lc->compassWidth); // pixels
-            printf("compassHeight %i\n", lc->compassHeight); // pixels
-            printf("Map Id: %i\n", lc->mapId);
-            printf("%ls\n", lm->identity);
+            // printf("compassWidth %i\n", lc->compassWidth); // pixels
+            // printf("compassHeight %i\n", lc->compassHeight); // pixels
+            // printf("Map Id: %i\n", lc->mapId);
+            // printf("%ls\n", lm->identity);
             
 
             memcpy(SendBuf+BufLength, &lc->compassWidth, sizeof(lc->compassWidth));
@@ -246,8 +249,8 @@ int connect_and_or_send() {
                 NULL,
                 NULL);
 
-            printf("UTF8 Length: %i\n", converted_size);
-            printf("%s\n", utf8str);
+            // printf("UTF8 Length: %i\n", converted_size);
+            // printf("%s\n", utf8str);
 
             // UINT16 identity_size = wcslen(lm->identity);
             memcpy(SendBuf+BufLength, &converted_size, sizeof(converted_size));
