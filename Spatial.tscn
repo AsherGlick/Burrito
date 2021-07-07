@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
+[ext_resource path="res://TranslationAnimation.gd" type="Script" id=2]
+[ext_resource path="res://burrito.png" type="Texture" id=3]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 0.1, 0.1, 0.1 )
 
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 1 )
@@ -18,11 +23,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorRect" type="ColorRect" parent="Control"]
+[node name="ColorRect" type="Control" parent="Control"]
 margin_left = 287.348
 margin_right = 314.348
 margin_bottom = 32.0
-color = Color( 0.847059, 0.839216, 0.772549, 0.419608 )
+
+[node name="TextureRect" type="TextureRect" parent="Control/ColorRect"]
+modulate = Color( 1, 1, 1, 0.439216 )
+margin_left = 1.591
+margin_top = 3.18198
+margin_right = 26.591
+margin_bottom = 28.182
+texture = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -76,7 +88,6 @@ __meta__ = {
 }
 
 [node name="FileDialog" type="FileDialog" parent="Control"]
-visible = true
 margin_left = 636.0
 margin_top = 174.0
 margin_right = 1307.0
@@ -93,6 +104,12 @@ __meta__ = {
 [node name="Paths" type="Spatial" parent="."]
 
 [node name="Icons" type="Spatial" parent="."]
+
+[node name="FeetLocation" type="MeshInstance" parent="."]
+visible = false
+mesh = SubResource( 1 )
+material/0 = null
+script = ExtResource( 2 )
 
 [connection signal="pressed" from="Control/ColorRect/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="file_selected" from="Control/FileDialog" to="." method="_on_FileDialog_file_selected"]

@@ -4,7 +4,7 @@ var server := UDPServer.new()
 var peers = []
 
 var map_id:int = 0
-
+var feet_unset = true
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
@@ -15,7 +15,7 @@ func _ready():
 	OS.window_size = Vector2(1920, 1080)
 	set_minimal_mouse_block()
 	server.listen(4242)
-
+	self.feet_unset = true
 	# load_taco_markers("/home/vault/Downloads/tw_ALL_IN_ONE/tw_mc_coretyria.xml")
 
 func set_minimal_mouse_block():
@@ -124,11 +124,17 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	#print(-atan2(camera_facing.x, camera_facing.z))
 	
 	#print(player_position.y)
-
-#	$MeshInstance.translation.x = player_position.x
-#	$MeshInstance.translation.y = player_position.y
-#	$MeshInstance.translation.z = -player_position.z
-
+	var new_feet_location = Vector3(player_position.x, player_position.y, -player_position.z)
+	#var new_feet_location = Vector3(camera_position.x, camera_position.y-1, -camera_position.z+5)
+	if feet_unset:
+		$FeetLocation.translation = new_feet_location
+		feet_unset = false
+	else:
+		$FeetLocation.moveto(new_feet_location)
+	#$FeetLocation.translation.x = player_position.x
+	#$FeetLocation.translation.y = player_position.y
+	#$FeetLocation.translation.z = -player_position.z
+	#print(player_position.x)
 #	print(map_is_open, map_rotation, map_offset)
 var global_compass_height = 0;
 var global_compass_width = 0;
@@ -137,8 +143,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var compass_height: int = spb.get_16()
 	var old_map_id = self.map_id
 	self.map_id  = spb.get_32()
-	
-	
 
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
@@ -159,6 +163,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	for child in $Paths.get_children():
 		child.get_node("CSGPolygon").material.set_shader_param("map_size", Vector2(compass_width, compass_height))
 	
+	for icon in $Icons.get_children():
+		icon.material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
+
 
 
 
@@ -178,6 +185,8 @@ func load_taco_markers(marker_json_file):
 var path_scene = load("res://Path.tscn")
 var icon_scene = load("res://Icon.tscn")
 
+#func _input(e):
+#	print(e)
 
 func gen_map_markers():
 	var paths = $Paths
@@ -231,6 +240,7 @@ func gen_map_markers():
 			var texture = ImageTexture.new()
 			texture.create_from_image(image) #, 6)
 			new_icon.texture = texture
+			new_icon.material_override.set_shader_param("texture_albedo", texture)
 			
 			icons.add_child(new_icon)
 
