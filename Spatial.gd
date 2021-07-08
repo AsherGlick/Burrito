@@ -5,6 +5,13 @@ var peers = []
 
 var map_id:int = 0
 var feet_unset = true
+
+
+var map_is_open: bool
+var compass_is_top_right: bool
+
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
@@ -66,7 +73,7 @@ func _process(delta):
 				decode_context_packet(spb)
 
 	return
-
+var map_was_open = false
 func decode_frame_packet(spb: StreamPeerBuffer):
 	var camera_position = Vector3(
 		spb.get_float(),
@@ -91,17 +98,23 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var map_rotation: float = spb.get_float()
 	var ui_flags: int = spb.get_32()
 	
-	var map_is_open: bool = (ui_flags & 0x01) == 0x01;
-	var compass_is_top_right: bool = (ui_flags & 0x02) == 0x02;
+	map_is_open = (ui_flags & 0x01) == 0x01;
+	compass_is_top_right = (ui_flags & 0x02) == 0x02;
 	var compass_rotation_is_enabled: bool = (ui_flags & 0x04) == 0x04;
 	var game_is_focused: bool = (ui_flags & 0x08) == 0x08;
 	var in_competitive_game_mode: bool = (ui_flags & 0x10) == 0x10;
 	var chatbox_has_focus: bool = (ui_flags & 0x20) == 0x20;
 	var in_combat: bool = (ui_flags & 0x40) == 0x40;
 	var unchecked_flag = (ui_flags & 0xFFFFFF80) != 0x00000000;
+	
+#	var map_size = spb.get_float()
 
-	$Paths.visible = !map_is_open
-	$Icons.visible = !map_is_open
+	
+	if map_is_open != map_was_open:
+		$Paths.visible = !map_is_open
+		$Icons.visible = !map_is_open
+		reset_minimap_masks()
+		map_was_open = map_is_open
 
 	if unchecked_flag:
 		print("Unchecked Flag", (ui_flags & 0xFFFFFF80))
@@ -123,6 +136,75 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	$CameraMount.rotation.y = -atan2(camera_facing.x, camera_facing.z)
 	#print(-atan2(camera_facing.x, camera_facing.z))
 	
+	#$MiniMap
+	#print(map_scale)
+	var map_scale_min = 0.853334
+	var map_scale_max = 17.066666
+	var map_scale_difference = map_scale_max / map_scale_min
+	var default_size = 1.925
+	var smallest_relative_scale =  default_size / map_scale_difference
+
+
+	
+	# in-engine units are meters
+	# in-game units are inches
+	# continent map units are 24inches to 1 condinenet map unit
+	# 1 meter = 39.37008 inches
+	# 39.37008 / 24 = 1.64042
+	# meters -> 24 inches
+	# Info gathered from https://wiki.guildwars2.com/wiki/API:Maps
+	var map_object_scaling = 1.64042/map_scale
+	
+	
+	#print(remap_scale)
+	var map_size = get_viewport().size
+	var map_corner = Vector2(0, 0)
+	
+	if (!map_is_open):
+		map_size = Vector2(compass_width, compass_height)
+		if !compass_is_top_right:
+			map_corner = get_viewport().size - Vector2(compass_width, compass_height + 36)
+		else:
+			map_corner = Vector2(get_viewport().size.x - compass_width, 0)
+
+	var player_map_position: Vector2 = Vector2(player_position[0], -player_position[2])*map_object_scaling
+
+	var delta_position = Vector2(0,0)
+	if (map_rotation != 0 && !map_is_open):
+		var pivot = Vector2(0,0)
+		var radians = map_rotation
+
+		var cosTheta = cos(radians)
+		var sinTheta = sin(radians)
+
+		var x = (cosTheta * (player_map_position.x - pivot.x) - sinTheta * (player_map_position.y - pivot.y) + pivot.x);
+		var y = (sinTheta * (player_map_position.x - pivot.x) + cosTheta * (player_map_position.y - pivot.y) + pivot.y);
+		
+		delta_position = player_map_position - Vector2(x, y);
+		
+		#print(map_rotation)
+		$Control/MiniMap.rotation = map_rotation
+	else:
+		$Control/MiniMap.rotation = 0
+	
+	var map_midpoint = map_size/2 + map_corner;
+	
+	$Control/MiniMap.scale=Vector2(map_object_scaling, map_object_scaling)
+	#print(map_offset)
+	var map_translation = map_offset
+	$Control/MiniMap.position = (map_translation / map_scale) + map_midpoint - player_map_position + delta_position
+	
+
+	
+	
+	#map_scale: float = spb.get_float()
+	#var map_rotation: float = spb.get_float()
+	#print(map_scale) #0.853334 -> 17.066666   for the megamap
+	# This should be transformed into 2 -> something smaller 
+	# minimap 1 -> 4.125
+	#print(map_rotation) # Not used for megamap
+	
+	
 	#print(player_position.y)
 	var new_feet_location = Vector3(player_position.x, player_position.y, -player_position.z)
 	#var new_feet_location = Vector3(camera_position.x, camera_position.y-1, -camera_position.z+5)
@@ -136,11 +218,18 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	#$FeetLocation.translation.z = -player_position.z
 	#print(player_position.x)
 #	print(map_is_open, map_rotation, map_offset)
-var global_compass_height = 0;
-var global_compass_width = 0;
+
+
+
+func remap(min_in, max_in, min_out, max_out, value):
+	return (value - min_in) / (max_in - min_in) * (max_out - min_out) + min_out
+
+
+var compass_height: int = 0;
+var compass_width: int = 0;
 func decode_context_packet(spb: StreamPeerBuffer):
-	var compass_width: int = spb.get_16()
-	var compass_height: int = spb.get_16()
+	compass_width = spb.get_16()
+	compass_height = spb.get_16()
 	var old_map_id = self.map_id
 	self.map_id  = spb.get_32()
 
@@ -159,16 +248,32 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		print("New Map")
 		gen_map_markers()
 
-	
+	# TODO move this to reset_minimap_masks	
 	for child in $Paths.get_children():
 		child.get_node("CSGPolygon").material.set_shader_param("map_size", Vector2(compass_width, compass_height))
 	
+	# TODO move this to reset_minimap_masks
 	for icon in $Icons.get_children():
 		icon.material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
 
+	reset_minimap_masks()
 
-
-
+var compass_corner1
+var compass_corner2
+func reset_minimap_masks():
+	var viewport_size = get_viewport().size
+	compass_corner1 = Vector2(0, 0)
+	compass_corner2 = viewport_size
+	if !map_is_open && !compass_is_top_right:
+		compass_corner1 = Vector2(viewport_size.x-compass_width, 36)
+		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
+	elif !map_is_open && compass_is_top_right:
+		compass_corner1 = viewport_size - Vector2(compass_width, compass_height)
+		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
+	
+	for minimap_path in $Control/MiniMap.get_children():
+		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
+		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
 var markerdata = {}
 var marker_file_path = ""
@@ -184,6 +289,7 @@ func load_taco_markers(marker_json_file):
 
 var path_scene = load("res://Path.tscn")
 var icon_scene = load("res://Icon.tscn")
+var path2d_scene = load("res://Path2D.tscn")
 
 #func _input(e):
 #	print(e)
@@ -191,6 +297,7 @@ var icon_scene = load("res://Icon.tscn")
 func gen_map_markers():
 	var paths = $Paths
 	var icons = $Icons
+	var minimap = $Control/MiniMap
 	
 	for child in paths.get_children():
 		child.queue_free()
@@ -198,18 +305,23 @@ func gen_map_markers():
 	for icon in icons.get_children():
 		icon.queue_free()
 	
+	for path2d in minimap.get_children():
+		path2d.queue_free()
 
 	if str(map_id) in markerdata:
 #		print("Found Map")
 		var map_markerdata = markerdata[str(map_id)]
 #		print("Paths Found:", len(map_markerdata["paths"]))
 		for path in map_markerdata["paths"]:
-			#print("Path", path["texture"])
+			var points_2d: PoolVector2Array = [] 
+
+			# Create a new 3D path
 			var new_path = path_scene.instance()
 			var new_curve = Curve3D.new()
 			for point in path["points"]:
 				new_curve.add_point(Vector3(point[0], point[1], -point[2]))
-#			print(new_curve.get_point_count())
+				points_2d.append(Vector2(point[0], -point[2]))
+
 			new_path.curve = new_curve
 
 			paths.add_child(new_path)
@@ -224,7 +336,13 @@ func gen_map_markers():
 			var texture = ImageTexture.new()
 			texture.create_from_image(image, 6)
 			new_path.get_node("CSGPolygon").material.set_shader_param("texture_albedo", texture)
-			# Create a new path instance
+			
+			# Create a new 2D Path
+			var new_2d_path = path2d_scene.instance()
+			new_2d_path.points = points_2d
+			new_2d_path.texture = texture
+			
+			minimap.add_child(new_2d_path)
 
 		for icon in map_markerdata["icons"]:
 			var new_icon = icon_scene.instance()

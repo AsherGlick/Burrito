@@ -1,8 +1,20 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://TranslationAnimation.gd" type="Script" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
+[ext_resource path="res://Path2D.tscn" type="PackedScene" id=4]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	COLOR = texture(TEXTURE, vec2(UV.y, -UV.x));
+}"
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.1, 0.1, 0.1 )
@@ -23,10 +35,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="MiniMap" type="Node2D" parent="Control"]
+material = SubResource( 3 )
+scale = Vector2( 2, 2 )
+
+[node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
+
 [node name="ColorRect" type="Control" parent="Control"]
 margin_left = 287.348
 margin_right = 314.348
 margin_bottom = 32.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="TextureRect" type="TextureRect" parent="Control/ColorRect"]
 modulate = Color( 1, 1, 1, 0.439216 )
