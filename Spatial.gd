@@ -74,7 +74,18 @@ func _process(delta):
 
 	return
 var map_was_open = false
+
+var last_update:float = 0
+var last_player_location := Vector3(0,0,0)
+var last_camera_location := Vector3(0,0,0)
+var last_camera_location_at_player_location_change := Vector3(0,0,0)
 func decode_frame_packet(spb: StreamPeerBuffer):
+	
+	# Delta calculation for between messages
+	#var this_update: float = float(OS.get_ticks_usec()/1000000.0)
+	#print("d",this_update - last_update)
+	#last_update=this_update
+	
 	var camera_position = Vector3(
 		spb.get_float(),
 		spb.get_float(),
@@ -130,6 +141,11 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	$CameraMount.translation.x = camera_position.x
 	$CameraMount.translation.y = camera_position.y
 	$CameraMount.translation.z = -camera_position.z
+	if ((player_position - last_player_location).length() != 0 || (camera_position - last_camera_location).length() != 0):
+		print(camera_position.x - last_camera_location.x, "\t" ,player_position.x - last_player_location.x)
+		last_camera_location_at_player_location_change = camera_position
+	last_player_location = player_position
+	last_camera_location = camera_position
 	
 	# Orent the camera in the same rotation as it is facing in game
 	$CameraMount/Camera.rotation.x = asin(camera_facing.y)
@@ -144,8 +160,6 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var default_size = 1.925
 	var smallest_relative_scale =  default_size / map_scale_difference
 
-
-	
 	# in-engine units are meters
 	# in-game units are inches
 	# continent map units are 24inches to 1 condinenet map unit
@@ -204,15 +218,18 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	# minimap 1 -> 4.125
 	#print(map_rotation) # Not used for megamap
 	
-	
-	#print(player_position.y)
 	var new_feet_location = Vector3(player_position.x, player_position.y, -player_position.z)
-	#var new_feet_location = Vector3(camera_position.x, camera_position.y-1, -camera_position.z+5)
-	if feet_unset:
-		$FeetLocation.translation = new_feet_location
-		feet_unset = false
-	else:
-		$FeetLocation.moveto(new_feet_location)
+	#print(player_position)
+	$FeetLocation.translation = new_feet_location
+
+#var new_feet_location = Vector3(camera_position.x, camera_position.y-1, -camera_position.z+5)
+#	if feet_unset:
+#		$FeetLocation.translation = new_feet_location
+#		feet_unset = false
+#	else:
+#		$FeetLocation.moveto(new_feet_location)
+#		print(this_update - last_update)
+	
 	#$FeetLocation.translation.x = player_position.x
 	#$FeetLocation.translation.y = player_position.y
 	#$FeetLocation.translation.z = -player_position.z

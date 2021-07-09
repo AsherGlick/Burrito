@@ -3,6 +3,37 @@
 #include <windows.h>
 #include <string.h>
 
+
+// Do a rolling average on the player position because that seems to be
+// Roughly what the camera position is doing and doing this will remove
+// some weird jitter I hope
+struct rolling_average_5 {
+    UINT8 index;
+    float points[5];
+};
+float get_rolling_average(struct rolling_average_5 *points){
+    float sum = 0;
+    for (int i = 0; i < 5; i++) {
+        sum += points->points[i];
+    }
+    return sum/5.0;
+}
+void replace_point_in_rolling_average(struct rolling_average_5 *points, float newvalue){
+    points->points[points->index] = newvalue;
+    points->index = points->index + 1;
+    if (points->index > 4) {
+        points->index = 0;
+    }
+}
+struct rolling_average_5 playerx_avg;
+struct rolling_average_5 playery_avg;
+struct rolling_average_5 playerz_avg;
+
+
+
+float fAvatarAveragePosition[3];
+
+// https://wiki.guildwars2.com/wiki/API:MumbleLink
 struct LinkedMem {
     UINT32  uiVersion;
     DWORD   uiTick;
@@ -135,11 +166,31 @@ int connect_and_or_send() {
 
      ReceiverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    
-    int count = 0;
 
+    
+
+
+    int count = 0;
+    DWORD lastuitick = 0;
     // Send data packages to the receiver(Server).
      do{
+
+        if (lm->uiTick == lastuitick) {
+            Sleep(1);
+            continue;
+        }
+        lastuitick = lm->uiTick;
+        //printf("%ld\n", lm->uiTick);
+
+        replace_point_in_rolling_average(&playerx_avg, lm->fAvatarPosition[0]);
+        replace_point_in_rolling_average(&playery_avg, lm->fAvatarPosition[1]);
+        replace_point_in_rolling_average(&playerz_avg, lm->fAvatarPosition[2]);
+    
+        // Get the new rolling average values
+        fAvatarAveragePosition[0] = get_rolling_average(&playerx_avg);
+        fAvatarAveragePosition[1] = get_rolling_average(&playery_avg);
+        fAvatarAveragePosition[2] = get_rolling_average(&playerz_avg);
+
         BufLength = 1;
         SendBuf[0] = 1; // Per Frame Updater
 
@@ -149,8 +200,11 @@ int connect_and_or_send() {
         memcpy(SendBuf+BufLength, lm->fCameraFront, sizeof(lm->fCameraFront));
         BufLength += sizeof(lm->fCameraFront);
 
-        memcpy(SendBuf+BufLength, lm->fAvatarPosition, sizeof(lm->fAvatarPosition));
-        BufLength += sizeof(lm->fAvatarPosition);
+        memcpy(SendBuf+BufLength, fAvatarAveragePosition, sizeof(fAvatarAveragePosition));
+        BufLength += sizeof(fAvatarAveragePosition);
+
+        // memcpy(SendBuf+BufLength, lm->fAvatarPosition, sizeof(lm->fAvatarPosition));
+        // BufLength += sizeof(lm->fAvatarPosition);
 
         float map_offset_x = lc->playerX - lc->mapCenterX;
         memcpy(SendBuf+BufLength, &map_offset_x, sizeof(map_offset_x));
@@ -192,16 +246,21 @@ int connect_and_or_send() {
 
             // printf("hello world\n");
             // printf("%ls\n", lm->description);
-            printf("%ls\n", lm->identity);
-            // printf("%i\n", lc->mapId);
 
+
+
+
+            printf("%ls\n", lm->identity);
+
+
+
+            // printf("%i\n", lc->mapId);
             // printf("\n", lc->serverAddress); // contains sockaddr_in or sockaddr_in6
             // printf("Map Id: %i\n", lc->mapId);
             // printf("Map Type: %i\n", lc->mapType);
             // printf("shardId: %i\n", lc->shardId);
             // printf("instance: %i\n", lc->instance);
             // printf("buildId: %i\n", lc->buildId);
-
             // printf("UI State: %i\n", lc->uiState); // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
             // printf("compassWidth %i\n", lc->compassWidth); // pixels
             // printf("compassHeight %i\n", lc->compassHeight); // pixels
@@ -268,7 +327,7 @@ int connect_and_or_send() {
 
 
 
-        Sleep(16); // Slightly faster then 60fps which would be 16.6666666...ms
+        // Sleep(16); // Slightly faster then 60fps which would be 16.6666666...ms
 
         count += 1;
         if (count > 500) {
@@ -364,6 +423,12 @@ int connect_and_or_send() {
 
 
 int main(int argc, char** argv) {
+    playerx_avg.index = 0;
+    playery_avg.index = 0;
+    playerz_avg.index = 0;
+
+
+
     printf("hello world\n");
     initMumble();
     // sockmain(argc, argv);

@@ -1,11 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
-[ext_resource path="res://TranslationAnimation.gd" type="Script" id=2]
+[ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
 [ext_resource path="res://Path2D.tscn" type="PackedScene" id=4]
 
-[sub_resource type="Shader" id=2]
+[sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 render_mode blend_mix;
 
@@ -13,11 +13,28 @@ void fragment(){
 	COLOR = texture(TEXTURE, vec2(UV.y, -UV.x));
 }"
 
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
 
-[sub_resource type="CubeMesh" id=1]
+[sub_resource type="CubeMesh" id=3]
 size = Vector3( 0.1, 0.1, 0.1 )
+
+[sub_resource type="PlaneMesh" id=4]
+size = Vector2( 76.2, 76.2 )
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = ExtResource( 2 )
+shader_param/line_color = null
+shader_param/line_width = 39.67
+shader_param/d_130 = false
+shader_param/d_150 = false
+shader_param/d_600 = true
+shader_param/d_900 = false
+shader_param/d_1200 = false
+shader_param/d_1500 = false
+shader_param/d_custom = true
+shader_param/custom = 150.0
+shader_param/transparency = 1.0
 
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 1 )
@@ -36,7 +53,7 @@ __meta__ = {
 }
 
 [node name="MiniMap" type="Node2D" parent="Control"]
-material = SubResource( 3 )
+material = SubResource( 2 )
 scale = Vector2( 2, 2 )
 
 [node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
@@ -126,11 +143,16 @@ __meta__ = {
 
 [node name="Icons" type="Spatial" parent="."]
 
-[node name="FeetLocation" type="MeshInstance" parent="."]
-visible = false
-mesh = SubResource( 1 )
+[node name="FeetLocation" type="Spatial" parent="."]
+
+[node name="Indicator" type="MeshInstance" parent="FeetLocation"]
+mesh = SubResource( 3 )
 material/0 = null
-script = ExtResource( 2 )
+
+[node name="DistanceIndicator" type="MeshInstance" parent="FeetLocation"]
+visible = false
+mesh = SubResource( 4 )
+material/0 = SubResource( 6 )
 
 [connection signal="pressed" from="Control/ColorRect/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="file_selected" from="Control/FileDialog" to="." method="_on_FileDialog_file_selected"]
