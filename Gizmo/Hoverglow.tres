@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type spatial;
+render_mode unshaded, depth_test_disable;
+
+uniform vec4 default_color: hint_color;
+uniform vec4 hover_color: hint_color;
+uniform bool hovering;
+
+
+void fragment() {
+	ALBEDO = default_color.rgb;
+	ALPHA = default_color.a;
+	if (hovering) {
+		ALBEDO = hover_color.rgb;
+		ALPHA = hover_color.a;
+	}
+}
+"
+
+[resource]
+resource_local_to_scene = true
+shader = SubResource( 1 )
+shader_param/default_color = Color( 1, 1, 1, 0.313726 )
+shader_param/hover_color = Color( 1, 1, 1, 1 )
+shader_param/hovering = false

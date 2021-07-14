@@ -12,6 +12,7 @@ uniform vec2 map_size;
 uniform bool map_flipped;
 uniform float map_bottom_offset = 36.0;
 
+uniform float interval = 1.0;
 
 void vertex() {}
 
@@ -31,7 +32,7 @@ void fragment() {
 
 	
 	
-	vec2 base_uv = vec2(UV.y, -UV.x);
+	vec2 base_uv = vec2(UV.y, -UV.x * interval);
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
 	ALBEDO = albedo_tex.rgb;
 	ALPHA = albedo_tex.a;
@@ -47,6 +48,7 @@ shader = SubResource( 1 )
 shader_param/map_size = Vector2( 0, 0 )
 shader_param/map_flipped = null
 shader_param/map_bottom_offset = 36.0
+shader_param/interval = 1.0
 shader_param/texture_albedo = ExtResource( 1 )
 
 [node name="Path" type="Path"]
@@ -55,7 +57,7 @@ curve = null
 [node name="CSGPolygon" type="CSGPolygon" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 2.32831e-09, 0, -2.32831e-09, 1, 0, 0, 0 )
 invert_faces = true
-polygon = PoolVector2Array( 0, 0, 1, 0, 0, 0 )
+polygon = PoolVector2Array( -0.5, 0, 0.5, 0, 0.5, 0 )
 mode = 2
 path_node = NodePath("..")
 path_interval = 1.0

@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
 [ext_resource path="res://Path2D.tscn" type="PackedScene" id=4]
+[ext_resource path="res://RangeDialog.gd" type="Script" id=6]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -22,19 +23,25 @@ size = Vector3( 0.1, 0.1, 0.1 )
 [sub_resource type="PlaneMesh" id=4]
 size = Vector2( 76.2, 76.2 )
 
-[sub_resource type="ShaderMaterial" id=6]
+[sub_resource type="ShaderMaterial" id=5]
 shader = ExtResource( 2 )
 shader_param/line_color = null
-shader_param/line_width = 39.67
-shader_param/d_130 = false
-shader_param/d_150 = false
-shader_param/d_600 = true
-shader_param/d_900 = false
-shader_param/d_1200 = false
-shader_param/d_1500 = false
-shader_param/d_custom = true
-shader_param/custom = 150.0
+shader_param/line_width = 0.044
 shader_param/transparency = 1.0
+shader_param/custom_1 = false
+shader_param/custom_1_value = null
+shader_param/custom_2 = null
+shader_param/custom_2_value = null
+shader_param/custom_3 = false
+shader_param/custom_3_value = null
+shader_param/custom_4 = null
+shader_param/custom_4_value = null
+shader_param/custom_5 = null
+shader_param/custom_5_value = null
+shader_param/custom_6 = null
+shader_param/custom_6_value = null
+shader_param/custom_7 = false
+shader_param/custom_7_value = 500.0
 
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 1 )
@@ -58,7 +65,7 @@ scale = Vector2( 2, 2 )
 
 [node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
 
-[node name="ColorRect" type="Control" parent="Control"]
+[node name="GlobalMenuButton" type="Control" parent="Control"]
 margin_left = 287.348
 margin_right = 314.348
 margin_bottom = 32.0
@@ -66,7 +73,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextureRect" type="TextureRect" parent="Control/ColorRect"]
+[node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
 margin_left = 1.591
 margin_top = 3.18198
@@ -77,7 +84,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="main_menu_toggle" type="Button" parent="Control/ColorRect"]
+[node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
 margin_right = 27.0
 margin_bottom = 32.0
@@ -85,47 +92,81 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorRect5" type="ColorRect" parent="Control"]
-margin_right = 6.0
-margin_bottom = 6.0
-color = Color( 1, 0, 0, 1 )
+[node name="EditorQuckPanel" type="PanelContainer" parent="Control/GlobalMenuButton"]
+margin_left = 32.0
+margin_top = -2.0
+margin_right = 306.0
+margin_bottom = 52.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorRect2" type="ColorRect" parent="Control"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_left = -6.0
-margin_bottom = 6.0
-color = Color( 1, 0, 0, 1 )
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/GlobalMenuButton/EditorQuckPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 293.0
+margin_bottom = 47.0
+
+[node name="CloseEditorQuickPanel" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 40, 0 )
+text = "X"
+
+[node name="ChangeTexture" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+margin_left = 44.0
+margin_right = 84.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 40, 0 )
+text = "Tex"
+
+[node name="NewArea" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+visible = false
+margin_left = 62.0
+margin_right = 103.0
+margin_bottom = 35.0
+text = "Area"
+
+[node name="NewAreaPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+visible = false
+margin_left = 62.0
+margin_right = 116.0
+margin_bottom = 35.0
+text = "APoint"
+
+[node name="NewPath" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+margin_left = 88.0
+margin_right = 128.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 40, 0 )
+text = "Path"
+
+[node name="NewPathPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+margin_left = 132.0
+margin_right = 185.0
+margin_bottom = 40.0
+text = "PPoint"
+
+[node name="NewIcon" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+margin_left = 189.0
+margin_right = 229.0
+margin_bottom = 40.0
+text = "Icon"
+
+[node name="AdjustPoints" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+margin_left = 233.0
+margin_right = 286.0
+margin_bottom = 40.0
+text = "Adjust"
+
+[node name="Dialogs" type="Control" parent="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorRect3" type="ColorRect" parent="Control"]
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_top = -6.0
-margin_right = 6.0
-color = Color( 1, 0, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ColorRect4" type="ColorRect" parent="Control"]
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -6.0
-margin_top = -6.0
-color = Color( 1, 0, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="FileDialog" type="FileDialog" parent="Control"]
+[node name="FileDialog" type="FileDialog" parent="Control/Dialogs"]
 margin_left = 636.0
 margin_top = 174.0
 margin_right = 1307.0
@@ -139,21 +180,417 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
+margin_left = 48.1808
+margin_top = 88.7138
+margin_right = 261.181
+margin_bottom = 714.714
+window_title = "Main Menu"
+resizable = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/Dialogs/MainMenu"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/MainMenu/ScrollContainer"]
+margin_right = 213.0
+margin_bottom = 338.0
+size_flags_horizontal = 3
+
+[node name="LoadPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_right = 213.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 0, 40 )
+text = "Open Markers File"
+
+[node name="New Path File" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 44.0
+margin_right = 213.0
+margin_bottom = 84.0
+rect_min_size = Vector2( 0, 40 )
+text = "Save Markers File"
+
+[node name="HSeparator" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 88.0
+margin_right = 213.0
+margin_bottom = 92.0
+
+[node name="PointEditor" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+visible = false
+margin_top = 96.0
+margin_right = 213.0
+margin_bottom = 136.0
+rect_min_size = Vector2( 0, 40 )
+text = "Editor Panel"
+
+[node name="OpenEditorQuickPanel" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 96.0
+margin_right = 213.0
+margin_bottom = 136.0
+rect_min_size = Vector2( 0, 40 )
+text = "Editor Panel"
+
+[node name="HSeparator3" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 140.0
+margin_right = 213.0
+margin_bottom = 144.0
+
+[node name="Ranges" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 148.0
+margin_right = 213.0
+margin_bottom = 188.0
+rect_min_size = Vector2( 0, 40 )
+text = "Range Indicators"
+
+[node name="Compass" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+visible = false
+margin_top = 192.0
+margin_right = 213.0
+margin_bottom = 232.0
+rect_min_size = Vector2( 0, 40 )
+text = "Compass"
+
+[node name="GuacamoleScript" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+visible = false
+margin_top = 236.0
+margin_right = 213.0
+margin_bottom = 276.0
+rect_min_size = Vector2( 0, 40 )
+text = "Guacamole Script Editor"
+
+[node name="HSeparator4" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 192.0
+margin_right = 213.0
+margin_bottom = 196.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 200.0
+margin_right = 213.0
+margin_bottom = 215.0
+bbcode_enabled = true
+bbcode_text = "[center]Settings[/center]"
+text = "Settings"
+fit_content_height = true
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 219.0
+margin_right = 213.0
+margin_bottom = 294.0
+bbcode_enabled = true
+bbcode_text = "[u]Path Resolution[/u]: The larger the number the less resolution will be used when displaying paths and the faster rendering and editing paths will be."
+text = "Path Resolution: The larger the number the less resolution will be used when displaying paths and the faster rendering and editing paths will be."
+fit_content_height = true
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PathResolution" type="SpinBox" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 298.0
+margin_right = 213.0
+margin_bottom = 338.0
+rect_min_size = Vector2( 0, 40 )
+min_value = 1.0
+max_value = 20.0
+value = 1.0
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+visible = false
+margin_top = 342.0
+margin_right = 213.0
+margin_bottom = 387.0
+bbcode_enabled = true
+bbcode_text = "[u]Active Path[/u]: Draws a line from your character to the final node in the currently active path."
+text = "Active Path: Draws a line from your character to the final node in the currently active path."
+fit_content_height = true
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ActivePath" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+visible = false
+margin_top = 342.0
+margin_right = 213.0
+margin_bottom = 382.0
+text = "Active Path"
+
+[node name="RangesDialog" type="WindowDialog" parent="Control/Dialogs"]
+margin_left = 375.0
+margin_top = 100.0
+margin_right = 698.0
+margin_bottom = 407.0
+window_title = "Ranges Menu"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="Control/Dialogs/RangesDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_bottom = -25.0
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton" type="CheckButton" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_right = 159.0
+margin_bottom = 40.0
+size_flags_horizontal = 3
+text = "Range 1"
+
+[node name="SpinBox" type="SpinBox" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_left = 163.0
+margin_right = 322.0
+margin_bottom = 40.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1500.0
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton2" type="CheckButton" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_top = 44.0
+margin_right = 159.0
+margin_bottom = 84.0
+size_flags_horizontal = 3
+text = "Range 2"
+
+[node name="SpinBox2" type="SpinBox" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_left = 163.0
+margin_top = 44.0
+margin_right = 322.0
+margin_bottom = 84.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1500.0
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton3" type="CheckButton" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_top = 88.0
+margin_right = 159.0
+margin_bottom = 128.0
+size_flags_horizontal = 3
+text = "Range 3"
+
+[node name="SpinBox3" type="SpinBox" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_left = 163.0
+margin_top = 88.0
+margin_right = 322.0
+margin_bottom = 128.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1500.0
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton4" type="CheckButton" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_top = 132.0
+margin_right = 159.0
+margin_bottom = 172.0
+size_flags_horizontal = 3
+text = "Range 4"
+
+[node name="SpinBox4" type="SpinBox" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_left = 163.0
+margin_top = 132.0
+margin_right = 322.0
+margin_bottom = 172.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1500.0
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton5" type="CheckButton" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_top = 176.0
+margin_right = 159.0
+margin_bottom = 216.0
+size_flags_horizontal = 3
+text = "Range 5"
+
+[node name="SpinBox5" type="SpinBox" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_left = 163.0
+margin_top = 176.0
+margin_right = 322.0
+margin_bottom = 216.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1500.0
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton6" type="CheckButton" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_top = 220.0
+margin_right = 159.0
+margin_bottom = 260.0
+size_flags_horizontal = 3
+text = "Range 6"
+
+[node name="SpinBox6" type="SpinBox" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_left = 163.0
+margin_top = 220.0
+margin_right = 322.0
+margin_bottom = 260.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1500.0
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton7" type="CheckButton" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_top = 264.0
+margin_right = 159.0
+margin_bottom = 304.0
+size_flags_horizontal = 3
+text = "Range 7"
+
+[node name="SpinBox7" type="SpinBox" parent="Control/Dialogs/RangesDialog/GridContainer"]
+margin_left = 163.0
+margin_top = 264.0
+margin_right = 322.0
+margin_bottom = 304.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1500.0
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TexturePathOpen" type="FileDialog" parent="Control/Dialogs"]
+visible = true
+margin_left = 740.978
+margin_top = 139.437
+margin_right = 1343.98
+margin_bottom = 602.437
+window_title = "Select a Texture"
+mode = 0
+access = 2
+filters = PoolStringArray( "*.png" )
+current_dir = "/home/vault/Code/projects/Burrito"
+current_path = "/home/vault/Code/projects/Burrito/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Border" type="Control" parent="Control"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect5" type="ColorRect" parent="Control/Border"]
+anchor_right = 1.0
+margin_bottom = 4.0
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="Control/Border"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -4.0
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect4" type="ColorRect" parent="Control/Border"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -4.0
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect3" type="ColorRect" parent="Control/Border"]
+anchor_bottom = 1.0
+margin_right = 4.0
+color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Paths" type="Spatial" parent="."]
 
 [node name="Icons" type="Spatial" parent="."]
 
+[node name="Gizmos" type="Spatial" parent="."]
+
 [node name="FeetLocation" type="Spatial" parent="."]
 
 [node name="Indicator" type="MeshInstance" parent="FeetLocation"]
+visible = false
 mesh = SubResource( 3 )
 material/0 = null
 
 [node name="DistanceIndicator" type="MeshInstance" parent="FeetLocation"]
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.116814, -0.100998, 0 )
 mesh = SubResource( 4 )
-material/0 = SubResource( 6 )
+material/0 = SubResource( 5 )
 
-[connection signal="pressed" from="Control/ColorRect/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
-[connection signal="file_selected" from="Control/FileDialog" to="." method="_on_FileDialog_file_selected"]
-[connection signal="hide" from="Control/FileDialog" to="." method="_on_FileDialog_hide"]
+[connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewPath" to="." method="_on_NewPath_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewPathPoint" to="." method="_on_NewPathPoint_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewIcon" to="." method="_on_NewIcon_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/AdjustPoints" to="." method="_on_AdjustNodesButton_pressed"]
+[connection signal="file_selected" from="Control/Dialogs/FileDialog" to="." method="_on_FileDialog_file_selected"]
+[connection signal="hide" from="Control/Dialogs/FileDialog" to="." method="_on_Dialog_hide"]
+[connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadPath" to="." method="_on_LoadPath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
+[connection signal="value_changed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/PathResolution" to="." method="_on_PathResolution_value_changed"]
+[connection signal="hide" from="Control/Dialogs/RangesDialog" to="." method="_on_Dialog_hide"]
+[connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton2" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox2" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton3" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox3" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton4" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox4" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton5" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox5" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton6" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox6" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton7" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox7" to="Control/Dialogs/RangesDialog" method="on_change"]
+[connection signal="file_selected" from="Control/Dialogs/TexturePathOpen" to="." method="_on_TexturePathOpen_file_selected"]
+[connection signal="hide" from="Control/Dialogs/TexturePathOpen" to="." method="_on_Dialog_hide"]
