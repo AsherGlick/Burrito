@@ -54,6 +54,7 @@ fov = 51.0
 [node name="Control" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
@@ -181,7 +182,6 @@ __meta__ = {
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
-visible = true
 margin_left = 48.1808
 margin_top = 88.7138
 margin_right = 261.181
@@ -210,7 +210,7 @@ margin_bottom = 40.0
 rect_min_size = Vector2( 0, 40 )
 text = "Open Markers File"
 
-[node name="New Path File" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="SavePath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 44.0
 margin_right = 213.0
 margin_bottom = 84.0
@@ -485,12 +485,11 @@ __meta__ = {
 }
 
 [node name="TexturePathOpen" type="FileDialog" parent="Control/Dialogs"]
-visible = true
 margin_left = 740.978
 margin_top = 139.437
 margin_right = 1343.98
 margin_bottom = 602.437
-window_title = "Select a Texture"
+window_title = "Open a File"
 mode = 0
 access = 2
 filters = PoolStringArray( "*.png" )
@@ -499,6 +498,99 @@ current_path = "/home/vault/Code/projects/Burrito/"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="SaveDialog" type="FileDialog" parent="Control/Dialogs"]
+margin_left = 180.169
+margin_top = 105.833
+margin_right = 883.169
+margin_bottom = 624.833
+window_title = "Save Path"
+resizable = true
+access = 2
+current_dir = "/home/vault/Code/projects/Burrito"
+current_path = "/home/vault/Code/projects/Burrito/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NodeEditorDialog" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
+margin_left = 241.0
+margin_top = 229.0
+margin_right = 564.0
+margin_bottom = 492.0
+window_title = "Node Editor"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/Dialogs/NodeEditorDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer"]
+margin_right = 323.0
+margin_bottom = 260.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DeleteNode" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+margin_right = 323.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "Delete Selected"
+
+[node name="NewNodeAfter" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+margin_top = 44.0
+margin_right = 323.0
+margin_bottom = 84.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "New Node After Selected"
+
+[node name="SnapSelectedToPlayer" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+margin_top = 88.0
+margin_right = 323.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "Snap Selected To Player"
+
+[node name="XZSnapToPlayer" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+margin_top = 132.0
+margin_right = 323.0
+margin_bottom = 172.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "Horizontal Snap Selected To Player"
+
+[node name="YSnapToPlayer" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+margin_top = 176.0
+margin_right = 323.0
+margin_bottom = 216.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "Vertical Snap Selected To Player"
+
+[node name="SetActivePath" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+margin_top = 220.0
+margin_right = 323.0
+margin_bottom = 260.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "SetActivePath"
 
 [node name="Border" type="Control" parent="Control"]
 visible = false
@@ -574,6 +666,7 @@ material/0 = SubResource( 5 )
 [connection signal="hide" from="Control/Dialogs/FileDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadPath" to="." method="_on_LoadPath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SavePath" to="." method="_on_SavePath_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
 [connection signal="value_changed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/PathResolution" to="." method="_on_PathResolution_value_changed"]
@@ -594,3 +687,12 @@ material/0 = SubResource( 5 )
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox7" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="file_selected" from="Control/Dialogs/TexturePathOpen" to="." method="_on_TexturePathOpen_file_selected"]
 [connection signal="hide" from="Control/Dialogs/TexturePathOpen" to="." method="_on_Dialog_hide"]
+[connection signal="file_selected" from="Control/Dialogs/SaveDialog" to="." method="_on_SaveDialog_file_selected"]
+[connection signal="hide" from="Control/Dialogs/SaveDialog" to="." method="_on_Dialog_hide"]
+[connection signal="hide" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_NodeEditorDialog_hide"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode" to="." method="_on_DeleteNode_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter" to="." method="_on_NewNodeAfter_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer" to="." method="_on_SnapSelectedToPlayer_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer" to="." method="_on_XZSnapToPlayer_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath" to="." method="_on_SetActivePath_pressed"]

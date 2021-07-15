@@ -284,6 +284,10 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
+		
+		print("Saving Old Map")
+		self.markerdata[str(old_map_id)] = data_from_renderview()
+		print("Loading New Map")
 		gen_map_markers()
 
 	# TODO move this to reset_minimap_masks
@@ -323,14 +327,27 @@ func load_taco_markers(marker_json_file):
 	file.open(marker_json_file, file.READ)
 	var text = file.get_as_text()
 	self.markerdata = JSON.parse(text).result
-	#print(self.markerdata)
+	
+	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
+
 	gen_map_markers()
+
+func relative_textures_to_absolute_textures(marker_file_dir):
+	for map in markerdata:
+		for icon in markerdata[map]["icons"]:
+			if !icon["texture"].is_abs_path():
+				icon["texture"] = marker_file_dir + "/" + icon["texture"]
+			#print("ABS", icon["texture"])
+		for path in markerdata[map]["paths"]:
+			if !path["texture"].is_abs_path():
+				path["texture"] = marker_file_dir + "/" + path["texture"]
+
 
 var path_scene = load("res://Path.tscn")
 var icon_scene = load("res://Icon.tscn")
 var path2d_scene = load("res://Path2D.tscn")
 var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
-##########Gizmo Stuff###########3
+##########Gizmo Stuff###########
 # How long the ray to search for 3D clickable object should be.
 # Shorter is faster but cannot click thing far away.
 # Longer is slower but can click things farther away.
@@ -347,7 +364,7 @@ var last_selected = null
 ################################################################################
 # Hand the mouse input of clicking and hovering over an object
 ################################################################################
-func _input(event):
+func _unhandled_input(event):
 	# If the left mouse button is clicked.
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
 		# Emit a ray from the mouse position to see if it intersects with any
@@ -401,95 +418,38 @@ func _input(event):
 ################################################################################
 #
 ################################################################################
-var path_3d_markers: Array
-var path_2d_markers: Array
-var icon_markers: Array
-var area_3d_markers: Array
-var area_2d_markers: Array
+#var path_3d_markers: Array
+#var path_2d_markers: Array
+#var icon_markers: Array
+#var area_3d_markers: Array
+#var area_2d_markers: Array
 onready var icons = $Icons
 onready var paths = $Paths
 onready var minimap = $Control/MiniMap
 
 func gen_map_markers():
-	for child in paths.get_children():
-		child.queue_free()
-		path_3d_markers.clear()
+	# Clear all the rendered assets to mak way for the new ones
+	for path in paths.get_children():
+		path.queue_free()
+		#path_3d_markers.clear()
 
 	for path2d in minimap.get_children():
 		path2d.queue_free()
-		path_2d_markers.clear()
+		#path_2d_markers.clear()
 		
 	for icon in icons.get_children():
 		icon.queue_free()
-		icon_markers.clear()
+		#icon_markers.clear()
 	
-
-
+	# Load the data from the markers
 	if str(map_id) in markerdata:
-#		print("Found Map")
-
-
 		var map_markerdata = markerdata[str(map_id)]
-#		print("Paths Found:", len(map_markerdata["paths"]))
 		for path in map_markerdata["paths"]:
-			var texture_path = self.marker_file_path.get_base_dir() + "/"+ path["texture"]
-			gen_new_path(path["points"], texture_path)
-			
-#			var points_2d: PoolVector2Array = [] 
-#
-#			# Create a new 3D path
-#			var new_path = path_scene.instance()
-#			var new_curve = Curve3D.new()
-#			for point in path["points"]:
-#				new_curve.add_point(Vector3(point[0], point[1], -point[2]))
-#				points_2d.append(Vector2(point[0], -point[2]))
-#
-#			new_path.curve = new_curve
-#			path_3d_markers.append(new_path)
-#			paths.add_child(new_path)
-#
-#			var texture_file = File.new()
-#			var image = Image.new()
-#			texture_file.open(self.marker_file_path.get_base_dir() + "/"+ path["texture"], File.READ)
-#			image.load_png_from_buffer(texture_file.get_buffer(texture_file.get_len()))
-#			texture_file.close()
-#			image.lock()
-#
-#			var texture = ImageTexture.new()
-#			texture.create_from_image(image, 6)
-#			new_path.get_node("CSGPolygon").material.set_shader_param("texture_albedo", texture)
-#
-#			# Create a new 2D Path
-#			var new_2d_path = path2d_scene.instance()
-#			new_2d_path.points = points_2d
-#			new_2d_path.texture = texture
-#			path_2d_markers.append(new_2d_path)
-#			minimap.add_child(new_2d_path)
-#
-#			self.currently_active_path = new_path
-#			self.currently_active_path_2d = new_2d_path
+			gen_new_path(path["points"], path["texture"])
 
 		for icon in map_markerdata["icons"]:
 			var position = Vector3(icon["position"][0], icon["position"][1], icon["position"][2])
-			var texture_path = self.marker_file_path.get_base_dir() + "/"+ icon["texture"]
-			gen_new_icon(position, texture_path)
-#			var new_icon = icon_scene.instance()
-#			new_icon.translation = Vector3(icon["position"][0], icon["position"][1], -icon["position"][2])
-#
-#			var texture_file = File.new()
-#			var image = Image.new()
-#			texture_file.open(self.marker_file_path.get_base_dir() + "/"+ icon["texture"], File.READ)
-#			image.load_png_from_buffer(texture_file.get_buffer(texture_file.get_len()))
-#			texture_file.close()
-#			image.lock()
-#
-#			var texture = ImageTexture.new()
-#			texture.create_from_image(image) #, 6)
-#			new_icon.texture = texture
-#			new_icon.material_override.set_shader_param("texture_albedo", texture)
-#
-#			icon_markers.append(new_icon)
-#			icons.add_child(new_icon)
+			gen_new_icon(position, icon["texture"])
 
 func gen_new_path(points: Array, texture_path: String):
 	var points_2d: PoolVector2Array = [] 
@@ -502,7 +462,8 @@ func gen_new_path(points: Array, texture_path: String):
 		points_2d.append(Vector2(point[0], -point[2]))
 
 	new_path.curve = new_curve
-	path_3d_markers.append(new_path)
+	new_path.texture_path = texture_path # Save the location of the image for later
+	#path_3d_markers.append(new_path)
 	paths.add_child(new_path)
 	
 	var texture_file = File.new()
@@ -520,7 +481,7 @@ func gen_new_path(points: Array, texture_path: String):
 	var new_2d_path = path2d_scene.instance()
 	new_2d_path.points = points_2d
 	new_2d_path.texture = texture
-	path_2d_markers.append(new_2d_path)
+	#path_2d_markers.append(new_2d_path)
 	minimap.add_child(new_2d_path)
 	
 	self.currently_active_path = new_path
@@ -528,28 +489,44 @@ func gen_new_path(points: Array, texture_path: String):
 
 func gen_new_icon(position: Vector3, texture_path: String):
 	position.z = -position.z
-
-	print("Generating Icon at", position, "with texture", texture_path)
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position
+	new_icon.set_icon_image(texture_path)
+
+	
 			
-	var texture_file = File.new()
-	var image = Image.new()
-	texture_file.open(texture_path, File.READ)
-	image.load_png_from_buffer(texture_file.get_buffer(texture_file.get_len()))
-	texture_file.close()
-	image.lock()
-			
-	var texture = ImageTexture.new()
-	texture.create_from_image(image) #, 6)
-	new_icon.texture = texture
-	new_icon.material_override.set_shader_param("texture_albedo", texture)
-			
-	icon_markers.append(new_icon)
+	#icon_markers.append(new_icon)
 	icons.add_child(new_icon)
 
+# This function take all of the currently rendered objects and converts it into
+# the data format that is saved/loaded from.
+func data_from_renderview():
+	var icons_data = []
+	var paths_data = []
+	
+	for icon in $Icons.get_children():
+		icons_data.append({
+			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
+			"texture": icon.texture_path
+		})
+	
+	for path in $Paths.get_children():
+		#print(path)
+		var points = []
+		var curve = path.curve
+		for point in range(curve.get_point_count()):
+			var point_position:Vector3 = curve.get_point_position(point)
+			points.append([point_position.x, point_position.y, -point_position.z])
+		paths_data.append({
+			"points": points,
+			"texture": path.texture_path
+		})
+
+	var data_out = {"icons": icons_data, "paths": paths_data}
+	return data_out
+
 func _on_main_menu_toggle_pressed():
-	$Control/Dialogs/MainMenu.show()	
+	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
 
 func _on_FileDialog_file_selected(path):
@@ -562,33 +539,56 @@ func _on_FileDialog_file_selected(path):
 ################################################################################
 var adjusting = false
 func _on_AdjustNodesButton_pressed():
-	if self.adjusting:
-		self.adjusting = false
-		clear_adjustment_nodes()
-		set_minimal_mouse_block()		
-	else:
-		self.adjusting = true
-		set_maximal_mouse_block()
-		
-		for index in range(len(path_3d_markers)):
-			var path = path_3d_markers[index]
-			var path2d = path_2d_markers[index]
-			var curve: Curve3D = path.curve
-			for i in range(curve.get_point_count()):
-				var new_gizmo = gizmo_scene.instance()
-				new_gizmo.translation = curve.get_point_position(i)
-				new_gizmo.link_point("path", path, path2d, i)
-				$Gizmos.add_child(new_gizmo)
-		
-		for index in range(len(icon_markers)):
-			var icon = icon_markers[index]
+	$Control/Dialogs/NodeEditorDialog.show()
+	set_maximal_mouse_block()
+	gen_adjustment_nodes()
+
+func gen_adjustment_nodes():
+	for index in range(self.paths.get_child_count()):
+		var path = self.paths.get_child(index)
+		var path2d = self.minimap.get_child(index)
+		var curve: Curve3D = path.curve
+		for i in range(curve.get_point_count()):
 			var new_gizmo = gizmo_scene.instance()
-			new_gizmo.translation = icon.translation
-			new_gizmo.link_point("icon", icon)
+			new_gizmo.translation = curve.get_point_position(i)
+			new_gizmo.link_point("path", path, path2d, i)
+			new_gizmo.connect("selected", self, "on_gizmo_selected")
+			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 			$Gizmos.add_child(new_gizmo)
-			
+	
+	for index in range(self.icons.get_child_count()):
+		var icon = self.icons.get_child(index)
+		var new_gizmo = gizmo_scene.instance()
+		new_gizmo.translation = icon.translation
+		new_gizmo.link_point("icon", icon)
+		new_gizmo.connect("selected", self, "on_gizmo_selected")
+		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+		$Gizmos.add_child(new_gizmo)
+
+var currently_selected_node = null
+func on_gizmo_selected(object):
+	self.currently_selected_node = object
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
+	if object.point_type == "path":
+		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
+
+func on_gizmo_deselected(object):
+	self.currently_selected_node = null
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = true
+
+
 func clear_adjustment_nodes():
 	for child in $Gizmos.get_children():
+		$Gizmos.remove_child(child)
 		child.queue_free()
 
 
@@ -669,3 +669,91 @@ func _on_NewPathPoint_pressed():
 		# Add a point to the currently active path (and the 2d path)
 		
 	print("hello I am a new path point")
+
+
+func _on_SavePath_pressed():
+	$Control/Dialogs/SaveDialog.show()
+
+
+func _on_SaveDialog_file_selected(path):
+	
+	self.markerdata[str(self.map_id)] = data_from_renderview()
+	
+	var save_game = File.new()
+	save_game.open(path, File.WRITE)
+	save_game.store_string(JSON.print(self.markerdata))
+
+
+func _on_NodeEditorDialog_hide():
+	self.currently_selected_node = null
+	clear_adjustment_nodes()
+	_on_Dialog_hide()
+
+
+func _on_DeleteNode_pressed():
+	if self.currently_selected_node.point_type == "icon":
+		self.currently_selected_node.object_link.get_parent().remove_child(self.currently_selected_node.object_link)
+		self.currently_selected_node.object_link.queue_free()
+	elif self.currently_selected_node.point_type == "path":
+		var path =   self.currently_selected_node.object_link
+		var path2d = self.currently_selected_node.object_2d_link
+		var index =  self.currently_selected_node.object_index
+		var curve3d = path.curve
+		curve3d.remove_point(index)
+		path2d.remove_point(index)
+		#self.currently_selected_node.queue_free()
+		# TODO: We need to refresh gizmos because they have the wrong index after
+		# this point
+
+	clear_adjustment_nodes()
+	gen_adjustment_nodes()
+	on_gizmo_deselected(self.currently_selected_node)
+	#self.currently_selected_node = null
+	
+
+func _on_NewNodeAfter_pressed():
+	if self.currently_selected_node.point_type == "icon":
+		print("Warning: Cannot add node to icon")
+	elif self.currently_selected_node.point_type == "path":
+		print("insert path node")
+		var path = self.currently_selected_node.object_link
+		var path2d = self.currently_selected_node.object_2d_link
+		var index = self.currently_selected_node.object_index
+		var curve3d = path.curve
+		
+		
+		var start = curve3d.get_point_position(index)
+		var midpoint = self.player_position
+		midpoint.z = -midpoint.z
+		if curve3d.get_point_count() > index+1:
+			var end = curve3d.get_point_position(index+1)
+			midpoint = ((start-end)/2) + end
+		
+		curve3d.add_point(midpoint, Vector3(0,0,0), Vector3(0,0,0), index+1)
+		path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
+
+		clear_adjustment_nodes()
+		gen_adjustment_nodes()
+		on_gizmo_deselected(self.currently_selected_node)
+		
+func _on_XZSnapToPlayer_pressed():
+	self.currently_selected_node.translation.x = self.player_position.x
+	self.currently_selected_node.translation.z = -self.player_position.z
+
+
+func _on_YSnapToPlayer_pressed():
+	self.currently_selected_node.translation.y = self.player_position.y
+
+
+func _on_SnapSelectedToPlayer_pressed():
+	self.currently_selected_node.translation.x = self.player_position.x
+	self.currently_selected_node.translation.z = -self.player_position.z
+	self.currently_selected_node.translation.y = self.player_position.y
+
+
+func _on_SetActivePath_pressed():
+	if self.currently_selected_node.point_type == "icon":
+		print("Warning: Cannot set icon as active path")
+	elif self.currently_selected_node.point_type == "path":
+		self.currently_active_path = self.currently_selected_node.object_link
+		self.currently_active_path_2d = self.currently_selected_node.object_2d_link

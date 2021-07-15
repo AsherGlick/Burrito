@@ -25,8 +25,6 @@ func select(camera: Camera, event: InputEvent):
 
 	self.start_offset = get_offset_coordinates(event)
 
-	print("Pillar Selected")
-
 
 ################################################################################
 #
@@ -35,7 +33,6 @@ func _input(event:InputEvent):
 	if selected:
 		if event is InputEventMouseButton:
 			if not event.pressed and event.button_index == 1:
-				print("Deselected plane")
 				selected = false
 				_show_hover()
 		elif event is InputEventMouseMotion:

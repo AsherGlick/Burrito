@@ -19,7 +19,6 @@ func _input(event:InputEvent):
 	if selected:
 		if event is InputEventMouseButton:
 			if not event.pressed and event.button_index == 1:
-				print("Deselected plane")
 				selected = false
 				_show_hover()
 		elif event is InputEventMouseMotion:
@@ -30,7 +29,6 @@ func _input(event:InputEvent):
 			# because it is probably a horizon cross
 			var angle_diff = (camera.global_transform.origin - (self.start_position + delta_offset)).dot(camera.global_transform.basis.z)
 			if (angle_diff < 0):
-				print(angle_diff)
 				delta_offset = -delta_offset + (self.start_position - camera.global_transform.origin)
 
 			# Lock off y axis movement so this only is xz

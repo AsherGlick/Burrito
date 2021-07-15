@@ -15,15 +15,12 @@ func select(camera, event):
 
 
 func hover():
-	print(\"hover\")
 	$NodeMesh.get_surface_material(0).set_shader_param(\"hovering\", true)
 func unhover():
-	print(\"unhover\")
 	$NodeMesh.get_surface_material(0).set_shader_param(\"hovering\", false)
-
 "
 
-[sub_resource type="Shader" id=10]
+[sub_resource type="Shader" id=2]
 code = "shader_type spatial;
 //render_mode unshaded;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
@@ -54,19 +51,19 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id=11]
+[sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
-shader = SubResource( 10 )
+shader = SubResource( 2 )
 shader_param/default_color = Color( 1, 1, 1, 1 )
 shader_param/hover_color = Color( 0.231373, 0.713726, 1, 1 )
 shader_param/hover_color2 = Color( 0.694118, 1, 0, 1 )
 shader_param/hover_color3 = Color( 0.992157, 0.25098, 0.419608, 1 )
 shader_param/hovering = false
 
-[sub_resource type="SphereShape" id=3]
+[sub_resource type="SphereShape" id=4]
 radius = 0.660958
 
-[sub_resource type="Shader" id=4]
+[sub_resource type="Shader" id=5]
 code = "shader_type spatial;
 render_mode unshaded, depth_test_disable;
 
@@ -85,31 +82,31 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id=5]
+[sub_resource type="ShaderMaterial" id=6]
 resource_local_to_scene = true
-shader = SubResource( 4 )
+shader = SubResource( 5 )
 shader_param/default_color = Color( 0.992157, 0.25098, 0.419608, 0.313726 )
 shader_param/hover_color = Color( 0.992157, 0.25098, 0.419608, 1 )
 shader_param/hovering = false
 
-[sub_resource type="ShaderMaterial" id=6]
+[sub_resource type="ShaderMaterial" id=7]
 resource_local_to_scene = true
-shader = SubResource( 4 )
+shader = SubResource( 5 )
 shader_param/default_color = Color( 0.231373, 0.713726, 1, 0.313726 )
 shader_param/hover_color = Color( 0.231373, 0.713726, 1, 1 )
 shader_param/hovering = false
 
-[sub_resource type="CylinderShape" id=7]
+[sub_resource type="CylinderShape" id=8]
 height = 0.2
 
-[sub_resource type="ShaderMaterial" id=8]
+[sub_resource type="ShaderMaterial" id=9]
 resource_local_to_scene = true
-shader = SubResource( 4 )
+shader = SubResource( 5 )
 shader_param/default_color = Color( 0.694118, 1, 0, 0.313726 )
 shader_param/hover_color = Color( 0.694118, 1, 0, 1 )
 shader_param/hovering = false
 
-[sub_resource type="CylinderShape" id=9]
+[sub_resource type="CylinderShape" id=10]
 radius = 0.1
 
 [node name="PointEdit" type="Spatial"]
@@ -121,10 +118,10 @@ script = SubResource( 1 )
 [node name="NodeMesh" type="MeshInstance" parent="Node"]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 mesh = ExtResource( 5 )
-material/0 = SubResource( 11 )
+material/0 = SubResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Node"]
-shape = SubResource( 3 )
+shape = SubResource( 4 )
 
 [node name="Plane" type="KinematicBody" parent="."]
 visible = false
@@ -134,16 +131,16 @@ script = ExtResource( 3 )
 transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
 mesh = ExtResource( 4 )
 skeleton = NodePath("")
-material/0 = SubResource( 5 )
+material/0 = SubResource( 6 )
 
 [node name="ArrowMesh2" type="MeshInstance" parent="Plane"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 mesh = ExtResource( 4 )
 skeleton = NodePath("")
-material/0 = SubResource( 6 )
+material/0 = SubResource( 7 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Plane"]
-shape = SubResource( 7 )
+shape = SubResource( 8 )
 disabled = true
 
 [node name="Pillar" type="KinematicBody" parent="."]
@@ -152,8 +149,8 @@ script = ExtResource( 2 )
 
 [node name="ArrowMesh" type="MeshInstance" parent="Pillar"]
 mesh = ExtResource( 4 )
-material/0 = SubResource( 8 )
+material/0 = SubResource( 9 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Pillar"]
-shape = SubResource( 9 )
+shape = SubResource( 10 )
 disabled = true

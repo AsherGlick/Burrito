@@ -1,6 +1,9 @@
 extends Spatial
 
 var camera: Camera
+signal selected(selected_object)
+signal deselected(selected_object)
+
 var selected: bool = false
 
 func clear_selection():
@@ -10,6 +13,7 @@ func clear_selection():
 	$Plane/CollisionShape.disabled = true
 	$Pillar.hide()
 	$Pillar/CollisionShape.disabled = true
+	emit_signal("deselected", self)
 
 func select(camera, event):
 	self.selected = true
@@ -19,10 +23,11 @@ func select(camera, event):
 	$Plane/CollisionShape.disabled = false
 	$Pillar.show()
 	$Pillar/CollisionShape.disabled = false
+	emit_signal("selected", self)
 
 var object_link = null
 var object_2d_link = null
-var object_index = 0
+var object_index:int = 0
 var point_type: String
 
 func link_point(point_type: String, object_link, object_2d_link = null, object_index = 0):
