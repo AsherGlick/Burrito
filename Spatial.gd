@@ -4,7 +4,6 @@ var server := UDPServer.new()
 var peers = []
 
 var map_id:int = 0
-var feet_unset = true
 
 
 var map_is_open: bool
@@ -22,6 +21,27 @@ var next_texture_path: String = ""
 var currently_active_path = null
 var currently_active_path_2d = null
 
+var map_was_open = false
+
+# Player Position as accurate to Guild Wars 2
+var player_position := Vector3(0,0,0)
+
+# Player Position as accurate to Godot (z value sign is flipped)
+var correct_player_position := Vector3(0,0,0) 
+
+var compass_height: int = 0;
+var compass_width: int = 0;
+
+
+# A temporary setting able to be configured by the user. It is used to allow
+# for faster trail mesh generation. The higher the value the fewer samples are
+# taken for the MeshCSG leading to an overall lower number of polygons. 
+var path_resolution = 1
+
+# Variables that store opposit corners of the compass
+var compass_corner1
+var compass_corner2
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
@@ -32,8 +52,7 @@ func _ready():
 	OS.window_size = Vector2(1920, 1080)
 	set_minimal_mouse_block()
 	server.listen(4242)
-	self.feet_unset = true
-	# load_taco_markers("/home/vault/Downloads/tw_ALL_IN_ONE/tw_mc_coretyria.xml")
+
 
 func set_minimal_mouse_block():
 	var top_corner := Vector2(287, 0)
@@ -61,67 +80,56 @@ func _process(delta):
 	#OS.window_position = Vector2(1920, 0) # TODO: This does not seem to work	
 	#OS.set_window_position(Vector2(1920,0))
 	#print(OS.window_position)
-	
-	#$MeshInstance.rotate(Vector3(0,1,0), .5 * delta)
-	#$MeshInstance.rotate_object_local(Vector3(1,0,0), 1 * delta)
-	# print(delta)
+
 	server.poll() # Important
 	if server.is_connection_available():
 		var peer: PacketPeerUDP = server.take_connection()
-#		var pkt = peer.get_packet()
 		print("accepted peer: %s:%s" % [peer.get_packet_ip(), peer.get_packet_port()])
-#		print("Received data: %s" % [pkt.get_string_from_utf8()])
-		
-#		print(peer.is_listening())
-
-		#peer.put_packet(pkt)
 		peers.append(peer)
-#		print(len(peers))
+
 	for i in range(0, peers.size()):
 		var peer: PacketPeerUDP = peers[i]
 		for j in range(0, peer.get_available_packet_count()):
-			
+
 			var spb := StreamPeerBuffer.new()
 			spb.data_array = peer.get_packet()
-			
+
 			var packet_type:int = spb.get_8()
-			
+
 			if packet_type == 1:
 				decode_frame_packet(spb)
 			elif packet_type == 2:
 				decode_context_packet(spb)
 
 	return
-var map_was_open = false
 
-var last_update:float = 0
-var last_player_location := Vector3(0,0,0)
-var last_camera_location := Vector3(0,0,0)
-var last_camera_location_at_player_location_change := Vector3(0,0,0)
-var player_position := Vector3(0,0,0)
-var z_innacurate_player_position := Vector3(0,0,0)
+
 func decode_frame_packet(spb: StreamPeerBuffer):
-	
-	# Delta calculation for between messages
-	#var this_update: float = float(OS.get_ticks_usec()/1000000.0)
-	#print("d",this_update - last_update)
-	#last_update=this_update
-	
+	# Extract the position of the camera
 	var camera_position = Vector3(
 		spb.get_float(),
 		spb.get_float(),
 		spb.get_float()
 	)
+	
+	# Extract the rotation of the camera in the form of a normal vector
 	var camera_facing = Vector3(
 		spb.get_float(),
 		spb.get_float(),
 		spb.get_float()
 	)
-	player_position = Vector3( # Foot Position
+	
+	# Extract the position of the player's foot
+	self.player_position = Vector3(
 		spb.get_float(),
 		spb.get_float(),
 		spb.get_float()
 	)
+	self.correct_player_position = Vector3(player_position.x, player_position.y, -player_position.z)
+	
+	if $Control/Position.visible:
+		$Control/Position.text = "X " + str(player_position.x) + "   Y " + str(player_position.y) + "   Z " + str(-player_position.z)
+	
 	var map_offset = Vector2(
 		spb.get_float(),
 		spb.get_float()
@@ -140,10 +148,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var chatbox_has_focus: bool = (ui_flags & 0x20) == 0x20;
 	var in_combat: bool = (ui_flags & 0x40) == 0x40;
 	var unchecked_flag = (ui_flags & 0xFFFFFF80) != 0x00000000;
-	
-#	var map_size = spb.get_float()
 
-	
 	if map_is_open != map_was_open:
 		$Paths.visible = !map_is_open
 		$Icons.visible = !map_is_open
@@ -152,36 +157,15 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 
 	if unchecked_flag:
 		print("Unchecked Flag", (ui_flags & 0xFFFFFF80))
-	
-#	if game_is_focused:
-#		print("game_is_focused")
-#	else:
-#		print("game is not focused")
 
-#	print("chatbox has focus ", chatbox_has_focus)
-	
 	# Position the camera in the same location as it in in-game
 	$CameraMount.translation.x = camera_position.x
 	$CameraMount.translation.y = camera_position.y
 	$CameraMount.translation.z = -camera_position.z
-#	if ((player_position - last_player_location).length() != 0 || (camera_position - last_camera_location).length() != 0):
-#		print(camera_position.x - last_camera_location.x, "\t" ,player_position.x - last_player_location.x)
-#		last_camera_location_at_player_location_change = camera_position
-#	last_player_location = player_position
-#	last_camera_location = camera_position
 	
 	# Orent the camera in the same rotation as it is facing in game
 	$CameraMount/Camera.rotation.x = asin(camera_facing.y)
 	$CameraMount.rotation.y = -atan2(camera_facing.x, camera_facing.z)
-	#print(-atan2(camera_facing.x, camera_facing.z))
-	
-	#$MiniMap
-	#print(map_scale)
-	var map_scale_min = 0.853334
-	var map_scale_max = 17.066666
-	var map_scale_difference = map_scale_max / map_scale_min
-	var default_size = 1.925
-	var smallest_relative_scale =  default_size / map_scale_difference
 
 	# in-engine units are meters
 	# in-game units are inches
@@ -225,46 +209,12 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var map_midpoint = map_size/2 + map_corner;
 	
 	$Control/MiniMap.scale=Vector2(map_object_scaling, map_object_scaling)
-	#print(map_offset)
 	var map_translation = map_offset
 	$Control/MiniMap.position = (map_translation / map_scale) + map_midpoint - player_map_position + delta_position
-	
-
-	
-	
-	#map_scale: float = spb.get_float()
-	#var map_rotation: float = spb.get_float()
-	#print(map_scale) #0.853334 -> 17.066666   for the megamap
-	# This should be transformed into 2 -> something smaller 
-	# minimap 1 -> 4.125
-	#print(map_rotation) # Not used for megamap
-	
 	var new_feet_location = Vector3(player_position.x, player_position.y, -player_position.z)
-	#print(player_position)
 	$FeetLocation.translation = new_feet_location
 
-#var new_feet_location = Vector3(camera_position.x, camera_position.y-1, -camera_position.z+5)
-#	if feet_unset:
-#		$FeetLocation.translation = new_feet_location
-#		feet_unset = false
-#	else:
-#		$FeetLocation.moveto(new_feet_location)
-#		print(this_update - last_update)
-	
-	#$FeetLocation.translation.x = player_position.x
-	#$FeetLocation.translation.y = player_position.y
-	#$FeetLocation.translation.z = -player_position.z
-	#print(player_position.x)
-#	print(map_is_open, map_rotation, map_offset)
 
-
-
-func remap(min_in, max_in, min_out, max_out, value):
-	return (value - min_in) / (max_in - min_in) * (max_out - min_out) + min_out
-
-
-var compass_height: int = 0;
-var compass_width: int = 0;
 func decode_context_packet(spb: StreamPeerBuffer):
 	compass_width = spb.get_16()
 	compass_height = spb.get_16()
@@ -281,6 +231,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# According to https://thatshaman.com/tools/fov/ the FOV range is (25 -> 70)
 	# This function maps a value between 0.436 and 1.222 to a value between 25 and 70
 	$CameraMount/Camera.fov = (((identity["fov"] - 0.436) / 0.786) * 45) + 25
+	# TODO: after looking back at this it has become obvious this is just degrees
+	# vs radians. 70deg = 1.22173rad and 25deg = 0.4363323rad. We should redo
+	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
 		print("New Map")
@@ -300,8 +253,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	reset_minimap_masks()
 
-var compass_corner1
-var compass_corner2
+
 func reset_minimap_masks():
 	var viewport_size = get_viewport().size
 	compass_corner1 = Vector2(0, 0)
@@ -327,7 +279,7 @@ func load_taco_markers(marker_json_file):
 	file.open(marker_json_file, file.READ)
 	var text = file.get_as_text()
 	self.markerdata = JSON.parse(text).result
-	
+
 	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
 
 	gen_map_markers()
@@ -418,11 +370,6 @@ func _unhandled_input(event):
 ################################################################################
 #
 ################################################################################
-#var path_3d_markers: Array
-#var path_2d_markers: Array
-#var icon_markers: Array
-#var area_3d_markers: Array
-#var area_2d_markers: Array
 onready var icons = $Icons
 onready var paths = $Paths
 onready var minimap = $Control/MiniMap
@@ -431,16 +378,13 @@ func gen_map_markers():
 	# Clear all the rendered assets to mak way for the new ones
 	for path in paths.get_children():
 		path.queue_free()
-		#path_3d_markers.clear()
 
 	for path2d in minimap.get_children():
 		path2d.queue_free()
-		#path_2d_markers.clear()
-		
+
 	for icon in icons.get_children():
 		icon.queue_free()
-		#icon_markers.clear()
-	
+
 	# Load the data from the markers
 	if str(map_id) in markerdata:
 		var map_markerdata = markerdata[str(map_id)]
@@ -479,6 +423,7 @@ func gen_new_path(points: Array, texture_path: String):
 	
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
+	print(len(points_2d))
 	new_2d_path.points = points_2d
 	new_2d_path.texture = texture
 	#path_2d_markers.append(new_2d_path)
@@ -549,8 +494,16 @@ func gen_adjustment_nodes():
 		var path2d = self.minimap.get_child(index)
 		var curve: Curve3D = path.curve
 		for i in range(curve.get_point_count()):
+			var gizmo_position = curve.get_point_position(i)
+			
+			# Simplistic cull to prevent nodes that are too far away to be
+			# visible from being created. Additional work can be done here
+			# if this is not enough of an optimization in the future.
+			if (gizmo_position.distance_squared_to(self.correct_player_position) > 10000):
+				continue
+
 			var new_gizmo = gizmo_scene.instance()
-			new_gizmo.translation = curve.get_point_position(i)
+			new_gizmo.translation = gizmo_position
 			new_gizmo.link_point("path", path, path2d, i)
 			new_gizmo.connect("selected", self, "on_gizmo_selected")
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
@@ -608,7 +561,7 @@ func _on_LoadPath_pressed():
 func _on_RangesButton_pressed():
 	$Control/Dialogs/RangesDialog.show()
 
-var path_resolution = 1
+
 func _on_PathResolution_value_changed(value):
 	path_resolution = value
 	
@@ -667,18 +620,23 @@ func _on_NewPathPoint_pressed():
 		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
 
 		# Add a point to the currently active path (and the 2d path)
-		
+
 	print("hello I am a new path point")
 
 
+################################################################################
+# open the save dialog window. When a path is selected
+# _on_SaveDialog_file_selected() will be called with the user specified path.
+################################################################################
 func _on_SavePath_pressed():
 	$Control/Dialogs/SaveDialog.show()
 
-
+################################################################################
+# Save the current markers to a file, this includes all markers in memory not
+# just the markers on the current map.
+################################################################################
 func _on_SaveDialog_file_selected(path):
-	
 	self.markerdata[str(self.map_id)] = data_from_renderview()
-	
 	var save_game = File.new()
 	save_game.open(path, File.WRITE)
 	save_game.store_string(JSON.print(self.markerdata))
@@ -701,15 +659,10 @@ func _on_DeleteNode_pressed():
 		var curve3d = path.curve
 		curve3d.remove_point(index)
 		path2d.remove_point(index)
-		#self.currently_selected_node.queue_free()
-		# TODO: We need to refresh gizmos because they have the wrong index after
-		# this point
-
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
 	on_gizmo_deselected(self.currently_selected_node)
-	#self.currently_selected_node = null
-	
+
 
 func _on_NewNodeAfter_pressed():
 	if self.currently_selected_node.point_type == "icon":
@@ -720,8 +673,7 @@ func _on_NewNodeAfter_pressed():
 		var path2d = self.currently_selected_node.object_2d_link
 		var index = self.currently_selected_node.object_index
 		var curve3d = path.curve
-		
-		
+
 		var start = curve3d.get_point_position(index)
 		var midpoint = self.player_position
 		midpoint.z = -midpoint.z

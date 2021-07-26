@@ -637,6 +637,28 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Position" type="Label" parent="Control"]
+visible = false
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -429.0
+margin_top = -14.0
+text = "X:11 Y:11 Z:10"
+align = 2
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="Control/Position"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -6.0
+color = Color( 0, 0, 0, 1 )
+
 [node name="Paths" type="Spatial" parent="."]
 
 [node name="Icons" type="Spatial" parent="."]
