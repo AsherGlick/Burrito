@@ -182,7 +182,6 @@ __meta__ = {
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
-visible = true
 margin_left = 48.1808
 margin_top = 88.7138
 margin_right = 261.181
@@ -493,7 +492,6 @@ __meta__ = {
 }
 
 [node name="NodeEditorDialog" type="WindowDialog" parent="Control/Dialogs"]
-visible = true
 margin_left = 241.0
 margin_top = 229.0
 margin_right = 564.0

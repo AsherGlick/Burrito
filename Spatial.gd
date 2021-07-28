@@ -648,7 +648,7 @@ func _on_NewPathPoint_pressed():
 		print("i am adding a point to the path")
 		var z_accurate_player_position = player_position
 		z_accurate_player_position.z = -z_accurate_player_position.z
-		self.currently_active_path.curve.add_point(z_accurate_player_position)
+		self.currently_active_path.add_point(z_accurate_player_position)
 		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
 
 		# Add a point to the currently active path (and the 2d path)
@@ -688,8 +688,8 @@ func _on_DeleteNode_pressed():
 		var path =   self.currently_selected_node.object_link
 		var path2d = self.currently_selected_node.object_2d_link
 		var index =  self.currently_selected_node.object_index
-		var curve3d = path.curve
-		curve3d.remove_point(index)
+
+		path.remove_point(index)
 		path2d.remove_point(index)
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
@@ -704,16 +704,15 @@ func _on_NewNodeAfter_pressed():
 		var path = self.currently_selected_node.object_link
 		var path2d = self.currently_selected_node.object_2d_link
 		var index = self.currently_selected_node.object_index
-		var curve3d = path.curve
 
-		var start = curve3d.get_point_position(index)
+		var start = path.get_point_position(index)
 		var midpoint = self.player_position
 		midpoint.z = -midpoint.z
-		if curve3d.get_point_count() > index+1:
-			var end = curve3d.get_point_position(index+1)
+		if path.get_point_count() > index+1:
+			var end = path.get_point_position(index+1)
 			midpoint = ((start-end)/2) + end
 		
-		curve3d.add_point(midpoint, Vector3(0,0,0), Vector3(0,0,0), index+1)
+		path.add_point(midpoint, index+1)
 		path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
 
 		clear_adjustment_nodes()
