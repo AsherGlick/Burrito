@@ -3,7 +3,7 @@
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
-[ext_resource path="res://Path2D.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Route2D.tscn" type="PackedScene" id=4]
 [ext_resource path="res://RangeDialog.gd" type="Script" id=6]
 
 [sub_resource type="Shader" id=1]
@@ -182,6 +182,7 @@ __meta__ = {
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
 margin_left = 48.1808
 margin_top = 88.7138
 margin_right = 261.181
@@ -201,7 +202,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/MainMenu/ScrollContainer"]
 margin_right = 213.0
-margin_bottom = 338.0
+margin_bottom = 215.0
 size_flags_horizontal = 3
 
 [node name="LoadPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
@@ -283,33 +284,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="RichTextLabel3" type="RichTextLabel" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 219.0
-margin_right = 213.0
-margin_bottom = 294.0
-bbcode_enabled = true
-bbcode_text = "[u]Path Resolution[/u]: The larger the number the less resolution will be used when displaying paths and the faster rendering and editing paths will be."
-text = "Path Resolution: The larger the number the less resolution will be used when displaying paths and the faster rendering and editing paths will be."
-fit_content_height = true
-scroll_active = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PathResolution" type="SpinBox" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 298.0
-margin_right = 213.0
-margin_bottom = 338.0
-rect_min_size = Vector2( 0, 40 )
-min_value = 1.0
-max_value = 20.0
-value = 1.0
-
 [node name="RichTextLabel2" type="RichTextLabel" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
-margin_top = 342.0
+margin_top = 219.0
 margin_right = 213.0
-margin_bottom = 387.0
+margin_bottom = 264.0
 bbcode_enabled = true
 bbcode_text = "[u]Active Path[/u]: Draws a line from your character to the final node in the currently active path."
 text = "Active Path: Draws a line from your character to the final node in the currently active path."
@@ -321,9 +300,9 @@ __meta__ = {
 
 [node name="ActivePath" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
-margin_top = 342.0
+margin_top = 219.0
 margin_right = 213.0
-margin_bottom = 382.0
+margin_bottom = 259.0
 text = "Active Path"
 
 [node name="RangesDialog" type="WindowDialog" parent="Control/Dialogs"]
@@ -518,7 +497,7 @@ visible = true
 margin_left = 241.0
 margin_top = 229.0
 margin_right = 564.0
-margin_bottom = 492.0
+margin_bottom = 538.0
 window_title = "Node Editor"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -533,7 +512,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer"]
 margin_right = 323.0
-margin_bottom = 260.0
+margin_bottom = 304.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
@@ -591,6 +570,25 @@ rect_min_size = Vector2( 0, 40 )
 size_flags_horizontal = 3
 disabled = true
 text = "SetActivePath"
+
+[node name="ReversePathDirection" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+margin_top = 264.0
+margin_right = 323.0
+margin_bottom = 304.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "Reverse Path Direction"
+
+[node name="Set Floating Mark" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+visible = false
+margin_top = 308.0
+margin_right = 311.0
+margin_bottom = 348.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+disabled = true
+text = "Reverse Path Direction"
 
 [node name="Border" type="Control" parent="Control"]
 visible = false
@@ -691,7 +689,6 @@ material/0 = SubResource( 5 )
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SavePath" to="." method="_on_SavePath_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
-[connection signal="value_changed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/PathResolution" to="." method="_on_PathResolution_value_changed"]
 [connection signal="hide" from="Control/Dialogs/RangesDialog" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox" to="Control/Dialogs/RangesDialog" method="on_change"]
@@ -718,3 +715,4 @@ material/0 = SubResource( 5 )
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer" to="." method="_on_XZSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath" to="." method="_on_SetActivePath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection" to="." method="_on_ReversePathDirection_pressed"]

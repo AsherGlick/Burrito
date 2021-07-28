@@ -245,7 +245,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	# TODO move this to reset_minimap_masks
 	for child in $Paths.get_children():
-		child.get_node("CSGPolygon").material.set_shader_param("map_size", Vector2(compass_width, compass_height))
+		# TODO FIX THIS
+		pass
+		#child.get_node("CSGPolygon").material.set_shader_param("map_size", Vector2(compass_width, compass_height))
 	
 	# TODO move this to reset_minimap_masks
 	for icon in $Icons.get_children():
@@ -295,10 +297,11 @@ func relative_textures_to_absolute_textures(marker_file_dir):
 				path["texture"] = marker_file_dir + "/" + path["texture"]
 
 
-var path_scene = load("res://Path.tscn")
+var route_scene = load("res://Route.tscn")
 var icon_scene = load("res://Icon.tscn")
-var path2d_scene = load("res://Path2D.tscn")
+var path2d_scene = load("res://Route2D.tscn")
 var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
+
 ##########Gizmo Stuff###########
 # How long the ray to search for 3D clickable object should be.
 # Shorter is faster but cannot click thing far away.
@@ -398,48 +401,73 @@ func gen_map_markers():
 func gen_new_path(points: Array, texture_path: String):
 	var points_2d: PoolVector2Array = [] 
 
-	# Create a new 3D path
-	var new_path = path_scene.instance()
-	var new_curve = Curve3D.new()
-	for point in points:
-		new_curve.add_point(Vector3(point[0], point[1], -point[2]))
-		points_2d.append(Vector2(point[0], -point[2]))
 
-	new_path.curve = new_curve
-	new_path.texture_path = texture_path # Save the location of the image for later
-	#path_3d_markers.append(new_path)
-	paths.add_child(new_path)
-	
+	# Create the texture to use from an image file
+	# TODO: We want to be able to cache this data so that if a texture is used
+	# by multiple objects we only need to keep ony copy of it in memory. #22.
+	# TODO: We want to have two copies of each texture in memory one for 2D 
+	# which does not use srgb to render properly, and one for 3D which forces
+	# srgb to render properly. Issue #23.
 	var texture_file = File.new()
 	var image = Image.new()
 	texture_file.open(texture_path, File.READ)
 	image.load_png_from_buffer(texture_file.get_buffer(texture_file.get_len()))
 	texture_file.close()
 	image.lock()
-	
 	var texture = ImageTexture.new()
-	texture.create_from_image(image, 6)
-	new_path.get_node("CSGPolygon").material.set_shader_param("texture_albedo", texture)
+	texture.storage = ImageTexture.STORAGE_COMPRESS_LOSSLESS
+	texture.create_from_image(image, 22)
+
+
+
+	# Create a new 3D route
+	var new_route = route_scene.instance()
+#	var new_curve = Curve3D.new()
+#	for point in points:
+#		new_curve.add_point(Vector3(point[0], point[1], -point[2]))
+#		points_2d.append(Vector2(point[0], -point[2]))
+
+#	new_path.curve = new_curve
+	new_route.texture_path = texture_path # Save the location of the image for later
+	#path_3d_markers.append(new_path)
+	
+	var points_3d := PoolVector3Array()
+	for point in points:
+		points_3d.append(Vector3(point[0], point[1], -point[2]))
+	
+	new_route.create_mesh(points_3d)
+	new_route.set_texture(texture)
+	paths.add_child(new_route)
+	
+	
+	
+	
+	
+	
+	
+	for point in points:
+		points_2d.append(Vector2(point[0], -point[2]))
+	
 	
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
-	print(len(points_2d))
 	new_2d_path.points = points_2d
 	new_2d_path.texture = texture
-	#path_2d_markers.append(new_2d_path)
 	minimap.add_child(new_2d_path)
 	
-	self.currently_active_path = new_path
+	self.currently_active_path = new_route
 	self.currently_active_path_2d = new_2d_path
 
+
+################################################################################
+#
+################################################################################
 func gen_new_icon(position: Vector3, texture_path: String):
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position
 	new_icon.set_icon_image(texture_path)
 
-	
-			
 	#icon_markers.append(new_icon)
 	icons.add_child(new_icon)
 
@@ -458,9 +486,8 @@ func data_from_renderview():
 	for path in $Paths.get_children():
 		#print(path)
 		var points = []
-		var curve = path.curve
-		for point in range(curve.get_point_count()):
-			var point_position:Vector3 = curve.get_point_position(point)
+		for point in range(path.get_point_count()):
+			var point_position:Vector3 = path.get_point_position(point)
 			points.append([point_position.x, point_position.y, -point_position.z])
 		paths_data.append({
 			"points": points,
@@ -477,6 +504,7 @@ func _on_main_menu_toggle_pressed():
 func _on_FileDialog_file_selected(path):
 	load_taco_markers(path)
 
+
 ################################################################################
 # The adjust nodes button creates handles at all the node points to allow for
 # editing of them via in-game interface. (Nodes can only be edited if the input
@@ -488,13 +516,14 @@ func _on_AdjustNodesButton_pressed():
 	set_maximal_mouse_block()
 	gen_adjustment_nodes()
 
+
 func gen_adjustment_nodes():
 	for index in range(self.paths.get_child_count()):
-		var path = self.paths.get_child(index)
+		var route = self.paths.get_child(index)
 		var path2d = self.minimap.get_child(index)
-		var curve: Curve3D = path.curve
-		for i in range(curve.get_point_count()):
-			var gizmo_position = curve.get_point_position(i)
+		#var curve: Curve3D = path.curve
+		for i in range(route.get_point_count()):
+			var gizmo_position = route.get_point_position(i)
 			
 			# Simplistic cull to prevent nodes that are too far away to be
 			# visible from being created. Additional work can be done here
@@ -504,7 +533,7 @@ func gen_adjustment_nodes():
 
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.link_point("path", path, path2d, i)
+			new_gizmo.link_point("path", route, path2d, i)
 			new_gizmo.connect("selected", self, "on_gizmo_selected")
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 			$Gizmos.add_child(new_gizmo)
@@ -518,16 +547,19 @@ func gen_adjustment_nodes():
 		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 		$Gizmos.add_child(new_gizmo)
 
+
 var currently_selected_node = null
 func on_gizmo_selected(object):
 	self.currently_selected_node = object
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
 	if object.point_type == "path":
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = false
+		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
+
 
 func on_gizmo_deselected(object):
 	self.currently_selected_node = null
@@ -537,6 +569,7 @@ func on_gizmo_deselected(object):
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = true
 
 
 func clear_adjustment_nodes():
@@ -564,17 +597,16 @@ func _on_RangesButton_pressed():
 
 func _on_PathResolution_value_changed(value):
 	path_resolution = value
-	
 	for path in $Paths.get_children():
 		var csg:CSGPolygon = path.get_node("CSGPolygon")
 		csg.path_interval = path_resolution
 		csg.material.set_shader_param("interval", path_resolution)
 
 
-
 func _on_CloseEditorQuickPanel_pressed():
 	$Control/GlobalMenuButton/EditorQuckPanel.hide()
 	edit_panel_open = false
+
 
 func _on_OpenEditorQuickPanel_pressed():
 	$Control/GlobalMenuButton/EditorQuckPanel.show()
@@ -709,3 +741,7 @@ func _on_SetActivePath_pressed():
 	elif self.currently_selected_node.point_type == "path":
 		self.currently_active_path = self.currently_selected_node.object_link
 		self.currently_active_path_2d = self.currently_selected_node.object_2d_link
+
+
+func _on_ReversePathDirection_pressed():
+	self.currently_selected_node.object_link.reverse()

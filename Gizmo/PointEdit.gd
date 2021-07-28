@@ -3,8 +3,9 @@ extends Spatial
 var camera: Camera
 signal selected(selected_object)
 signal deselected(selected_object)
-
+var last_translation
 var selected: bool = false
+
 
 func clear_selection():
 	self.selected = false
@@ -14,6 +15,7 @@ func clear_selection():
 	$Pillar.hide()
 	$Pillar/CollisionShape.disabled = true
 	emit_signal("deselected", self)
+
 
 func select(camera, event):
 	self.selected = true
@@ -30,6 +32,7 @@ var object_2d_link = null
 var object_index:int = 0
 var point_type: String
 
+
 func link_point(point_type: String, object_link, object_2d_link = null, object_index = 0):
 	self.point_type = point_type
 	self.object_link = object_link
@@ -39,24 +42,16 @@ func link_point(point_type: String, object_link, object_2d_link = null, object_i
 	if point_type == "icon":
 		pass
 
+
 func update_point():
-	if point_type == "path" || point_type == "area":
-		# Regeneration of 3d paths can take a while and will cause lag if we 
-		# try to update it every frame. Instead we only update it if the mouse
-		# is not pressed (dragging a node) and if the position is different
-		# from what is used to be. There may be a better way to generate paths
-		# in the future that is less resource intensive but the original
-		# solution was chosen for its implementation speed instead of its
-		# generation speed.
-		if (
-			self.object_link.curve.get_point_position(self.object_index) != self.translation
-			and not Input.is_mouse_button_pressed( 1 )
-		):
-			self.object_link.curve.set_point_position(self.object_index, self.translation)
-		
-		self.object_2d_link.points[self.object_index] = Vector2(self.translation.x, self.translation.z)
-	if point_type == "icon":
-		self.object_link.translation = self.translation
+	if self.translation != self.last_translation:
+		if point_type == "path" || point_type == "area":
+			self.object_link.set_point_position(self.object_index, self.translation)
+			self.object_2d_link.points[self.object_index] = Vector2(self.translation.x, self.translation.z)
+		if point_type == "icon":
+			self.object_link.translation = self.translation
+		print("update")
+		self.last_translation  = self.translation
 
 
 ################################################################################

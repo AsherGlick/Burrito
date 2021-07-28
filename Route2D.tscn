@@ -2,7 +2,7 @@
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
-render_mode blend_mix;
+render_mode unshaded,blend_mix;
 
 uniform vec2 minimap_corner;
 uniform vec2 minimap_corner2;
