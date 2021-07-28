@@ -245,10 +245,8 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	# TODO move this to reset_minimap_masks
 	for child in $Paths.get_children():
-		# TODO FIX THIS
-		pass
-		#child.get_node("CSGPolygon").material.set_shader_param("map_size", Vector2(compass_width, compass_height))
-	
+		child.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
+
 	# TODO move this to reset_minimap_masks
 	for icon in $Icons.get_children():
 		icon.material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
