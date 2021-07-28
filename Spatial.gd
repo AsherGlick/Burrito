@@ -9,7 +9,7 @@ var map_id:int = 0
 var map_is_open: bool
 var compass_is_top_right: bool
 
-var edit_panel_open: bool = true
+var edit_panel_open: bool = false
 
 # This is the path to the texture that will be used for the next created 3d-path
 # object or icon object in the UI
