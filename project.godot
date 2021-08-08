@@ -17,6 +17,7 @@ _global_script_class_icons={
 config/name="Burrito"
 run/main_scene="res://Spatial.tscn"
 run/low_processor_mode=true
+boot_splash/image="res://splash.png"
 config/icon="res://icon.png"
 
 [display]
