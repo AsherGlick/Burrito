@@ -45,7 +45,6 @@ def parse_marker_category(marker_category_node, base=""):
         "iconFile",
         "iconSize", # Ignored
         "heightOffset",
-
         "minSize", # Ignored
         "mapDisplaySize", # Ignored
         "fadeNear", # Ignored
