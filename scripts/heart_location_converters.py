@@ -7,6 +7,8 @@ map_to_ingame_scale = 1.64042
 maps_info = {}
 
 
+# Get the api info for a given map
+# Request the map data via the gw2 api if it is not already in our disk cache
 def get_maps_info():
     global maps_info
 
@@ -43,6 +45,7 @@ def get_maps_info():
     return maps_info
 
 
+# Search through the map API info to see if we can find an id for a given name
 def get_map_id(map_name):
     found_ids = []
     maps_info = get_maps_info()
@@ -58,6 +61,7 @@ def get_map_id(map_name):
     return found_ids[0]
 
 
+# Add the hearts to tekkit's core tyria map completion markers
 def main():
     with open("tw_mc_coretyria.json") as f:
         tekkit_map_completion = json.load(f)
@@ -86,7 +90,7 @@ def main():
 
             areas.append({
                 "points": area_points,
-                "texture":"/home/vault/Code/projects/Burrito/tekkit_workshop_burrito_markers/area.png"
+                "texture":"area.png"
             })
 
         if map_id in tekkit_map_completion:
@@ -96,6 +100,7 @@ def main():
         json.dump(tekkit_map_completion, f)
 
 
+# Get a 2d point with a continent scale and convert it to a 3d point with an in-game scale
 def convert_map_to_ingame_point(map_point, map_api):
     map_x = map_point[0]
     map_y = map_point[1]
@@ -111,7 +116,7 @@ def convert_map_to_ingame_point(map_point, map_api):
     map_offset_y = (map_api["map_rect"][1][1]+map_api["map_rect"][0][1]) / 24 / 2
 
     ingame_x = (map_x - map_origin_x - map_size_x/2 + map_offset_x) / map_to_ingame_scale
-    ingame_y = 29
+    ingame_y = 29 # TODO there is probably a better way to figure out what the height should be but we are hardcoding it to 29 for now until it is figured out
     ingame_z = (map_y - map_origin_y - map_size_y/2 - map_offset_y) / map_to_ingame_scale
 
     return(ingame_x, ingame_y, -ingame_z)
