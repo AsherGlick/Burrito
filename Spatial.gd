@@ -550,13 +550,14 @@ var currently_selected_node = null
 func on_gizmo_selected(object):
 	self.currently_selected_node = object
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
+	# Only enable these buttons if the object selected is a point on the path not an icon
 	if object.point_type == "path":
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = false
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
+		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
 
 
 func on_gizmo_deselected(object):
@@ -640,18 +641,13 @@ func _on_NewIcon_pressed():
 # A new path point is created
 func _on_NewPathPoint_pressed():
 	if self.currently_active_path == null:
-		print("i am generating a new path")
 		gen_new_path([self.player_position], self.next_texture_path)
 	else:
-		print("i am adding a point to the path")
 		var z_accurate_player_position = player_position
 		z_accurate_player_position.z = -z_accurate_player_position.z
 		self.currently_active_path.add_point(z_accurate_player_position)
 		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
 
-		# Add a point to the currently active path (and the 2d path)
-
-	print("hello I am a new path point")
 
 
 ################################################################################

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
@@ -16,9 +16,6 @@ void fragment(){
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
-
-[sub_resource type="CubeMesh" id=3]
-size = Vector3( 0.1, 0.1, 0.1 )
 
 [sub_resource type="PlaneMesh" id=4]
 size = Vector2( 76.2, 76.2 )
@@ -664,13 +661,7 @@ color = Color( 0, 0, 0, 1 )
 
 [node name="FeetLocation" type="Spatial" parent="."]
 
-[node name="Indicator" type="MeshInstance" parent="FeetLocation"]
-visible = false
-mesh = SubResource( 3 )
-material/0 = null
-
 [node name="DistanceIndicator" type="MeshInstance" parent="FeetLocation"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.116814, -0.100998, 0 )
 mesh = SubResource( 4 )
 material/0 = SubResource( 5 )
 
