@@ -25,8 +25,8 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Update Packages
-        run: sudo apt-get update && sudo apt-get upgrade
+      # - name: Update Packages
+      #   run: sudo apt-get update && sudo apt-get upgrade
 
       - name: Install mingw
         run: sudo apt-get install gcc-mingw-w64
