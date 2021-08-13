@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  Build-Linux:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -28,11 +28,28 @@ jobs:
       # - name: Update Packages
       #   run: sudo apt-get update && sudo apt-get upgrade
 
+      # - name: Cache Godot
+      #   id: cache-godot
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: prime-numbers
+      #     key: ${{ runner.os }}-godot-3-3-2
+
+
+      - name: Generate Prime Numbers
+        # if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          wget https://downloads.tuxfamily.org/godotengine/3.3.2/Godot_v3.3.2-stable_x11.64.zip
+          unzip Godot_v3.3.2-stable_x11.64.zip
+          tree
+
+
+
       - name: Install mingw
         run: sudo apt-get install gcc-mingw-w64
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
+      - name: Create the Output Directory
         run: mkdir output
 
       # Runs a set of commands using the runners shell
@@ -41,12 +58,22 @@ jobs:
 #           echo Doing a thing,
 #           hub release create -m ${MESSAGE} $(date +%Y%m%d%H%M%S)
 
+
       - name: Build Burrito Link
         run: |
           cd burrito_link
           make
           mv burrito_link.exe ../output
   
+      # - name: Download Godot
+      #   run: |
+      #     asdf
+
+
+
+
+
+
       - name: List all files
         run: |
           tree > output/anotherfile.txt
