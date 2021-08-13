@@ -28,23 +28,22 @@ jobs:
       # - name: Update Packages
       #   run: sudo apt-get update && sudo apt-get upgrade
 
-      # - name: Cache Godot
-      #   id: cache-godot
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: prime-numbers
-      #     key: ${{ runner.os }}-godot-3-3-2
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v2
+        with:
+          path: Godot_v3.3.2-stable_x11.64
+          key: ${{ runner.os }}-godot-3-3-2
 
-
-      - name: Generate Prime Numbers
-        # if: steps.cache-godot.outputs.cache-hit != 'true'
+      # 
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           wget https://downloads.tuxfamily.org/godotengine/3.3.2/Godot_v3.3.2-stable_x11.64.zip
           unzip Godot_v3.3.2-stable_x11.64.zip
-          tree
+          rm Godot_v3.3.2-stable_x11.64.zip
 
-
-
+      #
       - name: Install mingw
         run: sudo apt-get install gcc-mingw-w64
 
@@ -64,13 +63,11 @@ jobs:
           cd burrito_link
           make
           mv burrito_link.exe ../output
-  
-      # - name: Download Godot
+
+
+      # - name: Build Burrito Link
       #   run: |
-      #     asdf
-
-
-
+      #     Godot_v3.3.2-stable_x11.64
 
 
 
