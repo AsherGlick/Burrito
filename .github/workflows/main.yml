@@ -68,7 +68,7 @@ jobs:
 
       - name: Build Burrito Link
         run: |
-          ./Godot_v3.3.2-stable_x11.64 --export "Linux/X11"
+          ./Godot_v3.3.2-stable_linux_headless.64 --export "Linux/X11"
           tree
 
 
