@@ -65,10 +65,10 @@ jobs:
           mv burrito_link.exe ../output
 
 
-      # - name: Build Burrito Link
-      #   run: |
-      #     Godot_v3.3.2-stable_x11.64
-
+      - name: Build Burrito Link
+        run: |
+          Godot_v3.3.2-stable_x11.64 --export "Linux/X11"
+          tree
 
 
       - name: List all files
