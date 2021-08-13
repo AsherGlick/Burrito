@@ -2,19 +2,23 @@ import os
 
 import xml.etree.ElementTree as ET
 import struct
-
+import shutil
 from typing import *
 import json
 
 output_dir = ""
 
+source_path: str = "tw_ALL_IN_ONE"
+target_path: str = "tekkit_workshop_burrito_markers"
+
 def main():
-    source_path: str = "tekkit_workshop_taco_markers"
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
 
     for file in os.scandir(source_path):
         if(file.name.endswith(".xml")):
             full_path: str = os.path.join(source_path, file.name)
-            convert_markers(full_path, "tekkit_workshop_burrito_markers")
+            convert_markers(full_path, target_path)
 
 ################################################################################
 # Quick error printing logic that only prints the title of a section if there
@@ -33,7 +37,7 @@ def eprint(*args, **kwargs):
     if not eprint_trigger:
         eprint_trigger = True
         print(eprint_title)
-    print(*args, **kwargs)
+    print("   ", *args, **kwargs)
 
 
 ################################################################################
@@ -103,6 +107,7 @@ def parse_marker_category(marker_category_node, base=""):
 ################################################################################
 def convert_markers(xml_path: str, output_dir: str):
     set_eprint_title(xml_path)
+    # print(xml_path)
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
@@ -114,6 +119,7 @@ def convert_markers(xml_path: str, output_dir: str):
 
     if len(root) != 2:
         eprint("Root has {} children instead of the expected 2".format(len(root)))
+        return
 
     if root[0].tag != "MarkerCategory":
         eprint("First element of root is {} not MarkerCategory".format(root[0].tag))
@@ -123,7 +129,7 @@ def convert_markers(xml_path: str, output_dir: str):
     # print(marker_metadata)
 
     if root[1].tag != "POIs":
-        eprint("First element of root is {} not POIs".format(root[1].tag))
+        eprint("Second element of root is {} not POIs".format(root[1].tag))
     else:
         burrito_marker_data = parse_icons_and_paths(root[1], marker_metadata, os.path.dirname(xml_path))
 
@@ -220,8 +226,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
                 if "iconFile" in attribs:
                     icon_path = attribs["iconFile"]
             else:
-                eprint("Type Not Found", attribs["type"])
-
+                eprint("Trying to use type", attribs["type"], "which does not exist as a MarkerCategory")
             if icon_path == "":
                 eprint("No Icon Found")
                 pass
@@ -286,8 +291,34 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
 
 
 
+image_names = {}
+
 def copyimage(image_path):
-    return image_path
+    # shutil.copy()
+
+    if image_path == "":
+        eprint("No Image File Specified")
+        return ""
+
+    image_path = os.path.join(source_path, image_path)
+    new_name = os.path.join("data", os.path.basename(image_path))
+
+    if new_name in image_names and image_names[new_name] != image_path:
+        print("Duplicate image name")
+    image_names[new_name] = image_path
+
+
+    if not os.path.exists(image_path):
+        eprint("Missing Icon File:", image_path)
+        return ""
+
+    shutil.copy(
+        image_path,
+        os.path.join(target_path, new_name)
+    )
+
+
+    return new_name
 
 
 def open_trail_format(trl_path: str) -> Tuple[int, List[float]]:
