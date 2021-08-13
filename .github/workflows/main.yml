@@ -35,12 +35,11 @@ jobs:
 #           echo Doing a thing,
 #           hub release create -m ${MESSAGE} $(date +%Y%m%d%H%M%S)
 
-      - name: Create a file
+      - name: Build Burrito Link
         run: |
-          echo "Hello world $(date +%Y%m%d%H%M%S)" > output/file.txt
-          tree >> output/file.txt
           cd burrito_link
-          tree >> ../output/file.txt
+          make
+          tree
   
       - name: List all files
         run: |
