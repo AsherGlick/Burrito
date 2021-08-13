@@ -9,7 +9,7 @@ env:
   GODOT_VERSION: 3.3.2
 
   # Used as a makeshift cache expiry
-  CACHE_STRING: "dgjLFGC9N7VXR7EU"
+  CACHE_STRING: "Zo6AbxJk4KQl0sGE"
 
 # Controls when the workflow will run
 on:
@@ -40,7 +40,7 @@ jobs:
         id: cache-godot
         uses: actions/cache@v2
         with:
-          path: Godot_v${GODOT_VERSION}-stable_linux_headless.64
+          path: ./Godot_v${GODOT_VERSION}-stable_linux_headless.64
           key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
 
       # 
