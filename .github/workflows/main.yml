@@ -27,7 +27,7 @@ jobs:
 
 
       - name: Install mingw
-        run: apt install gcc-mingw-w64
+        run: apt-get install gcc-mingw-w64
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
