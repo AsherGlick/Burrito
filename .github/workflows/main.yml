@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+#       - name: Run a multi-line script
+#         run: |
+#           echo Doing a thing,
+#           hub release create -m ${MESSAGE} $(date +%Y%m%d%H%M%S)
+
+      - name: Create a file
+        run: |
+          echo "Hello world $(date +%Y%m%d%H%M%S)" > file.txt
+          tree >> file.txt
+
+      - uses: actions/upload-artifact@v2.2.4
+        with:
+          # Artifact name
+          name: "test artifact" # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path:  "file.txt"
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error 
+          # Duration after which artifact will expire in days. 0 means using default retention. 
+          retention-days: 1
