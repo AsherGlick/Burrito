@@ -5,7 +5,11 @@ name: CI
 
 
 env:
+  # The version of Godot to use
   GODOT_VERSION: 3.3.2
+
+  # Used as a makeshift cache expiry
+  CACHE_STRING: "dgjLFGC9N7VXR7EU"
 
 # Controls when the workflow will run
 on:
@@ -37,8 +41,8 @@ jobs:
         id: cache-godot
         uses: actions/cache@v2
         with:
-          path: Godot_v${GODOT_VERSION}-stable_x11.64
-          key: ${{ runner.os }}-godot-${GODOT_VERSION}
+          path: Godot_v${GODOT_VERSION}-stable_linux_headless.64
+          key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
 
       # 
       - name: Download Godot
@@ -53,7 +57,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
-          key: ${{ runner.os }}-godot-${GODOT_VERSION}
+          key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
 
 
       - name: Download Godot Export Templates
@@ -87,7 +91,7 @@ jobs:
       - name: Build Burrito
         run: |
           mkdir build
-          ./Godot_v3.3.2-stable_linux_headless.64 --export "Linux/X11"
+          ./Godot_v${GODOT_VERSION}-stable_linux_headless.64 --export "Linux/X11"
           mv build/burrito.x86_64 output/
 
 
