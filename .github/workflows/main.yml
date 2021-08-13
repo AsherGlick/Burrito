@@ -38,10 +38,13 @@ jobs:
       - name: Create a file
         run: |
           echo "Hello world $(date +%Y%m%d%H%M%S)" > output/file.txt
+          tree >> output/file.txt
+
   
       - name: List all files
         run: |
           tree > output/anotherfile.txt
+          
 
       - uses: actions/upload-artifact@v2.2.4
         with:
