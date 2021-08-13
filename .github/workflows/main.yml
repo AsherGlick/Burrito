@@ -2,6 +2,10 @@
 
 name: CI
 
+
+env:
+  GODOT_VERSION: 3.3.2
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -39,10 +43,24 @@ jobs:
       - name: Download Godot
         #if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
-          wget https://downloads.tuxfamily.org/godotengine/3.3.2/Godot_v3.3.2-stable_linux_headless.64.zip
-          unzip Godot_v3.3.2-stable_linux_headless.64.zip
-          rm Godot_v3.3.2-stable_linux_headless.64.zip
+          wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+          unzip Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+          rm Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+
+
+
+      - name: Download Godot Export Templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+
+          https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+
+          unzip Godot_v3.3.2-stable_export_templates.tpz templates/linux_x11_64_release
+          mv templates/linux_x11_64_release ~/.local/share/godot/templates/linux_x11_64_release
+
           tree
+
+
 
       #
       - name: Install mingw
