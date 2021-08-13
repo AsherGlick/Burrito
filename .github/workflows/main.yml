@@ -84,8 +84,9 @@ jobs:
           mv burrito_link.exe ../output
 
 
-      - name: Build Burrito Link
+      - name: Build Burrito
         run: |
+          mkdir build
           ./Godot_v3.3.2-stable_linux_headless.64 --export "Linux/X11"
           tree
 
