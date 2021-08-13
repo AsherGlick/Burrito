@@ -56,11 +56,10 @@ jobs:
           wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
 
           unzip Godot_v3.3.2-stable_export_templates.tpz
-          mv templates/linux_x11_64_release ~/.local/share/godot/templates/linux_x11_64_release
-          mv templates/linux_x11_64_debug ~/.local/share/godot/templates/linux_x11_64_debug
+          mv templates/linux_x11_64_release ~/.local/share/godot/templates/${GODOT_VERSION}.stable/linux_x11_64_release
+          mv templates/linux_x11_64_debug ~/.local/share/godot/templates/${GODOT_VERSION}.stable/linux_x11_64_debug
 
-          tree
-
+          ls /home/runner/.local/share/godot/templates/3.3.2.stable/
 
 
       #
