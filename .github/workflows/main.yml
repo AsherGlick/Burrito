@@ -40,9 +40,9 @@ jobs:
         #if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           wget https://downloads.tuxfamily.org/godotengine/3.3.2/Godot_v3.3.2-stable_linux_headless.64.zip
+          unzip Godot_v3.3.2-stable_linux_headless.64.zip
+          rm Godot_v3.3.2-stable_linux_headless.64.zip
           tree
-        #unzip Godot_v3.3.2-stable_x11.64.zip
-         #rm Godot_v3.3.2-stable_x11.64.zip
 
       #
       - name: Install mingw
