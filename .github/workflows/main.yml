@@ -39,13 +39,19 @@ jobs:
         run: |
           echo "Hello world $(date +%Y%m%d%H%M%S)" > file.txt
           tree >> file.txt
+          cd burrito_link
+          tree >> file.txt
+  
+      - name: List all files
+        run: |
+          tree > anotherfile.txt
 
       - uses: actions/upload-artifact@v2.2.4
         with:
           # Artifact name
           name: "test artifact" # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path:  "file.txt"
+          path:  "file.txt,anotherfile.txt"
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error 
           # Duration after which artifact will expire in days. 0 means using default retention. 
