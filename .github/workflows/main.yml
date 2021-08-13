@@ -36,31 +36,31 @@ jobs:
       # - name: Update Packages
       #   run: sudo apt-get update && sudo apt-get upgrade
 
-      - name: Cache Godot
-        id: cache-godot
-        uses: actions/cache@v2
-        with:
-          path: ./Godot_v${GODOT_VERSION}-stable_linux_headless.64
-          key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
+      # - name: Cache Godot
+      #   id: cache-godot
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ./Godot_v${GODOT_VERSION}-stable_linux_headless.64
+      #     key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
 
       # 
       - name: Download Godot
-        if: steps.cache-godot.outputs.cache-hit != 'true'
+        # if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
           unzip Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
           rm Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
 
-      - name: Cache Godot Templates
-        id: cache-godot-templates
-        uses: actions/cache@v2
-        with:
-          path: ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
-          key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
+      # - name: Cache Godot Templates
+      #   id: cache-godot-templates
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+      #     key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
 
 
       - name: Download Godot Export Templates
-        if: steps.cache-godot-templates.outputs.cache-hit != 'true'
+        # if: steps.cache-godot-templates.outputs.cache-hit != 'true'
         run: |
           mkdir -v -p ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
 
