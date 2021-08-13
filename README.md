@@ -9,7 +9,7 @@ It functions natively linux via running a pre-compiled binary inside of wine tha
 
 Getting Started
 ===============
-Go to burrito.orthogonalprojects.com for instructions
+Go to [burrito.orthogonalprojects.com](https://burrito.orthogonalprojects.com) for instructions
 
 
 Roadmap
