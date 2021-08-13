@@ -176,8 +176,8 @@ margin_bottom = 672.0
 window_title = "Open a File"
 mode = 0
 access = 2
-current_dir = "/home/vault/Code/projects/Burrito"
-current_path = "/home/vault/Code/projects/Burrito/"
+current_dir = "."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -472,8 +472,8 @@ window_title = "Open a File"
 mode = 0
 access = 2
 filters = PoolStringArray( "*.png" )
-current_dir = "/home/vault/Code/projects/Burrito"
-current_path = "/home/vault/Code/projects/Burrito/"
+current_dir = "."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -486,8 +486,8 @@ margin_bottom = 624.833
 window_title = "Save Path"
 resizable = true
 access = 2
-current_dir = "/home/vault/Code/projects/Burrito"
-current_path = "/home/vault/Code/projects/Burrito/"
+current_dir = "."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
