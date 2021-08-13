@@ -51,7 +51,7 @@ jobs:
 
       - name: Download Godot Export Templates
         run: |
-          mkdir -v -p ~/.local/share/godot/templates
+          mkdir -v -p ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
 
           wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
 
