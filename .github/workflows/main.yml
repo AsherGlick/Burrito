@@ -37,6 +37,7 @@ jobs:
 
       - name: Create a file
         run: |
+          tree
           echo "Hello world $(date +%Y%m%d%H%M%S)" > output/file.txt
           tree >> output/file.txt
           cd burrito_link
