@@ -1,0 +1,106 @@
+# This workflow will compile the burrio_link and export the burrito binary
+# the two files will be available as an artifact.
+
+name: CI
+
+
+env:
+  # The version of Godot to use
+  GODOT_VERSION: 3.3.2
+
+  # Used as a makeshift cache expiry
+  CACHE_STRING: "Zo6AbxJk4KQl0sGE"
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  Build-Linux:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+
+      # - name: Update Packages
+      #   run: sudo apt-get update && sudo apt-get upgrade
+
+      # - name: Cache Godot
+      #   id: cache-godot
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ./Godot_v${GODOT_VERSION}-stable_linux_headless.64
+      #     key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
+
+      # 
+      - name: Download Godot
+        # if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+          unzip Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+          rm Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+
+      # - name: Cache Godot Templates
+      #   id: cache-godot-templates
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+      #     key: ${{ runner.os }}-godot-${GODOT_VERSION}-${CACHE_STRING}
+
+
+      - name: Download Godot Export Templates
+        # if: steps.cache-godot-templates.outputs.cache-hit != 'true'
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+
+          wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+
+          unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+          ls ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+
+
+      - name: Install mingw
+        run: sudo apt-get install gcc-mingw-w64
+
+
+      # Runs a single command using the runners shell
+      - name: Create the Output Directory
+        run: mkdir output
+
+
+      - name: Build Burrito Link
+        run: |
+          cd burrito_link
+          make
+          mv burrito_link.exe ../output
+
+
+      - name: Build Burrito
+        run: |
+          mkdir build
+          ./Godot_v${GODOT_VERSION}-stable_linux_headless.64 --export "Linux/X11"
+          mv build/burrito.x86_64 output/
+
+
+      - uses: actions/upload-artifact@v2.2.4
+        with:
+          # Artifact name
+          name: "Burrito_Linux" # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path:  "output/*"
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error 
+          # Duration after which artifact will expire in days. 0 means using default retention. 
+          retention-days: 7
