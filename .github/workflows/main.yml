@@ -63,7 +63,8 @@ jobs:
           wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
 
           unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz
-          mv templates/ ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+          mv templates/* ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
+          ls ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
 
 
       - name: Install mingw
