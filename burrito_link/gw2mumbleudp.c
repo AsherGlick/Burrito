@@ -79,7 +79,9 @@ struct MumbleContext *lc = NULL;
 void initMumble() {
 
 #ifdef _WIN32
-    HANDLE hMapObject = OpenFileMappingW(FILE_MAP_ALL_ACCESS, FALSE, L"MumbleLink");
+    // creates a shared memory IF it doesn't exist. otherwise, it returns the existing shared memory handle. 
+    // taco mumblelink.cpp 
+    HANDLE hMapObject = CreateFileMappingA( INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof( struct LinkedMem ), "MumbleLink" );
     if (hMapObject == NULL)
         return;
 
@@ -429,7 +431,7 @@ int main(int argc, char** argv) {
 
 
 
-    printf("hello world\n");
+    printf("starting burrito_link..\n");
     initMumble();
     // sockmain(argc, argv);
     // initMumble();
