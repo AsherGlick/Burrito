@@ -5,15 +5,26 @@ import struct
 import shutil
 from typing import *
 import json
+import sys
 
 output_dir = ""
 
-source_path: str = "tw_ALL_IN_ONE"
-target_path: str = "tekkit_workshop_burrito_markers"
+source_path: str = ""
+target_path: str = ""
 
 def main():
+    if len(sys.argv) != 3:
+        print(f"USAGE: {sys.argv[0]} SRC_DIR DEST_DIR")
+        sys.exit(1)
+
+    global source_path
+    global target_path
+
+    source_path = sys.argv[1]
+    target_path = sys.argv[2]
+
     if not os.path.exists(target_path):
-        os.makedirs(target_path)
+        os.makedirs(os.path.join(target_path, "data"))
 
     for file in os.scandir(source_path):
         if(file.name.endswith(".xml")):
@@ -60,6 +71,11 @@ def parse_marker_category(marker_category_node, base=""):
         "behavior", # Ignored
         "toggleCategory", # Ignored - Used for unimplemented functionality
         "resetLength", # Ignored
+        "alpha", # Ignored
+        "animSpeed", # Ignored
+        "texture",
+        "trailScale", # Ignored
+        "scaleOnMapWithZoom", # Ignored
     ])
 
 
@@ -89,6 +105,9 @@ def parse_marker_category(marker_category_node, base=""):
         limited_attribs["height_offset"] = attribs["heightOffset"]
     else:
         limited_attribs["height_offset"] = 0
+
+    if "texture" in attribs:
+        limited_attribs["texture"] = attribs["texture"]
 
 
     name = attribs["name"]
@@ -176,7 +195,9 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
         "mapDisplaySize", # Ignored
         "fadeNear", # Ignored
         "behavior", # Ignored
-        "resetLength" # Ignored
+        "resetLength", # Ignored
+        "info", # Ignored
+        "infoRange", # Ignored
     ])
 
     required_trail_attrib = set([
@@ -265,20 +286,30 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
                 if map_id not in burrito_marker_data:
                     burrito_marker_data[map_id] = {"icons":[], "paths":[]}
 
+                texture = ""
+
                 if attribs["type"] in marker_metadata:
                     for point in point_subsection:
                         old_point = point[1]
 
                         point[1] += marker_metadata[attribs["type"]]["height_offset"]
 
+                    if "texture" in marker_metadata[attribs["type"]]:
+                        texture = marker_metadata[attribs["type"]]["texture"]
+                    if "texture" in attribs:
+                        texture = attribs["texture"]
+
                         # print(old_point, marker_metadata[attribs["type"]]["height_offset"], point[1])
                 else:
                     eprint("Type Not Found", attribs["type"])
 
+                if texture == "":
+                    eprint("No texture found")
+                    pass
 
                 burrito_marker_data[map_id]["paths"].append(
                     {
-                        "texture": copyimage(attribs["texture"]),
+                        "texture": copyimage(texture),
                         "points": point_subsection
                     }
                 )
