@@ -22,14 +22,16 @@ config/icon="res://icon.png"
 
 [display]
 
-window/size/width=1820
-window/size/height=874
+window/size/width=1920
+window/size/height=1080
 window/size/resizable=false
 window/size/borderless=true
+window/size/fullscreen=true
 window/size/always_on_top=true
 window/vsync/use_vsync=false
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
+window/stretch/mode="viewport"
 
 [rendering]
 
