@@ -25,5 +25,3 @@ Known Bug Workarounds
 =====================
 * Burrito launches off-center or on the wrong monitor
   * This seems to be WM dependant. on Gnome it can be solved by holding down the super key and dragging burrito to the right position.
-* Burrito does not allocate space for the mumble mmap
-  * This can be fixed by running some other program that takes advantage of the link such as arcdps.
