@@ -78,7 +78,11 @@ jobs:
       # Runs a single command using the runners shell
       - name: Create the Output Directory
         run: mkdir output
-
+      
+      - name: Build X11_FG
+        run: |
+            cd burrito-fg
+            cargo build
 
       - name: Build Burrito Link
         run: |
