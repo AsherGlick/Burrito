@@ -8,8 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Node",
+"class": "X11_FG",
+"language": "NativeScript",
+"path": "res://Spatial.gdns"
+} ]
 _global_script_class_icons={
+"X11_FG": ""
 }
 
 [application]
@@ -30,6 +36,11 @@ window/size/always_on_top=true
 window/vsync/use_vsync=false
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
+
+[global]
+
+logg=true
+logging=true
 
 [rendering]
 

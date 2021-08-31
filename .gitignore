@@ -1,2 +1,4 @@
 .import/
 build/*
+burrito-fg/target/*
+burrito-fg/Cargo.lock
