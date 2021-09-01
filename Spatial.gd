@@ -45,9 +45,12 @@ var compass_corner2
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
-	#ProjectSettings.set_setting("display/window/size/always_on_top", true)
-	#OS.set_window_always_on_top(true)
-
+	print("pre")
+	var x11 = X11_FG.new()
+	print("post init")
+	var wid = OS.get_native_handle(OS.WINDOW_HANDLE)
+	x11.set_transient_for(wid)
+	print("PT")
 	OS.window_maximized = false
 	OS.window_size = Vector2(1920, 1080)
 	set_minimal_mouse_block()
