@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 gdnative = "0.9"
-breadx = {git="https://github.com/royalmustard/breadx"}
+breadx = "2"
