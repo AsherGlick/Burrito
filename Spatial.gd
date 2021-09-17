@@ -224,6 +224,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var old_map_id = self.map_id
 	self.map_id  = spb.get_32()
 
+	var x11_window_id = spb.get_32()
+	print("Burrito Link Given X11 Window ID ", x11_window_id);
+
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result

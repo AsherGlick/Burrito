@@ -71,7 +71,7 @@ struct MumbleContext
     float mapCenterX;      // continentCoords
     float mapCenterY;      // continentCoords
     float mapScale;
-    UINT32 processId;
+    UINT32 processId;      // Windows process id
     UINT8 mountIndex;
 };
 
@@ -327,6 +327,36 @@ int connect_and_or_send()
             memcpy(SendBuf + BufLength, &lc->mapId, sizeof(lc->mapId));
             BufLength += sizeof(lc->mapId);
 
+
+            // Get and send the linux x server window id
+            UINT32 x11_window_id = 0;
+            HWND window_handle=NULL;
+            BOOL CALLBACK EnumWindowsProcMy(HWND hwnd, LPARAM lParam)
+            {
+                DWORD processId;
+                GetWindowThreadProcessId(hwnd, &processId);
+                if(processId == lParam)
+                {
+                    window_handle=hwnd;
+                    return FALSE;
+                }
+                return TRUE;
+            }
+            EnumWindows(EnumWindowsProcMy, lc->processId);
+
+            HANDLE possible_x11_window_id = GetProp(window_handle, "__wine_x11_whole_window");
+            if (possible_x11_window_id != NULL) {
+                x11_window_id = (size_t)possible_x11_window_id;
+            }
+            // else {
+            //     printf("No Linux ID\n");
+            // }
+
+            memcpy(SendBuf + BufLength, &x11_window_id, sizeof(x11_window_id));
+            BufLength += sizeof(x11_window_id);
+
+
+            // Convert and send the JSON 'identity' payload
             char utf8str[1024];
 
             UINT32 converted_size = WideCharToMultiByte(
