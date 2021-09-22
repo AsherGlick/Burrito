@@ -17,10 +17,10 @@ void fragment(){
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
 
-[sub_resource type="PlaneMesh" id=4]
+[sub_resource type="PlaneMesh" id=3]
 size = Vector2( 76.2, 76.2 )
 
-[sub_resource type="ShaderMaterial" id=5]
+[sub_resource type="ShaderMaterial" id=4]
 shader = ExtResource( 2 )
 shader_param/line_color = null
 shader_param/line_width = 0.044
@@ -173,8 +173,9 @@ margin_bottom = 672.0
 window_title = "Open a File"
 mode = 0
 access = 2
-current_dir = "."
-current_path = "."
+current_dir = "/home/mustard/Schreibtisch/Projects/Burrito"
+current_file = "."
+current_path = "/home/mustard/Schreibtisch/Projects/Burrito/."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -469,8 +470,9 @@ window_title = "Open a File"
 mode = 0
 access = 2
 filters = PoolStringArray( "*.png" )
-current_dir = "."
-current_path = "."
+current_dir = "/home/mustard/Schreibtisch/Projects/Burrito"
+current_file = "."
+current_path = "/home/mustard/Schreibtisch/Projects/Burrito/."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -483,8 +485,9 @@ margin_bottom = 624.833
 window_title = "Save Path"
 resizable = true
 access = 2
-current_dir = "."
-current_path = "."
+current_dir = "/home/mustard/Schreibtisch/Projects/Burrito"
+current_file = "."
+current_path = "/home/mustard/Schreibtisch/Projects/Burrito/."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -662,8 +665,8 @@ color = Color( 0, 0, 0, 1 )
 [node name="FeetLocation" type="Spatial" parent="."]
 
 [node name="DistanceIndicator" type="MeshInstance" parent="FeetLocation"]
-mesh = SubResource( 4 )
-material/0 = SubResource( 5 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
 
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
