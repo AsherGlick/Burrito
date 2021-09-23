@@ -3,7 +3,7 @@ use breadx::{
     traits::{PropMode, PropertyFormat, PropertyType, ATOM_WM_NAME},
     Display, DisplayBase, DisplayConnection, Window,
 };
-use gdnative::{api::resource_loader, prelude::*};
+use gdnative::prelude::*;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
