@@ -41,16 +41,16 @@ var path_resolution = 1
 # Variables that store opposit corners of the compass
 var compass_corner1
 var compass_corner2
+#x11 fg and window id
+var x11_fg: X11_FG
+var x11_window_id_burrito: int
+var is_transient:bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
-	print("pre")
-	var x11 = X11_FG.new()
-	print("post init")
-	var wid = OS.get_native_handle(OS.WINDOW_HANDLE)
-	x11.set_transient_for(wid)
-	print("PT")
+	x11_fg = X11_FG.new()
+	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
 	OS.window_size = Vector2(1920, 1080)
 	set_minimal_mouse_block()
@@ -224,9 +224,10 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var old_map_id = self.map_id
 	self.map_id  = spb.get_32()
 
-	var x11_window_id = spb.get_32()
-	print("Burrito Link Given X11 Window ID ", x11_window_id);
-
+	var x11_window_id_gw2 = spb.get_32()
+	if !is_transient:
+		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
+		
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result

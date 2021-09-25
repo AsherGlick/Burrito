@@ -29,26 +29,33 @@ impl X11_FG {
     }
 
     #[export]
-    fn set_transient_for(&self, _owner: &Node, burrito_id: i32) {
+    fn set_transient_for(&self, _owner: &Node, burrito_id: i32, gw2_id: i32) -> bool{
         godot_print!("Setting transient for");
         let mut dpy = DisplayConnection::create(None, None).unwrap();
-        let gw2 = get_window_from_name(&mut dpy, String::from("Guild Wars 2"));
-        if let None = gw2 {
-            godot_print!("Failed to get gw2 window");
-            return;
-        }
-        godot_print!("{:?}", gw2);
+        // let gw2 = get_window_from_name(&mut dpy, String::from("Guild Wars 2"));
+        // if let None = gw2 {
+        //     godot_print!("Failed to get gw2 window");
+        //     return;
+        // }
+        //godot_print!("{:?}", gw2);
         let burrito = Window::const_from_xid(burrito_id as u32);
-        burrito
+        let gw2 = Window::const_from_xid(gw2_id as u32);
+        let res = burrito
             .change_property(
                 &mut dpy,
                 ATOM_WM_TRANSIENT_FOR,
                 PropertyType::Window,
                 PropertyFormat::ThirtyTwo,
                 PropMode::Replace,
-                &[gw2.unwrap()],
-            )
-            .unwrap();
+                &[gw2],
+            );
+        if let Ok(()) = res
+        {
+            godot_print!("Successfully set transient property!");
+            return true;
+        }
+        godot_print!("Setting transient property failed");
+        return false;
     }
 }
 
