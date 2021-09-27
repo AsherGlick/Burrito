@@ -52,7 +52,9 @@ func _ready():
 	x11_fg = X11_FG.new()
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
-	OS.window_size = Vector2(1920, 1080)
+	OS.window_size = OS.get_screen_size()
+	# Postion window in center of screen
+	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
 	server.listen(4242)
 
@@ -83,7 +85,6 @@ func _process(delta):
 	#OS.window_position = Vector2(1920, 0) # TODO: This does not seem to work	
 	#OS.set_window_position(Vector2(1920,0))
 	#print(OS.window_position)
-
 	server.poll() # Important
 	if server.is_connection_available():
 		var peer: PacketPeerUDP = server.take_connection()
