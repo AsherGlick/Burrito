@@ -745,3 +745,7 @@ func _on_SetActivePath_pressed():
 
 func _on_ReversePathDirection_pressed():
 	self.currently_selected_node.object_link.reverse()
+
+
+func _on_ExitButton_pressed():
+	get_tree().quit()

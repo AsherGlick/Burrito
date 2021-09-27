@@ -181,6 +181,7 @@ __meta__ = {
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
 margin_left = 48.1808
 margin_top = 88.7138
 margin_right = 261.181
@@ -200,7 +201,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/MainMenu/ScrollContainer"]
 margin_right = 213.0
-margin_bottom = 215.0
+margin_bottom = 239.0
 size_flags_horizontal = 3
 
 [node name="LoadPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
@@ -258,9 +259,9 @@ text = "Compass"
 
 [node name="GuacamoleScript" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
-margin_top = 236.0
+margin_top = 192.0
 margin_right = 213.0
-margin_bottom = 276.0
+margin_bottom = 232.0
 rect_min_size = Vector2( 0, 40 )
 text = "Guacamole Script Editor"
 
@@ -302,6 +303,12 @@ margin_top = 219.0
 margin_right = 213.0
 margin_bottom = 259.0
 text = "Active Path"
+
+[node name="ExitButton" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 219.0
+margin_right = 213.0
+margin_bottom = 239.0
+text = "Exit Burrito"
 
 [node name="RangesDialog" type="WindowDialog" parent="Control/Dialogs"]
 margin_left = 375.0
@@ -682,6 +689,7 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SavePath" to="." method="_on_SavePath_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ExitButton" to="." method="_on_ExitButton_pressed"]
 [connection signal="hide" from="Control/Dialogs/RangesDialog" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox" to="Control/Dialogs/RangesDialog" method="on_change"]
