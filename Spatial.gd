@@ -52,7 +52,8 @@ func _ready():
 	x11_fg = X11_FG.new()
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
-	OS.window_size = OS.get_screen_size()
+	var size_tuple = x11_fg.get_gw2_geometry()
+	OS.window_size = Vector2(size_tuple[0], size_tuple[1])
 	# Postion window in center of screen
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
@@ -104,7 +105,8 @@ func _process(delta):
 				decode_frame_packet(spb)
 			elif packet_type == 2:
 				decode_context_packet(spb)
-
+	var size_tuple = x11_fg.get_gw2_geometry()
+	OS.window_size = Vector2(size_tuple[0], size_tuple[1])
 	return
 
 
@@ -228,7 +230,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var x11_window_id_gw2 = spb.get_32()
 	if !is_transient:
 		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
-		
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result

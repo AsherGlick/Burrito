@@ -57,6 +57,14 @@ impl X11_FG {
         godot_print!("Setting transient property failed");
         return false;
     }
+
+    #[export]
+    fn get_gw2_geometry(&self, _owner: &Node) -> (u16, u16){
+        let mut dpy = DisplayConnection::create(None, None).unwrap();
+        let window = get_window_from_name(&mut dpy, String::from("Guild Wars 2"));
+        let geometry = window.unwrap().geometry_immediate(&mut dpy).unwrap();
+        return (geometry.width, geometry.height)
+    }
 }
 
 fn get_window_from_name<D: Display>(dpy: &mut D, name: String) -> Option<Window> {
