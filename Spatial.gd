@@ -230,6 +230,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var x11_window_id_gw2 = spb.get_32()
 	if !is_transient:
 		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
+
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result
