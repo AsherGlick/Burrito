@@ -52,7 +52,10 @@ func _ready():
 	x11_fg = X11_FG.new()
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
-	OS.window_size = Vector2(1920, 1080)
+	# Start off with a small size before GW2 client is up
+	OS.window_size = Vector2(800, 600)
+	# Postion at top left corner
+	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
 	server.listen(4242)
 
@@ -83,7 +86,6 @@ func _process(delta):
 	#OS.window_position = Vector2(1920, 0) # TODO: This does not seem to work	
 	#OS.set_window_position(Vector2(1920,0))
 	#print(OS.window_position)
-
 	server.poll() # Important
 	if server.is_connection_available():
 		var peer: PacketPeerUDP = server.take_connection()
@@ -102,8 +104,7 @@ func _process(delta):
 			if packet_type == 1:
 				decode_frame_packet(spb)
 			elif packet_type == 2:
-				decode_context_packet(spb)
-
+				decode_context_packet(spb)	
 	return
 
 
@@ -227,7 +228,8 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var x11_window_id_gw2 = spb.get_32()
 	if !is_transient:
 		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
-		
+	var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
+	OS.window_size = Vector2(size_tuple[0], size_tuple[1])
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result
