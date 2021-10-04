@@ -751,3 +751,9 @@ func _on_ReversePathDirection_pressed():
 
 func _on_ExitButton_pressed():
 	get_tree().quit()
+
+
+func _on_Settings_pressed():
+	var settings_dialog: WindowDialog = $Control/Dialogs/SettingsDialog
+	settings_dialog.show()
+	#settings_dialog.set_current_dir(open_dialog.current_dir)

@@ -1,10 +1,16 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
 [ext_resource path="res://Route2D.tscn" type="PackedScene" id=4]
+[ext_resource path="res://icon_close.png" type="Texture" id=5]
 [ext_resource path="res://RangeDialog.gd" type="Script" id=6]
+[ext_resource path="res://icon_new_icon.png" type="Texture" id=7]
+[ext_resource path="res://icon_change_texture.png" type="Texture" id=8]
+[ext_resource path="res://icon_adjust_points.png" type="Texture" id=9]
+[ext_resource path="res://icon_new_path.png" type="Texture" id=10]
+[ext_resource path="res://icon_new_point.png" type="Texture" id=11]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -103,27 +109,28 @@ __meta__ = {
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/GlobalMenuButton/EditorQuckPanel"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 293.0
+margin_right = 303.0
 margin_bottom = 47.0
 
 [node name="CloseEditorQuickPanel" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
-margin_right = 40.0
+margin_right = 46.0
 margin_bottom = 40.0
-rect_min_size = Vector2( 40, 0 )
-text = "X"
+hint_tooltip = "Close Editor Panel"
+icon = ExtResource( 5 )
 
 [node name="ChangeTexture" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
-margin_left = 44.0
-margin_right = 84.0
+margin_left = 50.0
+margin_right = 96.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 40, 0 )
-text = "Tex"
+hint_tooltip = "Change Texture"
+icon = ExtResource( 8 )
 
 [node name="NewArea" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
 visible = false
-margin_left = 62.0
-margin_right = 103.0
-margin_bottom = 35.0
+margin_left = 94.0
+margin_right = 135.0
+margin_bottom = 40.0
 text = "Area"
 
 [node name="NewAreaPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
@@ -134,29 +141,33 @@ margin_bottom = 35.0
 text = "APoint"
 
 [node name="NewPath" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
-margin_left = 88.0
-margin_right = 128.0
+margin_left = 100.0
+margin_right = 146.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 40, 0 )
-text = "Path"
+hint_tooltip = "Create New Path"
+icon = ExtResource( 10 )
 
 [node name="NewPathPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
-margin_left = 132.0
-margin_right = 185.0
+margin_left = 150.0
+margin_right = 196.0
 margin_bottom = 40.0
-text = "PPoint"
+hint_tooltip = "Create New Point on Active Path"
+icon = ExtResource( 11 )
 
 [node name="NewIcon" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
-margin_left = 189.0
-margin_right = 229.0
+margin_left = 200.0
+margin_right = 246.0
 margin_bottom = 40.0
-text = "Icon"
+hint_tooltip = "Create New Icon"
+icon = ExtResource( 7 )
 
 [node name="AdjustPoints" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
-margin_left = 233.0
-margin_right = 286.0
+margin_left = 250.0
+margin_right = 296.0
 margin_bottom = 40.0
-text = "Adjust"
+hint_tooltip = "Adjust Path and Icon Positions"
+icon = ExtResource( 9 )
 
 [node name="Dialogs" type="Control" parent="Control"]
 margin_right = 40.0
@@ -201,7 +212,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/MainMenu/ScrollContainer"]
 margin_right = 213.0
-margin_bottom = 239.0
+margin_bottom = 284.0
 size_flags_horizontal = 3
 
 [node name="LoadPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
@@ -270,18 +281,12 @@ margin_top = 192.0
 margin_right = 213.0
 margin_bottom = 196.0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="Settings" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 200.0
 margin_right = 213.0
-margin_bottom = 215.0
-bbcode_enabled = true
-bbcode_text = "[center]Settings[/center]"
+margin_bottom = 240.0
+rect_min_size = Vector2( 0, 40 )
 text = "Settings"
-fit_content_height = true
-scroll_active = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="RichTextLabel2" type="RichTextLabel" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
@@ -299,15 +304,16 @@ __meta__ = {
 
 [node name="ActivePath" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
-margin_top = 219.0
+margin_top = 268.0
 margin_right = 213.0
-margin_bottom = 259.0
+margin_bottom = 308.0
 text = "Active Path"
 
 [node name="ExitButton" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 219.0
+margin_top = 244.0
 margin_right = 213.0
-margin_bottom = 239.0
+margin_bottom = 284.0
+rect_min_size = Vector2( 0, 40 )
 text = "Exit Burrito"
 
 [node name="RangesDialog" type="WindowDialog" parent="Control/Dialogs"]
@@ -596,6 +602,54 @@ size_flags_horizontal = 3
 disabled = true
 text = "Reverse Path Direction"
 
+[node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
+margin_left = 592.0
+margin_top = 146.0
+margin_right = 981.0
+margin_bottom = 575.0
+window_title = "Settings"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="Control/Dialogs/SettingsDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
+margin_top = 5.0
+margin_right = 102.0
+margin_bottom = 19.0
+text = "Override Height"
+
+[node name="LineEdit" type="LineEdit" parent="Control/Dialogs/SettingsDialog/GridContainer"]
+margin_left = 106.0
+margin_right = 369.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
+margin_top = 33.0
+margin_right = 102.0
+margin_bottom = 47.0
+text = "Override Width"
+
+[node name="LineEdit2" type="LineEdit" parent="Control/Dialogs/SettingsDialog/GridContainer"]
+margin_left = 106.0
+margin_top = 28.0
+margin_right = 369.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
 [node name="Border" type="Control" parent="Control"]
 visible = false
 anchor_right = 1.0
@@ -689,6 +743,7 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SavePath" to="." method="_on_SavePath_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Settings" to="." method="_on_Settings_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ExitButton" to="." method="_on_ExitButton_pressed"]
 [connection signal="hide" from="Control/Dialogs/RangesDialog" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton" to="Control/Dialogs/RangesDialog" method="on_change"]
@@ -717,3 +772,4 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath" to="." method="_on_SetActivePath_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection" to="." method="_on_ReversePathDirection_pressed"]
+[connection signal="hide" from="Control/Dialogs/SettingsDialog" to="." method="_on_NodeEditorDialog_hide"]
