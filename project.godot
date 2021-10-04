@@ -26,6 +26,10 @@ run/low_processor_mode=true
 boot_splash/image="res://splash.png"
 config/icon="res://icon.png"
 
+[autoload]
+
+Settings="*res://Settings.gd"
+
 [display]
 
 window/size/width=1820

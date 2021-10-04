@@ -59,7 +59,6 @@ func _ready():
 	set_minimal_mouse_block()
 	server.listen(4242)
 
-
 func set_minimal_mouse_block():
 	var top_corner := Vector2(287, 0)
 	var bottom_corner := Vector2(314, 32)
@@ -228,8 +227,16 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var x11_window_id_gw2 = spb.get_32()
 	if !is_transient:
 		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
-	var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
-	OS.window_size = Vector2(size_tuple[0], size_tuple[1])
+
+	var size = Vector2(800, 600)
+	if Settings.override_size_enabled:
+		size.x = Settings.override_size_width
+		size.y = Settings.override_size_height
+	else:
+		var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
+		size.x = size_tuple[0]
+		size.y = size_tuple[1]
+	OS.window_size = size
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result
@@ -755,5 +762,6 @@ func _on_ExitButton_pressed():
 
 func _on_Settings_pressed():
 	var settings_dialog: WindowDialog = $Control/Dialogs/SettingsDialog
+	settings_dialog.load_settings()
 	settings_dialog.show()
-	#settings_dialog.set_current_dir(open_dialog.current_dir)
+
