@@ -4,6 +4,9 @@ use breadx::{
     Display, DisplayBase, DisplayConnection, Window,
 };
 use gdnative::prelude::*;
+use std::path::Path;
+mod trail_parser;
+mod xml_parser;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
@@ -64,6 +67,15 @@ impl X11_FG {
         let window = Window::const_from_xid(gw2_id as u32);
         let geometry = window.geometry_immediate(&mut dpy).unwrap();
         return (geometry.width, geometry.height)
+    }
+
+    #[export]
+    fn parse_xml(&self, _owner: &Node, file_path: String) -> String {
+        let path = Path::new(&file_path);
+        let folder = path.parent().unwrap().to_str().unwrap();
+        let xml_file = path.file_name().unwrap().to_str().unwrap();
+        let result = serde_json::to_string(&xml_parser::process_taco_data(folder.to_string(), xml_file.to_string())).unwrap();
+        return result;
     }
 }
 
