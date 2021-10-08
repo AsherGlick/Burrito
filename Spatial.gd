@@ -289,17 +289,23 @@ var markerdata = {}
 var marker_file_path = ""
 func load_taco_markers(marker_json_file):
 	self.marker_file_path = marker_json_file
-	print("Loading Path", marker_json_file)
 	
-	# var file = File.new()
-	# file.open(marker_json_file, file.READ)
-	# var text = file.get_as_text()
-	# self.markerdata = JSON.parse(text).result
-	self.markerdata = JSON.parse(x11_fg.parse_xml(marker_json_file)).result
-
+	if is_xml_file(marker_json_file):
+		print("Loading XML file from path", marker_json_file)
+		self.markerdata = JSON.parse(x11_fg.parse_taco_xml(marker_json_file)).result
+	else:
+		print("Loading Json file from path", marker_json_file)
+		var file = File.new()
+		file.open(marker_json_file, file.READ)
+		var text = file.get_as_text()
+		self.markerdata = JSON.parse(text).result
+	
 	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
 
 	gen_map_markers()
+
+func is_xml_file(input_file):
+	return input_file.split(".")[-1] == "xml"
 
 func relative_textures_to_absolute_textures(marker_file_dir):
 	for map in markerdata:

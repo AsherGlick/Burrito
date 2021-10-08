@@ -83,7 +83,6 @@ dependencies = [
  "breadx",
  "gdnative",
  "gw2_taco_parser",
- "serde_json",
 ]
 
 [[package]]
@@ -256,9 +255,9 @@ checksum = "8d2d1da7d790eb1e73f1bfd3099f59b89ab1eb09f8f1723caab79f8a65c54cdf"
 
 [[package]]
 name = "gw2_taco_parser"
-version = "0.2.1"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e981957ad41c1832fe0d77f24403e8574e5e532d6488816404a19445a504732"
+checksum = "84dcd65dd654d6cce86c53238e1ec1e0f01369d70d56db8d305874e243c0c117"
 dependencies = [
  "nom 7.0.0",
  "serde",
