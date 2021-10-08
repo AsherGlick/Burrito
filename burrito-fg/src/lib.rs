@@ -5,8 +5,7 @@ use breadx::{
 };
 use gdnative::prelude::*;
 use std::path::Path;
-mod trail_parser;
-mod xml_parser;
+use gw2_taco_parser::xml_parser;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
@@ -74,8 +73,8 @@ impl X11_FG {
         let path = Path::new(&file_path);
         let folder = path.parent().unwrap().to_str().unwrap();
         let xml_file = path.file_name().unwrap().to_str().unwrap();
-        let result = serde_json::to_string(&xml_parser::process_taco_data(folder.to_string(), xml_file.to_string())).unwrap();
-        return result;
+        let result = serde_json::to_string(&gw2_taco_parser::xml_parser::process_taco_data(folder.to_string(), xml_file.to_string())).unwrap();
+        return result
     }
 }
 
