@@ -1,0 +1,25 @@
+<OverlayData xmlns="overlay">
+	<MarkerCategory name="fast_guides" DisplayName="[fast] Amazing Pack">
+		<MarkerCategory name="drizzlewood" DisplayName="Drizzlewood Coast (Coral)">
+			<MarkerCategory name="coral" DisplayName="Toggle Nodes" iconSize="0.7" fadeNear="5000" fadeFar="5100" heightOffset="1.5" minSize="10" mapDisplaySize="30" iconFile="Data\coral.png"/>
+			<MarkerCategory name="trail" DisplayName="Toggle Trail"/>
+		</MarkerCategory>
+	</MarkerCategory>
+	<POIs>
+		<POI MapID="1330" xpos="-246.114" ypos="18.4021" zpos="-586.05" type="fast_guides.drizzlewood.coral" GUID="HPiRR/7h00Cj3Dn7UChpxw=="/>
+		<POI MapID="1371" xpos="565.349" ypos="-37.5947" zpos="-690.487" type="fast_guides.drizzlewood.coral" GUID="oYwezpIfLUyx/+b95tLljQ=="/>
+		<POI MapID="1371" xpos="606.789" ypos="-47.3618" zpos="-669.398" type="fast_guides.drizzlewood.coral" GUID="MUSbfapNWU2pczNsVu2Frg=="/>
+		<POI MapID="1371" xpos="597.651" ypos="-27.6806" zpos="-583.46" type="fast_guides.drizzlewood.coral" GUID="8LSICNtJJEuY3wlY0LE/qg=="/>
+		<POI MapID="1371" xpos="586.973" ypos="-19.5836" zpos="-157.453" type="fast_guides.drizzlewood.coral" GUID="A1S+s1Mt8EaCvB3OUhaEAA=="/>
+		<POI MapID="1371" xpos="630.181" ypos="-36.8447" zpos="-95.4275" type="fast_guides.drizzlewood.coral" GUID="fczjKVdbq0W+C8zPatqAnA=="/>
+		<POI MapID="1371" xpos="585.098" ypos="-10.9787" zpos="-43.5714" type="fast_guides.drizzlewood.coral" GUID="8lYCMop97kOjgmPnUfVrFA=="/>
+		<POI MapID="1371" xpos="512.802" ypos="-11.8169" zpos="44.5673" type="fast_guides.drizzlewood.coral" GUID="KCm5DLAJFEiZ5SERKG/BsQ=="/>
+		<POI MapID="1371" xpos="545.685" ypos="-18.1653" zpos="85.5568" type="fast_guides.drizzlewood.coral" GUID="6AXR4jDIPk6BftyXG55y7A=="/>
+		<POI MapID="1371" xpos="405.984" ypos="-2.65452" zpos="21.8498" type="fast_guides.drizzlewood.coral" GUID="hkmMqTQkGkyPTmufQwCQRg=="/>
+		<POI MapID="1371" xpos="618.003" ypos="-35.7407" zpos="35.1969" type="fast_guides.drizzlewood.coral" GUID="ppXJj8JdeUqgrMmkVRrO3w=="/>
+		<POI MapID="1371" xpos="605.443" ypos="-11.3127" zpos="-224.795" type="fast_guides.drizzlewood.coral" GUID="FSoTrv6xF0mUvKvfjuS9xg=="/>
+		<POI MapID="1371" xpos="476.724" ypos="-20.7271" zpos="-685.565" type="fast_guides.drizzlewood.coral" GUID="k6QR3I/0306Y/98Fjy4cwQ=="/>
+		<POI MapID="1371" xpos="402.746" ypos="-2.50527" zpos="20.9261" type="fast_guides.drizzlewood.trail" iconSize="2" fadeNear="5000" fadeFar="5100" heightOffset="2" minSize="10" iconFile="Data\trail_cyan_end.png" GUID="to50ilwJFECIxU1qXGkJvw=="/>
+		<Trail trailData="trail_drizzlewood_coral.trl" texture="Data/trail_cyan.png" color="ffffffff" animSpeed="0" alpha="1" type="fast_guides.drizzlewood.trail" fadeNear="5000" fadeFar="5100"/>
+	</POIs>
+</OverlayData>

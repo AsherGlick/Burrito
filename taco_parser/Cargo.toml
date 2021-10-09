@@ -1,0 +1,20 @@
+[package]
+name = "gw2_taco_parser"
+version = "0.4.0"
+edition = "2018"
+description = "A very simple util that parses the XML and corresponding C struct trail files (using nom) from Taco (GW2 overlay), to produce a json compatible format for [Burrito](https://github.com/AsherGlick/Burrito), a GW2 overlay for Linux."
+repository = "https://github.com/jlloh/gw2_taco_parser"
+license-file = "LICENSE"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "gw2_taco_parser"
+crate-type = ["cdylib"]
+
+[dependencies]
+nom = "7.0.0"
+serde = { version = "1.0", features = ["derive"] }
+serde-xml-rs = "0.5.1"
+serde_json = "1.0"
+gdnative = "0.9"

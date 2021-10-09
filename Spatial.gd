@@ -43,6 +43,7 @@ var compass_corner1
 var compass_corner2
 #x11 fg and window id
 var x11_fg: X11_FG
+var taco_parser: TacoParser
 var x11_window_id_burrito: int
 var is_transient:bool = false
 
@@ -50,6 +51,7 @@ var is_transient:bool = false
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
 	x11_fg = X11_FG.new()
+	taco_parser = TacoParser.new()
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
 	# Start off with a small size before GW2 client is up
@@ -292,7 +294,7 @@ func load_taco_markers(marker_json_file):
 	
 	if is_xml_file(marker_json_file):
 		print("Loading XML file from path", marker_json_file)
-		self.markerdata = JSON.parse(x11_fg.parse_taco_xml(marker_json_file)).result
+		self.markerdata = JSON.parse(taco_parser.parse_taco_xml(marker_json_file)).result
 	else:
 		print("Loading Json file from path", marker_json_file)
 		var file = File.new()

@@ -10,4 +10,3 @@ crate-type = ["cdylib"]
 [dependencies]
 gdnative = "0.9"
 breadx = "2"
-gw2_taco_parser = "0.3.0"

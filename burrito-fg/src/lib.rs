@@ -4,8 +4,6 @@ use breadx::{
     Display, DisplayBase, DisplayConnection, Window,
 };
 use gdnative::prelude::*;
-use std::path::Path;
-use gw2_taco_parser::taco_to_json_str;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
@@ -68,14 +66,6 @@ impl X11_FG {
         return (geometry.width, geometry.height)
     }
 
-    #[export]
-    fn parse_taco_xml(&self, _owner: &Node, file_path: String) -> String {
-        let full_path = Path::new(&file_path);
-        let folder = full_path.parent().unwrap().to_str().unwrap();
-        let xml_file = full_path.file_name().unwrap().to_str().unwrap();
-        let result = gw2_taco_parser::taco_to_json_str(folder.to_string(), xml_file.to_string());
-        return result
-    }
 }
 
 fn get_window_from_name<D: Display>(dpy: &mut D, name: String) -> Option<Window> {
