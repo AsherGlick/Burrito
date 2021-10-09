@@ -2,6 +2,8 @@
 
 A very simple util that parses the XML and corresponding C struct trail files (using nom) from Taco (GW2 overlay), to produce a json compatible format for [Burrito](https://github.com/AsherGlick/Burrito), a GW2 overlay for Linux.
 
+Note that some sample files are included in `/data/` for unit testing.
+
 ## Example used
 
 - Uses taco marker from [here](https://fast.farming-community.eu/open-world/solo-farming) as an example.
