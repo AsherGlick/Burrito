@@ -84,6 +84,11 @@ jobs:
             cd burrito-fg
             cargo build
 
+      - name: Build taco_parser
+        run: |
+            cd taco_parser
+            cargo build --release
+
       - name: Build Burrito Link
         run: |
           cd burrito_link

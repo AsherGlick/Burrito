@@ -1,8 +1,8 @@
 [gd_resource type="NativeScript" load_steps=2 format=2]
 
 [sub_resource type="GDNativeLibrary" id=1]
-entry/X11.64 = "res://taco_parser/target/debug/libgw2_taco_parser.so"
-entry/X11.32 = "res://taco_parser/target/debug/libgw2_taco_parser.so"
+entry/X11.64 = "res://taco_parser/target/release/libgw2_taco_parser.so"
+entry/X11.32 = "res://taco_parser/target/release/libgw2_taco_parser.so"
 dependency/X11.64 = [  ]
 dependency/X11.32 = [  ]
 
