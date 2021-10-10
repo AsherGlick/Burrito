@@ -227,9 +227,9 @@ fn process_poi(
     return acc;
 }
 
-fn get_categorydata_file(folder_name: &String) -> PathBuf {
+fn get_categorydata_file(folder_name: &OsPath) -> PathBuf {
     let category_file_name = "categorydata.xml";
-    let category_file = OsPath::new(&folder_name).join(category_file_name);
+    let category_file = folder_name.join(category_file_name);
     return category_file;
 }
 
@@ -238,9 +238,23 @@ fn escape_xml_str(input: String) -> String {
     return input.replace("&", "&amp;");
 }
 
+fn strip_poi_subfolder(folder: &String) -> &OsPath {
+    let keyword = "POIs".to_string();
+    let path = OsPath::new(folder);
+    if path.ends_with(&keyword) {
+        return path.parent().unwrap(); //.to_str().unwrap().to_string();
+    }
+    return path;
+}
+
 pub fn process_taco_data(folder_name: String, xml_file: String) -> HashMap<u32, FinalResult> {
+    /* As per http://www.gw2taco.com/2016/01/how-to-create-your-own-marker-pack.html, two things
+    1. placing pois xml file in POIs folder is valid, even if absolute paths won't be correct
+    2. categorydata.xml is loaded first, and can have all the MarkerData
+    As such, we define a root folder with "POIs" stripped
+     */
     let mut lookup = HashMap::new();
-    let root_folder = folder_name.replace("POIs", "");
+    let root_folder = strip_poi_subfolder(&folder_name);
     // Attempt to load in `categorydata.xml` first
     let categorydata_file = get_categorydata_file(&root_folder);
     if categorydata_file.exists() {
@@ -251,7 +265,7 @@ pub fn process_taco_data(folder_name: String, xml_file: String) -> HashMap<u32, 
         }
     }
 
-    // Optionally load markers in
+    // Next load markers in selected xml file
     let subfolder = OsPath::new(&folder_name);
     let contents = escape_xml_str(read_to_string(OsPath::new(subfolder).join(xml_file)).unwrap());
     let xml_parsed = parse_xml(&contents);
@@ -267,7 +281,7 @@ pub fn process_taco_data(folder_name: String, xml_file: String) -> HashMap<u32, 
 
     // let poi_array = xml_parsed.pois.poi_array;
     let process_poi_closure = |acc: HashMap<u32, FinalResult>, item: &PoiItems| {
-        process_poi(acc, item, &lookup, OsPath::new(&root_folder))
+        process_poi(acc, item, &lookup, root_folder)
     };
 
     let empty_map: HashMap<_, _> = HashMap::new();

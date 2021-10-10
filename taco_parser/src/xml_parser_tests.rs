@@ -2,14 +2,14 @@
 mod xml_parser_tests {
     use super::super::*;
 
-    #[test]
-    fn test_parse_xml() {
-        let folder = "/home/jl/hdd_drive/GW2/taco_markers/POIs/";
-        let xml_file = "General__Tequatl.xml";
-        let contents = read_to_string(OsPath::new(folder).join(xml_file)).unwrap();
-        let xml_parsed = parse_xml(&contents);
-        println!("{:#?}", xml_parsed.marker_category)
-    }
+    // #[test]
+    // fn test_parse_xml() {
+    //     let folder = "/home/jl/hdd_drive/GW2/taco_markers/POIs/";
+    //     let xml_file = "General__Tequatl.xml";
+    //     let contents = read_to_string(OsPath::new(folder).join(xml_file)).unwrap();
+    //     let xml_parsed = parse_xml(&contents);
+    //     println!("{:#?}", xml_parsed.marker_category)
+    // }
 
     #[test]
     fn test_parse_testxml() {
@@ -84,11 +84,19 @@ mod xml_parser_tests {
     //     println!("{:#?}", result);
     // }
 
+    // #[test]
+    // fn test_process_taco_data_reactif() {
+    //     let folder = "/home/jl/Documents/reaktif_taco/POIs/".to_string();
+    //     let xml_file = "General__Tequatl.xml".to_string();
+    //     let result = process_taco_data(folder, xml_file);
+    //     println!("{:#?}", result);
+    // }
+
     #[test]
-    fn test_process_taco_data_reactif() {
-        let folder = "/home/jl/Documents/reaktif_taco/POIs/".to_string();
-        let xml_file = "General__Tequatl.xml".to_string();
-        let result = process_taco_data(folder, xml_file);
-        println!("{:#?}", result);
+    fn test_pois_suffix() {
+        let folder = "/abc/efg/POIs".to_string();
+        let stripped = strip_poi_subfolder(&folder);
+        let expected = OsPath::new("/abc/efg");
+        assert_eq!(stripped, expected);
     }
 }
