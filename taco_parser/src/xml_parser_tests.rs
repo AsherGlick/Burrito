@@ -5,7 +5,7 @@ mod xml_parser_tests {
     #[test]
     fn test_parse_xml() {
         let folder = "data/";
-        let xml_file = "tw_festival01_lunarnewyear.xml";
+        let xml_file = "test.xml";
         let contents = read_to_string(OsPath::new(folder).join(xml_file)).unwrap();
         let xml_parsed = parse_xml(&contents);
         println!("{:#?}", xml_parsed.marker_category)
@@ -59,11 +59,12 @@ mod xml_parser_tests {
         assert_eq!(expected, result);
     }
 
-    #[test]
-    fn test_process_taco_data_tekkit() {
-        let folder = "data/".to_string();
-        let xml_file = "tw_festival01_lunarnewyear.xml".to_string();
-        let result = process_taco_data(folder, xml_file);
-        println!("{:#?}", result);
-    }
+    // Disabling this test as no valid trl file to include for unit test
+    // #[test]
+    // fn test_process_taco_data_tekkit() {
+    //     let folder = "data/".to_string();
+    //     let xml_file = "test.xml".to_string();
+    //     let result = process_taco_data(folder, xml_file);
+    //     println!("{:#?}", result);
+    // }
 }

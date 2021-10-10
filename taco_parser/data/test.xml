@@ -1,0 +1,18 @@
+<OverlayData>
+<MarkerCategory name="level1" DisplayName="Level 1 Display name">
+  	<MarkerCategory name="level2" DisplayName="Level 2 Display">
+    	<MarkerCategory name="level3_1" IsSeparator="1" DisplayName="Some Display"/>
+    	<MarkerCategory name="level3_2" DisplayName="Another Display">
+      		<MarkerCategory name="level4_1" DisplayName="Test Display"/>
+      		<MarkerCategory name="level4_2" DisplayName="Toggle Signs">
+        		<MarkerCategory name="level5_1" DisplayName="Toggle Starting Line" miniMapVisibility="0" mapVisibility="0" fadeNear="5000" fadeFar="5100" iconSize="5.0" heightOffset="3.0" iconFile="Data/random.png"/>
+      		</MarkerCategory>
+    	</MarkerCategory>
+  	</MarkerCategory>
+</MarkerCategory>
+	<POIs>
+		<POI MapID="18" xpos="-305.886" ypos="78.5356" zpos="-55.9344" type="level1.level2.level3_2.level4_1" GUID="adfwerdfsdr"/>
+		<POI MapID="18" xpos="-159.393" ypos="89.0542" zpos="-127.726" type="level1.level2.level3_2.level4_2.level5_1" GUID="sdfwerdc"/>
+		<Trail type="level1.level2.level3_1" GUID="adfaewrd==" fadeNear="20000" fadeFar="20100" trailData="Data/dummy.trl" animSpeed="0" texture="Data/random.png"/>
+	</POIs>
+</OverlayData>
