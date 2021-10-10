@@ -293,10 +293,10 @@ func load_taco_markers(marker_json_file):
 	self.marker_file_path = marker_json_file
 	
 	if is_xml_file(marker_json_file):
-		print("Loading XML file from path", marker_json_file)
+		print("Loading XML file from path ", marker_json_file)
 		self.markerdata = JSON.parse(taco_parser.parse_taco_xml(marker_json_file)).result
 	else:
-		print("Loading Json file from path", marker_json_file)
+		print("Loading Json file from path ", marker_json_file)
 		var file = File.new()
 		file.open(marker_json_file, file.READ)
 		var text = file.get_as_text()
