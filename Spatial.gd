@@ -294,7 +294,12 @@ func load_taco_markers(marker_json_file):
 	
 	if is_xml_file(marker_json_file):
 		print("Loading XML file from path ", marker_json_file)
-		self.markerdata = JSON.parse(taco_parser.parse_taco_xml(marker_json_file)).result
+		var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_json_file)
+		var json_payload = parsed_taco_tuple[0]
+		var error_message = parsed_taco_tuple[1]
+		if error_message != "":
+			print("XML parsing failed with error message: ", error_message)
+		self.markerdata = JSON.parse(json_payload).result
 	else:
 		print("Loading Json file from path ", marker_json_file)
 		var file = File.new()

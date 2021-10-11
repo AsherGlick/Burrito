@@ -99,9 +99,8 @@ struct Icon {
 }
 
 //https://docs.rs/serde-xml-rs/0.5.1/serde_xml_rs/
-pub fn parse_xml(xml: &str) -> OverlayData {
-    let data: OverlayData = serde_xml_rs::from_str(xml).unwrap();
-    data
+pub fn parse_xml(xml: &str) -> Result<OverlayData, serde_xml_rs::Error> {
+    return serde_xml_rs::from_str(xml);
 }
 
 fn convert_windows_path(path: String) -> String {
@@ -247,7 +246,10 @@ fn strip_poi_subfolder(folder: &String) -> &OsPath {
     return path;
 }
 
-pub fn process_taco_data(folder_name: String, xml_file: String) -> HashMap<u32, FinalResult> {
+pub fn process_taco_data(
+    folder_name: String,
+    xml_file: String,
+) -> Result<HashMap<u32, FinalResult>, serde_xml_rs::Error> {
     /* As per http://www.gw2taco.com/2016/01/how-to-create-your-own-marker-pack.html, two things
     1. placing pois xml file in POIs folder is valid, even if absolute paths won't be correct
     2. categorydata.xml is loaded first, and can have all the MarkerData
@@ -260,7 +262,11 @@ pub fn process_taco_data(folder_name: String, xml_file: String) -> HashMap<u32, 
     if categorydata_file.exists() {
         let default_category_content = escape_xml_str(read_to_string(categorydata_file).unwrap());
         let default_category_parsed = parse_xml(&default_category_content);
-        for marker in default_category_parsed.marker_category {
+        let default_category_parsed_unwrapped = match default_category_parsed {
+            Err(e) => return Err(e),
+            Ok(x) => x,
+        };
+        for marker in default_category_parsed_unwrapped.marker_category {
             construct_lookup_map(&mut lookup, marker, "".to_string());
         }
     }
@@ -269,12 +275,16 @@ pub fn process_taco_data(folder_name: String, xml_file: String) -> HashMap<u32, 
     let subfolder = OsPath::new(&folder_name);
     let contents = escape_xml_str(read_to_string(OsPath::new(subfolder).join(xml_file)).unwrap());
     let xml_parsed = parse_xml(&contents);
-    for marker in xml_parsed.marker_category {
+    let xml_parsed_unwrapped = match xml_parsed {
+        Err(e) => return Err(e),
+        Ok(x) => x,
+    };
+    for marker in xml_parsed_unwrapped.marker_category {
         construct_lookup_map(&mut lookup, marker, "".to_string());
     }
 
     // POI Array stuff
-    let poi_array = match xml_parsed.pois {
+    let poi_array = match xml_parsed_unwrapped.pois {
         Some(poi_array) => poi_array.poi_array,
         None => Vec::new(),
     };
@@ -286,5 +296,5 @@ pub fn process_taco_data(folder_name: String, xml_file: String) -> HashMap<u32, 
 
     let empty_map: HashMap<_, _> = HashMap::new();
     let result = poi_array.iter().fold(empty_map, process_poi_closure);
-    return result;
+    return Ok(result);
 }

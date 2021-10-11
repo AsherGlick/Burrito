@@ -4,10 +4,13 @@ use std::path::Path;
 mod trail_parser;
 mod xml_parser;
 
-fn taco_to_json_str(folder_name: String, xml_file: String) -> String {
+fn taco_to_json_str(folder_name: String, xml_file: String) -> Result<String, serde_xml_rs::Error> {
     let parsed = xml_parser::process_taco_data(folder_name, xml_file);
-    let json_string = serde_json::to_string(&parsed).unwrap();
-    return json_string;
+    let result = match parsed {
+        Ok(x) => Ok(serde_json::to_string(&x).unwrap()),
+        Err(e) => Err(e),
+    };
+    return result;
 }
 
 #[derive(NativeClass)]
@@ -34,12 +37,20 @@ impl TacoParser {
     }
 
     #[export]
-    fn parse_taco_xml(&self, _owner: &Node, file_path: String) -> String {
+    fn parse_taco_xml(&self, _owner: &Node, file_path: String) -> (String, String) {
+        let errored_payload = "{}".to_string();
         let full_path = Path::new(&file_path);
-        let folder = full_path.parent().unwrap().to_str().unwrap();
+        let folder = match full_path.parent() {
+            Some(path) => path.to_str().unwrap().to_string(),
+            None => return (errored_payload, "No parent folder".to_string()),
+        };
         let xml_file = full_path.file_name().unwrap().to_str().unwrap();
         let result = taco_to_json_str(folder.to_string(), xml_file.to_string());
-        return result;
+        // return tuple of (payload, err_message) back to Godot.
+        match result {
+            Ok(x) => return (x, "".to_string()),
+            Err(e) => return (errored_payload, e.to_string()),
+        };
     }
 }
 
