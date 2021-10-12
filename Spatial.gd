@@ -43,6 +43,7 @@ var compass_corner1
 var compass_corner2
 #x11 fg and window id
 var x11_fg: X11_FG
+var taco_parser: TacoParser
 var x11_window_id_burrito: int
 var is_transient:bool = false
 
@@ -50,6 +51,7 @@ var is_transient:bool = false
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
 	x11_fg = X11_FG.new()
+	taco_parser = TacoParser.new()
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
 	# Start off with a small size before GW2 client is up
@@ -289,16 +291,28 @@ var markerdata = {}
 var marker_file_path = ""
 func load_taco_markers(marker_json_file):
 	self.marker_file_path = marker_json_file
-	print("Loading Path", marker_json_file)
 	
-	var file = File.new()
-	file.open(marker_json_file, file.READ)
-	var text = file.get_as_text()
-	self.markerdata = JSON.parse(text).result
-
+	if is_xml_file(marker_json_file):
+		print("Loading XML file from path ", marker_json_file)
+		var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_json_file)
+		var json_payload = parsed_taco_tuple[0]
+		var error_message = parsed_taco_tuple[1]
+		if error_message != "":
+			print("XML parsing failed with error message: ", error_message)
+		self.markerdata = JSON.parse(json_payload).result
+	else:
+		print("Loading Json file from path ", marker_json_file)
+		var file = File.new()
+		file.open(marker_json_file, file.READ)
+		var text = file.get_as_text()
+		self.markerdata = JSON.parse(text).result
+	
 	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
 
 	gen_map_markers()
+
+func is_xml_file(input_file):
+	return input_file.split(".")[-1] == "xml"
 
 func relative_textures_to_absolute_textures(marker_file_dir):
 	for map in markerdata:

@@ -65,6 +65,7 @@ impl X11_FG {
         let geometry = window.geometry_immediate(&mut dpy).unwrap();
         return (geometry.width, geometry.height)
     }
+
 }
 
 fn get_window_from_name<D: Display>(dpy: &mut D, name: String) -> Option<Window> {
