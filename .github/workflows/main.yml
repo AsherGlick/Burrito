@@ -100,7 +100,7 @@ jobs:
         run: |
           mkdir build
           ./Godot_v${GODOT_VERSION}-stable_linux_headless.64 --export "Linux/X11"
-          chmox +x build/burrito.x86_64
+          chmod +x build/burrito.x86_64
           mv build/burrito.x86_64 output/
           mv build/libburrito_fg.so output/
           mv build/libgw2_taco_parser.so output/
