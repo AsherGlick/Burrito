@@ -10,11 +10,17 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "",
+"class": "TacoParser",
+"language": "NativeScript",
+"path": "res://tacoparser.gdns"
+}, {
+"base": "",
 "class": "X11_FG",
 "language": "NativeScript",
 "path": "res://Spatial.gdns"
 } ]
 _global_script_class_icons={
+"TacoParser": "",
 "X11_FG": ""
 }
 

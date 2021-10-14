@@ -1,0 +1,7 @@
+[gd_resource type="GDNativeLibrary" format=2]
+
+[resource]
+entry/X11.64 = "res://taco_parser/target/release/libgw2_taco_parser.so"
+entry/X11.32 = "res://taco_parser/target/release/libgw2_taco_parser.so"
+dependency/X11.64 = [  ]
+dependency/X11.32 = [  ]
