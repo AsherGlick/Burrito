@@ -82,7 +82,7 @@ jobs:
       - name: Build X11_FG
         run: |
             cd burrito-fg
-            cargo build
+            cargo build --release
 
       - name: Build taco_parser
         run: |
@@ -101,6 +101,8 @@ jobs:
           mkdir build
           ./Godot_v${GODOT_VERSION}-stable_linux_headless.64 --export "Linux/X11"
           mv build/burrito.x86_64 output/
+          mv build/libburrito_fg.so output/
+          mv build/libgw2_taco_parser.so output/
 
 
       - uses: actions/upload-artifact@v2.2.4
