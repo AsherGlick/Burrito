@@ -67,10 +67,12 @@ struct POI {
 struct TrailMetadata {
     #[serde(rename = "trailData")]
     trail_data: String,
-    texture: String,
+    texture: Option<String>,
+    #[serde(rename = "type")]
+    type_: String,
     // color: String,
-    #[serde(rename = "iconFile")]
-    icon_file: Option<String>,
+    // #[serde(rename = "iconFile")]
+    // icon_file: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -107,13 +109,26 @@ fn convert_windows_path(path: String) -> String {
     path.replace("\\", "/")
 }
 
-fn get_texture(lookup: &HashMap<String, String>, poi: &POI) -> Option<String> {
-    let texture = match lookup.get(&poi.type_) {
+// If type_ exist in lookup, take lookup
+// If not, but has `icon_file` field, take that
+// Finally, return None
+fn get_texture(lookup: &HashMap<String, String>, poi_or_trail: &PoiItems) -> String {
+    let (type_, texture_file) = match poi_or_trail {
+        PoiItems::POI(poi) => (poi.type_.clone(), poi.icon_file.clone()),
+        PoiItems::TrailMetadata(trail) => (trail.type_.clone(), trail.texture.clone()),
+    };
+    // let type_ = &poi.type_;
+    // let icon_file = &poi.icon_file;
+    let texture = match lookup.get(&type_) {
         Some(x) => Some(x.to_string()),
-        None if poi.icon_file.is_some() => poi.icon_file.clone(),
+        None if texture_file.is_some() => texture_file.clone(),
         None => None,
     };
-    return texture;
+    match texture {
+        Some(path) => convert_windows_path(path),
+        None => "".to_string(),
+    }
+    // return texture;
 }
 
 fn unwrap_trail_coordinates(input: &TrailCoordinates) -> [f32; 3] {
@@ -173,15 +188,12 @@ fn process_poi(
     subfolder: &OsPath,
 ) -> HashMap<u32, FinalResult> {
     // Replace POIs in path name to fix relative paths
+    let texture_rel_path = get_texture(&lookup, item);
+    let texture_full = get_full_path(subfolder, texture_rel_path);
     match item {
         // If it is a POI item
         PoiItems::POI(poi) => {
             let map_id = poi.map_id;
-            let texture_rel_path = match get_texture(&lookup, poi) {
-                Some(texture) => convert_windows_path(texture),
-                None => "".to_string(),
-            };
-            let texture_full = get_full_path(subfolder, texture_rel_path);
             acc.entry(map_id)
                 .and_modify(|value| {
                     value.icons.push(Icon {
@@ -200,9 +212,7 @@ fn process_poi(
         // If it is a Trail item
         PoiItems::TrailMetadata(trail_metadata) => {
             // Read trail .trl file
-            let texture_rel_path = convert_windows_path((&trail_metadata.texture).to_string());
-            let texture_full = get_full_path(subfolder, texture_rel_path);
-
+            // let texture = &trail_metadata.texture;
             let trail_file = &trail_metadata.trail_data;
             let byte_vector: &[u8] = &read(subfolder.join(trail_file)).unwrap();
             let parsed_trail = trail_parser::parse_trail(byte_vector).unwrap().1;
