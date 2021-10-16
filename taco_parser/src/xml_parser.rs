@@ -117,8 +117,6 @@ fn get_texture(lookup: &HashMap<String, String>, poi_or_trail: &PoiItems) -> Str
         PoiItems::POI(poi) => (poi.type_.clone(), poi.icon_file.clone()),
         PoiItems::TrailMetadata(trail) => (trail.type_.clone(), trail.texture.clone()),
     };
-    // let type_ = &poi.type_;
-    // let icon_file = &poi.icon_file;
     let texture = match lookup.get(&type_) {
         Some(x) => Some(x.to_string()),
         None if texture_file.is_some() => texture_file.clone(),
@@ -128,7 +126,6 @@ fn get_texture(lookup: &HashMap<String, String>, poi_or_trail: &PoiItems) -> Str
         Some(path) => convert_windows_path(path),
         None => "".to_string(),
     }
-    // return texture;
 }
 
 fn unwrap_trail_coordinates(input: &TrailCoordinates) -> [f32; 3] {
@@ -140,7 +137,6 @@ fn construct_lookup_map(
     node: MarkerCategory,
     prefix: String,
 ) -> () {
-    // let mut result: HashMap<String, String> = HashMap::new();
     // InOrderTraversal?
     let size = node.children.len();
     let split = 2;
@@ -212,7 +208,6 @@ fn process_poi(
         // If it is a Trail item
         PoiItems::TrailMetadata(trail_metadata) => {
             // Read trail .trl file
-            // let texture = &trail_metadata.texture;
             let trail_file = &trail_metadata.trail_data;
             let byte_vector: &[u8] = &read(subfolder.join(trail_file)).unwrap();
             let parsed_trail = trail_parser::parse_trail(byte_vector).unwrap().1;
@@ -251,7 +246,7 @@ fn strip_poi_subfolder(folder: &String) -> &OsPath {
     let keyword = "POIs".to_string();
     let path = OsPath::new(folder);
     if path.ends_with(&keyword) {
-        return path.parent().unwrap(); //.to_str().unwrap().to_string();
+        return path.parent().unwrap();
     }
     return path;
 }
@@ -299,7 +294,6 @@ pub fn process_taco_data(
         None => Vec::new(),
     };
 
-    // let poi_array = xml_parsed.pois.poi_array;
     let process_poi_closure = |acc: HashMap<u32, FinalResult>, item: &PoiItems| {
         process_poi(acc, item, &lookup, root_folder)
     };
