@@ -289,7 +289,6 @@ pub fn process_taco_data(
     for marker in xml_parsed_unwrapped.marker_category {
         construct_lookup_map(&mut lookup, marker, "".to_string());
     }
-    println!("{:?}", lookup.keys());
     // POI Array stuff
     let poi_array = match xml_parsed_unwrapped.pois {
         Some(poi_array) => poi_array.poi_array,
