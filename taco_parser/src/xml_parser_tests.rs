@@ -27,24 +27,28 @@ mod xml_parser_tests {
             icon_file: Some("abcd".to_string()),
             children: vec![],
             height_offset: None,
+            texture: None,
         };
         let level2_1 = MarkerCategory {
             name: "level2-1".to_string(),
             icon_file: Some("bbbb".to_string()),
             children: vec![leaf],
             height_offset: None,
+            texture: None,
         };
         let level2_2 = MarkerCategory {
             name: "level2-2".to_string(),
             icon_file: Some("cccc".to_string()),
             children: vec![],
             height_offset: None,
+            texture: None,
         };
         let level3 = MarkerCategory {
             name: "level3".to_string(),
-            icon_file: Some("dddd".to_string()),
+            icon_file: None,
             children: vec![level2_1, level2_2],
             height_offset: None,
+            texture: Some("dddd".to_string()),
         };
 
         let expected: HashMap<String, String> = [
@@ -90,13 +94,13 @@ mod xml_parser_tests {
         println!("{:#?}", result);
     }
 
-    // #[test]
-    // fn test_process_taco_data_reactif() {
-    //     let folder = "/home/jl/Documents/reaktif_taco/POIs/".to_string();
-    //     let xml_file = "General__Tequatl.xml".to_string();
-    //     let result = process_taco_data(folder, xml_file);
-    //     println!("{:#?}", result);
-    // }
+    #[test]
+    fn test_process_taco_data_reactif() {
+        let folder = "/home/jl/Documents/taco_packs/teh_trails".to_string();
+        let xml_file = "tt.mapcomp.xml".to_string();
+        let result = process_taco_data(folder, xml_file);
+        // println!("{:?}", result.unwrap().get(&54));
+    }
 
     #[test]
     fn test_pois_suffix() {

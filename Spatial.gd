@@ -438,6 +438,8 @@ func gen_new_path(points: Array, texture_path: String):
 	# srgb to render properly. Issue #23.
 	var texture_file = File.new()
 	var image = Image.new()
+	if !texture_file.file_exists(texture_path):
+		print("Warning: File does not exist: ", texture_path)
 	texture_file.open(texture_path, File.READ)
 	image.load_png_from_buffer(texture_file.get_buffer(texture_file.get_len()))
 	texture_file.close()

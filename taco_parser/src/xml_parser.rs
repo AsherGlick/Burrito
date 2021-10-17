@@ -32,6 +32,7 @@ pub struct MarkerCategory {
     name: String,
     #[serde(rename = "iconFile")]
     icon_file: Option<String>,
+    texture: Option<String>,
     #[serde(rename = "MarkerCategory", default = "default_marker_category")]
     children: Vec<MarkerCategory>,
     #[serde(rename = "heightOffset")]
@@ -153,15 +154,16 @@ fn construct_lookup_map(
     } else {
         node_label
     };
-    let icon_file = match node.icon_file.clone() {
+    let img_file = match node.icon_file.clone() {
         Some(icon_file) => icon_file,
+        None if !node.texture.is_none() => node.texture.expect("Has texture").clone(),
         None => "".to_string(),
     };
     for node in left {
         construct_lookup_map(result, node, new_prefix.to_string());
     }
-    if icon_file != "" {
-        result.insert(new_prefix.to_string(), icon_file);
+    if img_file != "" {
+        result.insert(new_prefix.to_string(), img_file);
     }
     for node in right {
         construct_lookup_map(result, node, new_prefix.to_string());
@@ -287,7 +289,7 @@ pub fn process_taco_data(
     for marker in xml_parsed_unwrapped.marker_category {
         construct_lookup_map(&mut lookup, marker, "".to_string());
     }
-
+    println!("{:?}", lookup.keys());
     // POI Array stuff
     let poi_array = match xml_parsed_unwrapped.pois {
         Some(poi_array) => poi_array.poi_array,
