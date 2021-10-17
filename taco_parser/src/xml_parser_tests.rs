@@ -94,13 +94,13 @@ mod xml_parser_tests {
         println!("{:#?}", result);
     }
 
-    #[test]
-    fn test_process_taco_data_reactif() {
-        let folder = "/home/jl/Documents/taco_packs/teh_trails".to_string();
-        let xml_file = "tt.mapcomp.xml".to_string();
-        let result = process_taco_data(folder, xml_file);
-        // println!("{:?}", result.unwrap().get(&54));
-    }
+    // #[test]
+    // fn test_process_taco_data_reactif() {
+    //     let folder = "/home/jl/Documents/taco_packs/teh_trails".to_string();
+    //     let xml_file = "tt.mapcomp.xml".to_string();
+    //     let result = process_taco_data(folder, xml_file);
+    //     // println!("{:?}", result.unwrap().get(&54));
+    // }
 
     #[test]
     fn test_pois_suffix() {
