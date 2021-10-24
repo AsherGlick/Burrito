@@ -70,6 +70,8 @@ scale = Vector2( 2, 2 )
 
 [node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
 
+[node name="Icon2D" type="Sprite" parent="Control/MiniMap"]
+
 [node name="GlobalMenuButton" type="Control" parent="Control"]
 margin_left = 287.348
 margin_right = 314.348
@@ -483,9 +485,9 @@ window_title = "Open a File"
 mode = 0
 access = 2
 filters = PoolStringArray( "*.png" )
-current_dir = "."
+current_dir = "/home/jl/Projects/Burrito"
 current_file = "."
-current_path = "."
+current_path = "/home/jl/Projects/Burrito/."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -498,9 +500,9 @@ margin_bottom = 624.833
 window_title = "Save Path"
 resizable = true
 access = 2
-current_dir = "."
+current_dir = "/home/jl/Projects/Burrito"
 current_file = "."
-current_path = "."
+current_path = "/home/jl/Projects/Burrito/."
 __meta__ = {
 "_edit_use_anchors_": false
 }

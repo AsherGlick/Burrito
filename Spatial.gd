@@ -329,6 +329,7 @@ var route_scene = load("res://Route.tscn")
 var icon_scene = load("res://Icon.tscn")
 var path2d_scene = load("res://Route2D.tscn")
 var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
+var icon2d_scene = load("res://Icon2D.tscn")
 
 ##########Gizmo Stuff###########
 # How long the ray to search for 3D clickable object should be.
@@ -416,6 +417,9 @@ func gen_map_markers():
 	for icon in icons.get_children():
 		icon.queue_free()
 
+	# for minimap_icon in minimap_icons.get_children():
+	# 	minimap_icon.queue_free()
+
 	# Load the data from the markers
 	if str(map_id) in markerdata:
 		var map_markerdata = markerdata[str(map_id)]
@@ -500,6 +504,11 @@ func gen_new_icon(position: Vector3, texture_path: String):
 
 	#icon_markers.append(new_icon)
 	icons.add_child(new_icon)
+
+	var minimap_icon = icon2d_scene.instance()
+	minimap_icon.set_position(Vector2(position[0], position[2]))
+	minimap_icon.set_icon_image(texture_path)
+	minimap.add_child(minimap_icon)
 
 # This function take all of the currently rendered objects and converts it into
 # the data format that is saved/loaded from.
