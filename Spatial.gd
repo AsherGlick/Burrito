@@ -284,8 +284,9 @@ func reset_minimap_masks():
 		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
 	
 	for minimap_path in $Control/MiniMap.get_children():
-		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
-		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
+		if minimap_path.material != null:
+			minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
+			minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
 var markerdata = {}
 var marker_file_path = ""
@@ -416,9 +417,6 @@ func gen_map_markers():
 
 	for icon in icons.get_children():
 		icon.queue_free()
-
-	# for minimap_icon in minimap_icons.get_children():
-	# 	minimap_icon.queue_free()
 
 	# Load the data from the markers
 	if str(map_id) in markerdata:
