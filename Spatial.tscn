@@ -502,9 +502,9 @@ margin_bottom = 624.833
 window_title = "Save Path"
 resizable = true
 access = 2
-current_dir = "/home/jl/Projects/Burrito"
+current_dir = "."
 current_file = "."
-current_path = "/home/jl/Projects/Burrito/."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
