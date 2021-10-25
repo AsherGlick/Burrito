@@ -11,6 +11,8 @@ var compass_is_top_right: bool
 
 var edit_panel_open: bool = false
 
+const Utils = preload("utils.gd")
+
 # This is the path to the texture that will be used for the next created 3d-path
 # object or icon object in the UI
 var next_texture_path: String = ""
@@ -438,53 +440,28 @@ func gen_new_path(points: Array, texture_path: String):
 	# TODO: We want to have two copies of each texture in memory one for 2D 
 	# which does not use srgb to render properly, and one for 3D which forces
 	# srgb to render properly. Issue #23.
-	var texture_file = File.new()
-	var image = Image.new()
-	if !texture_file.file_exists(texture_path):
-		print("Warning: File does not exist: ", texture_path)
-	texture_file.open(texture_path, File.READ)
-	image.load_png_from_buffer(texture_file.get_buffer(texture_file.get_len()))
-	texture_file.close()
-	image.lock()
-	var texture = ImageTexture.new()
-	texture.storage = ImageTexture.STORAGE_COMPRESS_LOSSLESS
-	texture.create_from_image(image, 22)
-
-
+	var texture_3d = Utils.new().generate_texture(texture_path, 'sRGB')
+	var texture_2d = Utils.new().generate_texture(texture_path, 'RGB')
 
 	# Create a new 3D route
 	var new_route = route_scene.instance()
-#	var new_curve = Curve3D.new()
-#	for point in points:
-#		new_curve.add_point(Vector3(point[0], point[1], -point[2]))
-#		points_2d.append(Vector2(point[0], -point[2]))
-
-#	new_path.curve = new_curve
 	new_route.texture_path = texture_path # Save the location of the image for later
-	#path_3d_markers.append(new_path)
 	
 	var points_3d := PoolVector3Array()
 	for point in points:
 		points_3d.append(Vector3(point[0], point[1], -point[2]))
 	
 	new_route.create_mesh(points_3d)
-	new_route.set_texture(texture)
+	new_route.set_texture(texture_3d)
 	paths.add_child(new_route)
-	
-	
-	
-	
-	
-	
 	
 	for point in points:
 		points_2d.append(Vector2(point[0], -point[2]))
-	
-	
+
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
 	new_2d_path.points = points_2d
-	new_2d_path.texture = texture
+	new_2d_path.texture = texture_2d
 	minimap.add_child(new_2d_path)
 	
 	self.currently_active_path = new_route
