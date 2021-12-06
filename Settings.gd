@@ -17,12 +17,12 @@ func _ready():
 	var file = File.new()
 	file.open(CONFIG_PATH, file.READ)
 	var text = file.get_as_text()
-	var datum = JSON.parse(text)	
+	var datum = JSON.parse(text)
 	self._config_data = JSON.parse(text).result
 
 	if self._config_data == null:
 		self._config_data = {}
-	
+
 	if "override_size_enabled" in self._config_data:
 		self.override_size_enabled = self._config_data["override_size_enabled"]
 	if "override_size_height" in self._config_data:
@@ -46,7 +46,7 @@ func save():
 		"burrito_link_wine_path": burrito_link_wine_path,
 		"burrito_link_env_args": burrito_link_env_args,
 	}
-	
+
 	var file = File.new()
 	file.open(CONFIG_PATH, File.WRITE)
 	file.store_string(JSON.print(self._config_data))
