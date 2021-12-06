@@ -2,6 +2,12 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <string.h>
+#include <time.h>
+
+// Enumerations of the different packet types that can be sent
+#define PACKET_FRAME 1
+#define PACKET_METADATA 2
+#define PACKET_LINK_TIMEOUT 3
 
 // Do a rolling average on the player position because that seems to be
 // Roughly what the camera position is doing and doing this will remove
@@ -151,6 +157,14 @@ struct MumbleContext {
 struct LinkedMem *lm = NULL;
 // mumble context pointer into the `lm` variable above.
 struct MumbleContext *lc = NULL;
+
+long program_timeout = 0;
+long program_startime = 0;
+
+
+time_t rawtime;
+
+
 #ifdef _WIN32
 
 // handle to the shared memory of Mumble link . close at the end of program. windows will only release the shared memory once ALL handles are closed,
@@ -234,11 +248,10 @@ int last_map_id = 0;
 int connect_and_or_send() {
     WSADATA wsaData;
     SOCKET SendingSocket;
-    SOCKADDR_IN ReceiverAddr, SrcInfo;
+    SOCKADDR_IN ReceiverAddr;
     int Port = 4242;
     int BufLength = 1024;
     char SendBuf[MaxBufferSize];
-    int len;
     int TotalByteSent;
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -284,6 +297,18 @@ int connect_and_or_send() {
     DWORD lastuitick = 0;
     // Send data packages to the receiver(Server).
     do {
+        if (program_timeout != 0 && clock()-program_startime > program_timeout) {
+            BufLength = 1;
+            // Set the first byte of the packet to indicate this packet is a `Heaver Context Updater` packet
+            SendBuf[0] = PACKET_LINK_TIMEOUT;
+            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+            if (TotalByteSent != BufLength) {
+                printf("Not all Bytes Sent");
+            }
+
+            printf("Breaking out due to timeout");
+            break;
+        }
         if (lm->uiTick == lastuitick) {
             Sleep(1);
             continue;
@@ -301,7 +326,7 @@ int connect_and_or_send() {
 
         BufLength = 1;
         // Set the first byte of the packet to indicate this packet is a `Per Frame Updater` packet
-        SendBuf[0] = 1;
+        SendBuf[0] = PACKET_FRAME;
 
         memcpy(SendBuf + BufLength, lm->fCameraPosition, sizeof(lm->fCameraPosition));
         BufLength += sizeof(lm->fCameraPosition);
@@ -341,7 +366,9 @@ int connect_and_or_send() {
         // printf("UI State: %i\n", lc->uiState); // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
 
         TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
-
+        if (TotalByteSent != BufLength) {
+            printf("Not all Bytes Sent");
+        }
 
         // After so many iterations have passed or under specific conditions
         // we will send a larger packet that contains more information about
@@ -350,7 +377,7 @@ int connect_and_or_send() {
             last_map_id = lc->mapId;
             BufLength = 1;
             // Set the first byte of the packet to indicate this packet is a `Heaver Context Updater` packet
-            SendBuf[0] = 2;
+            SendBuf[0] = PACKET_METADATA;
 
             // printf("hello world\n");
             // printf("%ls\n", lm->description);
@@ -444,7 +471,9 @@ int connect_and_or_send() {
             BufLength += converted_size;
 
             TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
-
+            if (TotalByteSent != BufLength) {
+                printf("Not all Bytes Sent");
+            }
             // break;
         }
 
@@ -455,37 +484,8 @@ int connect_and_or_send() {
         if (count > 500) {
             count = 0;
         }
-
-        // TODO: Maybe make a way to break out of this loop beyond program termination
     } while (TRUE);
 
-    // Print some info on the receiver(Server) side...
-
-    // Allocate the required resources
-
-    memset(&SrcInfo, 0, sizeof(SrcInfo));
-
-    len = sizeof(SrcInfo);
-
-    getsockname(SendingSocket, (SOCKADDR *)&SrcInfo, &len);
-
-    printf("Client: Sending IP(s) used: %s\n", inet_ntoa(SrcInfo.sin_addr));
-
-    printf("Client: Sending port used: %d\n", htons(SrcInfo.sin_port));
-
-    // Print some info on the sender(Client) side...
-
-    getpeername(SendingSocket, (SOCKADDR *)&ReceiverAddr, (int *)sizeof(ReceiverAddr));
-
-    printf("Client: Receiving IP used: %s\n", inet_ntoa(ReceiverAddr.sin_addr));
-
-    printf("Client: Receiving port used: %d\n", htons(ReceiverAddr.sin_port));
-
-    printf("Client: Total byte sent: %d\n", TotalByteSent);
-
-    // When your application is finished receiving datagrams close the socket.
-
-    printf("Client: Finished sending. Closing the sending socket...\n");
 
     if (closesocket(SendingSocket) != 0) {
         printf("Client: closesocket() failed! Error code: %d\n", WSAGetLastError());
@@ -520,6 +520,16 @@ int connect_and_or_send() {
 // calls the connect_and_or_send process which loops until termination.
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv) {
+
+    for (int i = 0; i < argc; i++) {
+        // If a timeout flag is passed in then set the timeout value
+        if (strcmp(argv[i], "--timeout") == 0) {
+            i = i+1;
+            program_timeout = atol(argv[i]) * CLOCKS_PER_SEC;
+            program_startime = clock();
+        }
+    }
+
     playerx_avg.index = 0;
     playery_avg.index = 0;
     playerz_avg.index = 0;
