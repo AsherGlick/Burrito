@@ -193,14 +193,14 @@ __meta__ = {
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
-visible = true
-margin_left = 48.1808
-margin_top = 88.7138
-margin_right = 261.181
-margin_bottom = 714.714
+margin_left = 39.0
+margin_top = 71.0
+margin_right = 252.0
+margin_bottom = 583.0
 window_title = "Main Menu"
 resizable = true
 __meta__ = {
+"_edit_group_": true,
 "_edit_use_anchors_": false
 }
 
@@ -604,15 +604,15 @@ disabled = true
 text = "Reverse Path Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
-visible = true
-margin_left = 616.368
-margin_top = 40.0536
-margin_right = 1005.37
-margin_bottom = 469.054
+margin_left = 319.718
+margin_top = 105.74
+margin_right = 708.72
+margin_bottom = 534.741
 window_title = "Settings"
 resizable = true
 script = ExtResource( 12 )
 __meta__ = {
+"_edit_group_": true,
 "_edit_use_anchors_": false
 }
 
@@ -628,7 +628,7 @@ __meta__ = {
 }
 
 [node name="GridContainer" type="GridContainer" parent="Control/Dialogs/SettingsDialog/ScrollContainer"]
-margin_right = 384.0
+margin_right = 384.002
 margin_bottom = 419.0
 size_flags_horizontal = 3
 size_flags_vertical = 3

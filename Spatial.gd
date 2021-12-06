@@ -293,6 +293,12 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
 		size.x = size_tuple[0]
 		size.y = size_tuple[1]
+
+	if size.x < Settings.minimum_width:
+		size.x = Settings.minimum_width
+	if size.y < Settings.minimum_height:
+		size.y = Settings.minimum_height
+
 	OS.window_size = size
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
