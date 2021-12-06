@@ -55,7 +55,11 @@ func _ready():
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
 	# Start off with a small size before GW2 client is up
-	OS.window_size = Vector2(800, 600)
+
+	if Settings.override_size_enabled:
+		OS.window_size = Vector2(Settings.override_size_width, Settings.override_size_height)
+	else:
+		OS.window_size = Vector2(Settings.minimum_width, Settings.minimum_height)
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
@@ -285,7 +289,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if !is_transient:
 		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
 
-	var size = Vector2(800, 600)
+	var size = Vector2(Settings.minimum_width, Settings.minimum_height)
 	if Settings.override_size_enabled:
 		size.x = Settings.override_size_width
 		size.y = Settings.override_size_height
@@ -294,10 +298,10 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		size.x = size_tuple[0]
 		size.y = size_tuple[1]
 
-	if size.x < Settings.minimum_width:
-		size.x = Settings.minimum_width
-	if size.y < Settings.minimum_height:
-		size.y = Settings.minimum_height
+		if size.x < Settings.minimum_width:
+			size.x = Settings.minimum_width
+		if size.y < Settings.minimum_height:
+			size.y = Settings.minimum_height
 
 	OS.window_size = size
 	var identity_length: int = spb.get_32()

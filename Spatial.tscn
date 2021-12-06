@@ -604,6 +604,7 @@ disabled = true
 text = "Reverse Path Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
 margin_left = 319.718
 margin_top = 105.74
 margin_right = 708.72
@@ -612,7 +613,6 @@ window_title = "Settings"
 resizable = true
 script = ExtResource( 12 )
 __meta__ = {
-"_edit_group_": true,
 "_edit_use_anchors_": false
 }
 
@@ -629,7 +629,7 @@ __meta__ = {
 
 [node name="GridContainer" type="GridContainer" parent="Control/Dialogs/SettingsDialog/ScrollContainer"]
 margin_right = 384.002
-margin_bottom = 419.0
+margin_bottom = 419.001
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
@@ -666,7 +666,7 @@ size_flags_horizontal = 3
 margin_top = 69.0
 margin_right = 112.0
 margin_bottom = 83.0
-text = "Override Size"
+text = "Use Fixed Size"
 
 [node name="OverrideSize" type="CheckButton" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 116.0
@@ -679,7 +679,7 @@ size_flags_horizontal = 3
 margin_top = 105.0
 margin_right = 112.0
 margin_bottom = 119.0
-text = "Override Width"
+text = "Fixed Width"
 
 [node name="OverrideWidth" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 116.0
@@ -692,7 +692,7 @@ size_flags_horizontal = 3
 margin_top = 133.0
 margin_right = 112.0
 margin_bottom = 147.0
-text = "Override Height"
+text = "Fixed Height"
 
 [node name="OverrideHeight" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 116.0
