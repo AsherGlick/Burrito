@@ -4,6 +4,9 @@ const CONFIG_PATH = "user://settings.json"
 
 var _config_data = {}
 
+var minimum_width: int = 800
+var minimum_height: int = 600
+
 var override_size_enabled: bool = false;
 var override_size_height: int = 1080
 var override_size_width: int = 1920
@@ -23,6 +26,10 @@ func _ready():
 	if self._config_data == null:
 		self._config_data = {}
 
+	if "minimum_width" in self._config_data:
+		self.minimum_width = self._config_data["minimum_width"]
+	if "minimum_height" in self._config_data:
+		self.minimum_height = self._config_data["minimum_height"]
 	if "override_size_enabled" in self._config_data:
 		self.override_size_enabled = self._config_data["override_size_enabled"]
 	if "override_size_height" in self._config_data:
@@ -39,6 +46,8 @@ func _ready():
 
 func save():
 	_config_data = {
+		"minimum_width": minimum_width,
+		"minimum_height": minimum_height,
 		"override_size_enabled": override_size_enabled,
 		"override_size_height": override_size_height,
 		"override_size_width": override_size_width,
