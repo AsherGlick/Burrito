@@ -193,6 +193,7 @@ __meta__ = {
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
 margin_left = 48.1808
 margin_top = 88.7138
 margin_right = 261.181
@@ -603,6 +604,7 @@ disabled = true
 text = "Reverse Path Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
 margin_left = 592.0
 margin_top = 146.0
 margin_right = 981.0
@@ -627,24 +629,24 @@ __meta__ = {
 
 [node name="OverrideSizeLabel" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
 margin_top = 13.0
-margin_right = 102.0
+margin_right = 112.0
 margin_bottom = 27.0
 text = "Override Size"
 
 [node name="OverrideSize" type="CheckButton" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-margin_left = 106.0
+margin_left = 116.0
 margin_right = 369.0
 margin_bottom = 40.0
 size_flags_horizontal = 3
 
 [node name="OverrideWidthLabel" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
 margin_top = 49.0
-margin_right = 102.0
+margin_right = 112.0
 margin_bottom = 63.0
 text = "Override Width"
 
 [node name="OverrideWidth" type="LineEdit" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-margin_left = 106.0
+margin_left = 116.0
 margin_top = 44.0
 margin_right = 369.0
 margin_bottom = 68.0
@@ -652,19 +654,18 @@ size_flags_horizontal = 3
 
 [node name="OverrideHeightLabel" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
 margin_top = 77.0
-margin_right = 102.0
+margin_right = 112.0
 margin_bottom = 91.0
 text = "Override Height"
 
 [node name="OverrideHeight" type="LineEdit" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-margin_left = 106.0
+margin_left = 116.0
 margin_top = 72.0
 margin_right = 369.0
 margin_bottom = 96.0
 size_flags_horizontal = 3
 
 [node name="HSeparator" type="HSeparator" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
 margin_top = 100.0
 margin_right = 112.0
 margin_bottom = 104.0
@@ -673,57 +674,71 @@ __meta__ = {
 }
 
 [node name="HSeparator2" type="HSeparator" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
+margin_left = 116.0
 margin_top = 100.0
-margin_right = 182.0
-margin_bottom = 131.0
+margin_right = 369.0
+margin_bottom = 104.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="AutoLaunchBurritoLinkLabel" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
-margin_top = 104.0
+margin_top = 112.0
 margin_right = 112.0
-margin_bottom = 135.0
+margin_bottom = 143.0
 text = "Auto Launch
 Burrito Link"
 
 [node name="AutoLaunchBurritoLink" type="CheckButton" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
-margin_top = 100.0
-margin_right = 182.0
-margin_bottom = 140.0
+margin_left = 116.0
+margin_top = 108.0
+margin_right = 369.0
+margin_bottom = 148.0
 size_flags_horizontal = 3
 
 [node name="WinePathLabel" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
-margin_top = 105.0
+margin_top = 157.0
 margin_right = 112.0
-margin_bottom = 119.0
+margin_bottom = 171.0
 text = "Wine Path"
 
 [node name="WinePath" type="LineEdit" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
-margin_top = 100.0
-margin_right = 182.0
-margin_bottom = 124.0
+margin_left = 116.0
+margin_top = 152.0
+margin_right = 369.0
+margin_bottom = 176.0
 size_flags_horizontal = 3
 
 [node name="EnvironmentVarsLabel" type="Label" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
-margin_top = 143.0
+margin_top = 223.0
 margin_right = 112.0
-margin_bottom = 157.0
+margin_bottom = 237.0
 text = "Environment Vars"
 
 [node name="EnvironmentVars" type="TextEdit" parent="Control/Dialogs/SettingsDialog/GridContainer"]
-visible = false
-margin_top = 100.0
-margin_right = 182.0
-margin_bottom = 200.0
+margin_left = 116.0
+margin_top = 180.0
+margin_right = 369.0
+margin_bottom = 280.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
+
+[node name="Spacer" type="Control" parent="Control/Dialogs/SettingsDialog/GridContainer"]
+visible = false
+margin_top = 284.0
+margin_right = 112.0
+margin_bottom = 284.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LoadLutrisProfile" type="Button" parent="Control/Dialogs/SettingsDialog/GridContainer"]
+visible = false
+margin_left = 116.0
+margin_top = 284.0
+margin_right = 369.0
+margin_bottom = 304.0
+text = "Load Lutris Profile"
 
 [node name="Border" type="Control" parent="Control"]
 visible = false

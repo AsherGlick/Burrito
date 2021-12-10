@@ -29,6 +29,6 @@ func save_settings(new_value=null):
 	Settings.burrito_link_wine_path = wine_path.text
 	var environment_vars: TextEdit = $GridContainer/EnvironmentVars
 	Settings.burrito_link_env_args = environment_vars.text
-	
+
 	Settings.save()
 

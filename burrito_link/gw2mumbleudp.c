@@ -2,30 +2,35 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <string.h>
+#include <time.h>
+
+// Enumerations of the different packet types that can be sent
+#define PACKET_FRAME 1
+#define PACKET_METADATA 2
+#define PACKET_LINK_TIMEOUT 3
 
 // Do a rolling average on the player position because that seems to be
 // Roughly what the camera position is doing and doing this will remove
 // some weird jitter I hope
-struct rolling_average_5
-{
+struct rolling_average_5 {
     UINT8 index;
     float points[5];
 };
-float get_rolling_average(struct rolling_average_5 *points)
-{
+
+
+float get_rolling_average(struct rolling_average_5 *points) {
     float sum = 0;
-    for (int i = 0; i < 5; i++)
-    {
+    for (int i = 0; i < 5; i++) {
         sum += points->points[i];
     }
     return sum / 5.0;
 }
-void replace_point_in_rolling_average(struct rolling_average_5 *points, float newvalue)
-{
+
+
+void replace_point_in_rolling_average(struct rolling_average_5 *points, float newvalue) {
     points->points[points->index] = newvalue;
     points->index = points->index + 1;
-    if (points->index > 4)
-    {
+    if (points->index > 4) {
         points->index = 0;
     }
 }
@@ -35,43 +40,115 @@ struct rolling_average_5 playerz_avg;
 
 float fAvatarAveragePosition[3];
 
+////////////////////////////////////////////////////////////////////////////////
+// LinkedMem struct
+//
+// This struct represents the Mumble Link shared memory datum that Guild Wars 2
+// uses to communicate live player and camera data, as well as some other
+// bits of information that are useful for tools like burrito.
+//
 // https://wiki.guildwars2.com/wiki/API:MumbleLink
-struct LinkedMem
-{
+// https://www.mumble.info/documentation/developer/positional-audio/link-plugin/
+////////////////////////////////////////////////////////////////////////////////
+struct LinkedMem {
     UINT32 uiVersion;
+
+    // The current update tick
     DWORD uiTick;
-    float fAvatarPosition[3]; // The XYZ location of the player
+
+    // The XYZ location of the player
+    float fAvatarPosition[3];
+
+    // A 3D unit vector representing the forward direction of the player character
     float fAvatarFront[3];
+
+    // A 3D unit vector representing the up direction of the player character
     float fAvatarTop[3];
-    wchar_t name[256];          // The string "Guild Wars 2" [Ignored]
-    float fCameraPosition[3];   // The XYZ position of the camera
-    float fCameraFront[3];      // A unit vector extending out the front of the camera
-    float fCameraTop[3];        // A perpendicular vector to fCameraFront, used for calculating roll [Ignored]
-    wchar_t identity[256];      // A json string containing json data
-    UINT32 context_len;         // A value that is always 48 [Ignored]
-    unsigned char context[256]; // See MumbleContext struct
-    wchar_t description[2048];  // Empty [Ignored]
+
+    // The string "Guild Wars 2"
+    wchar_t name[256];
+
+    // The XYZ Position of the camera
+    float fCameraPosition[3];
+
+    // A 3D unit vector representing the forward direction of the camera
+    float fCameraFront[3];
+
+    // A 3D unit vector representing the up direction of the camera
+    float fCameraTop[3];
+
+    // A json string containing json data. See https://wiki.guildwars2.com/wiki/API:MumbleLink#identity
+    wchar_t identity[256];
+
+    // A value that is always 48
+    UINT32 context_len;
+
+    // A binary chunk containing another struct. See the MumbleContext struct below
+    unsigned char context[256];
+
+    // An Empty Array, this field is not used by guild wars 2
+    wchar_t description[2048];
 };
 
-struct MumbleContext
-{
-    unsigned char serverAddress[28]; // contains sockaddr_in or sockaddr_in6 // IGNORED
+
+////////////////////////////////////////////////////////////////////////////////
+// MumbleContext struct
+//
+// This struct represents the LinkedMem.context datum that is passed in
+// LinkedMem. It is a struct that is entirely specific to Guild Wars 2 which
+// is why it is seperated out from the more mumble-generic LinkedMem struct.
+//
+// https://wiki.guildwars2.com/wiki/API:MumbleLink#context
+////////////////////////////////////////////////////////////////////////////////
+struct MumbleContext {
+    // The current address of the guild wars 2 server the player is connected to
+    // can be a ipv4 `sockaddr_in` or a ipv6 `sockaddr_in6`
+    unsigned char serverAddress[28];
+
+    // The Guild Wars 2 id for the map the player is currently in
     UINT32 mapId;
+
     UINT32 mapType;
     UINT32 shardId;
     UINT32 instance;
     UINT32 buildId;
-    // Additional data beyond the 48 bytes Mumble uses for identification
-    UINT32 uiState;        // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
-    UINT16 compassWidth;   // pixels
-    UINT16 compassHeight;  // pixels
-    float compassRotation; // radians
-    float playerX;         // continentCoords
-    float playerY;         // continentCoords
-    float mapCenterX;      // continentCoords
-    float mapCenterY;      // continentCoords
+
+    // A bitmask of various boolean element of the UI state
+    //   Bit 1 = IsMapOpen
+    //   Bit 2 = IsCompassTopRight
+    //   Bit 3 = DoesCompassHaveRotationEnabled
+    //   Bit 4 = Game has focus
+    //   Bit 5 = Is in Competitive game mode
+    //   Bit 6 = Textbox has focus
+    //   Bit 7 = Is in Combat
+    UINT32 uiState;
+
+    // The width of the minimap in pixels
+    UINT16 compassWidth;
+
+    // The height of the minimap in pixels
+    UINT16 compassHeight;
+
+    // The rotation of the minimap contents in radians
+    float compassRotation;
+
+    // The X location of the player in continentCoords
+    float playerX;
+    // The Y location of the player in continentCoords
+    float playerY;
+
+    // The center X of the current map in continentCoords
+    float mapCenterX;
+    // The center Y of the current map in continentCoords
+    float mapCenterY;
+
+    // The scale of how zoomed in the visible map or minimap is
     float mapScale;
-    UINT32 processId;      // Windows process id
+
+    // The windows process id of the Guild Wars 2 process
+    UINT32 processId;
+
+    // An enum representing which mount is currenty being used by the player
     UINT8 mountIndex;
 };
 
@@ -80,6 +157,14 @@ struct MumbleContext
 struct LinkedMem *lm = NULL;
 // mumble context pointer into the `lm` variable above.
 struct MumbleContext *lc = NULL;
+
+long program_timeout = 0;
+long program_startime = 0;
+
+
+time_t rawtime;
+
+
 #ifdef _WIN32
 
 // handle to the shared memory of Mumble link . close at the end of program. windows will only release the shared memory once ALL handles are closed,
@@ -89,9 +174,7 @@ HANDLE handle_lm;
 LPCTSTR mapped_lm;
 #endif
 
-void initMumble()
-{
-
+void initMumble() {
 #ifdef _WIN32
     // creates a shared memory IF it doesn't exist. otherwise, it returns the existing shared memory handle.
     // reference: https://docs.microsoft.com/en-us/windows/win32/memory/creating-named-shared-memory
@@ -99,29 +182,28 @@ void initMumble()
     size_t BUF_SIZE = sizeof(struct LinkedMem);
 
     handle_lm = CreateFileMapping(
-        INVALID_HANDLE_VALUE, // use paging file
-        NULL,                 // default security
-        PAGE_READWRITE,       // read/write access
-        0,                    // maximum object size (high-order DWORD)
-        BUF_SIZE,             // maximum object size (low-order DWORD)
-        "MumbleLink");        // name of mapping object
-                              // createfilemapping returns NULL when it fails, we print the error code for debugging purposes.
+        INVALID_HANDLE_VALUE,  // use paging file
+        NULL,                  // default security
+        PAGE_READWRITE,        // read/write access
+        0,                     // maximum object size (high-order DWORD)
+        BUF_SIZE,              // maximum object size (low-order DWORD)
+        "MumbleLink");         // name of mapping object
+                               // createfilemapping returns NULL when it fails, we print the error code for debugging purposes.
 
-    if (handle_lm == NULL)
-    {
+    if (handle_lm == NULL) {
         printf("Could not create file mapping object (%lu).\n",
                GetLastError());
         return;
     }
 
-    mapped_lm = (LPTSTR)MapViewOfFile(handle_lm,           // handle to map object
-                                      FILE_MAP_ALL_ACCESS, // read/write permission
-                                      0,
-                                      0,
-                                      BUF_SIZE);
+    mapped_lm = (LPTSTR)MapViewOfFile(
+        handle_lm,            // handle to map object
+        FILE_MAP_ALL_ACCESS,  // read/write permission
+        0,
+        0,
+        BUF_SIZE);
 
-    if (mapped_lm == NULL)
-    {
+    if (mapped_lm == NULL) {
         printf("Could not map view of file (%lu).\n",
                GetLastError());
 
@@ -135,19 +217,17 @@ void initMumble()
     printf("successfully opened mumble link shared memory..\n");
 #else
     char memname[256];
-    snprintf(memname, 256, "/MumbleLink.%d", getuid());
+    snprintf(memname, sizeof(memname), "/MumbleLink.%d", getuid());
 
     int shmfd = shm_open(memname, O_RDWR, S_IRUSR | S_IWUSR);
 
-    if (shmfd < 0)
-    {
+    if (shmfd < 0) {
         return;
     }
 
     lm = (struct LinkedMem *)(mmap(NULL, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0));
 
-    if (lm == (void *)(-1))
-    {
+    if (lm == (void *)(-1)) {
         lm = NULL;
         return;
     }
@@ -156,21 +236,25 @@ void initMumble()
 
 int last_map_id = 0;
 
+// The max buffer size for data that is being sent to burriot over the UDP socket
 #define MaxBufferSize 1024
-int connect_and_or_send()
-{
+
+////////////////////////////////////////////////////////////////////////////////
+// connect_and_or_send()
+//
+// This function loops until termination, grabbing information from the shared
+// memory block and sending the memory over to burrito over a UDP socket.
+////////////////////////////////////////////////////////////////////////////////
+int connect_and_or_send() {
     WSADATA wsaData;
     SOCKET SendingSocket;
-    SOCKADDR_IN ReceiverAddr, SrcInfo;
+    SOCKADDR_IN ReceiverAddr;
     int Port = 4242;
     int BufLength = 1024;
     char SendBuf[MaxBufferSize];
-    int len;
     int TotalByteSent;
 
-    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-    {
-
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         printf("Client: WSAStartup failed with error %d\n", WSAGetLastError());
 
         // Clean up
@@ -178,18 +262,14 @@ int connect_and_or_send()
 
         // Exit with error
         return -1;
-    }
-    else
-    {
+    } else {
         printf("Client: The Winsock DLL status is %s.\n", wsaData.szSystemStatus);
     }
     // Create a new socket to receive datagrams on.
 
     SendingSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-    if (SendingSocket == INVALID_SOCKET)
-    {
-
+    if (SendingSocket == INVALID_SOCKET) {
         // Print error message
         printf("Client: Error at socket(): %d\n", WSAGetLastError());
 
@@ -198,9 +278,7 @@ int connect_and_or_send()
 
         // Exit with error
         return -1;
-    }
-    else
-    {
+    } else {
         printf("Client: socket() is OK!\n");
     }
 
@@ -218,16 +296,24 @@ int connect_and_or_send()
     int count = 0;
     DWORD lastuitick = 0;
     // Send data packages to the receiver(Server).
-    do
-    {
+    do {
+        if (program_timeout != 0 && clock()-program_startime > program_timeout) {
+            BufLength = 1;
+            // Set the first byte of the packet to indicate this packet is a `Heaver Context Updater` packet
+            SendBuf[0] = PACKET_LINK_TIMEOUT;
+            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+            if (TotalByteSent != BufLength) {
+                printf("Not all Bytes Sent");
+            }
 
-        if (lm->uiTick == lastuitick)
-        {
+            printf("Breaking out due to timeout");
+            break;
+        }
+        if (lm->uiTick == lastuitick) {
             Sleep(1);
             continue;
         }
         lastuitick = lm->uiTick;
-        //printf("%ld\n", lm->uiTick);
 
         replace_point_in_rolling_average(&playerx_avg, lm->fAvatarPosition[0]);
         replace_point_in_rolling_average(&playery_avg, lm->fAvatarPosition[1]);
@@ -239,7 +325,8 @@ int connect_and_or_send()
         fAvatarAveragePosition[2] = get_rolling_average(&playerz_avg);
 
         BufLength = 1;
-        SendBuf[0] = 1; // Per Frame Updater
+        // Set the first byte of the packet to indicate this packet is a `Per Frame Updater` packet
+        SendBuf[0] = PACKET_FRAME;
 
         memcpy(SendBuf + BufLength, lm->fCameraPosition, sizeof(lm->fCameraPosition));
         BufLength += sizeof(lm->fCameraPosition);
@@ -279,12 +366,18 @@ int connect_and_or_send()
         // printf("UI State: %i\n", lc->uiState); // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
 
         TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+        if (TotalByteSent != BufLength) {
+            printf("Not all Bytes Sent");
+        }
 
-        if (count == 0 || lc->mapId != last_map_id)
-        {
+        // After so many iterations have passed or under specific conditions
+        // we will send a larger packet that contains more information about
+        // the current state of the game.
+        if (count == 0 || lc->mapId != last_map_id) {
             last_map_id = lc->mapId;
             BufLength = 1;
-            SendBuf[0] = 2; // Heaver Context Updater
+            // Set the first byte of the packet to indicate this packet is a `Heaver Context Updater` packet
+            SendBuf[0] = PACKET_METADATA;
 
             // printf("hello world\n");
             // printf("%ls\n", lm->description);
@@ -330,14 +423,12 @@ int connect_and_or_send()
 
             // Get and send the linux x server window id
             UINT32 x11_window_id = 0;
-            HWND window_handle=NULL;
-            BOOL CALLBACK EnumWindowsProcMy(HWND hwnd, LPARAM lParam)
-            {
+            HWND window_handle = NULL;
+            BOOL CALLBACK EnumWindowsProcMy(HWND hwnd, LPARAM lParam) {
                 DWORD processId;
                 GetWindowThreadProcessId(hwnd, &processId);
-                if(processId == lParam)
-                {
-                    window_handle=hwnd;
+                if (processId == lParam) {
+                    window_handle = hwnd;
                     return FALSE;
                 }
                 return TRUE;
@@ -380,56 +471,25 @@ int connect_and_or_send()
             BufLength += converted_size;
 
             TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
-
+            if (TotalByteSent != BufLength) {
+                printf("Not all Bytes Sent");
+            }
             // break;
         }
 
-        // Sleep(16); // Slightly faster then 60fps which would be 16.6666666...ms
 
+        // Update the count for the `Heaver Context Updater` packet and reset
+        // it to 0 when it hits a threshold value.
         count += 1;
-        if (count > 500)
-        {
+        if (count > 500) {
             count = 0;
         }
-
-        // TODO: Maybe make a way to break out of this loop beyond program termination
     } while (TRUE);
 
-    // Print some info on the receiver(Server) side...
 
-    // Allocate the required resources
-
-    memset(&SrcInfo, 0, sizeof(SrcInfo));
-
-    len = sizeof(SrcInfo);
-
-    getsockname(SendingSocket, (SOCKADDR *)&SrcInfo, &len);
-
-    printf("Client: Sending IP(s) used: %s\n", inet_ntoa(SrcInfo.sin_addr));
-
-    printf("Client: Sending port used: %d\n", htons(SrcInfo.sin_port));
-
-    // Print some info on the sender(Client) side...
-
-    getpeername(SendingSocket, (SOCKADDR *)&ReceiverAddr, (int *)sizeof(ReceiverAddr));
-
-    printf("Client: Receiving IP used: %s\n", inet_ntoa(ReceiverAddr.sin_addr));
-
-    printf("Client: Receiving port used: %d\n", htons(ReceiverAddr.sin_port));
-
-    printf("Client: Total byte sent: %d\n", TotalByteSent);
-
-    // When your application is finished receiving datagrams close the socket.
-
-    printf("Client: Finished sending. Closing the sending socket...\n");
-
-    if (closesocket(SendingSocket) != 0)
-    {
-
+    if (closesocket(SendingSocket) != 0) {
         printf("Client: closesocket() failed! Error code: %d\n", WSAGetLastError());
-    }
-    else
-    {
+    } else {
         printf("Server: closesocket() is OK\n");
     }
 
@@ -437,40 +497,44 @@ int connect_and_or_send()
 
     printf("Client: Cleaning up...\n");
 
-    if (WSACleanup() != 0)
-    {
+    if (WSACleanup() != 0) {
         printf("Client: WSACleanup() failed! Error code: %d\n", WSAGetLastError());
-    }
-
-    else
-    {
+    } else {
         printf("Client: WSACleanup() is OK\n");
     }
+
 #ifdef _WIN32
     // unmap the shared memory from our process address space.
     UnmapViewOfFile(mapped_lm);
     // close LinkedMemory handle
     CloseHandle(handle_lm);
-
 #endif
+
     // Back to the system
     return 0;
 }
 
-int main(int argc, char **argv)
-{
+
+////////////////////////////////////////////////////////////////////////////////
+// The main function initializes some global variables and shared memory. Then
+// calls the connect_and_or_send process which loops until termination.
+////////////////////////////////////////////////////////////////////////////////
+int main(int argc, char **argv) {
+
+    for (int i = 0; i < argc; i++) {
+        // If a timeout flag is passed in then set the timeout value
+        if (strcmp(argv[i], "--timeout") == 0) {
+            i = i+1;
+            program_timeout = atol(argv[i]) * CLOCKS_PER_SEC;
+            program_startime = clock();
+        }
+    }
+
     playerx_avg.index = 0;
     playery_avg.index = 0;
     playerz_avg.index = 0;
 
-    printf("hello world\n");
     initMumble();
-    // sockmain(argc, argv);
-    // initMumble();
-    // for (int i = 0; i < 100; i++) {
-    //     printf("%f\n", lm->fAvatarPosition[0]);
-    //     Sleep(16); // Slightly faster then 60fps which would be 16.6666666...ms
-    // }
 
     connect_and_or_send();
 }
