@@ -605,10 +605,10 @@ text = "Reverse Path Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
 visible = true
-margin_left = 319.718
-margin_top = 105.74
-margin_right = 708.72
-margin_bottom = 534.741
+margin_left = 592.0
+margin_top = 146.0
+margin_right = 981.0
+margin_bottom = 575.0
 window_title = "Settings"
 resizable = true
 script = ExtResource( 12 )
