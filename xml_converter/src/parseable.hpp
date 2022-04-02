@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 
@@ -22,11 +23,24 @@ using namespace std;
 	bool is_##varname##_##subvarname##_set = setup_variable(assign_##varname##_##subvarname, &varname, { __VA_ARGS__ });
 
 
-struct ParseableAttribute;
+////////////////////////////////////////////////////////////////////////////////
+// RemoteCall
+//
+// RemoteCall is a struct used to store the information needed to set flags
+// while we are parsing the input.
+////////////////////////////////////////////////////////////////////////////////
+struct RemoteCall {
+	void (*function)(void*, rapidxml::xml_attribute<>*, vector<string>*);
+	void* object;
+};
+
+
 
 class Parseable {
 public:
-	vector<ParseableAttribute> variable_list;
+	map<string, RemoteCall> variable_list;
+
+
 	bool setup_variable(
 		void (*function)(void*, rapidxml::xml_attribute<>*, vector<string>*),
 		void* object,
@@ -39,11 +53,4 @@ public:
 	virtual string classname();
 	void init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors);
 	bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<string> *errors);
-};
-
-
-struct ParseableAttribute {
-	void (*function)(void*, rapidxml::xml_attribute<>*, vector<string>*);
-	void* object;
-	vector<string> token_names;
 };

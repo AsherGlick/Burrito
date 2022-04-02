@@ -23,28 +23,7 @@ using namespace std;
 // function to set all the flags.
 ////////////////////////////////////////////////////////////////////////////////
 #define FILTER_ITEM(name, ...) \
-	static void assign_##name(bool* obj) { \
-		*obj = true; \
-	} \
-	bool name = setup_variable(assign_##name, &name, { __VA_ARGS__ });
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// RemoteCall
-//
-// RemoteCall is a struct used to store the information needed to set flags
-// while we are parsing the input.
-//
-// TODO: Because everything in `Filter` is a bool, unlike how `Parseable` works
-// we might not even need to store a function pointer and instead 
-// Filter.variable_list could be a map<string, bool*> and we use one generic
-// function to set all the flags.
-////////////////////////////////////////////////////////////////////////////////
-struct RemoteCall {
-	void (*function)(bool*);
-	bool* object;
-};
+	bool name = setup_variable(&name, { __VA_ARGS__ });
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +37,8 @@ struct RemoteCall {
 ////////////////////////////////////////////////////////////////////////////////
 class Filter {
 public:
-	map<string, RemoteCall> variable_list;
-	bool setup_variable(void (*function)(bool*), bool*, vector<string> names);
+	map<string, bool*> variable_list;
+	bool setup_variable(bool*, vector<string> names);
 	void parse(rapidxml::xml_attribute<>* input, vector<string> *errors);
 	virtual string classname() { return "Filter"; }
 };

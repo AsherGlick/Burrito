@@ -6,12 +6,12 @@
 
 using namespace std;
 
-bool Filter::setup_variable(void (*function)(bool*), bool* flag, vector<string> names) {
+bool Filter::setup_variable(bool* flag, vector<string> names) {
 	for (auto name : names) {
 		if (this->variable_list.count(name)) {
 			throw;
 		}
-		this->variable_list[name] = {function, flag};
+		this->variable_list[name] = flag;
 	}
 
 	return false;
@@ -36,9 +36,8 @@ void Filter::parse(rapidxml::xml_attribute<>* input, vector<string> *errors) {
 			continue;
 		}
 
-		RemoteCall function_call = iterator->second;
-
-		function_call.function(function_call.object);
+		bool* target = iterator->second;
+		*target = true;
 	}
 
 }

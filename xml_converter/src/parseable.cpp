@@ -35,17 +35,15 @@ void Parseable::init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors
 }
 
 bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<string> *errors) {
-	for (auto parser_function : this->variable_list) {
-		if (nomralized_matches_any(attribute->name(), parser_function.token_names)) {
-			// if (string(attribute->name()) != attr_name) {
-				/*errors->push_back("Found a similar but incorrect attribute \"" + string(attribute->name()) + "\" treating it as \"" + attr_name + "\".");*/ \
-			// }
-			parser_function.function(parser_function.object, attribute, errors);
-			return true;
-		}
+	auto iterator = this->variable_list.find(normalize_type_name(attribute->name()));
+
+	if (iterator == this->variable_list.end()) {
+		return false;;
 	}
 
-	return false;
+	RemoteCall function_call = iterator->second;
+	function_call.function(function_call.object, attribute, errors);
+	return true;
 }
 
 
@@ -54,10 +52,13 @@ bool Parseable::setup_variable(
 		void* object,
 		vector<string> names
 ) {
-	this->variable_list.push_back({
-		function,
-		object,
-		names
-	});
+
+	for (auto name : names) {
+		if (this->variable_list.count(name)) {
+			throw;
+		}
+		this->variable_list[normalize_type_name(name)] = {function, object};
+	}
+
 	return false;
 }
