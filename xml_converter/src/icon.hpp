@@ -17,6 +17,7 @@
 #include "attribute/race_filter.hpp"
 #include "attribute/map_type_filter.hpp"
 #include "attribute/mount_filter.hpp"
+#include "attribute/position.hpp"
 
 #include "string_helper.hpp"
 
@@ -97,9 +98,10 @@ private:
 	PARSEABLE_VAR(mount_filter, MountFilter, "Mount")
 
 	// https://blishhud.com/docs/markers/attributes/position
-	PARSEABLE_VAR(xpos, float, "XPos")
-	PARSEABLE_VAR(ypos, float, "YPos")
-	PARSEABLE_VAR(zpos, float, "ZPos")
+	PARSEABLE_VAR(position, Position, "Position")
+	PARSEABLE_SUBVAR(position, x, Position, float, "XPos", "PositionX")
+	PARSEABLE_SUBVAR(position, y, Position, float, "YPos", "PositionY")
+	PARSEABLE_SUBVAR(position, z, Position, float, "ZPos", "PositionZ")
 
 	// https://blishhud.com/docs/markers/attributes/profession
 	PARSEABLE_VAR(profession_filter, ProfessionFilter, "Profession")
