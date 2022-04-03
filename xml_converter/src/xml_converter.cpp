@@ -110,7 +110,7 @@ void parse_xml_file(string xml_filepath) {
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (string(node->name()) == "MarkerCategory") {
-            // parse_marker_categories(node, &errors);
+            parse_marker_categories(node, &errors);
         }
         else if (string(node->name()) == "POIs") {
             parse_pois(node, xml_filepath, &errors);
