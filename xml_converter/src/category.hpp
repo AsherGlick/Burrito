@@ -35,7 +35,6 @@ public:
 
 	virtual string classname();
 	void init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors);
-	// virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<string> *errors);
 };
 
 #undef PARSEABLE_VAR
