@@ -47,7 +47,6 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<
     auto iterator = variable_list->find(item);
 
     if (iterator == variable_list->end()) {
-        errors->push_back("Unknown " + this->classname() + " option " + item);
         return false;
     }
 
