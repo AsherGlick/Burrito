@@ -3,19 +3,21 @@
 #include <string>
 #include <vector>
 #include "filter.hpp"
+#include <iostream>
+#include <map>
 
 using namespace std;
 
-bool Filter::setup_variable(bool* flag, vector<string> names) {
-	for (auto name : names) {
-		if (this->variable_list.count(name)) {
+bool Filter::setup_variable(void (*function)(void* filter_object), void* object, vector<string> names) {
+	for (auto name: names) {
+		if (this->setter_lookup.count(name)) {
 			throw;
 		}
-		this->variable_list[name] = flag;
+		this->setter_lookup[name] = function;
 	}
-
 	return false;
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filter::parse
@@ -29,15 +31,13 @@ void Filter::parse(rapidxml::xml_attribute<>* input, vector<string> *errors) {
 	vector<string> items = split(string(input->value()), ",");
 
 	for (string item : items) {
-		auto iterator = this->variable_list.find(item);
+		auto iterator = this->setter_lookup.find(item);
 
-		if (iterator == this->variable_list.end()) {
+		if (iterator == this->setter_lookup.end()) {
 			errors->push_back("Unknown " + this->classname() + " option " + item);
 			continue;
 		}
 
-		bool* target = iterator->second;
-		*target = true;
+		iterator->second(this);
 	}
-
 }

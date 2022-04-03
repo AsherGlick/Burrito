@@ -10,6 +10,7 @@
 
 using namespace std;
 
+#define FILTER_ITEM(...) CLASS_FILTER_ITEM(FestivalFilter, __VA_ARGS__ )
 
 class FestivalFilter: public Filter {
 public:
@@ -23,5 +24,7 @@ public:
 
     virtual string classname() { return "FestivalFilter"; }
 };
+
+#undef FILTER_ITEM
 
 FestivalFilter parse_FestivalFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);

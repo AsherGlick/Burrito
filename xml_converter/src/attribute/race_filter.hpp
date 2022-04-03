@@ -3,8 +3,9 @@
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "filter.hpp"
 
-
 using namespace std;
+
+#define FILTER_ITEM(...) CLASS_FILTER_ITEM(RaceFilter, __VA_ARGS__ )
 
 class RaceFilter: public Filter {
 public:
@@ -17,4 +18,7 @@ public:
     virtual string classname() { return "RaceFilter"; }
 };
 
+
 RaceFilter parse_RaceFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
+
+#undef FILTER_ITEM

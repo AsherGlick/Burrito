@@ -10,35 +10,44 @@ using namespace std;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// FILTER_ITEM
+// CLASS_FILTER_ITEM
 //
-// The FILTER_ITEM macro takes a name of a flag variable and a series of values
-// for what strings should trigger that flag. It useese setup_variable to
-// construct a list of all the flags that can be set for a given class on
-// runtime.
+// The CLASS_FILTER_ITEM macro takes the name of a class, the name of a
+// variable inside that class, and a series of strings that should cause that
+// variable to be set. It uses setup_variable to construct a list of all the 
+// flags that can be set for a given Filter subclass at runtime. It has no
+// references to the object itself so that it can be instance agnostic and
+// re-used when subsequent classes are initialized.
 //
-// TODO: Because everything in `Filter` is a bool, unlike how `Parseable` works
-// we might not even need to store a function pointer and instead 
-// Filter.variable_list could be a map<string, bool*> and we use one generic
-// function to set all the flags.
+// It is suggested to #define a curried version of CLASS_FILTER_ITEM for each
+// subclass. For example the class SubFilter may define it as:
+//
+//   #define FILTER_ITEM(...) CLASS_FILTER_ITEM(SubFilter, __VA_ARGS__ )
+//
 ////////////////////////////////////////////////////////////////////////////////
-#define FILTER_ITEM(name, ...) \
-	bool name = setup_variable(&name, { __VA_ARGS__ });
+#define CLASS_FILTER_ITEM(filtername, name, ...) \
+	bool name; \
+	static void enable_##name(void* obj) { \
+		(*(filtername*)obj).name = true; \
+	} \
+	bool name##_setup = setup_variable(enable_##name, &name, { __VA_ARGS__ });
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filter
 //
-// Filter is ment to be a base class for various attributes where one or more
+// Filter is meant to be a base class for various attributes where one or more
 // options can be selected. Typically these function as filters for whatever
 // element they are associated with. For example a marker or path may be hidden
-// or shown base on what class a user it when the path is relevent to only
+// or shown base on what class a user it when the path is relevant to only
 // one class.
 ////////////////////////////////////////////////////////////////////////////////
 class Filter {
 public:
-	map<string, bool*> variable_list;
-	bool setup_variable(bool*, vector<string> names);
+	map<string, void (*)(void* filter_object)> setter_lookup;
+
+	bool setup_variable(void (*function)(void* filter_object), void* object, vector<string> names);
+
 	void parse(rapidxml::xml_attribute<>* input, vector<string> *errors);
 	virtual string classname() { return "Filter"; }
 };

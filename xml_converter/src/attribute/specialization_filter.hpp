@@ -2,6 +2,8 @@
 
 #include "filter.hpp"
 
+#define FILTER_ITEM(...) CLASS_FILTER_ITEM(SpecializationFilter, __VA_ARGS__ )
+
 class SpecializationFilter: public Filter {
 	// Heart of Thorns Spec
 	FILTER_ITEM(ranger_druid, "5")
@@ -78,5 +80,6 @@ class SpecializationFilter: public Filter {
 
 };
 
+#undef FILTER_ITEM
 
 SpecializationFilter parse_SpecializationFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);

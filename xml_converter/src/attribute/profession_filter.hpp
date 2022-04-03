@@ -9,6 +9,8 @@
 
 using namespace std;
 
+#define FILTER_ITEM(...) CLASS_FILTER_ITEM(ProfessionFilter, __VA_ARGS__ )
+
 class ProfessionFilter: public Filter {
 public:
 	FILTER_ITEM(elementalist, "elementalist")
@@ -23,5 +25,7 @@ public:
 
     virtual string classname() { return "ProfessionFilter"; }
 };
+
+#undef FILTER_ITEM
 
 ProfessionFilter parse_ProfessionFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);

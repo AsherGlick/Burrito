@@ -6,6 +6,9 @@
 
 using namespace std;
 
+#define FILTER_ITEM(...) CLASS_FILTER_ITEM(MountFilter, __VA_ARGS__ )
+
+
 class MountFilter: public Filter {
 public:
     FILTER_ITEM(jackal, "jackal")
@@ -22,5 +25,7 @@ public:
 
     virtual string classname() { return "MountFilter"; }
 };
+
+#undef FILTER_ITEM
 
 MountFilter parse_MountFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);

@@ -6,6 +6,9 @@
 
 using namespace std;
 
+#define FILTER_ITEM(...) CLASS_FILTER_ITEM(MapTypeFilter, __VA_ARGS__ )
+
+
 class MapTypeFilter: public Filter {
 public:
 	// An unknown map type. Used as fallback.
@@ -82,5 +85,7 @@ public:
 
     virtual string classname() { return "MapTypeFilter"; }
 };
+
+#undef FILTER_ITEM
 
 MapTypeFilter parse_MapTypeFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
