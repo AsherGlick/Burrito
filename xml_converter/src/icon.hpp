@@ -120,12 +120,14 @@ private:
 
 
 	// https://blishhud.com/docs/markers/attributes/scaleonmapwithzoom
-	bool scaleonmapwithzoom;
+	PARSEABLE_VAR(scale_on_map_with_zoom, bool, "ScaleOnMapWithZoom")
 
 	// https://blishhud.com/docs/markers/attributes/schedule
 	// Not including parsing support for now due to complexity and lack of practical uses
 	// Schedule schedule;
 	// float schedule_duration;
+	PARSEABLE_VAR(schedule, string, "Schedule")
+	PARSEABLE_VAR(schedule_duration, int, "ScheduleDuration")
 
 	// https://blishhud.com/docs/markers/attributes/showhide
 	PARSEABLE_VAR(show, string, "Show")
@@ -145,7 +147,7 @@ private:
 	PARSEABLE_VAR(tip_description, string, "TipDescription")
 
 	// https://blishhud.com/docs/markers/attributes/toggle
-	PARSEABLE_VAR(toggle, string, "Toggle")
+	PARSEABLE_VAR(toggle, string, "Toggle", "ToggleCategory")
 
 	// https://blishhud.com/docs/markers/attributes/triggerrange
 	PARSEABLE_VAR(trigger_range, float, "TriggerRange")
@@ -154,9 +156,9 @@ private:
 	PARSEABLE_VAR(category, string, "Type")
 
 	// https://blishhud.com/docs/markers/attributes/visibility
-	PARSEABLE_VAR(visible_on_minimap, bool, "MinimapVisibility")
-	PARSEABLE_VAR(visible_on_map, bool, "MapVisibility")
-	PARSEABLE_VAR(visible_ingame, bool, "IngameVisibility")
+	PARSEABLE_VAR(visible_on_minimap, bool, "MinimapVisibility", "BHMinimapVisibility")
+	PARSEABLE_VAR(visible_on_map, bool, "MapVisibility", "BHMapVisibility")
+	PARSEABLE_VAR(visible_ingame, bool, "IngameVisibility", "BHIngameVisibility")
 
 
 
