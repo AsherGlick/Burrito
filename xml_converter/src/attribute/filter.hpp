@@ -2,6 +2,7 @@
 
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <map>
@@ -32,7 +33,6 @@ using namespace std;
 	} \
 	bool name##_setup = setup_variable(enable_##name, &name, { __VA_ARGS__ });
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Filter
 //
@@ -43,9 +43,10 @@ using namespace std;
 // one class.
 ////////////////////////////////////////////////////////////////////////////////
 class Filter {
-public:
-	map<string, void (*)(void* filter_object)> setter_lookup;
+	static uint64_t _counter;
+	uint64_t _id = ++_counter;
 
+public:
 	bool setup_variable(void (*function)(void* filter_object), void* object, vector<string> names);
 
 	void parse(rapidxml::xml_attribute<>* input, vector<string> *errors);
