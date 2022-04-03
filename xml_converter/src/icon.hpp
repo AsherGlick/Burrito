@@ -26,6 +26,10 @@
 using namespace std;
 
 
+
+#define PARSEABLE_VAR(...) CLASS_PARSEABLE_VAR(Icon, __VA_ARGS__ )
+#define PARSEABLE_SUBVAR(...) CLASS_PARSEABLE_SUBVAR(Icon, __VA_ARGS__ )
+
 class Icon: public Parseable {
 private:
 	// https://blishhud.com/docs/markers/attributes/achievement
@@ -179,3 +183,6 @@ private:
 
 	virtual string classname();
 };
+
+#undef PARSEABLE_VAR
+#undef PARSEABLE_SUBVAR

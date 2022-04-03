@@ -46,6 +46,9 @@ class Filter {
 	static uint64_t _counter;
 	uint64_t _id = ++_counter;
 
+	static map<string, uint64_t> original;
+	static map<string, map<string, void (*)(void* filter_object)>> lookup;
+
 public:
 	bool setup_variable(void (*function)(void* filter_object), void* object, vector<string> names);
 

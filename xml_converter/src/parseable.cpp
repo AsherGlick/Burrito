@@ -17,7 +17,13 @@
 #include <cstdio>
 using namespace std;
 
-Parseable::Parseable() {}
+
+
+uint64_t Parseable::_counter = 0;
+map<string, uint64_t> Parseable::original;
+map<string, map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<string>*)>> Parseable::lookup;
+
+
 
 string Parseable::classname() {
 	return "Parseable";
@@ -35,30 +41,44 @@ void Parseable::init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors
 }
 
 bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<string> *errors) {
-	auto iterator = this->variable_list.find(normalize_type_name(attribute->name()));
+	const char* type_id = typeid(*this).name();
+	auto variable_list = &lookup[type_id];
 
-	if (iterator == this->variable_list.end()) {
-		return false;;
+	string item = normalize_type_name(attribute->name());
+
+	auto iterator = variable_list->find(item);
+
+	if (iterator == variable_list->end()) {
+		errors->push_back("Unknown " + this->classname() + " option " + item);
+		return false;
 	}
 
-	RemoteCall function_call = iterator->second;
-	function_call.function(function_call.object, attribute, errors);
+	iterator->second(this, attribute, errors);
 	return true;
 }
 
 
 bool Parseable::setup_variable(
 		void (*function)(void*, rapidxml::xml_attribute<>*, vector<string>*),
-		void* object,
 		vector<string> names
 ) {
+	const char* type_id = typeid(*this).name();
+	auto iterator = original.find(type_id);
 
-	for (auto name : names) {
-		if (this->variable_list.count(name)) {
+	if (iterator != original.end() && iterator->second != this->_id) {
+		return false;
+	}
+	original[type_id] = this->_id;
+
+	// Grab a pointer to the lookup data for this subclass so we can edit it.
+	map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<string>*)>* variable_list = &lookup[type_id];
+
+	// Insert all of the names for this field, error on duplicates.
+	for (auto name: names) {
+		if (variable_list->count(name)) {
 			throw;
 		}
-		this->variable_list[normalize_type_name(name)] = {function, object};
+		(*variable_list)[normalize_type_name(name)] = function;
 	}
-
 	return false;
 }

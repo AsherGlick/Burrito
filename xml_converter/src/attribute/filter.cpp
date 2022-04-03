@@ -9,8 +9,8 @@
 using namespace std;
 
 uint64_t Filter::_counter = 0;
-map<string, uint64_t> original;
-map<string, map<string, void (*)(void* filter_object)>> lookup;
+map<string, uint64_t> Filter::original;
+map<string, map<string, void (*)(void* filter_object)>> Filter::lookup;
 
 bool Filter::setup_variable(void (*function)(void* filter_object), void* object, vector<string> names) {
 

@@ -32,6 +32,9 @@
 #include "parseable.hpp"
 using namespace std;
 
+#define PARSEABLE_VAR(...) CLASS_PARSEABLE_VAR(Trail, __VA_ARGS__ )
+#define PARSEABLE_SUBVAR(...) CLASS_PARSEABLE_SUBVAR(Trail, __VA_ARGS__ )
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,3 +103,6 @@ public:
 
 	virtual string classname();
 };
+
+#undef PARSEABLE_VAR
+#undef PARSEABLE_SUBVAR
