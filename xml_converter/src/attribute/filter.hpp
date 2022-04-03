@@ -27,11 +27,10 @@ using namespace std;
 //
 ////////////////////////////////////////////////////////////////////////////////
 #define CLASS_FILTER_ITEM(filtername, name, ...) \
-    bool name; \
     static void enable_##name(void* obj) { \
         (*(filtername*)obj).name = true; \
     } \
-    bool name##_setup = setup_variable(enable_##name, { __VA_ARGS__ });
+    bool name = setup_variable(enable_##name, { __VA_ARGS__ });
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filter
