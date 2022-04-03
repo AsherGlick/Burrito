@@ -128,8 +128,6 @@ private:
 
 	// https://blishhud.com/docs/markers/attributes/schedule
 	// Not including parsing support for now due to complexity and lack of practical uses
-	// Schedule schedule;
-	// float schedule_duration;
 	PARSEABLE_VAR(schedule, string, "Schedule")
 	PARSEABLE_VAR(schedule_duration, int, "ScheduleDuration")
 
