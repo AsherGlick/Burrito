@@ -1,8 +1,10 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "filter.hpp"
-
 
 using namespace std;
 
@@ -10,7 +12,7 @@ using namespace std;
 
 
 class MountFilter: public Filter {
-public:
+ public:
     FILTER_ITEM(jackal, "jackal")
     FILTER_ITEM(griffon, "griffon")
     FILTER_ITEM(springer, "springer")

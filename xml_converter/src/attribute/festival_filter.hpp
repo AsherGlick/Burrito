@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
+#include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
 #include "filter.hpp"
 
 using namespace std;
@@ -13,7 +13,7 @@ using namespace std;
 #define FILTER_ITEM(...) CLASS_FILTER_ITEM(FestivalFilter, __VA_ARGS__ )
 
 class FestivalFilter: public Filter {
-public:
+ public:
     FILTER_ITEM(dragonbash, "dragonbash")
     FILTER_ITEM(festival_of_the_four_winds, "festivalofthefourwinds")
     FILTER_ITEM(halloween, "halloween")

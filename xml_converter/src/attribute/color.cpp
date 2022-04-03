@@ -1,12 +1,14 @@
-#include "../rapidxml-1.13/rapidxml.hpp"
+#include "color.hpp"
+
 #include <string>
 #include <vector>
-#include "color.hpp"
+
+#include "../rapidxml-1.13/rapidxml.hpp"
 
 using namespace std;
 
 Color parse_Color(rapidxml::xml_attribute<>* input, vector<string> *errors) {
-	Color color;
-	color.hex = string(input->value());
-	return color;
+    Color color;
+    color.hex = string(input->value());
+    return color;
 }

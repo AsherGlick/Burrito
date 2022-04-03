@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../rapidxml-1.13/rapidxml.hpp"
 #include <string>
 #include <stdexcept>
 #include <vector>
+
+#include "../rapidxml-1.13/rapidxml.hpp"
 
 using namespace std;
 
