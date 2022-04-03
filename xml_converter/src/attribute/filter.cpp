@@ -14,7 +14,7 @@ uint64_t Filter::_counter = 0;
 map<string, uint64_t> Filter::original;
 map<string, map<string, void (*)(void* filter_object)>> Filter::lookup;
 
-bool Filter::setup_variable(void (*function)(void* filter_object), void* object, vector<string> names) {
+bool Filter::setup_variable(void (*function)(void* filter_object), vector<string> names) {
     const char* type_id = typeid(*this).name();
     auto iterator = original.find(type_id);
 

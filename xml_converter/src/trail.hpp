@@ -52,10 +52,10 @@ class Trail: public Parseable {
     PARSEABLE_VAR(can_fade, bool, "CanFade")
 
     // https://blishhud.com/docs/markers/attributes/color
-    PARSEABLE_VAR(color, Color, "Color");
+    PARSEABLE_VAR(color, Color, "Color")
 
     // https://blishhud.com/docs/markers/attributes/cull
-    PARSEABLE_VAR(cull, Chirality, "Cull");
+    PARSEABLE_VAR(cull, Chirality, "Cull")
 
     // https://blishhud.com/docs/markers/attributes/fade
     PARSEABLE_VAR(fade_near, float, "FadeNear")

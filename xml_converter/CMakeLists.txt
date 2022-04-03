@@ -20,7 +20,5 @@ target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)
 if(MSVC)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
-  # TODO: We are ignoring some of the stronger warnings for now but in the future we should address them.
-  # target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
-  target_compile_options(${TARGET_NAME} PRIVATE -Wall)
+  target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()

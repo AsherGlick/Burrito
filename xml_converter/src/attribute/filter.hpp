@@ -31,7 +31,7 @@ using namespace std;
     static void enable_##name(void* obj) { \
         (*(filtername*)obj).name = true; \
     } \
-    bool name##_setup = setup_variable(enable_##name, &name, { __VA_ARGS__ });
+    bool name##_setup = setup_variable(enable_##name, { __VA_ARGS__ });
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filter
@@ -50,7 +50,7 @@ class Filter {
     static map<string, map<string, void (*)(void* filter_object)>> lookup;
 
  public:
-    bool setup_variable(void (*function)(void* filter_object), void* object, vector<string> names);
+    bool setup_variable(void (*function)(void* filter_object), vector<string> names);
 
     void parse(rapidxml::xml_attribute<>* input, vector<string> *errors);
     virtual string classname() { return "Filter"; }

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Chirality parse_Chirality(rapidxml::xml_attribute<>* input, vector<string> *errors) {
+Chirality parse_Chirality(rapidxml::xml_attribute<>* input, vector<string> *) {
     Chirality chirality;
     chirality.chirality = string(input->value());
     return chirality;
