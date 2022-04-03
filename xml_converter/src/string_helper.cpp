@@ -47,19 +47,19 @@ vector<string> split(string input, string delimiter) {
 
 
 string normalize_type_name(string type_name) {
-    char output[type_name.length()];
+    string output;
+    output.reserve(type_name.length());
+
+
     size_t i = 0;
     for (char character : type_name) {
         if (character >= 'A' && character <= 'Z') {
-            output[i] = (character - 'A' + 'a');
-            i += 1;
+            output += (character - 'A' + 'a');
         }
         else if (character >= 'a' && character <= 'z') {
-            output[i] = character;
-            i += 1;
+            output += character;
         }
     }
-    output[i] = '\0';
 
-    return string(output);
+    return output;
 }
