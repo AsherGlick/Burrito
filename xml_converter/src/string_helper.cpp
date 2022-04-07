@@ -63,3 +63,19 @@ string normalize_type_name(string type_name) {
 
     return output;
 }
+
+
+string lowercase(string input) {
+    string output;
+    output.reserve(input.length());
+
+    for (char character : input) {
+        if (character >= 'A' && character <= 'Z') {
+            output += (character - 'A' + 'a');
+        }
+        else {
+            output += character;
+        }
+    }
+    return output;
+}
