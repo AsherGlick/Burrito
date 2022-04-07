@@ -7,6 +7,6 @@
 
 using namespace std;
 
-string parse_string(rapidxml::xml_attribute<>* input, vector<string> *) {
-    return string(input->value());
+string parse_string(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+    return get_attribute_value(input);
 }

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
 #include "filter.hpp"
@@ -27,4 +28,4 @@ class FestivalFilter: public Filter {
 
 #undef FILTER_ITEM
 
-FestivalFilter parse_FestivalFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
+FestivalFilter parse_FestivalFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

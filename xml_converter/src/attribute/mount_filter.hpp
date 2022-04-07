@@ -30,4 +30,4 @@ class MountFilter: public Filter {
 
 #undef FILTER_ITEM
 
-MountFilter parse_MountFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
+MountFilter parse_MountFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

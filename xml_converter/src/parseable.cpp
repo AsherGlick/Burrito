@@ -20,7 +20,7 @@ using namespace std;
 // Initalize Static variables.
 uint64_t Parseable::_counter = 0;
 map<string, uint64_t> Parseable::original;
-map<string, map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<string>*)>> Parseable::lookup;
+map<string, map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<XMLError*>*)>> Parseable::lookup;
 
 
 
@@ -29,20 +29,20 @@ string Parseable::classname() {
 }
 
 
-void Parseable::init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors) {
+void Parseable::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
         if (init_xml_attribute(attribute, errors)) {}
         else {
-            errors->push_back("Unknown " + this->classname() + " attribute " + string(attribute->name()));
+            errors->push_back(new XMLAttributeNameError("Unknown " + this->classname() + " attribute ", attribute));
         }
     }
 }
 
-bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<string> *errors) {
+bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
     const char* type_id = typeid(*this).name();
     auto variable_list = &lookup[type_id];
 
-    string item = normalize_type_name(attribute->name());
+    string item = normalize_type_name(get_attribute_name(attribute));
 
     auto iterator = variable_list->find(item);
 
@@ -56,7 +56,7 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<
 
 
 bool Parseable::setup_variable(
-        void (*function)(void*, rapidxml::xml_attribute<>*, vector<string>*),
+        void (*function)(void*, rapidxml::xml_attribute<>*, vector<XMLError*>*),
         vector<string> names
 ) {
     const char* type_id = typeid(*this).name();
@@ -68,7 +68,7 @@ bool Parseable::setup_variable(
     original[type_id] = this->_id;
 
     // Grab a pointer to the lookup data for this subclass so we can edit it.
-    map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<string>*)>* variable_list = &lookup[type_id];
+    map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<XMLError*>*)>* variable_list = &lookup[type_id];
 
     // Insert all of the names for this field, error on duplicates.
     for (auto name : names) {

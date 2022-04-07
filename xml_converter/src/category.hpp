@@ -37,7 +37,7 @@ class Category: public Parseable {
 
 
     virtual string classname();
-    void init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors);
+    void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
 };
 
 #undef PARSEABLE_VAR

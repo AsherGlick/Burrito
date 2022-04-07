@@ -50,8 +50,8 @@ bool Filter::setup_variable(void (*function)(void* filter_object), vector<string
 // boolean values. This function should be called by the respective subclass
 // parse functions to handle the extraction automatically.
 ////////////////////////////////////////////////////////////////////////////////
-void Filter::parse(rapidxml::xml_attribute<>* input, vector<string> *errors) {
-    vector<string> items = split(string(input->value()), ",");
+void Filter::parse(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
+    vector<string> items = split(get_attribute_value(input), ",");
 
     const char* type_id = typeid(*this).name();
     auto variable_list = &lookup[type_id];
@@ -60,7 +60,7 @@ void Filter::parse(rapidxml::xml_attribute<>* input, vector<string> *errors) {
         auto iterator = variable_list->find(item);
 
         if (iterator == variable_list->end()) {
-            errors->push_back("Unknown " + this->classname() + " option " + item);
+            errors->push_back(new XMLAttributeValueError("Unknown " + this->classname() + " option " + item, input));
             continue;
         }
 

@@ -3,14 +3,15 @@
 #include <string>
 #include <vector>
 
+#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
 
 using namespace std;
 
 
-Position parse_Position(rapidxml::xml_attribute<>* input, vector<string> *errors) {
-    vector<string> components = split(string(input->value()), ",");
+Position parse_Position(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
+    vector<string> components = split(get_attribute_value(input), ",");
 
     Position position;
     if (components.size() == 3) {
@@ -19,7 +20,7 @@ Position parse_Position(rapidxml::xml_attribute<>* input, vector<string> *errors
         position.z = stof(components[2].c_str());
     }
     else {
-        errors->push_back("invlaid 'x,y,z' rotation " + string(input->value()) + " " + to_string(components.size()));
+        errors->push_back(new XMLAttributeValueError("Invlaid 'x,y,z' rotation ", input));
     }
 
     return position;

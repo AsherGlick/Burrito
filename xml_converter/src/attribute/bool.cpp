@@ -5,18 +5,19 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../rapid_helpers.hpp"
 
 using namespace std;
 
-bool parse_bool(rapidxml::xml_attribute<>* input, vector<string> *errors) {
-    if (string(input->value()) == "0" || string(input->value()) == "false") {
+bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
+    if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
         return false;
     }
-    else if (string(input->value()) == "1" || string(input->value()) == "true") {
+    else if (get_attribute_value(input) == "1" || get_attribute_value(input) == "true") {
         return true;
     }
     else {
-        errors->push_back("Found a boolean value that was not a '1', '0', 'true', or 'false'");
+        errors->push_back(new XMLAttributeValueError("Found a boolean value that was not a '1', '0', 'true', or 'false'", input));
         return false;
     }
 }

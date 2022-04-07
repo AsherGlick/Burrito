@@ -2,7 +2,7 @@
 
 using namespace std;
 
-MapTypeFilter parse_MapTypeFilter(rapidxml::xml_attribute<>* input, vector<string> *errors) {
+MapTypeFilter parse_MapTypeFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
     MapTypeFilter filter;
     filter.parse(input, errors);
     return filter;

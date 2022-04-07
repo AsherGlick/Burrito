@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 
+#include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 
 using namespace std;
@@ -24,7 +25,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 #define CLASS_PARSEABLE_VAR(parseableclassname, varname, vartype, ...) \
     vartype varname; \
-    static void assign_##varname(void* obj, rapidxml::xml_attribute<>* input, vector<string> *errors) { \
+    static void assign_##varname(void* obj, rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) { \
         (*(parseableclassname*)obj).varname = parse_##vartype(input, errors); \
         (*(parseableclassname*)obj).is_##varname##_set = true; \
     } \
@@ -45,7 +46,7 @@ using namespace std;
 //
 ////////////////////////////////////////////////////////////////////////////////
 #define CLASS_PARSEABLE_SUBVAR(parseableclassname, varname, subvarname, vartype, subvartype, ...) \
-    static void assign_##varname##_##subvarname(void* obj, rapidxml::xml_attribute<>* input, vector<string> *errors) { \
+    static void assign_##varname##_##subvarname(void* obj, rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) { \
         (*(parseableclassname*)obj).varname.subvarname = parse_##subvartype(input, errors); \
         (*(parseableclassname*)obj).is_##varname##_##subvarname##_set = true; \
     } \
@@ -77,12 +78,12 @@ class Parseable {
     static map<string, uint64_t> original;
 
     // A static map keeping track of the function parser mappings for each subclass.
-    static map<string, map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<string>*)>> lookup;
+    static map<string, map<string, void (*)(void*, rapidxml::xml_attribute<>*, vector<XMLError*>*)>> lookup;
 
  protected:
     // The function responsible for registering each variable to the subclass.
     bool setup_variable(
-        void (*function)(void*, rapidxml::xml_attribute<>*, vector<string>*),
+        void (*function)(void*, rapidxml::xml_attribute<>*, vector<XMLError*>*),
         vector<string> names);
 
     // A stringy representation of a human readable classname. Used for errors.
@@ -90,8 +91,8 @@ class Parseable {
 
  public:
     // A default parser function to parse an entire XML node into the class.
-    void init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors);
+    void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
 
     // A default parser function to parse a single XML attribute into the class.
-    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<string> *errors);
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
 };

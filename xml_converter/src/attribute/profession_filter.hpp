@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "filter.hpp"
 
@@ -27,4 +28,4 @@ class ProfessionFilter: public Filter {
 
 #undef FILTER_ITEM
 
-ProfessionFilter parse_ProfessionFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
+ProfessionFilter parse_ProfessionFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

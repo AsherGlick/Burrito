@@ -90,4 +90,4 @@ class MapTypeFilter: public Filter {
 
 #undef FILTER_ITEM
 
-MapTypeFilter parse_MapTypeFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
+MapTypeFilter parse_MapTypeFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

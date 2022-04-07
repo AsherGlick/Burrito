@@ -8,7 +8,7 @@
 
 using namespace std;
 
-FestivalFilter parse_FestivalFilter(rapidxml::xml_attribute<>* input, vector<string> *errors) {
+FestivalFilter parse_FestivalFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
     FestivalFilter festival_filter;
     festival_filter.parse(input, errors);
     return festival_filter;

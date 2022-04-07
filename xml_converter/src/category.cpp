@@ -6,7 +6,7 @@ string Category::classname() {
     return "MarkerCategory";
 }
 
-void Category::init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors) {
+void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
 
         // Attempt to parse all the attributes of the category into an Icon and
@@ -21,7 +21,7 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors)
         if (init_xml_attribute(attribute, errors)) {}
         else if (is_icon_value || is_trail_value) {}
         else {
-            errors->push_back("Unknown " + this->classname() + " attribute " + string(attribute->name()));
+            errors->push_back(new XMLAttributeNameError("Unknown " + this->classname() + " attribute ", attribute));
         }
     }
 }

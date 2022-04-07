@@ -17,9 +17,10 @@
 #include "category.hpp"
 #include "attribute/float.hpp"
 #include "string_helper.hpp"
+#include "rapid_helpers.hpp"
 
 #include "rapidxml-1.13/rapidxml.hpp"
-#include "rapidxml-1.13/rapidxml_print.hpp"
+#include "rapidxml-1.13/rapidxml_utils.hpp"
 
 using namespace std;
 
@@ -36,11 +37,11 @@ bool has_suffix(std::string const &fullString, std::string const &ending) {
     }
 }
 
-Category* get_category(string name, map<string, Category>* marker_categories, vector<string>* errors) {
-    vector<string> split_categories = split(name, ".");
+Category* get_category(rapidxml::xml_attribute<>* name, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
+    vector<string> split_categories = split(get_attribute_value(name), ".");
 
     if (split_categories.size() == 0) {
-        errors->push_back("Empty Type " + name);
+        errors->push_back(new XMLAttributeValueError("Empty Type", name));
         return nullptr;
     }
 
@@ -52,7 +53,7 @@ Category* get_category(string name, map<string, Category>* marker_categories, ve
         auto category = marker_categories->find(category_name);
 
         if (category == marker_categories->end()) {
-            errors->push_back("Category Not Found " + category_name + " " + name);
+            errors->push_back(new XMLAttributeValueError("Category " + category_name + " Not Found ", name));
             return nullptr;
         }
 
@@ -71,37 +72,37 @@ Category* get_category(string name, map<string, Category>* marker_categories, ve
 //
 // Parse the <POIs> xml block into an in memory array of Markers.
 ////////////////////////////////////////////////////////////////////////////////
-vector<Parseable> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, string filename, vector<string>* errors) {
+vector<Parseable> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, string filename, vector<XMLError*>* errors) {
     vector<Parseable> markers;
 
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
 
-        if (string(node->name()) == "POI") {
-            Category* default_category = get_category(node->first_attribute("type", 0, false)->value(), marker_categories, errors);
+        if (get_node_name(node) == "POI") {
+            Category* default_category = get_category(find_attribute(node, "type"), marker_categories, errors);
 
             Icon poi;
             poi.init_from_xml(node, errors);
             markers.push_back(poi);
         }
-        else if (string(node->name()) == "Trail") {
-            Category* default_category = get_category(node->first_attribute("type", 0, false)->value(), marker_categories, errors);
+        else if (get_node_name(node) == "Trail") {
+            Category* default_category = get_category(find_attribute(node, "type"), marker_categories, errors);
 
             Trail trail;
             trail.init_from_xml(node, errors);
             markers.push_back(trail);
         }
         else {
-            cout << "Unknown POIs node name \"" << node->name() << "\" " << filename << endl;
+            errors->push_back(new XMLNodeNameError("Unknown POIs node name", node));
         }
     }
     return markers;
 }
 
 
-void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<string>* errors, int depth=0) {
-    if (string(node->name()) == "MarkerCategory") {
-        string name = node->first_attribute("name", 0, false)->value();
+void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, int depth=0) {
+    if (get_node_name(node) == "MarkerCategory") {
+        string name = find_attribute_value(node, "name");
 
         Category* this_category = &(*marker_categories)[name];
         this_category->init_from_xml(node, errors);
@@ -111,7 +112,7 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
         }
     }
     else {
-        errors->push_back("unknown maker category tag " + string(node->name()));
+        errors->push_back(new XMLNodeNameError("Unknown MarkerCategory tag", node));
     }
 
 
@@ -125,23 +126,20 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
 // A function which parses a single XML file into their corrisponding classes.
 ////////////////////////////////////////////////////////////////////////////////
 void parse_xml_file(string xml_filepath, map<string, Category>* marker_categories) {
-    vector<string> errors;
+    vector<XMLError*> errors;
 
     rapidxml::xml_document<> doc;
     rapidxml::xml_node<>* root_node;
 
-    ifstream inputFile(xml_filepath);
-    vector<char> buffer((istreambuf_iterator<char>(inputFile)), istreambuf_iterator<char>());
-    buffer.push_back('\0');
-
-    doc.parse<0>(&buffer[0]);
+    rapidxml::file<> xml_file(xml_filepath.c_str());
+    doc.parse<rapidxml::parse_non_destructive>(xml_file.data());
 
     root_node = doc.first_node();
 
 
     // Validate the Root Node
-    if (string(root_node->name()) != "OverlayData") {
-        cout << "Root Node is \"" << root_node->name() <<  "\" not \"OverlayData\" in " << xml_filepath << endl;
+    if (get_node_name(root_node) != "OverlayData") {
+        errors.push_back(new XMLNodeNameError("Root node should be of type OverlayData", root_node));
     }
     if (root_node->first_attribute() != nullptr) {
         cout << "Root Node has attributes when it should have none in " << xml_filepath << endl;
@@ -150,21 +148,21 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
-        if (string(node->name()) == "MarkerCategory") {
+        if (get_node_name(node) == "MarkerCategory") {
             parse_marker_categories(node, marker_categories, &errors);
         }
-        else if (string(node->name()) == "POIs") {
+        else if (get_node_name(node) == "POIs") {
             parse_pois(node, marker_categories, xml_filepath, &errors);
         }
         else {
-            cout << "Unknown top-level node name " << node->name() << endl;
+            errors.push_back(new XMLNodeNameError("Unknown top-level node name", node));
         }
     }
 
     if (errors.size() > 0) {
         cout << xml_filepath << endl;
         for (auto error : errors) {
-            cout << error << endl;
+            error->print_error(xml_file.data());
         }
     }
 }
@@ -212,7 +210,6 @@ void convert_taco_directory(string directory) {
     for (const string & path : xml_files) {
         parse_xml_file(path, &marker_categories);
     }
-
 }
 
 int main() {

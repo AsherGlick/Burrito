@@ -84,4 +84,4 @@ class SpecializationFilter: public Filter {
 
 #undef FILTER_ITEM
 
-SpecializationFilter parse_SpecializationFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
+SpecializationFilter parse_SpecializationFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

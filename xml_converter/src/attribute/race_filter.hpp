@@ -22,6 +22,6 @@ class RaceFilter: public Filter {
 };
 
 
-RaceFilter parse_RaceFilter(rapidxml::xml_attribute<>* input, vector<string> *errors);
+RaceFilter parse_RaceFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
 
 #undef FILTER_ITEM

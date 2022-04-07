@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 
+#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
 
@@ -51,7 +52,7 @@ class Filter {
  public:
     bool setup_variable(void (*function)(void* filter_object), vector<string> names);
 
-    void parse(rapidxml::xml_attribute<>* input, vector<string> *errors);
+    void parse(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
     virtual string classname() { return "Filter"; }
 };
 
