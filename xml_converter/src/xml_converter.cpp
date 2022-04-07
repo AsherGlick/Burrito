@@ -48,7 +48,7 @@ Category* get_category(rapidxml::xml_attribute<>* name, map<string, Category>* m
     Category* output = nullptr;
 
     for (unsigned int i = 0; i < split_categories.size(); i++) {
-        string category_name = split_categories[i];
+        string category_name = lowercase(split_categories[i]);
 
         auto category = marker_categories->find(category_name);
 
@@ -112,7 +112,7 @@ vector<Parseable> parse_pois(rapidxml::xml_node<>* root_node, map<string, Catego
 
 void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, int depth=0) {
     if (get_node_name(node) == "MarkerCategory") {
-        string name = find_attribute_value(node, "name");
+        string name = lowercase(find_attribute_value(node, "name"));
 
         Category* this_category = &(*marker_categories)[name];
         this_category->init_from_xml(node, errors);
