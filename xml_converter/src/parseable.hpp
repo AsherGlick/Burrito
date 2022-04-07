@@ -26,6 +26,7 @@ using namespace std;
     vartype varname; \
     static void assign_##varname(void* obj, rapidxml::xml_attribute<>* input, vector<string> *errors) { \
         (*(parseableclassname*)obj).varname = parse_##vartype(input, errors); \
+        (*(parseableclassname*)obj).is_##varname##_set = true; \
     } \
     bool is_##varname##_set = setup_variable(assign_##varname, { __VA_ARGS__ });
 
@@ -46,7 +47,8 @@ using namespace std;
 #define CLASS_PARSEABLE_SUBVAR(parseableclassname, varname, subvarname, vartype, subvartype, ...) \
     static void assign_##varname##_##subvarname(void* obj, rapidxml::xml_attribute<>* input, vector<string> *errors) { \
         (*(parseableclassname*)obj).varname.subvarname = parse_##subvartype(input, errors); \
-    }\
+        (*(parseableclassname*)obj).is_##varname##_##subvarname##_set = true; \
+    } \
     bool is_##varname##_##subvarname##_set = setup_variable(assign_##varname##_##subvarname, { __VA_ARGS__ });
 
 
