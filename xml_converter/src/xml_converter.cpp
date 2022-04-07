@@ -81,14 +81,24 @@ vector<Parseable> parse_pois(rapidxml::xml_node<>* root_node, map<string, Catego
         if (get_node_name(node) == "POI") {
             Category* default_category = get_category(find_attribute(node, "type"), marker_categories, errors);
 
-            Icon poi;
-            poi.init_from_xml(node, errors);
-            markers.push_back(poi);
+            Icon icon;
+
+            if (default_category != nullptr) {
+                icon = default_category->default_icon;
+            }
+
+            icon.init_from_xml(node, errors);
+            markers.push_back(icon);
         }
         else if (get_node_name(node) == "Trail") {
             Category* default_category = get_category(find_attribute(node, "type"), marker_categories, errors);
 
             Trail trail;
+
+            if (default_category != nullptr) {
+                trail = default_category->default_trail;
+            }
+
             trail.init_from_xml(node, errors);
             markers.push_back(trail);
         }
