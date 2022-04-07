@@ -2,11 +2,11 @@
 
 using namespace std;
 
-string Cateogry::classname() {
+string Category::classname() {
     return "MarkerCategory";
 }
 
-void Cateogry::init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors) {
+void Category::init_from_xml(rapidxml::xml_node<>* node, vector<string> *errors) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
 
         // Attempt to parse all the attributes of the category into an Icon and

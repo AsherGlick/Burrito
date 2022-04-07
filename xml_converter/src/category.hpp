@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -12,10 +13,10 @@ using namespace std;
 
 
 
-#define PARSEABLE_VAR(...) CLASS_PARSEABLE_VAR(Cateogry, __VA_ARGS__ )
-#define PARSEABLE_SUBVAR(...) CLASS_PARSEABLE_SUBVAR(Cateogry, __VA_ARGS__ )
+#define PARSEABLE_VAR(...) CLASS_PARSEABLE_VAR(Category, __VA_ARGS__ )
+#define PARSEABLE_SUBVAR(...) CLASS_PARSEABLE_SUBVAR(Category, __VA_ARGS__ )
 
-class Cateogry: public Parseable {
+class Category: public Parseable {
  public:
     // https://blishhud.com/docs/markers/attributes/defaulttoggle
     PARSEABLE_VAR(default_toggle, bool, "DefaultToggle")
@@ -30,7 +31,7 @@ class Cateogry: public Parseable {
     PARSEABLE_VAR(name, string, "Name")
 
 
-    vector<Cateogry> children;
+    map<string, Category> children;
     Icon default_icon;
     Trail default_trail;
 
