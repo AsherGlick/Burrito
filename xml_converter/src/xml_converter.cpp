@@ -72,7 +72,7 @@ Category* get_category(rapidxml::xml_attribute<>* name, map<string, Category>* m
 //
 // Parse the <POIs> xml block into an in memory array of Markers.
 ////////////////////////////////////////////////////////////////////////////////
-vector<Parseable> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, string filename, vector<XMLError*>* errors) {
+vector<Parseable> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     vector<Parseable> markers;
 
 
@@ -142,7 +142,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     rapidxml::xml_node<>* root_node;
 
     rapidxml::file<> xml_file(xml_filepath.c_str());
-    doc.parse<rapidxml::parse_non_destructive>(xml_file.data());
+    doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data());
 
     root_node = doc.first_node();
 
@@ -162,7 +162,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
             parse_marker_categories(node, marker_categories, &errors);
         }
         else if (get_node_name(node) == "POIs") {
-            parse_pois(node, marker_categories, xml_filepath, &errors);
+            parse_pois(node, marker_categories, &errors);
         }
         else {
             errors.push_back(new XMLNodeNameError("Unknown top-level node name", node));
