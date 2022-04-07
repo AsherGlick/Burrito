@@ -9,6 +9,7 @@
 #include "attribute/euler_angle.hpp"
 #include "attribute/festival_filter.hpp"
 #include "attribute/float.hpp"
+#include "attribute/image.hpp"
 #include "attribute/int.hpp"
 #include "attribute/map_type_filter.hpp"
 #include "attribute/mount_filter.hpp"
@@ -75,7 +76,7 @@ class Icon: public Parseable {
     PARSEABLE_VAR(height_offset, float, "HeightOffset")
 
     // https://blishhud.com/docs/markers/attributes/iconfile
-    PARSEABLE_VAR(icon_file, string, "IconFile")
+    PARSEABLE_VAR(icon_file, Image, "IconFile")
 
     // https://blishhud.com/docs/markers/attributes/iconsize
     PARSEABLE_VAR(icon_size, float, "IconSize")

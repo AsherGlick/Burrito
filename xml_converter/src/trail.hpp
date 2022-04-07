@@ -18,6 +18,7 @@
 #include "attribute/color.hpp"
 #include "attribute/festival_filter.hpp"
 #include "attribute/float.hpp"
+#include "attribute/image.hpp"
 #include "attribute/int.hpp"
 #include "attribute/map_type_filter.hpp"
 #include "attribute/mount_filter.hpp"
@@ -80,7 +81,7 @@ class Trail: public Parseable {
     PARSEABLE_VAR(race_filter, RaceFilter, "Race")
 
     // https://blishhud.com/docs/markers/attributes/texture
-    PARSEABLE_VAR(texture, string, "Texture")
+    PARSEABLE_VAR(texture, Image, "Texture")
 
     // https://blishhud.com/docs/markers/attributes/trailscale
     PARSEABLE_VAR(trail_scale, float, "TrailScale")
