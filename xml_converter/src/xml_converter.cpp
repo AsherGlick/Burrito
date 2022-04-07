@@ -159,11 +159,8 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
         }
     }
 
-    if (errors.size() > 0) {
-        cout << xml_filepath << endl;
-        for (auto error : errors) {
-            error->print_error(xml_file.data());
-        }
+    for (auto error : errors) {
+        error->print_error(xml_file.data(), xml_filepath);
     }
 }
 

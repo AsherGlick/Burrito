@@ -15,21 +15,17 @@ string get_attribute_value(rapidxml::xml_attribute<>* attribute);
 string get_node_name(rapidxml::xml_node<>* node);
 
 
+////////////////////////////////////////////////////////////////////////////////
+// XMLError
+//
+// A base class for all the XML errors. It itself should not be used as an
+// error, but all of it's subclasses can be.
+////////////////////////////////////////////////////////////////////////////////
 class XMLError {
  protected:
 	string message;
  public:
-	virtual void print_error(string source) = 0;
-};
-
-
-// rapidxml::xml_node<>* root_node
-// rapidxml::xml_attribute<>* input
-
-class XMLStringError: public XMLError {
- public:
-	XMLStringError(string message);
-	void print_error(string source);
+	virtual void print_error(char* source, string filepath) = 0;
 };
 
 class XMLAttributeNameError: public XMLError {
@@ -37,7 +33,7 @@ class XMLAttributeNameError: public XMLError {
 	rapidxml::xml_attribute<>* attribute;
  public:
 	XMLAttributeNameError(string message, rapidxml::xml_attribute<>* attribute);
-	void print_error(string source);
+	void print_error(char* source, string filepath);
 };
 
 class XMLAttributeValueError: public XMLError {
@@ -45,7 +41,7 @@ class XMLAttributeValueError: public XMLError {
 	rapidxml::xml_attribute<>* attribute;
  public:
 	XMLAttributeValueError(string message, rapidxml::xml_attribute<>* attribute);
-	void print_error(string source);
+	void print_error(char* source, string filepath);
 };
 
 class XMLNodeNameError: public XMLError {
@@ -53,5 +49,5 @@ class XMLNodeNameError: public XMLError {
 	rapidxml::xml_node<>* node;
  public:
 	XMLNodeNameError(string message, rapidxml::xml_node<>* node);
-	void print_error(string source);
+	void print_error(char* source, string filepath);
 };
