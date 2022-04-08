@@ -53,7 +53,7 @@ Category* get_category(rapidxml::xml_attribute<>* name, map<string, Category>* m
         auto category = marker_categories->find(category_name);
 
         if (category == marker_categories->end()) {
-            errors->push_back(new XMLAttributeValueError("Category " + category_name + " Not Found ", name));
+            errors->push_back(new XMLAttributeValueError("Category Not Found \"" + category_name + "\"", name));
             return nullptr;
         }
 
@@ -122,11 +122,8 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
         }
     }
     else {
-        errors->push_back(new XMLNodeNameError("Unknown MarkerCategory tag", node));
+        errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
     }
-
-
-
 }
 
 
@@ -142,7 +139,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     rapidxml::xml_node<>* root_node;
 
     rapidxml::file<> xml_file(xml_filepath.c_str());
-    doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data());
+    doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), xml_filepath.c_str());
 
     root_node = doc.first_node();
 
@@ -170,7 +167,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     }
 
     for (auto error : errors) {
-        error->print_error(xml_file.data(), xml_filepath);
+        error->print_error();
     }
 }
 

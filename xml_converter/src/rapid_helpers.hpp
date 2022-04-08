@@ -23,31 +23,22 @@ string get_node_name(rapidxml::xml_node<>* node);
 ////////////////////////////////////////////////////////////////////////////////
 class XMLError {
  protected:
-	string message;
+	string error_message;
  public:
-	virtual void print_error(char* source, string filepath) = 0;
+	void print_error();
 };
 
 class XMLAttributeNameError: public XMLError {
- protected:
-	rapidxml::xml_attribute<>* attribute;
  public:
 	XMLAttributeNameError(string message, rapidxml::xml_attribute<>* attribute);
-	void print_error(char* source, string filepath);
 };
 
 class XMLAttributeValueError: public XMLError {
- protected:
-	rapidxml::xml_attribute<>* attribute;
  public:
 	XMLAttributeValueError(string message, rapidxml::xml_attribute<>* attribute);
-	void print_error(char* source, string filepath);
 };
 
 class XMLNodeNameError: public XMLError {
- protected:
-	rapidxml::xml_node<>* node;
  public:
 	XMLNodeNameError(string message, rapidxml::xml_node<>* node);
-	void print_error(char* source, string filepath);
 };

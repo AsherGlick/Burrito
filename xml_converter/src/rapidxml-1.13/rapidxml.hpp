@@ -1378,10 +1378,13 @@ namespace rapidxml
         //! Each new call to parse removes previous nodes and attributes (if any), but does not clear memory pool.
         //! \param text XML data to parse; pointer is non-const to denote fact that this data may be modified by the parser.
         template<int Flags>
-        void parse(Ch *text)
+        void parse(Ch *text, const Ch *name)
         {
             assert(text);
             
+            this->source = text;
+            this->source_name = name;
+
             // Remove current contents
             this->remove_all_nodes();
             this->remove_all_attributes();
@@ -1409,6 +1412,9 @@ namespace rapidxml
             }
 
         }
+
+        Ch* source;
+        const Ch* source_name;
 
         //! Clears the document by deleting all nodes and clearing the memory pool.
         //! All nodes owned by document pool are destroyed.
