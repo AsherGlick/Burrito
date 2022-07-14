@@ -1,0 +1,26 @@
+---
+attribute_category: Profession Filter
+fields:
+    - name: Profession Filter
+      type: MultiflagValue
+      applies_to: [Icon, Trail]
+      compatability: [TacO, BlishHUD, Burrito]
+      xml_fields: [Profession]
+      protobuf_field: profession_filter
+      description: "The player must be player a character of one of the professions in this list."
+      flags:
+        guardian: [Guardian]
+        warrior: [Warrior]
+        engineer: [Engineer]
+        ranger: [Ranger]
+        thief: [Thief]
+        elementalist: [Elementalist]
+        mesmer: [Mesmer]
+        necromancer: [Necromancer]
+        revenant: [Revenant]
+---
+
+Notes
+=====
+https://blishhud.com/docs/markers/attributes/profession
+PARSEABLE_VAR(profession_filter, ProfessionFilter, "Profession")
