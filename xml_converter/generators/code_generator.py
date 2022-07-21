@@ -11,208 +11,146 @@ from jinja2 import Template, FileSystemLoader, Environment
 
 schema = """
 type: object
-additionalProperties : false
-required:
-    - attribute_category
-    - fields
 properties:
-    attribute_category:
-        type: string
-    fields:
-        type: array
-        items:
-            type: object
-            properties:
-                type:
-                    type: string
-                    enum: [Int32, Fixed32, Float32, String, Boolean, MultiflagValue, Enum, CompoundValue, Custom]
-            allOf:
-                #############################
-                # Int32 Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: Int32
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}]
-                    properties:
-                        {shared_field_properties}
+    type: 
+        type: string 
+        enum: [Int32, Fixed32, Float32, String, Boolean, MultiflagValue, Enum, CompoundValue, Custom]
+allOf:
+    #############################
+    # Int32 Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: Int32
+      then:
+        additionalProperties: false
+        required: [{shared_fields}]
+        properties:
+            {shared_field_properties}
 
-                #############################
-                # Fixed32 Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: Fixed32
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}]
-                    properties:
-                        {shared_field_properties}
+    #############################
+    # Fixed32 Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: Fixed32
+      then:
+        additionalProperties: false
+        required: [{shared_fields}]
+        properties:
+            {shared_field_properties}
 
-                #############################
-                # Float32 Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: Float32
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}]
-                    properties:
-                        {shared_field_properties}
+    #############################
+    # Float32 Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: Float32
+      then:
+        additionalProperties: false
+        required: [{shared_fields}]
+        properties:
+            {shared_field_properties}
 
-                #############################
-                # String Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: String
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}]
-                    properties:
-                        {shared_field_properties}
+    #############################
+    # String Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: String
+      then:
+        additionalProperties: false
+        required: [{shared_fields}]
+        properties:
+            {shared_field_properties}
 
-                #############################
-                # Boolean Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: Boolean
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}]
-                    properties:
-                        {shared_field_properties}
+    #############################
+    # Boolean Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: Boolean
+      then:
+        additionalProperties: false
+        required: [{shared_fields}]
+        properties:
+            {shared_field_properties}
 
-                #############################
-                # MultiflagValue Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: MultiflagValue
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}, flags]
-                    properties:
-                        {shared_field_properties}
-                        flags:
-                            type: object
-                            patternProperties:
-                                "^[a-z_]+$":
-                                    type: array
-                                    items:
-                                        type: string
-
-                #############################
-                # Enum Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: Enum
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}, values]
-                    properties:
-                        {shared_field_properties}
-                        values:
-                            type: object
-                            patternProperties:
-                                "^[a-z_]+$":
-                                    type: array
-                                    items:
-                                        type: string
-
-                #############################
-                # CompoundValue Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: CompoundValue
-                  then:
-                    additionalProperties: false
-                    required: [{shared_fields}, xml_export, components]
-                    properties:
-                        {shared_field_properties}
-                        xml_export:
+    #############################
+    # MultiflagValue Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: MultiflagValue
+      then:
+        additionalProperties: false
+        required: [{shared_fields}, flags]
+        properties:
+            {shared_field_properties}
+            flags:
+                type: object
+                patternProperties:
+                    "^[a-z_]+$":
+                        type: array
+                        items:
                             type: string
-                            enum:
-                                - Parent Only
-                                - Parent and Children
-                                - Children Only
-                        components:
-                            type: array
-                            items:
-                                type: object
-                                additionalProperties: false
-                                required: [name, type, xml_fields, protobuf_field, description, compatability]
-                                properties:
-                                    name:
-                                        type: string
-                                    type:
-                                        type: string
-                                        enum: [Int32, Fixed32, Float32]
-                                    xml_fields:
-                                        type: array
-                                        items:
-                                            type: string
-                                            pattern: "^[A-Za-z]+$"
-                                    protobuf_field:
-                                        type: string
-                                        pattern: "^[a-z_.]+$"
-                                    description:
-                                        type: string
-                                    compatability:
-                                        type: array
-                                        items:
-                                            type: string
-                                            enum: [BlishHUD, Burrito, TacO]                                        
 
+    #############################
+    # Enum Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: Enum
+      then:
+        additionalProperties: false
+        required: [{shared_fields}, values]
+        properties:
+            {shared_field_properties}
+            values:
+                type: object
+                patternProperties:
+                    "^[a-z_]+$":
+                        type: array
+                        items:
+                            type: string
 
-                #############################
-                # Custom Type
-                #############################
-                - if:
-                    properties:
-                        type:
-                            const: Custom
-                  then:
+    #############################
+    # CompoundValue Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: CompoundValue
+      then:
+        additionalProperties: false
+        required: [{shared_fields}, xml_export, components]
+        properties:
+            {shared_field_properties}
+            xml_export:
+                type: string
+                enum:
+                    - Parent Only
+                    - Parent and Children
+                    - Children Only
+            components:
+                type: array
+                items:
+                    type: object
                     additionalProperties: false
-                    required: [{shared_fields}, class]
+                    required: [name, type, xml_fields, protobuf_field, compatability]
                     properties:
-                        {shared_field_properties}
-                        class:
-                            type: string
-                        side_effects:
-                            type: array
-                            items:
-                                type: string
-
-""".format(
-    shared_field_properties="""type:
-                            type: string
                         name:
                             type: string
-                        applies_to:
-                            type: array
-                            items:
-                                type: string
-                                enum: [Icon, Trail, Category]
-                        compatability:
-                            type: array
-                            items:
-                                type: string
-                                enum: [BlishHUD, Burrito, TacO]
+                        type:
+                            type: string
+                            enum: [Int32, Fixed32, Float32]
                         xml_fields:
                             type: array
                             items:
@@ -221,10 +159,57 @@ properties:
                         protobuf_field:
                             type: string
                             pattern: "^[a-z_.]+$"
-                        description:
-                            type: string
-                                """,
-    shared_fields="type, name, applies_to, compatability, xml_fields, protobuf_field, description"
+                        compatability:
+                            type: array
+                            items:
+                                type: string
+                                enum: [BlishHUD, Burrito, TacO]                                        
+
+
+    #############################
+    # Custom Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: Custom
+      then:
+        additionalProperties: false
+        required: [{shared_fields}, class]
+        properties:
+            {shared_field_properties}
+            class:
+                type: string
+            side_effects:
+                type: array
+                items:
+                    type: string
+
+""".format(
+    shared_field_properties="""type:
+                type: string
+            name:
+                type: string
+            applies_to:
+                type: array
+                items:
+                    type: string
+                    enum: [Icon, Trail, Category]
+            compatability:
+                type: array
+                items:
+                    type: string
+                    enum: [BlishHUD, Burrito, TacO]
+            xml_fields:
+                type: array
+                items:
+                    type: string
+                    pattern: "^[A-Za-z]+$"
+            protobuf_field:
+                type: string
+                pattern: "^[a-z_.]+$"
+    """,
+    shared_fields="type, name, applies_to, compatability, xml_fields, protobuf_field"
 )
 
 
@@ -249,36 +234,38 @@ class FieldRow:
     alternate_xml_attributes: List[str]
     binary_field: str
     data_type: str
-    description: str
     supported_by_html: str
     usable_on_html: str
     example: str
     valid_values_html: str
     is_sub_field: bool
     sub_fields: List["FieldRow"]
+    description: str
 
 class Generator:
     data: Dict[str, Document] = {}
 
 
-    def load_input_doc(self, filepath: str) -> None:
-        try:
-            document = frontmatter.load(filepath)
-        except Exception as e:
-            print(filepath)
-            raise e
+    def load_input_doc(self, dir_path: str) -> None:
+        for filepath in os.listdir(dir_path):
+            filepath = os.path.join(dir_path,filepath)
+            try:
+                document = frontmatter.load(filepath)
+            except Exception as e:
+                print(filepath)
+                raise e
 
-        error = validate_front_matter_schema(document.metadata)
-        if error != "":
-            print(filepath)
-            print(error)
+            error = validate_front_matter_schema(document.metadata)
+            if error != "":
+                print(filepath)
+                print(error)
 
-        filename = os.path.splitext(os.path.basename(filepath))[0]
+    
 
-        self.data[filename] = Document(
-            metadata=document.metadata,
-            content=document.content
-        )
+            self.data[filepath] = Document(
+                metadata=document.metadata,
+                content=document.content
+            )
     
     def write_webdocs(self, output_directory: str) -> None:
         print("Writing output documentation")
@@ -287,27 +274,46 @@ class Generator:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("documentation.html")
+        categories: Dict[str,List[str]] = {}
 
-        navigation_links = [ (self.data[x].metadata['attribute_category'], x) for x in sorted(self.data.keys()) ]
+        for filename in self.data.keys():
+            category = os.path.basename(os.path.dirname(filename))
+            if category not in categories:
+                categories[category] = []
+            categories[category].append(filename)       
+
+        navigation_links = [ (capitalize(category), category) for category in sorted(categories.keys()) ]
+        
+        
 
         complete_field_row_list = []
+        pages: Dict[str,List[str]] = {}
 
-        for page in sorted(self.data.keys()):
-            content = self.data[page].content
-            metadata = self.data[page].metadata
+        for page in sorted(categories):
+            content: Dict[str,List[str]] = {}
+            metadata: Dict[str,List[str]] = {}
+            # Resets the content and metadata to empty for each loop
 
-            generated_doc, field_rows = self.generate_auto_docs(metadata)
+            for subpage in categories[page]:
+                
+                content[subpage] = self.data[subpage].content
+               
+                metadata[subpage] = self.data[subpage].metadata
+            
+                content[subpage] = markdown.markdown(content[subpage])    
+
+            generated_doc, field_rows = self.generate_auto_docs(metadata,content)
 
             for field_row in field_rows:
                 complete_field_row_list.append(field_row)
 
-            html = markdown.markdown(content)
+
+            # html = markdown.markdown(content)
 
             with open(os.path.join(output_directory, page + ".html"), 'w') as f:
 
                 f.write(template.render(
                     generated_doc=generated_doc,
-                    content=html,
                     content_nav=navigation_links
                 ))
 
@@ -364,15 +370,15 @@ class Generator:
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Any) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Any,content: Any) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")
 
 
         field_rows = []
-        for field in metadata["fields"]:
-            
+        for fieldkey,field in metadata.items():
+      
             valid_values = ""
 
             if field['type'] == "MultiflagValue" or field['type'] == "Enum":
@@ -440,13 +446,13 @@ class Generator:
                 alternate_xml_attributes=field["xml_fields"][1:],
                 binary_field=field["protobuf_field"],
                 data_type=field["type"],
-                description=field["description"],
                 supported_by_html="<br>".join(field["compatability"]),
                 usable_on_html="<br>".join(field["applies_to"]),
                 example=example,
                 valid_values_html=valid_values,
                 is_sub_field=False,
-                sub_fields=[], # todo:
+                sub_fields=[], 
+                description=content[fieldkey]# todo:
             ))
 
             if field['type'] == "CompoundValue":
@@ -457,15 +463,15 @@ class Generator:
                         alternate_xml_attributes=component_field["xml_fields"][1:],
                         binary_field= field["protobuf_field"] + "." + component_field["protobuf_field"],
                         data_type=component_field["type"],
-                        description=component_field["description"],
                         supported_by_html="<br>".join(component_field["compatability"]),
                         usable_on_html="<br>".join(field["applies_to"]),
                         example=self.build_example(
                             type=component_field["type"],
                             applies_to=field["applies_to"],
                             xml_field=field["xml_fields"][0],
-                            examples=["???TODO2???"]
+                            examples=["???TODO2???"],
                         ),
+                        description=content[fieldkey],
                         valid_values_html=valid_values,
                         is_sub_field=True,
                         sub_fields=[]
@@ -474,15 +480,24 @@ class Generator:
 
         return template.render(field_rows=field_rows), field_rows
 
+def capitalize(word: str) -> str:
+  
+    wordarray = word.split("_")
+    capital_word_array = []
+
+    for each_word in wordarray:
+        capital_each_word = each_word.capitalize()
+        capital_word_array.append(capital_each_word)
+
+    return " ".join(capital_word_array)
 
 def main() -> None:
     generator = Generator()
     base_directory = "../doc"
 
-    for filename in os.listdir(base_directory):
-        if filename.endswith('.md'):
-            generator.load_input_doc(os.path.join(base_directory, filename))
-
+    for directory in os.listdir(base_directory):  
+        if os.path.isdir(os.path.join(base_directory, directory)):
+            generator.load_input_doc(os.path.join(base_directory, directory))
 
     generator.write_webdocs("../web_docs/")
 
