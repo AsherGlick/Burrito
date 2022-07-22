@@ -300,7 +300,6 @@ class Generator:
                
                 metadata[subpage] = self.data[subpage].metadata
             
-                content[subpage] = markdown.markdown(content[subpage])    
 
             generated_doc, field_rows = self.generate_auto_docs(metadata,content)
 
