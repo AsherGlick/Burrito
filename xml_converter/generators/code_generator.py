@@ -299,15 +299,11 @@ class Generator:
                 content[subpage] = markdown.markdown(self.data[subpage].content)
                
                 metadata[subpage] = self.data[subpage].metadata
-            
 
             generated_doc, field_rows = self.generate_auto_docs(metadata,content)
 
             for field_row in field_rows:
                 complete_field_row_list.append(field_row)
-
-
-            # html = markdown.markdown(content)
 
             with open(os.path.join(output_directory, page + ".html"), 'w') as f:
 
@@ -369,7 +365,7 @@ class Generator:
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Any,content: Any) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Any,content: Dict[str,List[str]]) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")
