@@ -1,7 +1,7 @@
-from jsonschema import validate
-from jsonschema.exceptions import ValidationError
+from jsonschema import validate  # type:ignore
+from jsonschema.exceptions import ValidationError  # type:ignore
 import yaml
-import frontmatter
+import frontmatter  # type:ignore
 from typing import Any, Dict, List, Tuple
 import os
 import markdown
@@ -290,7 +290,7 @@ class Generator:
         pages: Dict[str,List[str]] = {}
 
         for page in sorted(categories):
-            content: Dict[str,List[str]] = {}
+            content: Dict[str,str] = {}
             metadata: Dict[str,List[str]] = {}
             # Resets the content and metadata to empty for each loop
 
@@ -365,7 +365,7 @@ class Generator:
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Any,content: Dict[str,List[str]]) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Any,content: Dict[str,str]) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")
