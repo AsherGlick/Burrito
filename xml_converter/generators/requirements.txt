@@ -1,0 +1,9 @@
+attrs==21.4.0
+Jinja2==3.1.2
+jsonschema==4.7.2
+Markdown==3.4.1
+MarkupSafe==2.1.1
+pyaml==21.10.1
+pyrsistent==0.18.1
+python-frontmatter==1.0.0
+PyYAML==5.1
