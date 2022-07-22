@@ -296,7 +296,7 @@ class Generator:
 
             for subpage in categories[page]:
                 
-                content[subpage] = self.data[subpage].content
+                content[subpage] = markdown.markdown(self.data[subpage].content)
                
                 metadata[subpage] = self.data[subpage].metadata
             
