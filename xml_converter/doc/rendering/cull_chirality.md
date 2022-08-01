@@ -1,5 +1,5 @@
 ---
-name: Cull
+name: Cull Chirality
 applies_to: [Icon, Trail]
 xml_fields: [Cull]
 protobuf_field: cull

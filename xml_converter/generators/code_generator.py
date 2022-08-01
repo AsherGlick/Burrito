@@ -38,7 +38,7 @@ allOf:
                 const: Fixed32
       then:
         additionalProperties: false
-        required: [{shared_fields}]
+        requiint achievement_id;red: [{shared_fields}]
         properties:
             {shared_field_properties}
 
@@ -224,7 +224,7 @@ def validate_front_matter_schema(front_matter: Any) -> str:
 
 @dataclass
 class Document:
-    metadata: Any
+    metadata: Dict[str, Any]
     content: str
 
 @dataclass
@@ -267,6 +267,34 @@ class Generator:
                 content=document.content
             )
     
+    def write_parseable(self, output_directory: str) -> None:
+        file_loader = FileSystemLoader('cpp_templates')
+        env = Environment(loader=file_loader)
+        template = env.get_template("parseabletemplate.hpp")
+        attributenames: Dict[str,str] = {}
+        
+        for filepath in self.data.keys():
+            filename = os.path.basename(filepath)
+            attributenames[filepath]= filename.split(".md")[0]
+     
+        pages = ["Category","Icon","Trail"]
+        
+        for page in pages:
+            content: Dict[str,str] = {}
+            metadata: Dict[str,List[str]] = {}
+            
+            for attributename in attributenames:
+                metadata[attributename] = self.data[attributename].metadata
+            
+            field_rows = self.generate_node_types(metadata, attributenames, page)
+
+            with open(os.path.join(output_directory, page.lower() + ".hpp"), 'w') as f:
+
+                f.write(template.render(
+                            page=page,
+                            fieldrows=sorted(field_rows),
+                        ))
+
     def write_webdocs(self, output_directory: str) -> None:
         print("Writing output documentation")
         os.makedirs(output_directory, exist_ok=True)
@@ -359,6 +387,47 @@ class Generator:
 
         return example
 
+
+    # ###########################################################################
+    # Generate Node Types
+    
+    # This will output code for a single category of nodes.
+    # ###########################################################################
+    
+    def generate_node_types(self, metadata: Any, attributenames: Dict[str,str],page: str) -> List[str]:
+        
+        field_rows = []
+
+        typechange: Dict[str,str] = {
+            "Fixed32": "int",
+            "Int32": "int",
+            "Boolean": "bool",
+            "Float32": "float",
+            "String": "string",
+        }
+        
+        for fieldkey,field in metadata.items():
+            for x in attributenames:
+                if fieldkey in x :
+                    attributename = attributenames[x]
+                   
+            if page in field['applies_to']:
+                if field['type'] in typechange:
+                    newtype = typechange[field['type']]
+                elif field['type'] == "Custom":
+                    newtype = field['class']
+                elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
+                    newtype = capitalize(attributename,delimiter="")
+                    
+                else :
+                    raise ValueError("Unexpected type {field_type} for attribute {attributename}".format(
+                        field_type=field['type'],
+                        attributename=attributename,
+                    ) )
+               
+                field_rows.append((attributename,newtype))
+    
+        return field_rows
 
     ############################################################################
     # Generate Auto Docs
@@ -475,7 +544,7 @@ class Generator:
 
         return template.render(field_rows=field_rows), field_rows
 
-def capitalize(word: str) -> str:
+def capitalize(word: str,delimiter: str = " ") -> str:
   
     wordarray = word.split("_")
     capital_word_array = []
@@ -484,8 +553,8 @@ def capitalize(word: str) -> str:
         capital_each_word = each_word.capitalize()
         capital_word_array.append(capital_each_word)
 
-    return " ".join(capital_word_array)
-
+    return delimiter.join(capital_word_array)
+   
 def main() -> None:
     generator = Generator()
     base_directory = "../doc"
@@ -495,5 +564,6 @@ def main() -> None:
             generator.load_input_doc(os.path.join(base_directory, directory))
 
     generator.write_webdocs("../web_docs/")
+    generator.write_parseable("../src/")
 
 main()

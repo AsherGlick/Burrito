@@ -2,7 +2,7 @@
 name: Copy Clipboard
 type: String
 applies_to: [Icon]
-xml_fields: [CopyClipboard]
+xml_fields: [Copy, CopyClipboard]
 protobuf_field: trigger.action_copy_clipboard
 compatability: [TacO, BlishHUD, Burrito]
 ---
