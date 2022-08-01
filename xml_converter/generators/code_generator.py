@@ -38,7 +38,7 @@ allOf:
                 const: Fixed32
       then:
         additionalProperties: false
-        requiint achievement_id;red: [{shared_fields}]
+        required: [{shared_fields}]
         properties:
             {shared_field_properties}
 
