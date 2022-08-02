@@ -396,7 +396,7 @@ class Generator:
     def generate_node_types(self, metadata: Dict[str, List[str]], page: str, attribute_names: Dict[str,str] = {})  -> Tuple[Tuple[str],set[str]]:
         
         attribute_variables: List[Tuple[str]] = []
-        cpp_include_paths: set[str] = set()
+        cpp_include_paths: Set[str] = set()
         attribute_name: str = ""
         doc_type_to_cpp_type: Dict[str,str] = {
             "Fixed32": "int",
