@@ -286,14 +286,14 @@ class Generator:
             for attributename in attributenames:
                 metadata[attributename] = self.data[attributename].metadata
             
-            field_rows, cpptypes = self.generate_node_types(metadata, attributenames, page)
+            field_rows, includelist = self.generate_node_types(metadata, attributenames, page)
 
             with open(os.path.join(output_directory, page.lower() + ".hpp"), 'w') as f:
 
                 f.write(template.render(
                             page=page,
                             fieldrows=sorted(field_rows),
-                            cpptypes=sorted(cpptypes),
+                            includelist=sorted(includelist),
                         ))
 
     def write_webdocs(self, output_directory: str) -> None:
@@ -413,16 +413,16 @@ class Generator:
             if page in field['applies_to']:
                 if field['type'] in typechange:
                     cpptype = typechange[field['type']]
-                    if cpptype not in cpptypes:
-                        cpptypes.append(cpptype)
+                    if cpptype not in includelist:
+                        includelist.append(cpptype)
                 elif field['type'] == "Custom":
                     cpptype = field['class']
-                    if cpptype.lower() not in cpptypes:
-                        cpptypes.append(cpptype.lower())
+                    if cpptype.lower() not in includelist:
+                        includelist.append(cpptype.lower())
                 elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
                     cpptype = capitalize(attributename,delimiter="")
-                    if attributename not in cpptypes:
-                        cpptypes.append(attributename)
+                    if attributename not in includelist:
+                        includelist.append(attributename)
                     
                 else :
                     raise ValueError("Unexpected type {field_type} for attribute {attributename}".format(
@@ -430,9 +430,9 @@ class Generator:
                         attributename=attributename,
                     ) )
                
-                field_rows.append((attributename,cpptype))
+                field_rows.append((attributename,includelist))
                 
-        return field_rows, cpptypes
+        return field_rows, includelist
 
     ############################################################################
     # Generate Auto Docs

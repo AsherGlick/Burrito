@@ -17,13 +17,12 @@
 #include <string_view>
 #include "rapidxml-1.13/rapidxml_print.hpp"
 {% endif %}
-{%for cpptype in cpptypes%}#include "{{cpptype}}.hpp"
+{%for include in includelist%}#include "{{include}}.hpp"
 {% endfor %}
 using namespace std;
 
 class {{page}}: public Parseable {
-	private: 
-	{% for fieldrow in fieldrows: %}
+	private: {% for fieldrow in fieldrows: %}
 		{{fieldrow[1]}} {{fieldrow[0]}};
 	{% endfor %}
 	{% if page == "Category": %}
