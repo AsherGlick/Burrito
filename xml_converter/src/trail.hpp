@@ -65,5 +65,5 @@ class Trail: public Parseable {
 		TrailDataMapId trail_data_map_id;
 		float trail_scale;
 		
-	virtual string classname();
+		virtual string classname();
 };

@@ -22,5 +22,5 @@ class Category: public Parseable {
 		map<string, Category> children;
     	Icon default_icon;
     	Trail default_trail;
-	virtual string classname();
+		virtual string classname();
 };

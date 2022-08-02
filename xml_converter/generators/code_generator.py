@@ -224,7 +224,7 @@ def validate_front_matter_schema(front_matter: Any) -> str:
 
 @dataclass
 class Document:
-    metadata: Dict[str, Any]
+    metadata: Dict[str, List[str]]
     content: str
 
 @dataclass
@@ -268,32 +268,32 @@ class Generator:
             )
     
     def write_parseable(self, output_directory: str) -> None:
+        print("Writing Node Type Headers")
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("parseabletemplate.hpp")
-        attributenames: Dict[str,str] = {}
+        attribute_names: Dict[str,str] = {}
         
         for filepath in self.data.keys():
             filename = os.path.basename(filepath)
-            attributenames[filepath]= filename.split(".md")[0]
+            attribute_names[filepath]= filename.split(".md")[0]
      
         pages = ["Category","Icon","Trail"]
         
         for page in pages:
-            content: Dict[str,str] = {}
             metadata: Dict[str,List[str]] = {}
             
-            for attributename in attributenames:
-                metadata[attributename] = self.data[attributename].metadata
+            for attribute_name in attribute_names:
+                metadata[attribute_name] = self.data[attribute_name].metadata
             
-            field_rows, includelist = self.generate_node_types(metadata, attributenames, page)
+            attribute_variables, cpp_include_paths = self.generate_node_types(metadata, page, attribute_names)
 
             with open(os.path.join(output_directory, page.lower() + ".hpp"), 'w') as f:
 
                 f.write(template.render(
                             page=page,
-                            fieldrows=sorted(field_rows),
-                            includelist=sorted(includelist),
+                            attribute_variables=sorted(attribute_variables),
+                            cpp_include_paths=sorted(cpp_include_paths),
                         ))
 
     def write_webdocs(self, output_directory: str) -> None:
@@ -393,11 +393,12 @@ class Generator:
     #
     # This will output code for a single category of nodes.
     ############################################################################
-    def generate_node_types(self, metadata: Any, attributenames: Dict[str,str],page: str) -> Tuple[List[str],List[str]]:
+    def generate_node_types(self, metadata: Dict[str, List[str]], page: str, attribute_names: Dict[str,str] = {})  -> Tuple[Tuple[str],set[str]]:
         
-        field_rows: List[str] = []
-        includelist: Set[str] = set()
-        typechange: Dict[str,str] = {
+        attribute_variables: List[Tuple[str]] = []
+        cpp_include_paths: set[str] = set()
+        attribute_name: str = ""
+        doc_type_to_cpp_type: Dict[str,str] = {
             "Fixed32": "int",
             "Int32": "int",
             "Boolean": "bool",
@@ -406,37 +407,37 @@ class Generator:
         }
         
         for fieldkey,field in metadata.items():
-            for x in attributenames:
+            for x in attribute_names:
                 if fieldkey in x :
-                    attributename = attributenames[x]
+                    attribute_name = attribute_names[x]
                    
             if page in field['applies_to']:
-                if field['type'] in typechange:
-                    cpptype = typechange[field['type']]
-                    includelist.add(cpptype)
+                if field['type'] in doc_type_to_cpp_type:
+                    cpp_type = doc_type_to_cpp_type[field['type']]
+                    cpp_include_paths.add(cpp_type)
                 elif field['type'] == "Custom":
-                    cpptype = field['class']
-                    includelist.add(cpptype.lower())
+                    cpp_type = field['class']
+                    cpp_include_paths.add(cpp_type.lower())
                 elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
-                    cpptype = capitalize(attributename,delimiter="")
-                    includelist.add(attributename)
+                    cpp_type = capitalize(attribute_name,delimiter="")
+                    cpp_include_paths.add(attribute_name)
                     
                 else :
-                    raise ValueError("Unexpected type {field_type} for attribute {attributename}".format(
+                    raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
                         field_type=field['type'],
-                        attributename=attributename,
+                        attribute_name=attribute_name,
                     ) )
                
-                field_rows.append((attributename,cpptype))
+                attribute_variables.append((attribute_name,cpp_type))
                 
-        return field_rows, includelist
+        return attribute_variables, cpp_include_paths
 
     ############################################################################
     # Generate Auto Docs
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Any,content: Dict[str,str]) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Dict[str, List[str]],content: Dict[str,str]) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")

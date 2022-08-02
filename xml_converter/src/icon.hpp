@@ -76,5 +76,5 @@ class Icon: public Parseable {
 		string tooltip_name;
 		float trigger_range;
 		
-	virtual string classname();
+		virtual string classname();
 };

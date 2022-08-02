@@ -17,13 +17,13 @@
 #include <string_view>
 #include "rapidxml-1.13/rapidxml_print.hpp"
 {% endif %}
-{%for include in includelist%}#include "{{include}}.hpp"
+{%for cpp_include_path in cpp_include_paths%}#include "{{cpp_include_path}}.hpp"
 {% endfor %}
 using namespace std;
 
 class {{page}}: public Parseable {
-	private: {% for fieldrow in fieldrows: %}
-		{{fieldrow[1]}} {{fieldrow[0]}};{% endfor %}
+	private: {% for attribute_variable in attribute_variables: %}
+		{{attribute_variable[1]}} {{attribute_variable[0]}};{% endfor %}
 		{% if page == "Category": %}map<string, Category> children;
     	Icon default_icon;
     	Trail default_trail;{% endif %}
