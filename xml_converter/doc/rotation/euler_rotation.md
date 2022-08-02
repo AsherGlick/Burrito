@@ -1,5 +1,5 @@
 ---
-name: Rotation
+name: Euler Rotation
 type: CompoundValue
 applies_to: ["Icon"]
 xml_fields: ["Rotation"]

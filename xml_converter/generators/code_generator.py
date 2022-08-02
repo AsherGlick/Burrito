@@ -1,8 +1,8 @@
-from jsonschema import validate
-from jsonschema.exceptions import ValidationError
+from jsonschema import validate  # type:ignore
+from jsonschema.exceptions import ValidationError  # type:ignore
 import yaml
-import frontmatter
-from typing import Any, Dict, List, Tuple
+import frontmatter  # type:ignore
+from typing import Any, Dict, List, Tuple, Set
 import os
 import markdown
 from dataclasses import dataclass
@@ -224,7 +224,7 @@ def validate_front_matter_schema(front_matter: Any) -> str:
 
 @dataclass
 class Document:
-    metadata: Any
+    metadata: Dict[str, List[str]]
     content: str
 
 @dataclass
@@ -267,6 +267,35 @@ class Generator:
                 content=document.content
             )
     
+    def write_parseable(self, output_directory: str) -> None:
+        print("Writing Node Type Headers")
+        file_loader = FileSystemLoader('cpp_templates')
+        env = Environment(loader=file_loader)
+        template = env.get_template("parseabletemplate.hpp")
+        attribute_names: Dict[str,str] = {}
+        
+        for filepath in self.data.keys():
+            filename = os.path.basename(filepath)
+            attribute_names[filepath]= filename.split(".md")[0]
+     
+        pages = ["Category","Icon","Trail"]
+        
+        for page in pages:
+            metadata: Dict[str,List[str]] = {}
+            
+            for attribute_name in attribute_names:
+                metadata[attribute_name] = self.data[attribute_name].metadata
+            
+            attribute_variables, cpp_include_paths = self.generate_node_types(metadata, page, attribute_names)
+
+            with open(os.path.join(output_directory, page.lower() + ".hpp"), 'w') as f:
+
+                f.write(template.render(
+                            page=page,
+                            attribute_variables=sorted(attribute_variables),
+                            cpp_include_paths=sorted(cpp_include_paths),
+                        ))
+
     def write_webdocs(self, output_directory: str) -> None:
         print("Writing output documentation")
         os.makedirs(output_directory, exist_ok=True)
@@ -290,7 +319,7 @@ class Generator:
         pages: Dict[str,List[str]] = {}
 
         for page in sorted(categories):
-            content: Dict[str,List[str]] = {}
+            content: Dict[str,str] = {}
             metadata: Dict[str,List[str]] = {}
             # Resets the content and metadata to empty for each loop
 
@@ -359,13 +388,56 @@ class Generator:
 
         return example
 
+    ############################################################################
+    # Generate Node Types
+    #
+    # This will output code for a single category of nodes.
+    ############################################################################
+    def generate_node_types(self, metadata: Dict[str, List[str]], page: str, attribute_names: Dict[str,str] = {})  -> Tuple[Tuple[str],set[str]]:
+        
+        attribute_variables: List[Tuple[str]] = []
+        cpp_include_paths: Set[str] = set()
+        attribute_name: str = ""
+        doc_type_to_cpp_type: Dict[str,str] = {
+            "Fixed32": "int",
+            "Int32": "int",
+            "Boolean": "bool",
+            "Float32": "float",
+            "String": "string",
+        }
+        
+        for fieldkey,field in metadata.items():
+            for x in attribute_names:
+                if fieldkey in x :
+                    attribute_name = attribute_names[x]
+                   
+            if page in field['applies_to']:
+                if field['type'] in doc_type_to_cpp_type:
+                    cpp_type = doc_type_to_cpp_type[field['type']]
+                    cpp_include_paths.add(cpp_type)
+                elif field['type'] == "Custom":
+                    cpp_type = field['class']
+                    cpp_include_paths.add(cpp_type.lower())
+                elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
+                    cpp_type = capitalize(attribute_name,delimiter="")
+                    cpp_include_paths.add(attribute_name)
+                    
+                else :
+                    raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
+                        field_type=field['type'],
+                        attribute_name=attribute_name,
+                    ) )
+               
+                attribute_variables.append((attribute_name,cpp_type))
+                
+        return attribute_variables, cpp_include_paths
 
     ############################################################################
     # Generate Auto Docs
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Any,content: Dict[str,List[str]]) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Dict[str, List[str]],content: Dict[str,str]) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")
@@ -475,7 +547,7 @@ class Generator:
 
         return template.render(field_rows=field_rows), field_rows
 
-def capitalize(word: str) -> str:
+def capitalize(word: str,delimiter: str = " ") -> str:
   
     wordarray = word.split("_")
     capital_word_array = []
@@ -484,8 +556,8 @@ def capitalize(word: str) -> str:
         capital_each_word = each_word.capitalize()
         capital_word_array.append(capital_each_word)
 
-    return " ".join(capital_word_array)
-
+    return delimiter.join(capital_word_array)
+   
 def main() -> None:
     generator = Generator()
     base_directory = "../doc"
@@ -495,5 +567,6 @@ def main() -> None:
             generator.load_input_doc(os.path.join(base_directory, directory))
 
     generator.write_webdocs("../web_docs/")
+    generator.write_parseable("../src/")
 
 main()
