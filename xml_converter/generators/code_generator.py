@@ -2,7 +2,7 @@ from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
 import yaml
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Set
 import os
 import markdown
 from dataclasses import dataclass
