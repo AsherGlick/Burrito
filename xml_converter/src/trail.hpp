@@ -1,7 +1,9 @@
 #pragma once
-
+#include "rapidxml-1.13/rapidxml.hpp"
+#include <string>
+#include <vector>
+#include "parseable.hpp"
 #include <string.h>
-
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -9,31 +11,28 @@
 #include <iostream>
 #include <iterator>
 #include <ostream>
-#include <string>
 #include <string_view>
-#include <vector>
-
-#include "attribute/bool.hpp"
-#include "attribute/chirality.hpp"
-#include "attribute/color.hpp"
-#include "attribute/festival_filter.hpp"
-#include "attribute/float.hpp"
-#include "attribute/image.hpp"
-#include "attribute/int.hpp"
-#include "attribute/map_type_filter.hpp"
-#include "attribute/mount_filter.hpp"
-#include "attribute/profession_filter.hpp"
-#include "attribute/race_filter.hpp"
-#include "attribute/string.hpp"
-#include "parseable.hpp"
-#include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_print.hpp"
 
+#include "bool.hpp"
+#include "category.hpp"
+#include "color.hpp"
+#include "cull_chirality.hpp"
+#include "festival_filter.hpp"
+#include "float.hpp"
+#include "image.hpp"
+#include "int.hpp"
+#include "map_type_filter.hpp"
+#include "mount_filter.hpp"
+#include "profession_filter.hpp"
+#include "specialization_filter.hpp"
+#include "species_filter.hpp"
+#include "string.hpp"
+#include "traildata.hpp"
+#include "traildatamapid.hpp"
+#include "uniqueid.hpp"
 
 using namespace std;
-
-// #define PARSEABLE_VAR(...) CLASS_PARSEABLE_VAR(Icon, __VA_ARGS__ )
-// #define PARSEABLE_SUBVAR(...) CLASS_PARSEABLE_SUBVAR(Icon, __VA_ARGS__ )
 
 class Trail: public Parseable {
 	private: 
@@ -97,6 +96,3 @@ class Trail: public Parseable {
 	
 	virtual string classname();
 };
-
-// #undef PARSEABLE_VAR
-// #undef PARSEABLE_SUBVAR

@@ -286,13 +286,14 @@ class Generator:
             for attributename in attributenames:
                 metadata[attributename] = self.data[attributename].metadata
             
-            field_rows = self.generate_node_types(metadata, attributenames, page)
+            field_rows, cpptypes = self.generate_node_types(metadata, attributenames, page)
 
             with open(os.path.join(output_directory, page.lower() + ".hpp"), 'w') as f:
 
                 f.write(template.render(
                             page=page,
                             fieldrows=sorted(field_rows),
+                            cpptypes=sorted(cpptypes),
                         ))
 
     def write_webdocs(self, output_directory: str) -> None:
@@ -392,10 +393,10 @@ class Generator:
     #
     # This will output code for a single category of nodes.
     ############################################################################
-    def generate_node_types(self, metadata: Any, attributenames: Dict[str,str],page: str) -> List[str]:
+    def generate_node_types(self, metadata: Any, attributenames: Dict[str,str],page: str) -> Tuple[List[str],List[str]]:
         
-        field_rows = []
-
+        field_rows: List[str] = []
+        cpptypes: List[str] = []
         typechange: Dict[str,str] = {
             "Fixed32": "int",
             "Int32": "int",
@@ -411,11 +412,17 @@ class Generator:
                    
             if page in field['applies_to']:
                 if field['type'] in typechange:
-                    newtype = typechange[field['type']]
+                    cpptype = typechange[field['type']]
+                    if cpptype not in cpptypes:
+                        cpptypes.append(cpptype)
                 elif field['type'] == "Custom":
-                    newtype = field['class']
+                    cpptype = field['class']
+                    if cpptype.lower() not in cpptypes:
+                        cpptypes.append(cpptype.lower())
                 elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
-                    newtype = capitalize(attributename,delimiter="")
+                    cpptype = capitalize(attributename,delimiter="")
+                    if attributename not in cpptypes:
+                        cpptypes.append(attributename)
                     
                 else :
                     raise ValueError("Unexpected type {field_type} for attribute {attributename}".format(
@@ -423,9 +430,9 @@ class Generator:
                         attributename=attributename,
                     ) )
                
-                field_rows.append((attributename,newtype))
-    
-        return field_rows
+                field_rows.append((attributename,cpptype))
+                
+        return field_rows, cpptypes
 
     ############################################################################
     # Generate Auto Docs

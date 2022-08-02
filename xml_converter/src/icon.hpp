@@ -1,31 +1,29 @@
 #pragma once
-
+#include "rapidxml-1.13/rapidxml.hpp"
 #include <string>
 #include <vector>
-#include "attribute/bool.hpp"
-#include "attribute/chirality.hpp"
-#include "attribute/color.hpp"
-#include "attribute/euler_angle.hpp"
-#include "attribute/festival_filter.hpp"
-#include "attribute/float.hpp"
-#include "attribute/image.hpp"
-#include "attribute/int.hpp"
-#include "attribute/map_type_filter.hpp"
-#include "attribute/mount_filter.hpp"
-#include "attribute/position.hpp"
-#include "attribute/profession_filter.hpp"
-#include "attribute/race_filter.hpp"
-#include "attribute/specialization_filter.hpp"
-#include "attribute/string.hpp"
 #include "parseable.hpp"
-#include "rapidxml-1.13/rapidxml.hpp"
-#include "string_helper.hpp"
 
+#include "bool.hpp"
+#include "category.hpp"
+#include "color.hpp"
+#include "cull_chirality.hpp"
+#include "euler_rotation.hpp"
+#include "festival_filter.hpp"
+#include "float.hpp"
+#include "image.hpp"
+#include "int.hpp"
+#include "map_type_filter.hpp"
+#include "mount_filter.hpp"
+#include "position.hpp"
+#include "profession_filter.hpp"
+#include "reset_behavior.hpp"
+#include "specialization_filter.hpp"
+#include "species_filter.hpp"
+#include "string.hpp"
+#include "uniqueid.hpp"
 
 using namespace std;
-
-// #define PARSEABLE_VAR(...) CLASS_PARSEABLE_VAR(Icon, __VA_ARGS__ )
-// #define PARSEABLE_SUBVAR(...) CLASS_PARSEABLE_SUBVAR(Icon, __VA_ARGS__ )
 
 class Icon: public Parseable {
 	private: 
@@ -129,6 +127,3 @@ class Icon: public Parseable {
 	
 	virtual string classname();
 };
-
-// #undef PARSEABLE_VAR
-// #undef PARSEABLE_SUBVAR
