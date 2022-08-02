@@ -387,13 +387,11 @@ class Generator:
 
         return example
 
-
-    # ###########################################################################
+    ############################################################################
     # Generate Node Types
-    
+    #
     # This will output code for a single category of nodes.
-    # ###########################################################################
-    
+    ############################################################################
     def generate_node_types(self, metadata: Any, attributenames: Dict[str,str],page: str) -> List[str]:
         
         field_rows = []

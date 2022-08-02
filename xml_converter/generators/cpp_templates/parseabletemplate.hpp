@@ -59,11 +59,7 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_print.hpp"
 {% endif %}
-
 using namespace std;
-
-// #define PARSEABLE_VAR(...) CLASS_PARSEABLE_VAR(Icon, __VA_ARGS__ )
-// #define PARSEABLE_SUBVAR(...) CLASS_PARSEABLE_SUBVAR(Icon, __VA_ARGS__ )
 
 class {{page}}: public Parseable {
 	private: 
@@ -71,12 +67,9 @@ class {{page}}: public Parseable {
 		{{fieldrow[1]}} {{fieldrow[0]}};
 	{% endfor %}
 	{% if page == "Category": %}
-	  map<string, Category> children;
+		map<string, Category> children;
     	Icon default_icon;
     	Trail default_trail;
     {% endif %}
 	virtual string classname();
 };
-
-// #undef PARSEABLE_VAR
-// #undef PARSEABLE_SUBVAR
