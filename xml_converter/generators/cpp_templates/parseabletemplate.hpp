@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "parseable.hpp"
-{% if page == "Icon": %}{% elif page == "Category": %}#include <map>
+{% if page == "Category": %}#include <map>
 #include "icon.hpp"
 #include "trail.hpp"
 {% elif page == "Trail": %}#include <string.h>
@@ -23,12 +23,9 @@ using namespace std;
 
 class {{page}}: public Parseable {
 	private: {% for fieldrow in fieldrows: %}
-		{{fieldrow[1]}} {{fieldrow[0]}};
-	{% endfor %}
-	{% if page == "Category": %}
-		map<string, Category> children;
+		{{fieldrow[1]}} {{fieldrow[0]}};{% endfor %}
+		{% if page == "Category": %}map<string, Category> children;
     	Icon default_icon;
-    	Trail default_trail;
-    {% endif %}
-	virtual string classname();
+    	Trail default_trail;{% endif %}
+		virtual string classname();
 };

@@ -396,7 +396,7 @@ class Generator:
     def generate_node_types(self, metadata: Any, attributenames: Dict[str,str],page: str) -> Tuple[List[str],List[str]]:
         
         field_rows: List[str] = []
-        cpptypes: List[str] = []
+        includelist: Set[str] = set()
         typechange: Dict[str,str] = {
             "Fixed32": "int",
             "Int32": "int",
@@ -413,16 +413,13 @@ class Generator:
             if page in field['applies_to']:
                 if field['type'] in typechange:
                     cpptype = typechange[field['type']]
-                    if cpptype not in includelist:
-                        includelist.append(cpptype)
+                    includelist.add(cpptype)
                 elif field['type'] == "Custom":
                     cpptype = field['class']
-                    if cpptype.lower() not in includelist:
-                        includelist.append(cpptype.lower())
+                    includelist.add(cpptype.lower())
                 elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
                     cpptype = capitalize(attributename,delimiter="")
-                    if attributename not in includelist:
-                        includelist.append(attributename)
+                    includelist.add(attributename)
                     
                 else :
                     raise ValueError("Unexpected type {field_type} for attribute {attributename}".format(
@@ -430,7 +427,7 @@ class Generator:
                         attributename=attributename,
                     ) )
                
-                field_rows.append((attributename,includelist))
+                field_rows.append((attributename,cpptype))
                 
         return field_rows, includelist
 
