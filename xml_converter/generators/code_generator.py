@@ -8,7 +8,7 @@ import markdown
 from dataclasses import dataclass
 from jinja2 import Template, FileSystemLoader, Environment
 
-
+SchemaType = Dict[str, Any]
 schema = """
 type: object
 properties:
@@ -224,7 +224,7 @@ def validate_front_matter_schema(front_matter: Any) -> str:
 
 @dataclass
 class Document:
-    metadata: Dict[str, List[str]]
+    metadata: SchemaType
     content: str
 
 @dataclass
@@ -267,8 +267,14 @@ class Generator:
                 content=document.content
             )
     
-    def write_parseable(self, output_directory: str) -> None:
-        print("Writing Node Type Headers")
+    ############################################################################
+    # write_cpp_classes
+    #
+    # Create all of the auto generated cpp classes that can be created from
+    # the documents.
+    ############################################################################
+    def write_cpp_classes(self, output_directory: str) -> None:
+        print("Writing XML Node Cpp Classes")
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("parseabletemplate.hpp")
@@ -281,20 +287,71 @@ class Generator:
         pages = ["Category","Icon","Trail"]
         
         for page in pages:
-            metadata: Dict[str,List[str]] = {}
+            metadata: Dict[str, Any] = {}
             
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
             
-            attribute_variables, cpp_include_paths = self.generate_node_types(metadata, page, attribute_names)
+            attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, page, attribute_names)
 
             with open(os.path.join(output_directory, page.lower() + ".hpp"), 'w') as f:
 
                 f.write(template.render(
-                            page=page,
-                            attribute_variables=sorted(attribute_variables),
-                            cpp_include_paths=sorted(cpp_include_paths),
-                        ))
+                    page=page,
+                    attribute_variables=sorted(attribute_variables),
+                    cpp_include_paths=sorted(cpp_include_paths),
+                ))
+
+    ############################################################################
+    # generate_cpp_variable_data
+    #
+    # This will return a list of tuples containing tuple pairs of the variable
+    # name and the variable cpp type, and a set of all of the dependencies
+    # those variables will need to have included.
+    ############################################################################
+    def generate_cpp_variable_data(
+        self,
+        metadata: Dict[str, SchemaType],
+        page: str,
+        attribute_names: Dict[str, str] = {}
+    ) -> Tuple[List[Tuple[str, str]], Set[str]]:
+
+        attribute_variables: List[Tuple[str, str]] = []
+        cpp_include_paths: Set[str] = set()
+        attribute_name: str = ""
+        doc_type_to_cpp_type: Dict[str,str] = {
+            "Fixed32": "int",
+            "Int32": "int",
+            "Boolean": "bool",
+            "Float32": "float",
+            "String": "string",
+        }
+
+        for fieldkey,field in metadata.items():
+            for x in attribute_names:
+                if fieldkey in x :
+                    attribute_name = attribute_names[x]
+
+            if page in field['applies_to']:
+                if field['type'] in doc_type_to_cpp_type:
+                    cpp_type = doc_type_to_cpp_type[field['type']]
+                    cpp_include_paths.add(cpp_type)
+                elif field['type'] == "Custom":
+                    cpp_type = field['class']
+                    cpp_include_paths.add(cpp_type.lower())
+                elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
+                    cpp_type = capitalize(attribute_name,delimiter="")
+                    cpp_include_paths.add(attribute_name)
+
+                else :
+                    raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
+                        field_type=field['type'],
+                        attribute_name=attribute_name,
+                    ))
+
+                attribute_variables.append((attribute_name, cpp_type))
+
+        return attribute_variables, cpp_include_paths
 
     def write_webdocs(self, output_directory: str) -> None:
         print("Writing output documentation")
@@ -312,15 +369,12 @@ class Generator:
             categories[category].append(filename)       
 
         navigation_links = [ (capitalize(category), category) for category in sorted(categories.keys()) ]
-        
-        
 
         complete_field_row_list = []
-        pages: Dict[str,List[str]] = {}
 
         for page in sorted(categories):
-            content: Dict[str,str] = {}
-            metadata: Dict[str,List[str]] = {}
+            content: Dict[str, str] = {}
+            metadata: Dict[str, SchemaType] = {}
             # Resets the content and metadata to empty for each loop
 
             for subpage in categories[page]:
@@ -329,7 +383,7 @@ class Generator:
                
                 metadata[subpage] = self.data[subpage].metadata
 
-            generated_doc, field_rows = self.generate_auto_docs(metadata,content)
+            generated_doc, field_rows = self.generate_auto_docs(metadata, content)
 
             for field_row in field_rows:
                 complete_field_row_list.append(field_row)
@@ -389,63 +443,18 @@ class Generator:
         return example
 
     ############################################################################
-    # Generate Node Types
-    #
-    # This will output code for a single category of nodes.
-    ############################################################################
-    def generate_node_types(self, metadata: Dict[str, List[str]], page: str, attribute_names: Dict[str,str] = {})  -> Tuple[Tuple[str],set[str]]:
-        
-        attribute_variables: List[Tuple[str]] = []
-        cpp_include_paths: Set[str] = set()
-        attribute_name: str = ""
-        doc_type_to_cpp_type: Dict[str,str] = {
-            "Fixed32": "int",
-            "Int32": "int",
-            "Boolean": "bool",
-            "Float32": "float",
-            "String": "string",
-        }
-        
-        for fieldkey,field in metadata.items():
-            for x in attribute_names:
-                if fieldkey in x :
-                    attribute_name = attribute_names[x]
-                   
-            if page in field['applies_to']:
-                if field['type'] in doc_type_to_cpp_type:
-                    cpp_type = doc_type_to_cpp_type[field['type']]
-                    cpp_include_paths.add(cpp_type)
-                elif field['type'] == "Custom":
-                    cpp_type = field['class']
-                    cpp_include_paths.add(cpp_type.lower())
-                elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
-                    cpp_type = capitalize(attribute_name,delimiter="")
-                    cpp_include_paths.add(attribute_name)
-                    
-                else :
-                    raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
-                        field_type=field['type'],
-                        attribute_name=attribute_name,
-                    ) )
-               
-                attribute_variables.append((attribute_name,cpp_type))
-                
-        return attribute_variables, cpp_include_paths
-
-    ############################################################################
     # Generate Auto Docs
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Dict[str, List[str]],content: Dict[str,str]) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Dict[str, SchemaType],content: Dict[str,str]) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")
 
 
         field_rows = []
-        for fieldkey,field in metadata.items():
-      
+        for fieldkey, field in metadata.items():
             valid_values = ""
 
             if field['type'] == "MultiflagValue" or field['type'] == "Enum":
@@ -547,8 +556,15 @@ class Generator:
 
         return template.render(field_rows=field_rows), field_rows
 
-def capitalize(word: str,delimiter: str = " ") -> str:
-  
+
+################################################################################
+# capitalize
+#
+# A helper function to take a snake case string and capitalize the first letter
+# of each word in the string. A delimiter can be passed in to change the
+# characters inserted between the newly capitalized words.
+################################################################################
+def capitalize(word: str, delimiter: str = " ") -> str:
     wordarray = word.split("_")
     capital_word_array = []
 
@@ -558,15 +574,23 @@ def capitalize(word: str,delimiter: str = " ") -> str:
 
     return delimiter.join(capital_word_array)
    
+
+################################################################################
+# main
+#
+# The first function that gets called. Is in change of parsing the input
+# markdown files, and then creating the desired output files.
+################################################################################
 def main() -> None:
     generator = Generator()
-    base_directory = "../doc"
+    markdown_doc_directory = "../doc"
 
-    for directory in os.listdir(base_directory):  
-        if os.path.isdir(os.path.join(base_directory, directory)):
-            generator.load_input_doc(os.path.join(base_directory, directory))
+    for directory in os.listdir(markdown_doc_directory):
+        full_markdown_doc_directory = os.path.join(markdown_doc_directory, directory)
+        if os.path.isdir(full_markdown_doc_directory):
+            generator.load_input_doc(full_markdown_doc_directory)
 
     generator.write_webdocs("../web_docs/")
-    generator.write_parseable("../src/")
+    generator.write_cpp_classes("../src/")
 
 main()
