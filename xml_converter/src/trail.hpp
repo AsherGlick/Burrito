@@ -14,40 +14,40 @@
 #include <string_view>
 #include "rapidxml-1.13/rapidxml_print.hpp"
 
-#include "bool.hpp"
-#include "category.hpp"
-#include "color.hpp"
-#include "cull_chirality.hpp"
-#include "festival_filter.hpp"
-#include "float.hpp"
-#include "image.hpp"
-#include "int.hpp"
-#include "map_type_filter.hpp"
-#include "mount_filter.hpp"
-#include "profession_filter.hpp"
-#include "specialization_filter.hpp"
-#include "species_filter.hpp"
-#include "string.hpp"
-#include "traildata.hpp"
-#include "traildatamapid.hpp"
-#include "uniqueid.hpp"
+#include "attribute/bool.hpp"
+#include "attribute/color.hpp"
+#include "attribute/cull_chirality.hpp"
+#include "attribute/festival_filter.hpp"
+#include "attribute/float.hpp"
+#include "attribute/image.hpp"
+#include "attribute/int.hpp"
+#include "attribute/map_type_filter.hpp"
+#include "attribute/markercategory.hpp"
+#include "attribute/mount_filter.hpp"
+#include "attribute/profession_filter.hpp"
+#include "attribute/specialization_filter.hpp"
+#include "attribute/species_filter.hpp"
+#include "attribute/string.hpp"
+#include "attribute/traildata.hpp"
+#include "attribute/traildatamapid.hpp"
+#include "attribute/uniqueid.hpp"
 
 using namespace std;
 
 class Trail: public Parseable {
-    private:
+    public:
         int achievement_bitmask;
         int achievement_id;
         float alpha;
         float animation_speed;
         bool can_fade;
-        Category category;
+        MarkerCategory category;
         Color color;
         CullChirality cull_chirality;
         float distance_fade_end;
         float distance_fade_start;
         FestivalFilter festival_filter;
-        UniqueID guid;
+        UniqueId guid;
         bool is_wall;
         int map_id;
         MapTypeFilter map_type_filter;

@@ -1,7 +1,7 @@
 ---
 name: GUID
 type: Custom
-class: UniqueID
+class: UniqueId
 xml_fields: ["GUID"]
 applies_to: ["Icon", "Trail"]
 protobuf_field: "guid"

@@ -1,4 +1,4 @@
-#include "euler_angle.hpp"
+#include "euler_rotation.hpp"
 
 #include <string>
 #include <vector>
@@ -10,10 +10,10 @@
 using namespace std;
 
 
-EulerAngle parse_EulerAngle(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
+EulerRotation parse_EulerAngle(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
     vector<string> components = split(get_attribute_value(input), ",");
 
-    EulerAngle euler_angle;
+    EulerRotation euler_angle;
     if (components.size() == 3) {
         euler_angle.x = stof(components[0].c_str());
         euler_angle.y = stof(components[1].c_str());

@@ -20,13 +20,13 @@
 #include "rapidxml-1.13/rapidxml_print.hpp"
 {%- endif %}
 {% for cpp_include_path in cpp_include_paths %}
-#include "{{cpp_include_path}}.hpp"
+#include "attribute/{{cpp_include_path}}.hpp"
 {%- endfor %}
 
 using namespace std;
 
 class {{page}}: public Parseable {
-    private:
+    public:
         {%- for attribute_variable in attribute_variables: %}
         {{attribute_variable[1]}} {{attribute_variable[0]}};
         {%- endfor %}

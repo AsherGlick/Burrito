@@ -1,4 +1,4 @@
-#include "chirality.hpp"
+#include "cull_chirality.hpp"
 
 #include <string>
 #include <vector>
@@ -8,8 +8,8 @@
 
 using namespace std;
 
-Chirality parse_Chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
-    Chirality chirality;
+CullChirality parse_Chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+    CullChirality chirality;
     chirality.chirality = get_attribute_value(input);
     return chirality;
 }

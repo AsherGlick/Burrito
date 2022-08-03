@@ -4,38 +4,38 @@
 #include <vector>
 #include "parseable.hpp"
 
-#include "bool.hpp"
-#include "category.hpp"
-#include "color.hpp"
-#include "cull_chirality.hpp"
-#include "euler_rotation.hpp"
-#include "festival_filter.hpp"
-#include "float.hpp"
-#include "image.hpp"
-#include "int.hpp"
-#include "map_type_filter.hpp"
-#include "mount_filter.hpp"
-#include "position.hpp"
-#include "profession_filter.hpp"
-#include "reset_behavior.hpp"
-#include "specialization_filter.hpp"
-#include "species_filter.hpp"
-#include "string.hpp"
-#include "uniqueid.hpp"
+#include "attribute/bool.hpp"
+#include "attribute/color.hpp"
+#include "attribute/cull_chirality.hpp"
+#include "attribute/euler_rotation.hpp"
+#include "attribute/festival_filter.hpp"
+#include "attribute/float.hpp"
+#include "attribute/image.hpp"
+#include "attribute/int.hpp"
+#include "attribute/map_type_filter.hpp"
+#include "attribute/markercategory.hpp"
+#include "attribute/mount_filter.hpp"
+#include "attribute/position.hpp"
+#include "attribute/profession_filter.hpp"
+#include "attribute/reset_behavior.hpp"
+#include "attribute/specialization_filter.hpp"
+#include "attribute/species_filter.hpp"
+#include "attribute/string.hpp"
+#include "attribute/uniqueid.hpp"
 
 using namespace std;
 
 class Icon: public Parseable {
-    private:
+    public:
         int achievement_bitmask;
         int achievement_id;
         float alpha;
-        bool auto-trigger;
+        bool auto_trigger;
         float bounce_delay;
         float bounce_duration;
         float bounce_height;
         bool can_fade;
-        Category category;
+        MarkerCategory category;
         Color color;
         string copy_clipboard;
         string copy_message;
@@ -44,10 +44,10 @@ class Icon: public Parseable {
         float distance_fade_start;
         EulerRotation euler_rotation;
         FestivalFilter festival_filter;
-        UniqueID guid;
+        UniqueId guid;
         bool has_countdown;
         float heightoffset;
-        Category hide_category;
+        MarkerCategory hide_category;
         Image icon;
         float icon_size;
         string info_message;
@@ -68,10 +68,10 @@ class Icon: public Parseable {
         bool scale_on_map_with_zoom;
         string schedule;
         float schedule_duration;
-        Category show_category;
+        MarkerCategory show_category;
         SpecializationFilter specialization_filter;
         SpeciesFilter species_filter;
-        Category toggle_category;
+        MarkerCategory toggle_category;
         string tooltip_description;
         string tooltip_name;
         float trigger_range;

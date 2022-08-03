@@ -1,7 +1,7 @@
 ---
 name: Show Category
 type: Custom
-class: Category
+class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Show]
 protobuf_field: trigger.action_show_category

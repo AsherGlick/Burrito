@@ -7,13 +7,13 @@
 #include "icon.hpp"
 #include "trail.hpp"
 
-#include "bool.hpp"
-#include "string.hpp"
+#include "attribute/bool.hpp"
+#include "attribute/string.hpp"
 
 using namespace std;
 
 class Category: public Parseable {
-    private:
+    public:
         bool default_visibility;
         string display_name;
         bool is_seperator;

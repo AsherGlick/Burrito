@@ -8,10 +8,11 @@
 
 using namespace std;
 
-
-class Chirality {
+class EulerRotation {
  public:
-    string chirality;
+    float x;
+    float y;
+    float z;
 };
 
-Chirality parse_Chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+EulerRotation parse_EulerAngle(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
