@@ -22,4 +22,5 @@ class Parseable {
 
     // A default parser function to parse a single XML attribute into the class.
     virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
+
 };
