@@ -286,7 +286,7 @@ class Generator:
      
         cpp_classes = ["Category","Icon","Trail"]
         
-        for cpp_class in cpp_classeses:
+        for cpp_class in cpp_classes:
             metadata: Dict[str, Any] = {}
             
             for attribute_name in attribute_names:
