@@ -277,7 +277,7 @@ class Generator:
         print("Writing XML Node Cpp Classes")
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
-        template = env.get_template("parseabletemplate.hpp")
+        template = env.get_template("class_template.hpp")
         attribute_names: Dict[str,str] = {}
         
         for filepath in self.data.keys():
