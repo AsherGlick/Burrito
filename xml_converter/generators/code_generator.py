@@ -356,7 +356,7 @@ class Generator:
     ############################################################################
     # write_webdocs
     #
-    # Create all of the auto generated cpp classes that can be created from
+    # Create all of the html pages that can be created from
     # the documents.
     ############################################################################
     def write_webdocs(self, output_directory: str) -> None:
