@@ -8,9 +8,9 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
-ProfessionFilter parse_ProfessionFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
-    ProfessionFilter profession_filter;
-    profession_filter.parse(input, errors);
-    return profession_filter;
-}
+// //  Functionality will change for parsing
+// ProfessionFilter parse_ProfessionFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
+//     ProfessionFilter profession_filter;
+//     profession_filter.parse(input, errors);
+//     return profession_filter;
+// }

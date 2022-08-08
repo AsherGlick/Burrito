@@ -287,7 +287,7 @@ class Generator:
         cpp_classes = ["Category","Icon","Trail"]
         
         for cpp_class in cpp_classes:
-            metadata: Dict[str, Any] = {}
+            metadata: Dict[str, SchemaType] = {}
             
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
@@ -353,6 +353,45 @@ class Generator:
 
         return attribute_variables, cpp_include_paths
     
+    ############################################################################
+    # write_attributes
+    #
+    # Creates the attribute files that contain multiple values
+    # 
+    ############################################################################
+    def write_attribute (self, output_directory: str) -> None:
+        print("Writing attributes")  
+        os.makedirs(output_directory, exist_ok=True)
+
+        file_loader = FileSystemLoader('cpp_templates')
+        env = Environment(loader=file_loader)
+        template = env.get_template("attribute_template.hpp")
+        categories: Dict[str,List[str]] = {}
+        attribute_names: Dict[str,str] = {}
+        metadata: Dict[str, SchemaType] = {}
+         
+        
+        for filepath in self.data.keys():
+            filename = os.path.basename(filepath)
+            attribute_names[filepath]= filename.split(".md")[0]
+
+        for filepath in attribute_names:
+            attribute_name = attribute_names[filepath]
+            metadata[filepath] = self.data[filepath].metadata
+            if metadata[filepath]['type'] in ["MultiflagValue"]:
+                # Testing Multiflag for now. Will add Compound and Enum(?) later
+                
+                attribute_variables = metadata[filepath]['flags']
+                class_name = capitalize(attribute_name,delimiter="") 
+                
+                with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
+
+                    f.write(template.render(
+                        attribute_name=attribute_name,
+                        attribute_variables=sorted(attribute_variables),
+                        class_name=class_name,
+                    ))
+
     ############################################################################
     # write_webdocs
     #
@@ -598,5 +637,6 @@ def main() -> None:
 
     generator.write_webdocs("../web_docs/")
     generator.write_cpp_classes("../src/")
+    generator.write_attribute("../src/attribute")
 
 main()
