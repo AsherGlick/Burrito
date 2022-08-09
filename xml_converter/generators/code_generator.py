@@ -277,27 +277,27 @@ class Generator:
         print("Writing XML Node Cpp Classes")
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
-        template = env.get_template("parseabletemplate.hpp")
+        template = env.get_template("class_template.hpp")
         attribute_names: Dict[str,str] = {}
         
         for filepath in self.data.keys():
             filename = os.path.basename(filepath)
             attribute_names[filepath]= filename.split(".md")[0]
      
-        pages = ["Category","Icon","Trail"]
+        cpp_classes = ["Category","Icon","Trail"]
         
-        for page in pages:
+        for cpp_class in cpp_classes:
             metadata: Dict[str, Any] = {}
             
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
             
-            attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, page, attribute_names)
+            attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
-            with open(os.path.join(output_directory, page.lower() + ".hpp"), 'w') as f:
+            with open(os.path.join(output_directory, cpp_class.lower() + ".hpp"), 'w') as f:
 
                 f.write(template.render(
-                    page=page,
+                    cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables),
                     cpp_include_paths=sorted(cpp_include_paths),
                 ))
@@ -312,7 +312,7 @@ class Generator:
     def generate_cpp_variable_data(
         self,
         metadata: Dict[str, SchemaType],
-        page: str,
+        doc_type: str,
         attribute_names: Dict[str, str] = {}
     ) -> Tuple[List[Tuple[str, str]], Set[str]]:
 
@@ -332,7 +332,7 @@ class Generator:
                 if fieldkey in x :
                     attribute_name = attribute_names[x]
 
-            if page in field['applies_to']:
+            if doc_type in field['applies_to']:
                 if field['type'] in doc_type_to_cpp_type:
                     cpp_type = doc_type_to_cpp_type[field['type']]
                     cpp_include_paths.add(cpp_type)
@@ -352,7 +352,13 @@ class Generator:
                 attribute_variables.append((attribute_name, cpp_type))
 
         return attribute_variables, cpp_include_paths
-
+    
+    ############################################################################
+    # write_webdocs
+    #
+    # Create all of the html pages that can be created from
+    # the documents.
+    ############################################################################
     def write_webdocs(self, output_directory: str) -> None:
         print("Writing output documentation")
         os.makedirs(output_directory, exist_ok=True)

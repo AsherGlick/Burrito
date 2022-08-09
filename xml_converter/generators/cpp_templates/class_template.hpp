@@ -3,11 +3,11 @@
 #include <string>
 #include <vector>
 #include "parseable.hpp"
-{%- if page == "Category": %}
+{%- if cpp_class == "Category": %}
 #include <map>
 #include "icon.hpp"
 #include "trail.hpp"
-{%- elif page == "Trail": %}
+{%- elif cpp_class == "Trail": %}
 #include <string.h>
 #include <cstdio>
 #include <filesystem>
@@ -25,13 +25,13 @@
 
 using namespace std;
 
-class {{page}}: public Parseable {
+class {{cpp_class}}: public Parseable {
     public:
         {%- for attribute_variable in attribute_variables: %}
         {{attribute_variable[1]}} {{attribute_variable[0]}};
         {%- endfor %}
 
-        {%- if page == "Category": %}
+        {%- if cpp_class == "Category": %}
         map<string, Category> children;
         Icon default_icon;
         Trail default_trail;
