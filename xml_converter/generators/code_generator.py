@@ -295,7 +295,6 @@ class Generator:
             attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
             with open(os.path.join(output_directory, cpp_class.lower() + ".hpp"), 'w') as f:
-            
                 f.write(template.render(
                     cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables),
@@ -382,6 +381,7 @@ class Generator:
             attribute_names[filepath]= filename.split(".md")[0]
 
         for filepath in attribute_names:
+            attribute_variables = []
             attribute_name = attribute_names[filepath]
             metadata[filepath] = self.data[filepath].metadata
             if metadata[filepath]['type'] in ["MultiflagValue", "CompoundValue", "Enum"]:
@@ -405,17 +405,15 @@ class Generator:
                     raise ValueError("Type was in the list [MultiflagValue, CompoundValue, Enum] but not equal to one of those strings. Look at markdown file {attribute_name}".format(
                         attribute_name=attribute_name
                     ))
-
                 class_name = capitalize(attribute_name,delimiter="") 
                
                 with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
-                    
                     f.write(template.render(
                         attribute_name=attribute_name,
                         attribute_variables=sorted(attribute_variables),
                         class_name=class_name,
                     ))
-                attribute_variables = []
+                
 
     ############################################################################
     # write_webdocs
