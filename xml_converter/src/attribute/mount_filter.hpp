@@ -11,18 +11,18 @@ using namespace std;
 
 class MountFilter {
  public:
-        bool griffon;
-        bool jackal;
-        bool raptor;
-        bool roller_beetle;
-        bool seige_turtle;
-        bool skiff;
-        bool skimmer;
-        bool skyscale;
-        bool springer;
-        bool warclaw;
+    bool griffon;
+    bool jackal;
+    bool raptor;
+    bool roller_beetle;
+    bool seige_turtle;
+    bool skiff;
+    bool skimmer;
+    bool skyscale;
+    bool springer;
+    bool warclaw;
 
-        virtual string classname() { return "MountFilter"; };
+    virtual string classname() { return "MountFilter"; };
 };
 
 MountFilter parse_MountFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

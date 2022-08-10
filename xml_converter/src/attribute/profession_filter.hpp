@@ -11,17 +11,17 @@ using namespace std;
 
 class ProfessionFilter {
  public:
-        bool elementalist;
-        bool engineer;
-        bool guardian;
-        bool mesmer;
-        bool necromancer;
-        bool ranger;
-        bool revenant;
-        bool thief;
-        bool warrior;
+    bool elementalist;
+    bool engineer;
+    bool guardian;
+    bool mesmer;
+    bool necromancer;
+    bool ranger;
+    bool revenant;
+    bool thief;
+    bool warrior;
 
-        virtual string classname() { return "ProfessionFilter"; };
+    virtual string classname() { return "ProfessionFilter"; };
 };
 
 ProfessionFilter parse_ProfessionFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

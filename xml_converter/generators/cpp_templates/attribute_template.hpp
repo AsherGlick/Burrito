@@ -11,11 +11,11 @@ using namespace std;
 
 class {{class_name}} {
  public:
-        {%- for attribute_variable in attribute_variables: %}
-        bool {{attribute_variable}};
-        {%- endfor %}
+    {%- for attribute_variable in attribute_variables: %}
+    {{attribute_variable[1]}} {{attribute_variable[0]}};
+    {%- endfor %}
 
-        virtual string classname() { return "{{class_name}}"; };
+    virtual string classname() { return "{{class_name}}"; };
 };
 
 {{class_name}} parse_{{class_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

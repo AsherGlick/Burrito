@@ -295,7 +295,7 @@ class Generator:
             attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
             with open(os.path.join(output_directory, cpp_class.lower() + ".hpp"), 'w') as f:
-
+            
                 f.write(template.render(
                     cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables),
@@ -368,7 +368,14 @@ class Generator:
         categories: Dict[str,List[str]] = {}
         attribute_names: Dict[str,str] = {}
         metadata: Dict[str, SchemaType] = {}
-         
+        attribute_variables: Tuple[List[Tuple[str, str]]] = []
+        doc_type_to_cpp_type: Dict[str,str] = {
+            "Fixed32": "int",
+            "Int32": "int",
+            "Boolean": "bool",
+            "Float32": "float",
+            "String": "string",
+        }
         
         for filepath in self.data.keys():
             filename = os.path.basename(filepath)
@@ -377,17 +384,38 @@ class Generator:
         for filepath in attribute_names:
             attribute_name = attribute_names[filepath]
             metadata[filepath] = self.data[filepath].metadata
-            if metadata[filepath]['type'] == ["MultiflagValue"]:
-                attribute_variables = metadata[filepath]['flags']
-                class_name = capitalize(attribute_name,delimiter="") 
+            if metadata[filepath]['type'] in ["MultiflagValue", "CompoundValue", "Enum"]:
+                if metadata[filepath]['type'] == "MultiflagValue":
+                    for flag in metadata[filepath]['flags']:
+                        attribute_variables.append((flag, "bool")) 
+                        
+                elif metadata[filepath]['type'] == "CompoundValue":
+                    
+                    for component in metadata[filepath]['components']:
+                        if component['type'] not in doc_type_to_cpp_type:
+                            raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
+                                attribute_name=attribute_name
+                            ))
+                        
+                        attribute_variables.append((component['name'].lower().replace(" ","_"), doc_type_to_cpp_type[component['type']]))
                 
-                with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
+                elif metadata[filepath]['type'] == "Enum":
+                    attribute_variables.append((metadata[filepath]['name'].lower().replace(" ","_"), "string"))
+                else: 
+                    raise ValueError("Type was in the list [MultiflagValue, CompoundValue, Enum] but not equal to one of those strings. Look at markdown file {attribute_name}".format(
+                        attribute_name=attribute_name
+                    ))
 
+                class_name = capitalize(attribute_name,delimiter="") 
+               
+                with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
+                    
                     f.write(template.render(
                         attribute_name=attribute_name,
                         attribute_variables=sorted(attribute_variables),
                         class_name=class_name,
                     ))
+                attribute_variables = []
 
     ############################################################################
     # write_webdocs

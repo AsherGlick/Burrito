@@ -5,14 +5,17 @@
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
 
 using namespace std;
 
 class EulerRotation {
  public:
-    float x;
-    float y;
-    float z;
+    float x_rotation;
+    float y_rotation;
+    float z_rotation;
+
+    virtual string classname() { return "EulerRotation"; };
 };
 
-EulerRotation parse_EulerAngle(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+EulerRotation parse_EulerRotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
