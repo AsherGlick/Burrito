@@ -356,8 +356,7 @@ class Generator:
     ############################################################################
     # write_attributes
     #
-    # Creates the attribute files that contain multiple values
-    # 
+    # Creates the attribute files for attributes that contain multiple values
     ############################################################################
     def write_attribute (self, output_directory: str) -> None:
         print("Writing attributes")  
@@ -378,9 +377,7 @@ class Generator:
         for filepath in attribute_names:
             attribute_name = attribute_names[filepath]
             metadata[filepath] = self.data[filepath].metadata
-            if metadata[filepath]['type'] in ["MultiflagValue"]:
-                # Testing Multiflag for now. Will add Compound and Enum(?) later
-                
+            if metadata[filepath]['type'] == ["MultiflagValue"]:
                 attribute_variables = metadata[filepath]['flags']
                 class_name = capitalize(attribute_name,delimiter="") 
                 

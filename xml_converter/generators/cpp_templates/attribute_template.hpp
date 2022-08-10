@@ -11,7 +11,7 @@ using namespace std;
 
 class {{class_name}} {
  public:
-		{%- for attribute_variable in attribute_variables: %}
+        {%- for attribute_variable in attribute_variables: %}
         bool {{attribute_variable}};
         {%- endfor %}
 
