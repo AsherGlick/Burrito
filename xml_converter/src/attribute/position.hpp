@@ -8,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
 class Position {
  public:
     float x_position;
@@ -17,5 +16,4 @@ class Position {
 
     virtual string classname() { return "Position"; };
 };
-
-Position parse_Position(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

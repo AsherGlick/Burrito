@@ -8,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
 class MapTypeFilter {
  public:
     bool blue_borderlands_map;
@@ -38,5 +37,4 @@ class MapTypeFilter {
 
     virtual string classname() { return "MapTypeFilter"; };
 };
-
-MapTypeFilter parse_MapTypeFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

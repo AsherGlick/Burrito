@@ -8,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
 class EulerRotation {
  public:
     float x_rotation;
@@ -17,5 +16,4 @@ class EulerRotation {
 
     virtual string classname() { return "EulerRotation"; };
 };
-
-EulerRotation parse_EulerRotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

@@ -8,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
 class SpeciesFilter {
  public:
     bool asura;
@@ -19,5 +18,4 @@ class SpeciesFilter {
 
     virtual string classname() { return "SpeciesFilter"; };
 };
-
-SpeciesFilter parse_SpeciesFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

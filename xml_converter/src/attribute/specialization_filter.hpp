@@ -8,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
 class SpecializationFilter {
  public:
     bool elementalist_air;
@@ -86,5 +85,4 @@ class SpecializationFilter {
 
     virtual string classname() { return "SpecializationFilter"; };
 };
-
-SpecializationFilter parse_SpecializationFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

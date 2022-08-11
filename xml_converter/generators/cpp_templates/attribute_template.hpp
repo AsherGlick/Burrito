@@ -9,6 +9,13 @@
 
 using namespace std;
 
+{%- if type == "Enum":%}
+enum {{class_name}} {
+    {%- for attribute_variable in attribute_variables: %}
+    {{attribute_variable[0]}},
+{%- endfor %}
+};
+{%- else: %}
 class {{class_name}} {
  public:
     {%- for attribute_variable in attribute_variables: %}
@@ -17,5 +24,5 @@ class {{class_name}} {
 
     virtual string classname() { return "{{class_name}}"; };
 };
-
-{{class_name}} parse_{{class_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+{%- endif %}
+{{class_name}} parse_{{function_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

@@ -8,12 +8,9 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
-class CullChirality {
- public:
-    string cull_chirality;
-
-    virtual string classname() { return "CullChirality"; };
+enum CullChirality {
+    clockwise,
+    counter_clockwise,
+    none,
 };
-
-CullChirality parse_CullChirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

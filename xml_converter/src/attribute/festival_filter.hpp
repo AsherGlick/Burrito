@@ -8,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
 class FestivalFilter {
  public:
     bool dragonbash;
@@ -21,5 +20,4 @@ class FestivalFilter {
 
     virtual string classname() { return "FestivalFilter"; };
 };
-
-FestivalFilter parse_FestivalFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

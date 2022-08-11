@@ -12,8 +12,8 @@ SchemaType = Dict[str, Any]
 schema = """
 type: object
 properties:
-    type: 
-        type: string 
+    type:
+        type: string
         enum: [Int32, Fixed32, Float32, String, Boolean, MultiflagValue, Enum, CompoundValue, Custom]
 allOf:
     #############################
@@ -163,7 +163,7 @@ allOf:
                             type: array
                             items:
                                 type: string
-                                enum: [BlishHUD, Burrito, TacO]                                        
+                                enum: [BlishHUD, Burrito, TacO]
 
 
     #############################
@@ -213,8 +213,6 @@ allOf:
 )
 
 
-
-
 def validate_front_matter_schema(front_matter: Any) -> str:
     try:
         validate(front_matter, yaml.safe_load(schema))
@@ -222,10 +220,12 @@ def validate_front_matter_schema(front_matter: Any) -> str:
         return "Error Message: {} (Path: {}".format(e.message, e.json_path)
     return ""
 
+
 @dataclass
 class Document:
     metadata: SchemaType
     content: str
+
 
 @dataclass
 class FieldRow:
@@ -242,13 +242,22 @@ class FieldRow:
     sub_fields: List["FieldRow"]
     description: str
 
+
+doc_type_to_cpp_type: Dict[str, str] = {
+            "Fixed32": "int",
+            "Int32": "int",
+            "Boolean": "bool",
+            "Float32": "float",
+            "String": "string",
+        }
+
+
 class Generator:
     data: Dict[str, Document] = {}
 
-
     def load_input_doc(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
-            filepath = os.path.join(dir_path,filepath)
+            filepath = os.path.join(dir_path, filepath)
             try:
                 document = frontmatter.load(filepath)
             except Exception as e:
@@ -260,13 +269,11 @@ class Generator:
                 print(filepath)
                 print(error)
 
-    
-
             self.data[filepath] = Document(
                 metadata=document.metadata,
                 content=document.content
             )
-    
+
     ############################################################################
     # write_cpp_classes
     #
@@ -278,23 +285,23 @@ class Generator:
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("class_template.hpp")
-        attribute_names: Dict[str,str] = {}
-        
+        attribute_names: Dict[str, str] = {}
+
         for filepath in self.data.keys():
             filename = os.path.basename(filepath)
-            attribute_names[filepath]= filename.split(".md")[0]
-     
-        cpp_classes = ["Category","Icon","Trail"]
-        
+            attribute_names[filepath] = filename.split(".md")[0]
+
+        cpp_classes = ["Category", "Icon", "Trail"]
+
         for cpp_class in cpp_classes:
             metadata: Dict[str, SchemaType] = {}
-            
+
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
-            
+
             attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
-            with open(os.path.join(output_directory, cpp_class.lower() + ".hpp"), 'w') as f:
+            with open(os.path.join(output_directory, lowercase(cpp_class) + ".hpp"), 'w') as f:
                 f.write(template.render(
                     cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables),
@@ -318,17 +325,10 @@ class Generator:
         attribute_variables: List[Tuple[str, str]] = []
         cpp_include_paths: Set[str] = set()
         attribute_name: str = ""
-        doc_type_to_cpp_type: Dict[str,str] = {
-            "Fixed32": "int",
-            "Int32": "int",
-            "Boolean": "bool",
-            "Float32": "float",
-            "String": "string",
-        }
 
-        for fieldkey,field in metadata.items():
+        for fieldkey, field in metadata.items():
             for x in attribute_names:
-                if fieldkey in x :
+                if fieldkey in x:
                     attribute_name = attribute_names[x]
 
             if doc_type in field['applies_to']:
@@ -337,12 +337,12 @@ class Generator:
                     cpp_include_paths.add(cpp_type)
                 elif field['type'] == "Custom":
                     cpp_type = field['class']
-                    cpp_include_paths.add(cpp_type.lower())
-                elif field['type'] in ["Enum","MultiflagValue","CompoundValue"]:
-                    cpp_type = capitalize(attribute_name,delimiter="")
+                    cpp_include_paths.add(lowercase(cpp_type))
+                elif field['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
+                    cpp_type = capitalize(attribute_name, delimiter="")
                     cpp_include_paths.add(attribute_name)
 
-                else :
+                else:
                     raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
                         field_type=field['type'],
                         attribute_name=attribute_name,
@@ -351,34 +351,27 @@ class Generator:
                 attribute_variables.append((attribute_name, cpp_type))
 
         return attribute_variables, cpp_include_paths
-    
+
     ############################################################################
     # write_attributes
     #
     # Creates the attribute files for attributes that contain multiple values
     ############################################################################
-    def write_attribute (self, output_directory: str) -> None:
-        print("Writing attributes")  
+    def write_attribute(self, output_directory: str) -> None:
+        print("Writing attributes")
         os.makedirs(output_directory, exist_ok=True)
 
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("attribute_template.hpp")
-        categories: Dict[str,List[str]] = {}
-        attribute_names: Dict[str,str] = {}
+        attribute_names: Dict[str, str] = {}
         metadata: Dict[str, SchemaType] = {}
-        attribute_variables: Tuple[List[Tuple[str, str]]] = []
-        doc_type_to_cpp_type: Dict[str,str] = {
-            "Fixed32": "int",
-            "Int32": "int",
-            "Boolean": "bool",
-            "Float32": "float",
-            "String": "string",
-        }
+        attribute_variables: List[Tuple[str, str]] = []
         
+
         for filepath in self.data.keys():
             filename = os.path.basename(filepath)
-            attribute_names[filepath]= filename.split(".md")[0]
+            attribute_names[filepath] = filename.split(".md")[0]
 
         for filepath in attribute_names:
             attribute_variables = []
@@ -387,33 +380,29 @@ class Generator:
             if metadata[filepath]['type'] in ["MultiflagValue", "CompoundValue", "Enum"]:
                 if metadata[filepath]['type'] == "MultiflagValue":
                     for flag in metadata[filepath]['flags']:
-                        attribute_variables.append((flag, "bool")) 
-                        
+                        attribute_variables.append((flag, "bool"))
+
                 elif metadata[filepath]['type'] == "CompoundValue":
-                    
+
                     for component in metadata[filepath]['components']:
                         if component['type'] not in doc_type_to_cpp_type:
                             raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
                                 attribute_name=attribute_name
                             ))
-                        
-                        attribute_variables.append((component['name'].lower().replace(" ","_"), doc_type_to_cpp_type[component['type']]))
-                
+                        attribute_variables.append((lowercase(component['name'], delimiter="_"), doc_type_to_cpp_type[component['type']]))
+
                 elif metadata[filepath]['type'] == "Enum":
-                    attribute_variables.append((metadata[filepath]['name'].lower().replace(" ","_"), "string"))
-                else: 
-                    raise ValueError("Type was in the list [MultiflagValue, CompoundValue, Enum] but not equal to one of those strings. Look at markdown file {attribute_name}".format(
-                        attribute_name=attribute_name
-                    ))
-                class_name = capitalize(attribute_name,delimiter="") 
-               
+                    for value in metadata[filepath]['values']:
+                        attribute_variables.append((value,metadata[filepath]['values'][value]))
+
                 with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
                     f.write(template.render(
                         attribute_name=attribute_name,
                         attribute_variables=sorted(attribute_variables),
-                        class_name=class_name,
+                        class_name=capitalize(attribute_name, delimiter=""),
+                        function_name=lowercase(attribute_name, delimiter="_"),
+                        type=metadata[filepath]['type'],
                     ))
-                
 
     ############################################################################
     # write_webdocs
@@ -428,15 +417,15 @@ class Generator:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("documentation.html")
-        categories: Dict[str,List[str]] = {}
+        categories: Dict[str, List[str]] = {}
 
         for filename in self.data.keys():
             category = os.path.basename(os.path.dirname(filename))
             if category not in categories:
                 categories[category] = []
-            categories[category].append(filename)       
+            categories[category].append(filename)
 
-        navigation_links = [ (capitalize(category), category) for category in sorted(categories.keys()) ]
+        navigation_links = [(capitalize(category), category) for category in sorted(categories.keys())]
 
         complete_field_row_list = []
 
@@ -446,9 +435,7 @@ class Generator:
             # Resets the content and metadata to empty for each loop
 
             for subpage in categories[page]:
-                
                 content[subpage] = markdown.markdown(self.data[subpage].content)
-               
                 metadata[subpage] = self.data[subpage].metadata
 
             generated_doc, field_rows = self.generate_auto_docs(metadata, content)
@@ -489,9 +476,9 @@ class Generator:
             combo_field = [example_values[1], example_values[2], example_values[3]]
 
         examples = []
-        examples.append("\"" + solo_field +"\"")
+        examples.append("\"" + solo_field + "\"")
         if len(combo_field) > 0:
-            examples.append("\"" + ",".join(combo_field) +"\"")
+            examples.append("\"" + ",".join(combo_field) + "\"")
 
         return examples
 
@@ -500,13 +487,11 @@ class Generator:
 
         for node_type in applies_to:
             for value in examples:
-                example += "&lt;" + node_type + " ... " + xml_field + "=<b>" + value +"</b> ... &gt;<br>"
+                example += "&lt;" + node_type + " ... " + xml_field + "=<b>" + value + "</b> ... &gt;<br>"
             break
             # example += "<br>"
-        
 
-
-        example +="</div>"
+        example += "</div>"
 
         return example
 
@@ -515,11 +500,10 @@ class Generator:
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Dict[str, SchemaType],content: Dict[str,str]) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Dict[str, SchemaType], content: Dict[str, str]) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")
-
 
         field_rows = []
         for fieldkey, field in metadata.items():
@@ -559,18 +543,14 @@ class Generator:
                     valid_values += "</td><td class='flag_arrowbox'>&#10142;</td><td class='flag_namebox'>" + elem + "</td></tr>"
                 valid_values += "</table>"
 
-
             elif field['type'] == "CompoundValue":
-                
+
                 example = self.build_example(
                     type=field['type'],
                     applies_to=field['applies_to'],
                     xml_field=field['xml_fields'][0],
                     examples=["???TODO???"]
                 )
-
-
-
                 # ",".join( [ self.get_examples(x['type'], field['applies_to'], field['xml_fields'][0]) for x in field['components'] ])
             else:
                 example = self.build_example(
@@ -586,7 +566,7 @@ class Generator:
 
             field_rows.append(FieldRow(
                 name=field["name"],
-                xml_attribute = field["xml_fields"][0],
+                xml_attribute=field["xml_fields"][0],
                 alternate_xml_attributes=field["xml_fields"][1:],
                 binary_field=field["protobuf_field"],
                 data_type=field["type"],
@@ -595,17 +575,17 @@ class Generator:
                 example=example,
                 valid_values_html=valid_values,
                 is_sub_field=False,
-                sub_fields=[], 
-                description=content[fieldkey]# todo:
+                sub_fields=[],
+                description=content[fieldkey]  # todo:
             ))
 
             if field['type'] == "CompoundValue":
                 for component_field in field["components"]:
                     field_rows.append(FieldRow(
                         name=component_field["name"],
-                        xml_attribute= component_field["xml_fields"][0],
+                        xml_attribute=component_field["xml_fields"][0],
                         alternate_xml_attributes=component_field["xml_fields"][1:],
-                        binary_field= field["protobuf_field"] + "." + component_field["protobuf_field"],
+                        binary_field=field["protobuf_field"] + "." + component_field["protobuf_field"],
                         data_type=component_field["type"],
                         supported_by_html="<br>".join(component_field["compatability"]),
                         usable_on_html="<br>".join(field["applies_to"]),
@@ -619,7 +599,6 @@ class Generator:
                         valid_values_html=valid_values,
                         is_sub_field=True,
                         sub_fields=[]
-
                     ))
 
         return template.render(field_rows=field_rows), field_rows
@@ -641,7 +620,23 @@ def capitalize(word: str, delimiter: str = " ") -> str:
         capital_word_array.append(capital_each_word)
 
     return delimiter.join(capital_word_array)
-   
+
+################################################################################
+# lowercase
+#
+# A helper function to take each word in the string and convert it to a snake 
+# case string of lowercase letters. A delimiter can be passed in to change the
+# characters inserted between the newly lowercased words.
+################################################################################
+def lowercase(word: str, delimiter: str = "_") -> str:
+    wordarray = word.split(" ")
+    lower_word_array = []
+
+    for each_word in wordarray:
+        lower_each_word = each_word.lower()
+        lower_word_array.append(lower_each_word)
+
+    return delimiter.join(lower_word_array)
 
 ################################################################################
 # main
@@ -649,6 +644,8 @@ def capitalize(word: str, delimiter: str = " ") -> str:
 # The first function that gets called. Is in change of parsing the input
 # markdown files, and then creating the desired output files.
 ################################################################################
+
+
 def main() -> None:
     generator = Generator()
     markdown_doc_directory = "../doc"
@@ -661,5 +658,6 @@ def main() -> None:
     generator.write_webdocs("../web_docs/")
     generator.write_cpp_classes("../src/")
     generator.write_attribute("../src/attribute")
+
 
 main()

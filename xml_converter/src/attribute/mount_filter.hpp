@@ -8,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-
 class MountFilter {
  public:
     bool griffon;
@@ -24,5 +23,4 @@ class MountFilter {
 
     virtual string classname() { return "MountFilter"; };
 };
-
-MountFilter parse_MountFilter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

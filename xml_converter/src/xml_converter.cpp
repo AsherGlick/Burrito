@@ -218,11 +218,11 @@ void convert_taco_directory(string directory) {
 
 int main() {
     convert_taco_directory("./packs/tw_ALL_IN_ONE");
-    convert_taco_directory("./packs/TehsTrails");
-    convert_taco_directory("./packs/MoW");
-    convert_taco_directory("./packs/Hero.Blish.Pack");
-    convert_taco_directory("./packs/GW2 TacO ReActif EN External");
-    convert_taco_directory("./packs/602fd903dad6efast_TacO_pack_001");
+    // convert_taco_directory("./packs/TehsTrails");
+    // convert_taco_directory("./packs/MoW");
+    // convert_taco_directory("./packs/Hero.Blish.Pack");
+    // convert_taco_directory("./packs/GW2 TacO ReActif EN External");
+    // convert_taco_directory("./packs/602fd903dad6efast_TacO_pack_001");
 
     return 0;
 }
