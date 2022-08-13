@@ -377,32 +377,35 @@ class Generator:
             attribute_variables = []
             attribute_name = attribute_names[filepath]
             metadata[filepath] = self.data[filepath].metadata
-            if metadata[filepath]['type'] in ["MultiflagValue", "CompoundValue", "Enum"]:
-                if metadata[filepath]['type'] == "MultiflagValue":
-                    for flag in metadata[filepath]['flags']:
-                        attribute_variables.append((flag, "bool"))
+            
+            if metadata[filepath]['type'] == "MultiflagValue":
+                for flag in metadata[filepath]['flags']:
+                    attribute_variables.append((flag, "bool"))
 
-                elif metadata[filepath]['type'] == "CompoundValue":
+            elif metadata[filepath]['type'] == "CompoundValue":
 
-                    for component in metadata[filepath]['components']:
-                        if component['type'] not in doc_type_to_cpp_type:
-                            raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
-                                attribute_name=attribute_name
-                            ))
-                        attribute_variables.append((lowercase(component['name'], delimiter="_"), doc_type_to_cpp_type[component['type']]))
+                for component in metadata[filepath]['components']:
+                    if component['type'] not in doc_type_to_cpp_type:
+                        raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
+                            attribute_name=attribute_name
+                        ))
+                    attribute_variables.append((lowercase(component['name'], delimiter="_"), doc_type_to_cpp_type[component['type']]))
 
-                elif metadata[filepath]['type'] == "Enum":
-                    for value in metadata[filepath]['values']:
-                        attribute_variables.append((value,metadata[filepath]['values'][value]))
+            elif metadata[filepath]['type'] == "Enum":
+                for value in metadata[filepath]['values']:
+                    attribute_variables.append((value,metadata[filepath]['values'][value]))
 
-                with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
-                    f.write(template.render(
-                        attribute_name=attribute_name,
-                        attribute_variables=sorted(attribute_variables),
-                        class_name=capitalize(attribute_name, delimiter=""),
-                        function_name=lowercase(attribute_name, delimiter="_"),
-                        type=metadata[filepath]['type'],
-                    ))
+            else:
+                continue
+
+            with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
+                f.write(template.render(
+                    attribute_name=attribute_name,
+                    attribute_variables=sorted(attribute_variables),
+                    class_name=capitalize(attribute_name, delimiter=""),
+                    function_name=lowercase(attribute_name, delimiter="_"),
+                    type=metadata[filepath]['type'],
+                ))
 
     ############################################################################
     # write_webdocs
