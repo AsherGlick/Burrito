@@ -7,7 +7,8 @@
 #include "../rapidxml-1.13/rapidxml.hpp"
 
 class MarkerCategory {
-
+ public:    
+    string category;
 };
 
-MarkerCategory parse_MarkerCategory(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

@@ -14,5 +14,5 @@ class Image {
     rapidxml::xml_attribute<>* original_token;
 };
 
-Image parse_Image(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
 

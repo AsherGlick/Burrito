@@ -29,13 +29,17 @@ class {{cpp_class}}: public Parseable {
     public:
         {%- for attribute_variable in attribute_variables: %}
         {{attribute_variable[1]}} {{attribute_variable[0]}};
+
         {%- endfor %}
 
         {%- if cpp_class == "Category": %}
         map<string, Category> children;
         Icon default_icon;
         Trail default_trail;
-        {%- endif %}
 
+        void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
+        {%- endif %}
         virtual string classname();
+        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
+
 };

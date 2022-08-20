@@ -1,7 +1,7 @@
 ---
 name: Map Display Size
 type: Int32
-applies_to: [Icon]
+applies_to: [Icon, Trail]
 xml_fields: [MapDisplaySize]
 protobuf_field: map_display_size
 compatability: [TacO, BlishHUD, Burrito]

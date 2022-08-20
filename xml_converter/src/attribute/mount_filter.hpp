@@ -24,3 +24,4 @@ class MountFilter {
     virtual string classname() { return "MountFilter"; };
 };
 MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+ 

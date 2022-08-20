@@ -19,10 +19,11 @@ enum {{class_name}} {
 class {{class_name}} {
  public:
     {%- for attribute_variable in attribute_variables: %}
-    {{attribute_variable[1]}} {{attribute_variable[0]}};
+    {{attribute_variable[2]}} {{attribute_variable[0]}};
     {%- endfor %}
 
     virtual string classname() { return "{{class_name}}"; };
 };
 {%- endif %}
-{{class_name}} parse_{{function_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+{{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+ 

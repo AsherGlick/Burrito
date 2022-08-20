@@ -37,11 +37,11 @@ bool has_suffix(std::string const &fullString, std::string const &ending) {
     }
 }
 
-Category* get_category(rapidxml::xml_attribute<>* name, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
-    vector<string> split_categories = split(get_attribute_value(name), ".");
+Category* get_category(rapidxml::xml_attribute<>* attribute, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
+    vector<string> split_categories = split(get_attribute_value(attribute), ".");
 
     if (split_categories.size() == 0) {
-        errors->push_back(new XMLAttributeValueError("Empty Type", name));
+        errors->push_back(new XMLAttributeValueError("Empty Type", attribute));
         return nullptr;
     }
 
@@ -53,7 +53,7 @@ Category* get_category(rapidxml::xml_attribute<>* name, map<string, Category>* m
         auto category = marker_categories->find(category_name);
 
         if (category == marker_categories->end()) {
-            errors->push_back(new XMLAttributeValueError("Category Not Found \"" + category_name + "\"", name));
+            errors->push_back(new XMLAttributeValueError("Category Not Found \"" + category_name + "\"", attribute));
             return nullptr;
         }
 
@@ -70,7 +70,7 @@ Category* get_category(rapidxml::xml_attribute<>* name, map<string, Category>* m
 ////////////////////////////////////////////////////////////////////////////////
 // parse_pois
 //
-// Parse the <POIs> xml block into an in memory array of Markers.
+// Parse the <POIs> xml block into an in-memory array of Markers.
 ////////////////////////////////////////////////////////////////////////////////
 vector<Parseable> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     vector<Parseable> markers;

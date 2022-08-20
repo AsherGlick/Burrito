@@ -1,9 +1,9 @@
 ---
-name: Is Seperator
+name: Is Separator
 type: Boolean
 applies_to: [Category]
-xml_fields: [IsSeperator]
-protobuf_field: is_seperator
+xml_fields: [IsSeparator]
+protobuf_field: is_separator
 compatability: [TacO, BlishHUD, Burrito]
 ---
 

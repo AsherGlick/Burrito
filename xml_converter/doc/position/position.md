@@ -16,7 +16,7 @@ components:
     
     - name: Y Position
       type: Float32
-      xml_fields: [YPos, PositionX]
+      xml_fields: [YPos, PositionY]
       protobuf_field: "y"
       compatability: [TacO, Burrito, BlishHUD]
       

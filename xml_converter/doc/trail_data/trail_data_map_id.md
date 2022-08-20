@@ -1,7 +1,7 @@
 ---
 name: Trail Data Map ID
 type: Custom
-class: TrailDataMapId
+class: Trail_Data_Map_Id
 xml_fields: ["TrailData"]
 protobuf_field: map_id
 applies_to: [Trail]

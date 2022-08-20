@@ -252,6 +252,8 @@ doc_type_to_cpp_type: Dict[str, str] = {
         }
 
 
+
+
 class Generator:
     data: Dict[str, Document] = {}
 
@@ -284,28 +286,43 @@ class Generator:
         print("Writing XML Node Cpp Classes")
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
-        template = env.get_template("class_template.hpp")
         attribute_names: Dict[str, str] = {}
-
+        template: Dict[str, Any] = {
+            "header_template": env.get_template("class_template.hpp"),
+            "code_template": env.get_template("class_template.cpp"),
+        }
+        cpp_classes: Dict[str, str] = {
+            "Category": "MarkerCategory", 
+            "Icon": "POI", 
+            "Trail": "Trail"
+        }
         for filepath in self.data.keys():
             filename = os.path.basename(filepath)
             attribute_names[filepath] = filename.split(".md")[0]
-
-        cpp_classes = ["Category", "Icon", "Trail"]
 
         for cpp_class in cpp_classes:
             metadata: Dict[str, SchemaType] = {}
 
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
+                
 
             attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
             with open(os.path.join(output_directory, lowercase(cpp_class) + ".hpp"), 'w') as f:
-                f.write(template.render(
+                f.write(template["header_template"].render(
                     cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables),
                     cpp_include_paths=sorted(cpp_include_paths),
+                ))
+
+            with open(os.path.join(output_directory, lowercase(cpp_class) + ".cpp"), 'w') as f:
+                f.write(template["code_template"].render(
+                    cpp_class=cpp_class,
+                    cpp_class_header=lowercase(cpp_class),
+                    xml_class_name=cpp_classes[cpp_class],
+                    attribute_variables=sorted(attribute_variables),
+                    enumerate=enumerate,
                 ))
 
     ############################################################################
@@ -320,11 +337,12 @@ class Generator:
         metadata: Dict[str, SchemaType],
         doc_type: str,
         attribute_names: Dict[str, str] = {}
-    ) -> Tuple[List[Tuple[str, str]], Set[str]]:
+    ) -> Tuple[List[Tuple[str, str, str, List[str]]], Set[str]]:
 
-        attribute_variables: List[Tuple[str, str]] = []
+        attribute_variables: List[Tuple[str, str, str, List[str]]] = []
         cpp_include_paths: Set[str] = set()
         attribute_name: str = ""
+        xml_fields: List[str] = []
 
         for fieldkey, field in metadata.items():
             for x in attribute_names:
@@ -332,23 +350,34 @@ class Generator:
                     attribute_name = attribute_names[x]
 
             if doc_type in field['applies_to']:
+                xml_fields = []
                 if field['type'] in doc_type_to_cpp_type:
                     cpp_type = doc_type_to_cpp_type[field['type']]
-                    cpp_include_paths.add(cpp_type)
+                    class_name = cpp_type
                 elif field['type'] == "Custom":
-                    cpp_type = field['class']
-                    cpp_include_paths.add(lowercase(cpp_type))
+                    cpp_type = capitalize(field['class'], delimiter="")
+                    class_name = lowercase(field['class'], delimiter="_")
                 elif field['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
                     cpp_type = capitalize(attribute_name, delimiter="")
-                    cpp_include_paths.add(attribute_name)
-
+                    class_name = attribute_name
                 else:
                     raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
                         field_type=field['type'],
                         attribute_name=attribute_name,
                     ))
 
-                attribute_variables.append((attribute_name, cpp_type))
+                cpp_include_paths.add(class_name)
+                
+                if field['type'] == "CompoundValue":
+                    for component in field['components']:
+                        for item in component['xml_fields']:
+                            xml_fields.append(lowercase(item, delimiter=""))
+                else:
+                    for item in field['xml_fields']:
+                        xml_fields.append(lowercase(item, delimiter=""))
+                    
+
+                attribute_variables.append((attribute_name, cpp_type, class_name, xml_fields))
 
         return attribute_variables, cpp_include_paths
 
@@ -363,11 +392,16 @@ class Generator:
 
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
-        template = env.get_template("attribute_template.hpp")
         attribute_names: Dict[str, str] = {}
         metadata: Dict[str, SchemaType] = {}
-        attribute_variables: List[Tuple[str, str]] = []
-        
+        attribute_variables: List[Tuple[str, List[str], str]] = []
+        xml_fields: List[str] = []
+        template: Dict[str, Any] = {
+            "attribute": env.get_template("attribute_template.hpp"),
+            "MultiflagValue": env.get_template("multiflagvalue.cpp"),
+            "CompoundValue": env.get_template("compoundvalue.cpp"),
+            "Enum": env.get_template("enum.cpp"),
+        }
 
         for filepath in self.data.keys():
             filename = os.path.basename(filepath)
@@ -380,32 +414,42 @@ class Generator:
             
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
-                    attribute_variables.append((flag, "bool"))
+                    attribute_variables.append((flag, metadata[filepath]['flags'][flag], "bool"))
 
             elif metadata[filepath]['type'] == "CompoundValue":
-
                 for component in metadata[filepath]['components']:
+                    xml_fields = []
                     if component['type'] not in doc_type_to_cpp_type:
                         raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
                             attribute_name=attribute_name
                         ))
-                    attribute_variables.append((lowercase(component['name'], delimiter="_"), doc_type_to_cpp_type[component['type']]))
+                    for item in component['xml_fields']:
+                        xml_fields.append(lowercase(item, delimiter=""))
+                    attribute_variables.append((lowercase(component['name'], delimiter="_"), xml_fields, doc_type_to_cpp_type[component['type']]))
 
             elif metadata[filepath]['type'] == "Enum":
                 for value in metadata[filepath]['values']:
-                    attribute_variables.append((value,metadata[filepath]['values'][value]))
+                    attribute_variables.append((value,metadata[filepath]['values'][value],"str"))
 
             else:
                 continue
 
             with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
-                f.write(template.render(
+                f.write(template["attribute"].render(
                     attribute_name=attribute_name,
                     attribute_variables=sorted(attribute_variables),
                     class_name=capitalize(attribute_name, delimiter=""),
-                    function_name=lowercase(attribute_name, delimiter="_"),
                     type=metadata[filepath]['type'],
                 ))
+
+            with open(os.path.join(output_directory, attribute_name + ".cpp"), 'w') as f:
+                f.write(template[metadata[filepath]['type']].render(
+                    attribute_name=attribute_name,
+                    attribute_variables=attribute_variables,
+                    class_name=capitalize(attribute_name, delimiter=""),
+                    enumerate=enumerate,
+                ))
+            
 
     ############################################################################
     # write_webdocs

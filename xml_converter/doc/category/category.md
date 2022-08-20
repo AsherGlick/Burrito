@@ -1,7 +1,7 @@
 ---
 name: Category
 type: Custom
-class: MarkerCategory
+class: Marker_Category
 applies_to: [Icon, Trail]
 xml_fields: [Type, Category]
 protobuf_field: category
