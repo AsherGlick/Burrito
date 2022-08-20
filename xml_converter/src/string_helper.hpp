@@ -5,8 +5,8 @@
 using namespace std;
 
 bool matches_any(string test, std::initializer_list<string> list);
-bool nomralized_matches_any(string test, std::initializer_list<string> list);
-bool nomralized_matches_any(string test, std::vector<string> list);
+bool normalized_matches_any(string test, std::initializer_list<string> list);
+bool normalized_matches_any(string test, std::vector<string> list);
 
 string lowercase(string);
 

@@ -5,13 +5,12 @@
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
 
 using namespace std;
-
-
-class CullChirality {
- public:
-    string chirality;
+enum CullChirality {
+    clockwise,
+    counter_clockwise,
+    none,
 };
-
-CullChirality parse_Chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
