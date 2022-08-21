@@ -12,21 +12,21 @@
     vector<string> compound_values;
     string attributename;
 {%- for attribute_variable in attribute_variables: %}
-    {{attribute_name}}.{{attribute_variable[0]}} = 0;
+    {{attribute_name}}.{{attribute_variable.attribute_name}} = 0;
 {%- endfor %} 
     attributename = get_attribute_name(input); 
     compound_values = split(get_attribute_value(input), ",");
         
     if (typeid(compound_values) == typeid(std::string)) {
 {%-for n, attribute_variable in enumerate(attribute_variables)%}
-    {%-for i, value in enumerate(attribute_variable[3])%}
+    {%-for i, value in enumerate(attribute_variable.xml_fields)%}
         {%-if i == 0 and n == 0:%}
         if (attributename == "{{value}}") {	
-            {{attribute_name}}.{{attribute_variables[n][0]}} = std::stof(get_attribute_value(input)); 
+            {{attribute_name}}.{{attribute_variables[n].attribute_name}} = std::stof(get_attribute_value(input)); 
     	}
         {%- else %}
         else if (attributename == "{{value}}") {
-            {{attribute_name}}.{{attribute_variables[n][0]}} = std::stof(get_attribute_value(input)); 
+            {{attribute_name}}.{{attribute_variables[n].attribute_name}} = std::stof(get_attribute_value(input)); 
         }
         {%- endif %}
             
@@ -34,7 +34,7 @@
 {%- endfor %}
     else {
         {%-for n, attribute_variable in enumerate(attribute_variables)%}    
-        {{attribute_name}}.{{attribute_variables[n][0]}} = std::stof(compound_values[{{n}}]); 
+        {{attribute_name}}.{{attribute_variables[n].attribute_name}} = std::stof(compound_values[{{n}}]); 
         {%- endfor %} 
         }
     }

@@ -12,14 +12,14 @@ using namespace std;
 {%- if type == "Enum":%}
 enum {{class_name}} {
     {%- for attribute_variable in attribute_variables: %}
-    {{attribute_variable[0]}},
+    {{attribute_variable.attribute_name}},
 {%- endfor %}
 };
 {%- else: %}
 class {{class_name}} {
  public:
     {%- for attribute_variable in attribute_variables: %}
-    {{attribute_variable[1]}} {{attribute_variable[0]}};
+    {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
     {%- endfor %}
 
     virtual string classname() { return "{{class_name}}"; };

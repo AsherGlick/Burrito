@@ -9,14 +9,14 @@
 {{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
 	{{class_name}} {{attribute_name}};
 {%-for n, attribute_variable in enumerate(attribute_variables)%}	
-	{%-for i, value in enumerate(attribute_variable[3])%}
+	{%-for i, value in enumerate(attribute_variable.xml_fields)%}
 		{%-if i == 0 and n == 0:%}
 	if (get_attribute_value(input) == "{{value}}") {
-		{{attribute_name}} = {{class_name}}::{{attribute_variable[0]}};
+		{{attribute_name}} = {{class_name}}::{{attribute_variable.attribute_name}};
 	}
 		{%- else: %}
 	else if (get_attribute_value(input) == "{{value}}") {
-		{{attribute_name}} = {{class_name}}::{{attribute_variable[0]}};
+		{{attribute_name}} = {{class_name}}::{{attribute_variable.attribute_name}};
 	}
 		{%- endif %}
 	{%- endfor %}
@@ -24,7 +24,7 @@
 {%- endfor %}
 	else {
 		errors->push_back(new XMLAttributeValueError("Found a value that was not in the Enum", input));
-        {{attribute_name}} = {{class_name}}::{{attribute_variables[0][0]}};
+        {{attribute_name}} = {{class_name}}::{{attribute_variables[0].attribute_name}};
     }
 	return {{attribute_name}};
 }

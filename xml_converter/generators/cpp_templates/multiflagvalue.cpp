@@ -11,19 +11,19 @@
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
 {%-for attribute_variable in attribute_variables%}	
-	{{attribute_name}}.{{attribute_variable[0]}} = false; 
+	{{attribute_name}}.{{attribute_variable.attribute_name}} = false; 
 {%- endfor %}
    
     for (string flag_value : flag_values) {
 {%-for n, attribute_variable in enumerate(attribute_variables)%}	
-	{%-for i, value in enumerate(attribute_variable[3])%}
+	{%-for i, value in enumerate(attribute_variable.xml_fields)%}
 		{%-if i == 0 and n == 0:%}
 		if (flag_value == "{{value}}") {
-			{{attribute_name}}.{{attribute_variable[0]}} = true; 
+			{{attribute_name}}.{{attribute_variable.attribute_name}} = true; 
 		}
 		{%- else: %}
 		else if (flag_value == "{{value}}") {
-			{{attribute_name}}.{{attribute_variable[0]}} = true; 
+			{{attribute_name}}.{{attribute_variable.attribute_name}} = true; 
 		}
 		{%- endif %}
 	{%- endfor %}

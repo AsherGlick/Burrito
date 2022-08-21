@@ -29,14 +29,14 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     string attributename; 
     attributename = normalize_type_name(get_attribute_name(attribute));
 {%-for n, attribute_variable in enumerate(attribute_variables)%}    
-    {%-for i, value in enumerate(attribute_variable[3])%}
+    {%-for i, value in enumerate(attribute_variable.xml_fields)%}
         {%-if i == 0 and n == 0:%} 
     if (attributename == "{{value}}") {
-        this->{{attribute_variables[n][0]}} = parse_{{attribute_variables[n][2]}}(attribute, errors);
+        this->{{attribute_variables[n].attribute_name}} = parse_{{attribute_variables[n].class_name}}(attribute, errors);
     }
         {%- else: %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variables[n][0]}} = parse_{{attribute_variables[n][2]}}(attribute, errors);
+        this->{{attribute_variables[n].attribute_name}} = parse_{{attribute_variables[n].class_name}}(attribute, errors);
     }
         {%- endif %}
     {%- endfor %}
