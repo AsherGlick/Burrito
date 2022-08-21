@@ -62,7 +62,8 @@ ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLE
 	else if (get_attribute_value(input) == "weekly_reset") {
 		reset_behavior = ResetBehavior::weekly_reset;
 	}
-	else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the Enum", input));
+	else {
+		errors->push_back(new XMLAttributeValueError("Found a value that was not in the Enum", input));
         reset_behavior = ResetBehavior::always_visible;
     }
 	return reset_behavior;

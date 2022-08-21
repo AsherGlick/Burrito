@@ -31,7 +31,6 @@
 #include "attribute/trail_data.hpp"
 #include "attribute/trail_data_map_id.hpp"
 #include "attribute/unique_id.hpp"
-
 using namespace std;
 
 class Trail: public Parseable {
@@ -66,5 +65,5 @@ class Trail: public Parseable {
         float trail_scale;
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
-
+        bool validate_attributes_of_type_marker_category();
 };

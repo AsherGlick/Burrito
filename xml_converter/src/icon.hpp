@@ -22,7 +22,6 @@
 #include "attribute/species_filter.hpp"
 #include "attribute/string.hpp"
 #include "attribute/unique_id.hpp"
-
 using namespace std;
 
 class Icon: public Parseable {
@@ -77,5 +76,5 @@ class Icon: public Parseable {
         float trigger_range;
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
-
+        bool validate_attributes_of_type_marker_category();
 };

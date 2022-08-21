@@ -1,7 +1,7 @@
 ---
 name: Hide Category
 type: Custom
-class: Marker_Category
+class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Hide]
 protobuf_field: trigger.action_hide_category

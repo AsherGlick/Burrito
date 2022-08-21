@@ -9,7 +9,31 @@
 MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     MapTypeFilter map_type_filter;
     vector<string> flag_values;
-    flag_values = split(get_attribute_value(input), ",");
+    flag_values = split(get_attribute_value(input), ",");	
+	map_type_filter.unknown_map = false;	
+	map_type_filter.redirect_map = false;	
+	map_type_filter.character_create_map = false;	
+	map_type_filter.pvp_map = false;	
+	map_type_filter.gvg_map = false;	
+	map_type_filter.instance_map = false;	
+	map_type_filter.public_map = false;	
+	map_type_filter.tournament_map = false;	
+	map_type_filter.tutorial_map = false;	
+	map_type_filter.user_tournament_map = false;	
+	map_type_filter.center_map = false;	
+	map_type_filter.eternal_battlegrounds_map = false;	
+	map_type_filter.bluehome_map = false;	
+	map_type_filter.blue_borderlands_map = false;	
+	map_type_filter.green_home_map = false;	
+	map_type_filter.green_borderlands_map = false;	
+	map_type_filter.red_home_map = false;	
+	map_type_filter.red_borderlands_map = false;	
+	map_type_filter.fortunes_vale_map = false;	
+	map_type_filter.jump_puzzle_map = false;	
+	map_type_filter.obsidian_sanctum_map = false;	
+	map_type_filter.edge_of_the_mists_map = false;	
+	map_type_filter.public_mini_map = false;	
+	map_type_filter.wvw_lounge_map = false;
    
     for (string flag_value : flag_values) {
 		if (flag_value == "Unknown") {
@@ -84,7 +108,8 @@ MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XML
 		else if (flag_value == "wvwlounge") {
 			map_type_filter.wvw_lounge_map = true; 
 		}
-		else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+		else {
+			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
         	continue;
         }
     }

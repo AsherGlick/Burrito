@@ -10,10 +10,13 @@
 Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*> *){
     Position position;
     vector<string> compound_values;
-    string attributename; 
+    string attributename;
+    position.x_position = 0;
+    position.y_position = 0;
+    position.z_position = 0; 
     attributename = get_attribute_name(input); 
     compound_values = split(get_attribute_value(input), ",");
-    
+        
     if (typeid(compound_values) == typeid(std::string)) {
         if (attributename == "xpos") {	
             position.x_position = std::stof(get_attribute_value(input)); 
@@ -42,4 +45,4 @@ Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*> *){
 
     return position;
 	
-} 
+}

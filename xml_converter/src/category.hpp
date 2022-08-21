@@ -9,7 +9,6 @@
 
 #include "attribute/bool.hpp"
 #include "attribute/string.hpp"
-
 using namespace std;
 
 class Category: public Parseable {
@@ -26,5 +25,4 @@ class Category: public Parseable {
         void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
-
 };

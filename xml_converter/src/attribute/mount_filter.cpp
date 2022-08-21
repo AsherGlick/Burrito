@@ -9,7 +9,17 @@
 MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     MountFilter mount_filter;
     vector<string> flag_values;
-    flag_values = split(get_attribute_value(input), ",");
+    flag_values = split(get_attribute_value(input), ",");	
+	mount_filter.raptor = false;	
+	mount_filter.springer = false;	
+	mount_filter.skimmer = false;	
+	mount_filter.jackal = false;	
+	mount_filter.griffon = false;	
+	mount_filter.roller_beetle = false;	
+	mount_filter.warclaw = false;	
+	mount_filter.skyscale = false;	
+	mount_filter.skiff = false;	
+	mount_filter.seige_turtle = false;
    
     for (string flag_value : flag_values) {
 		if (flag_value == "Raptor") {
@@ -42,7 +52,8 @@ MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError
 		else if (flag_value == "SeigeTurtle") {
 			mount_filter.seige_turtle = true; 
 		}
-		else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+		else {
+			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
         	continue;
         }
     }

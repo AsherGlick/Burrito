@@ -65,6 +65,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "distancefadestart") {
         this->distance_fade_start = parse_float(attribute, errors);
     }
+    else if (attributename == "rotation") {
+        this->euler_rotation = parse_euler_rotation(attribute, errors);
+    }
     else if (attributename == "rotatex") {
         this->euler_rotation = parse_euler_rotation(attribute, errors);
     }
@@ -118,6 +121,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     }
     else if (attributename == "mount") {
         this->mount_filter = parse_mount_filter(attribute, errors);
+    }
+    else if (attributename == "position") {
+        this->position = parse_position(attribute, errors);
     }
     else if (attributename == "xpos") {
         this->position = parse_position(attribute, errors);
@@ -203,5 +209,12 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else {
         return false;
     }
+    return true;
+}
+bool Icon::validate_attributes_of_type_marker_category(){
+    // TODO: validate "show_category")
+    // TODO: validate "hide_category")
+    // TODO: validate "toggle_category")
+    // TODO: validate "category")
     return true;
 }

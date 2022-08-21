@@ -10,10 +10,13 @@
 EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *){
     EulerRotation euler_rotation;
     vector<string> compound_values;
-    string attributename; 
+    string attributename;
+    euler_rotation.x_rotation = 0;
+    euler_rotation.y_rotation = 0;
+    euler_rotation.z_rotation = 0; 
     attributename = get_attribute_name(input); 
     compound_values = split(get_attribute_value(input), ",");
-    
+        
     if (typeid(compound_values) == typeid(std::string)) {
         if (attributename == "rotatex") {	
             euler_rotation.x_rotation = std::stof(get_attribute_value(input)); 
@@ -33,4 +36,4 @@ EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLE
 
     return euler_rotation;
 	
-} 
+}

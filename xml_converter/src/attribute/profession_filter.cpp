@@ -9,7 +9,16 @@
 ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     ProfessionFilter profession_filter;
     vector<string> flag_values;
-    flag_values = split(get_attribute_value(input), ",");
+    flag_values = split(get_attribute_value(input), ",");	
+	profession_filter.guardian = false;	
+	profession_filter.warrior = false;	
+	profession_filter.engineer = false;	
+	profession_filter.ranger = false;	
+	profession_filter.thief = false;	
+	profession_filter.elementalist = false;	
+	profession_filter.mesmer = false;	
+	profession_filter.necromancer = false;	
+	profession_filter.revenant = false;
    
     for (string flag_value : flag_values) {
 		if (flag_value == "Guardian") {
@@ -39,7 +48,8 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
 		else if (flag_value == "Revenant") {
 			profession_filter.revenant = true; 
 		}
-		else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+		else {
+			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
         	continue;
         }
     }

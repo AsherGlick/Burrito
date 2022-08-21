@@ -9,7 +9,14 @@
 FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     FestivalFilter festival_filter;
     vector<string> flag_values;
-    flag_values = split(get_attribute_value(input), ",");
+    flag_values = split(get_attribute_value(input), ",");	
+	festival_filter.dragonbash = false;	
+	festival_filter.festival_of_the_four_winds = false;	
+	festival_filter.halloween = false;	
+	festival_filter.lunar_new_year = false;	
+	festival_filter.super_adventure_festival = false;	
+	festival_filter.wintersday = false;	
+	festival_filter.none = false;
    
     for (string flag_value : flag_values) {
 		if (flag_value == "DragonBash") {
@@ -36,7 +43,8 @@ FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XM
 		else if (flag_value == "None") {
 			festival_filter.none = true; 
 		}
-		else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+		else {
+			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
         	continue;
         }
     }

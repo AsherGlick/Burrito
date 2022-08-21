@@ -23,33 +23,35 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *erro
         }
     }
 }
+
 {%- endif %}
 bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
     string attributename; 
     attributename = normalize_type_name(get_attribute_name(attribute));
-{%-for n, attribute_variable in enumerate(attribute_variables)%}    
-    {%-for i, value in enumerate(attribute_variable[3])%}
+{%-for n, template_variable in enumerate(template_variables)%}    
+    {%-for i, value in enumerate(template_variable[3])%}
         {%-if i == 0 and n == 0:%} 
     if (attributename == "{{value}}") {
-        this->{{attribute_variables[n][0]}} = parse_{{attribute_variables[n][2]}}(attribute, errors);
+        this->{{template_variables[n][0]}} = parse_{{template_variables[n][2]}}(attribute, errors);
     }
-    {%- else: %}
+        {%- else: %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variables[n][0]}} = parse_{{attribute_variables[n][2]}}(attribute, errors);
+        this->{{template_variables[n][0]}} = parse_{{template_variables[n][2]}}(attribute, errors);
     }
         {%- endif %}
     {%- endfor %}
 {%- endfor %}
-    {%- if cpp_class == "Category": %}
-    else if (attributename == "POI") {
-        this->default_icon.init_xml_attribute(attribute, errors);
-    }
-    else if (attributename == "Trail"){
-        this->default_trail.init_xml_attribute(attribute, errors);
-    }
-    {%- endif %}
     else {
         return false;
     }
     return true;
 }
+
+{%-if attributes_of_type_marker_category %}
+bool {{cpp_class}}::validate_attributes_of_type_marker_category(){
+    {%-for attribute in attributes_of_type_marker_category%}
+    // TODO: validate "{{attribute}}")
+    {%- endfor %}
+    return true;
+}
+{%- endif %}

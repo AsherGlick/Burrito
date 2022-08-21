@@ -1,7 +1,7 @@
 ---
 name: Toggle Category
 type: Custom
-class: Marker_Category
+class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Toggle]
 protobuf_field: trigger.action_toggle_category

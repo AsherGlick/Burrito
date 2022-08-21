@@ -17,7 +17,8 @@ CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLE
 	else if (get_attribute_value(input) == "CounterClockwise") {
 		cull_chirality = CullChirality::counter_clockwise;
 	}
-	else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the Enum", input));
+	else {
+		errors->push_back(new XMLAttributeValueError("Found a value that was not in the Enum", input));
         cull_chirality = CullChirality::none;
     }
 	return cull_chirality;

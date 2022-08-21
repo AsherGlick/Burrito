@@ -9,7 +9,12 @@
 SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     SpeciesFilter species_filter;
     vector<string> flag_values;
-    flag_values = split(get_attribute_value(input), ",");
+    flag_values = split(get_attribute_value(input), ",");	
+	species_filter.asura = false;	
+	species_filter.charr = false;	
+	species_filter.human = false;	
+	species_filter.norn = false;	
+	species_filter.sylvari = false;
    
     for (string flag_value : flag_values) {
 		if (flag_value == "asura") {
@@ -27,7 +32,8 @@ SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLE
 		else if (flag_value == "sylvari") {
 			species_filter.sylvari = true; 
 		}
-		else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+		else {
+			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
         	continue;
         }
     }

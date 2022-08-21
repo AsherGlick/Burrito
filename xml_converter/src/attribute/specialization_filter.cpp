@@ -9,7 +9,79 @@
 SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     SpecializationFilter specialization_filter;
     vector<string> flag_values;
-    flag_values = split(get_attribute_value(input), ",");
+    flag_values = split(get_attribute_value(input), ",");	
+	specialization_filter.elementalist_tempest = false;	
+	specialization_filter.engineer_scrapper = false;	
+	specialization_filter.guardian_dragonhunter = false;	
+	specialization_filter.mesmer_chronomancer = false;	
+	specialization_filter.necromancer_reaper = false;	
+	specialization_filter.ranger_druid = false;	
+	specialization_filter.revenant_herald = false;	
+	specialization_filter.thief_daredevil = false;	
+	specialization_filter.warrior_berserker = false;	
+	specialization_filter.elementalist_weaver = false;	
+	specialization_filter.engineer_holosmith = false;	
+	specialization_filter.guardian_firebrand = false;	
+	specialization_filter.mesmer_mirage = false;	
+	specialization_filter.necromancer_scourge = false;	
+	specialization_filter.ranger_soulbeast = false;	
+	specialization_filter.revenant_renegade = false;	
+	specialization_filter.thief_deadeye = false;	
+	specialization_filter.warrior_spellbreaker = false;	
+	specialization_filter.elementalist_catalyst = false;	
+	specialization_filter.engineer_mechanist = false;	
+	specialization_filter.guardian_willbender = false;	
+	specialization_filter.mesmer_virtuoso = false;	
+	specialization_filter.necromancer_harbinger = false;	
+	specialization_filter.ranger_untamed = false;	
+	specialization_filter.revenant_vindicator = false;	
+	specialization_filter.thief_specter = false;	
+	specialization_filter.warrior_bladesworn = false;	
+	specialization_filter.elementalist_air = false;	
+	specialization_filter.elementalist_arcane = false;	
+	specialization_filter.elementalist_earth = false;	
+	specialization_filter.elementalist_fire = false;	
+	specialization_filter.elementalist_water = false;	
+	specialization_filter.engineer_alchemy = false;	
+	specialization_filter.engineer_explosives = false;	
+	specialization_filter.engineer_firearms = false;	
+	specialization_filter.engineer_inventions = false;	
+	specialization_filter.engineer_tools = false;	
+	specialization_filter.guardian_honor = false;	
+	specialization_filter.guardian_radiance = false;	
+	specialization_filter.guardian_valor = false;	
+	specialization_filter.guardian_virtues = false;	
+	specialization_filter.guardian_zeal = false;	
+	specialization_filter.mesmer_chaos = false;	
+	specialization_filter.mesmer_domination = false;	
+	specialization_filter.mesmer_dueling = false;	
+	specialization_filter.mesmer_illusions = false;	
+	specialization_filter.mesmer_inspiration = false;	
+	specialization_filter.necromancer_blood_magic = false;	
+	specialization_filter.necromancer_curses = false;	
+	specialization_filter.necromancer_death_magic = false;	
+	specialization_filter.necromancer_soul_reaping = false;	
+	specialization_filter.necromancer_spite = false;	
+	specialization_filter.ranger_beastmastery = false;	
+	specialization_filter.ranger_marksmanship = false;	
+	specialization_filter.ranger_nature_magic = false;	
+	specialization_filter.ranger_skirmishing = false;	
+	specialization_filter.ranger_wilderness_survival = false;	
+	specialization_filter.revenant_corruption = false;	
+	specialization_filter.revenant_devastation = false;	
+	specialization_filter.revenant_invocation = false;	
+	specialization_filter.revenant_retribution = false;	
+	specialization_filter.revenant_salvation = false;	
+	specialization_filter.thief_acrobatics = false;	
+	specialization_filter.thief_critical_strikes = false;	
+	specialization_filter.thief_deadly_arts = false;	
+	specialization_filter.thief_shadow_arts = false;	
+	specialization_filter.thief_trickery = false;	
+	specialization_filter.warrior_arms = false;	
+	specialization_filter.warrior_defense = false;	
+	specialization_filter.warrior_discipline = false;	
+	specialization_filter.warrior_strength = false;	
+	specialization_filter.warrior_tactics = false;
    
     for (string flag_value : flag_values) {
 		if (flag_value == "48") {
@@ -282,7 +354,8 @@ SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* inpu
 		else if (flag_value == "11") {
 			specialization_filter.warrior_tactics = true; 
 		}
-		else {errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+		else {
+			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
         	continue;
         }
     }

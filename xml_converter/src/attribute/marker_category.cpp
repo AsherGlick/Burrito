@@ -10,4 +10,4 @@ MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, vector<XM
     MarkerCategory marker_category;
     marker_category.category = get_attribute_value(input);
     return marker_category;
-}
+} 

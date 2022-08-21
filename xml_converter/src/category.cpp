@@ -40,12 +40,6 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
     else if (attributename == "tipdescription") {
         this->tooltip_name = parse_string(attribute, errors);
     }
-    else if (attributename == "POI") {
-        this->default_icon.init_xml_attribute(attribute, errors);
-    }
-    else if (attributename == "Trail"){
-        this->default_trail.init_xml_attribute(attribute, errors);
-    }
     else {
         return false;
     }
