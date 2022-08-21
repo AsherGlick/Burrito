@@ -26,8 +26,8 @@ using namespace std;
 
 class {{cpp_class}}: public Parseable {
     public:
-        {%- for template_variable in template_variables: %}
-        {{template_variable[1]}} {{template_variable[0]}};
+        {%- for attribute_variable in attribute_variables: %}
+        {{attribute_variable[1]}} {{attribute_variable[0]}};
 
         {%- endfor %}
 

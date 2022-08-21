@@ -253,7 +253,7 @@ doc_type_to_cpp_type: Dict[str, str] = {
 
 
 @dataclass
-class TemplateVariables:
+class AttributeVariable:
     attribute_name: str
     cpp_type: str
     class_name: str
@@ -313,16 +313,16 @@ class Generator:
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
 
-            template_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
+            attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
-            for template_variable in template_variables:
+            for template_variable in attribute_variables:
                 if template_variable[2] == "marker_category":
                     attributes_of_type_marker_category.append(template_variable[0])
 
             with open(os.path.join(output_directory, lowercase(cpp_class) + ".hpp"), 'w') as f:
                 f.write(header_template.render(
                     cpp_class=cpp_class,
-                    template_variables=sorted(template_variables),
+                    attribute_variables=sorted(attribute_variables),
                     cpp_include_paths=sorted(cpp_include_paths),
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
@@ -332,11 +332,11 @@ class Generator:
                     cpp_class=cpp_class,
                     cpp_class_header=lowercase(cpp_class),
                     xml_class_name=cpp_classes[cpp_class],
-                    template_variables=sorted(template_variables),
+                    attribute_variables=sorted(attribute_variables),
                     enumerate=enumerate,
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
-            print(attributes_of_type_marker_category)
+
     ############################################################################
     # generate_cpp_variable_data
     #
@@ -349,11 +349,11 @@ class Generator:
         metadata: Dict[str, SchemaType],
         doc_type: str,
         attribute_names: Dict[str, str] = {}
-    ) -> Tuple[List[Tuple[str, str, str, List[str]]], Set[str]]:
+    ) -> Tuple[List[AttributeVariable], Set[str]]:
 
         cpp_include_paths: Set[str] = set()
         attribute_name: str = ""
-        template_variables: List[Tuple[str, str, str, List[str]]] = []
+        attribute_variables: AttributeVariable = []
         xml_fields: List[str] = []
 
         for fieldkey, field in metadata.items():
@@ -388,10 +388,10 @@ class Generator:
                         for item in component['xml_fields']:
                             xml_fields.append(lowercase(item, delimiter=""))
 
-                TemplateVariables = (attribute_name, cpp_type, class_name, xml_fields)
-                template_variables.append(TemplateVariables)
+                attribute_variable = (attribute_name, cpp_type, class_name, xml_fields)
+                attribute_variables.append(attribute_variable)
 
-        return template_variables, cpp_include_paths
+        return attribute_variables, cpp_include_paths
 
     ############################################################################
     # write_attributes
@@ -405,7 +405,7 @@ class Generator:
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
         attribute_names: Dict[str, str] = {}
-        template_variables: List[Tuple[str, str, str, List[str]]] = []
+        attribute_variables: List[AttributeVariable] = []
         metadata: Dict[str, SchemaType] = {}
         xml_fields: List[str] = []
         template: Dict[str, Template] = {
@@ -419,18 +419,18 @@ class Generator:
             attribute_names[filepath] = filename.split(".md")[0]
 
         for filepath in attribute_names:
-            template_variables = []
+            attribute_variables = []
             attribute_name = attribute_names[filepath]
             metadata[filepath] = self.data[filepath].metadata
 
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
-                    TemplateVariables = (flag, "bool", attribute_name, metadata[filepath]['flags'][flag])
+                    attribute_variable = (flag, "bool", attribute_name, metadata[filepath]['flags'][flag])
                     if type(flag) != str:
                         print(flag, type(flag))
                     if type(metadata[filepath]['flags'][flag]) != list:
                         print(metadata[filepath]['flags'][flag], type(metadata[filepath]['flags'][flag]))
-                    template_variables.append(TemplateVariables)
+                    attribute_variables.append(attribute_variable)
             elif metadata[filepath]['type'] == "CompoundValue":
                 for component in metadata[filepath]['components']:
                     xml_fields = []
@@ -440,13 +440,13 @@ class Generator:
                         ))
                     for item in component['xml_fields']:
                         xml_fields.append(lowercase(item, delimiter=""))
-                    TemplateVariables = (lowercase(component['name'], delimiter="_"), doc_type_to_cpp_type[component['type']], attribute_name, xml_fields)
-                    template_variables.append(TemplateVariables)
+                    attribute_variable = (lowercase(component['name'], delimiter="_"), doc_type_to_cpp_type[component['type']], attribute_name, xml_fields)
+                    attribute_variables.append(attribute_variable)
 
             elif metadata[filepath]['type'] == "Enum":
                 for value in metadata[filepath]['values']:
-                    TemplateVariables = (value, "str", attribute_name, metadata[filepath]['values'][value])
-                    template_variables.append(TemplateVariables)
+                    attribute_variable = (value, "str", attribute_name, metadata[filepath]['values'][value])
+                    attribute_variables.append(attribute_variable)
 
             else:
                 continue
@@ -454,7 +454,7 @@ class Generator:
             with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
                 f.write(env.get_template("attribute_template.hpp").render(
                     attribute_name=attribute_name,
-                    template_variables=sorted(template_variables),
+                    attribute_variables=sorted(attribute_variables),
                     class_name=capitalize(attribute_name, delimiter=""),
                     type=metadata[filepath]['type'],
                 ))
@@ -462,7 +462,7 @@ class Generator:
             with open(os.path.join(output_directory, attribute_name + ".cpp"), 'w') as f:
                 f.write(template[metadata[filepath]['type']].render(
                     attribute_name=attribute_name,
-                    template_variables=template_variables,
+                    attribute_variables=attribute_variables,
                     class_name=capitalize(attribute_name, delimiter=""),
                     enumerate=enumerate,
                 ))

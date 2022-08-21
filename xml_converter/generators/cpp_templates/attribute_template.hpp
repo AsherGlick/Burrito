@@ -11,15 +11,15 @@ using namespace std;
 
 {%- if type == "Enum":%}
 enum {{class_name}} {
-    {%- for template_variable in template_variables: %}
-    {{template_variable[0]}},
+    {%- for attribute_variable in attribute_variables: %}
+    {{attribute_variable[0]}},
 {%- endfor %}
 };
 {%- else: %}
 class {{class_name}} {
  public:
-    {%- for template_variable in template_variables: %}
-    {{template_variable[1]}} {{template_variable[0]}};
+    {%- for attribute_variable in attribute_variables: %}
+    {{attribute_variable[1]}} {{attribute_variable[0]}};
     {%- endfor %}
 
     virtual string classname() { return "{{class_name}}"; };

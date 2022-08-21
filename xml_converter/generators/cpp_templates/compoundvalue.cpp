@@ -11,30 +11,30 @@
     {{class_name}} {{attribute_name}};
     vector<string> compound_values;
     string attributename;
-{%- for template_variable in template_variables: %}
-    {{attribute_name}}.{{template_variable[0]}} = 0;
+{%- for attribute_variable in attribute_variables: %}
+    {{attribute_name}}.{{attribute_variable[0]}} = 0;
 {%- endfor %} 
     attributename = get_attribute_name(input); 
     compound_values = split(get_attribute_value(input), ",");
         
     if (typeid(compound_values) == typeid(std::string)) {
-{%-for n, template_variable in enumerate(template_variables)%}
-    {%-for i, value in enumerate(template_variable[3])%}
+{%-for n, attribute_variable in enumerate(attribute_variables)%}
+    {%-for i, value in enumerate(attribute_variable[3])%}
         {%-if i == 0 and n == 0:%}
         if (attributename == "{{value}}") {	
-            {{attribute_name}}.{{template_variables[n][0]}} = std::stof(get_attribute_value(input)); 
+            {{attribute_name}}.{{attribute_variables[n][0]}} = std::stof(get_attribute_value(input)); 
     	}
         {%- else %}
         else if (attributename == "{{value}}") {
-            {{attribute_name}}.{{template_variables[n][0]}} = std::stof(get_attribute_value(input)); 
+            {{attribute_name}}.{{attribute_variables[n][0]}} = std::stof(get_attribute_value(input)); 
         }
         {%- endif %}
             
     {%- endfor %} 
 {%- endfor %}
     else {
-        {%-for n, template_variable in enumerate(template_variables)%}    
-        {{attribute_name}}.{{template_variables[n][0]}} = std::stof(compound_values[{{n}}]); 
+        {%-for n, attribute_variable in enumerate(attribute_variables)%}    
+        {{attribute_name}}.{{attribute_variables[n][0]}} = std::stof(compound_values[{{n}}]); 
         {%- endfor %} 
         }
     }
