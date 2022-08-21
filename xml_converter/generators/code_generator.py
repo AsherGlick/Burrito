@@ -260,6 +260,10 @@ class AttributeVariable:
     xml_fields: List[str]
 
 
+def get_attribute_variable_key(attribute_variable: AttributeVariable) -> str:
+    return attribute_variable.attribute_name
+
+
 class Generator:
     data: Dict[str, Document] = {}
 
@@ -313,6 +317,7 @@ class Generator:
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
 
+            attribute_variables: List[AttributeVariable]
             attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
             for attribute_variable in attribute_variables:
@@ -322,7 +327,7 @@ class Generator:
             with open(os.path.join(output_directory, lowercase(cpp_class) + ".hpp"), 'w') as f:
                 f.write(header_template.render(
                     cpp_class=cpp_class,
-                    attribute_variables=sorted(attribute_variables, key=lambda x: x.attribute_name),
+                    attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                     cpp_include_paths=sorted(cpp_include_paths),
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
@@ -332,7 +337,7 @@ class Generator:
                     cpp_class=cpp_class,
                     cpp_class_header=lowercase(cpp_class),
                     xml_class_name=cpp_classes[cpp_class],
-                    attribute_variables=sorted(attribute_variables, key=lambda x: x.attribute_name),
+                    attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                     enumerate=enumerate,
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
@@ -473,7 +478,7 @@ class Generator:
             with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
                 f.write(env.get_template("attribute_template.hpp").render(
                     attribute_name=attribute_name,
-                    attribute_variables=sorted(attribute_variables, key=lambda x: x.attribute_name),
+                    attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                     class_name=capitalize(attribute_name, delimiter=""),
                     type=metadata[filepath]['type'],
                 ))
