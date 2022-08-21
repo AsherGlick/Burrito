@@ -308,16 +308,16 @@ class Generator:
 
         for cpp_class in cpp_classes:
             metadata: Dict[str, SchemaType] = {}
-            attributes_of_type_marker_category: List[str] = []
+            attributes_of_type_marker_category = []
 
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
 
             attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
 
-            for template_variable in attribute_variables:
-                if template_variable[2] == "marker_category":
-                    attributes_of_type_marker_category.append(template_variable[0])
+            for attribute_variable in attribute_variables:
+                if attribute_variable.class_name == "marker_category":
+                    attributes_of_type_marker_category.append(attribute_variable.attribute_name)
 
             with open(os.path.join(output_directory, lowercase(cpp_class) + ".hpp"), 'w') as f:
                 f.write(header_template.render(
@@ -353,7 +353,7 @@ class Generator:
 
         cpp_include_paths: Set[str] = set()
         attribute_name: str = ""
-        attribute_variables: AttributeVariable = []
+        attribute_variables: List[AttributeVariable] = []
         xml_fields: List[str] = []
 
         for fieldkey, field in metadata.items():
@@ -383,12 +383,19 @@ class Generator:
                 for item in field['xml_fields']:
                     xml_fields.append(lowercase(item, delimiter=""))
 
+                # Compound Values are unique in that the components have xml fields in addition to the compound variable
                 if field['type'] == "CompoundValue":
                     for component in field['components']:
                         for item in component['xml_fields']:
                             xml_fields.append(lowercase(item, delimiter=""))
 
-                attribute_variable = (attribute_name, cpp_type, class_name, xml_fields)
+                attribute_variable: AttributeVariable = AttributeVariable(
+                    attribute_name=attribute_name,
+                    cpp_type=cpp_type,
+                    class_name=class_name,
+                    xml_fields=xml_fields,
+                )
+
                 attribute_variables.append(attribute_variable)
 
         return attribute_variables, cpp_include_paths
@@ -406,6 +413,7 @@ class Generator:
         env = Environment(loader=file_loader)
         attribute_names: Dict[str, str] = {}
         attribute_variables: List[AttributeVariable] = []
+        attribute_variable: AttributeVariable
         metadata: Dict[str, SchemaType] = {}
         xml_fields: List[str] = []
         template: Dict[str, Template] = {
@@ -425,7 +433,12 @@ class Generator:
 
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
-                    attribute_variable = (flag, "bool", attribute_name, metadata[filepath]['flags'][flag])
+                    attribute_variable = AttributeVariable(
+                        attribute_name=flag,
+                        cpp_type="bool",
+                        class_name=attribute_name,
+                        xml_fields=metadata[filepath]['flags'][flag],
+                    )
                     attribute_variables.append(attribute_variable)
             elif metadata[filepath]['type'] == "CompoundValue":
                 for component in metadata[filepath]['components']:
@@ -436,12 +449,22 @@ class Generator:
                         ))
                     for item in component['xml_fields']:
                         xml_fields.append(lowercase(item, delimiter=""))
-                    attribute_variable = (lowercase(component['name'], delimiter="_"), doc_type_to_cpp_type[component['type']], attribute_name, xml_fields)
+                    attribute_variable = AttributeVariable(
+                        attribute_name=lowercase(component['name'], delimiter="_"),
+                        cpp_type=doc_type_to_cpp_type[component['type']],
+                        class_name=attribute_name,
+                        xml_fields=xml_fields,
+                    )
                     attribute_variables.append(attribute_variable)
 
             elif metadata[filepath]['type'] == "Enum":
                 for value in metadata[filepath]['values']:
-                    attribute_variable = (value, "str", attribute_name, metadata[filepath]['values'][value])
+                    attribute_variable = AttributeVariable(
+                        attribute_name=value,
+                        cpp_type="str",
+                        class_name=attribute_name,
+                        xml_fields=metadata[filepath]['values'][value],
+                    )
                     attribute_variables.append(attribute_variable)
 
             else:
