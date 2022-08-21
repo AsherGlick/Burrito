@@ -50,7 +50,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
 {%-if attributes_of_type_marker_category %}
 bool {{cpp_class}}::validate_attributes_of_type_marker_category(){
     {%-for attribute in attributes_of_type_marker_category%}
-    // TODO: validate "{{attribute}}")
+    // TODO: validate "{{attribute}}"
     {%- endfor %}
     return true;
 }

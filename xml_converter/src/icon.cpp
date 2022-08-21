@@ -212,9 +212,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     return true;
 }
 bool Icon::validate_attributes_of_type_marker_category(){
-    // TODO: validate "show_category")
-    // TODO: validate "hide_category")
-    // TODO: validate "toggle_category")
-    // TODO: validate "category")
+    // TODO: validate "show_category"
+    // TODO: validate "hide_category"
+    // TODO: validate "toggle_category"
+    // TODO: validate "category"
     return true;
 }

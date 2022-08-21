@@ -308,7 +308,7 @@ class Generator:
 
         for cpp_class in cpp_classes:
             metadata: Dict[str, SchemaType] = {}
-            attributes_of_type_marker_category = []
+            attributes_of_type_marker_category: List[str] = []
 
             for attribute_name in attribute_names:
                 metadata[attribute_name] = self.data[attribute_name].metadata
@@ -426,10 +426,6 @@ class Generator:
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
                     attribute_variable = (flag, "bool", attribute_name, metadata[filepath]['flags'][flag])
-                    if type(flag) != str:
-                        print(flag, type(flag))
-                    if type(metadata[filepath]['flags'][flag]) != list:
-                        print(metadata[filepath]['flags'][flag], type(metadata[filepath]['flags'][flag]))
                     attribute_variables.append(attribute_variable)
             elif metadata[filepath]['type'] == "CompoundValue":
                 for component in metadata[filepath]['components']:

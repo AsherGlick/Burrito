@@ -10,7 +10,7 @@
 using namespace std;
 class UniqueId {
  public:
-    vector<BYTE> guid;
+    vector<uint8_t> guid;
 };
 
 UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

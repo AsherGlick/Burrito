@@ -11,7 +11,7 @@ UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *) 
     UniqueId unique_id;
     string base64;
     base64 = get_attribute_value(input);
-    std::vector<BYTE> guid = base64_decode(base64);
+    std::vector<uint8_t> guid = base64_decode(base64);
     unique_id.guid = guid;
     return unique_id;
 }
