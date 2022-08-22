@@ -440,7 +440,7 @@ class Generator:
                 for flag in metadata[filepath]['flags']:
                     xml_fields = []
                     for item in metadata[filepath]['flags'][flag]:
-                        xml_fields.append(insert_delimiter(item, delimiter=""))
+                        xml_fields.append(normalize(item))
 
                     attribute_variable = AttributeVariable(
                         attribute_name=flag,
@@ -458,7 +458,7 @@ class Generator:
                             attribute_name=attribute_name
                         ))
                     for item in component['xml_fields']:
-                        xml_fields.append(lowercase(item, delimiter=""))
+                        xml_fields.append(normalize(item))
                     attribute_variable = AttributeVariable(
                         attribute_name=lowercase(component['name'], delimiter="_"),
                         cpp_type=doc_type_to_cpp_type[component['type']],
@@ -471,7 +471,7 @@ class Generator:
                 for value in metadata[filepath]['values']:
                     xml_fields = []
                     for item in metadata[filepath]['values'][value]:
-                        xml_fields.append(insert_delimiter(item, delimiter=""))
+                        xml_fields.append(normalize(item))
                     attribute_variable = AttributeVariable(
                         attribute_name=value,
                         cpp_type="str",
@@ -754,6 +754,24 @@ def insert_delimiter(word: str, delimiter: str = "_") -> str:
             delimitered_word_array.append(letter)
 
     return "".join(delimitered_word_array)
+
+
+################################################################################
+# normalize
+#
+# A helper function to take a string and convert it to a string of  
+# lowercase letters.
+################################################################################
+def normalize(word: str) ->str:
+    normalized_word_array = []
+
+    for i, letter in enumerate(word):
+        if letter.isupper():
+            normalized_word_array.append(letter.lower())
+        else:
+            normalized_word_array.append(letter)
+
+    return "".join(normalized_word_array)
 
 
 ################################################################################
