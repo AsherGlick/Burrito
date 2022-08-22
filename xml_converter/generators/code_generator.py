@@ -438,13 +438,18 @@ class Generator:
 
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
+                    xml_fields = []
+                    for item in metadata[filepath]['flags'][flag]:
+                        xml_fields.append(insert_delimiter(item, delimiter=""))
+
                     attribute_variable = AttributeVariable(
                         attribute_name=flag,
                         cpp_type="bool",
                         class_name=attribute_name,
-                        xml_fields=metadata[filepath]['flags'][flag],
+                        xml_fields=xml_fields,
                     )
                     attribute_variables.append(attribute_variable)
+
             elif metadata[filepath]['type'] == "CompoundValue":
                 for component in metadata[filepath]['components']:
                     xml_fields = []
@@ -464,11 +469,14 @@ class Generator:
 
             elif metadata[filepath]['type'] == "Enum":
                 for value in metadata[filepath]['values']:
+                    xml_fields = []
+                    for item in metadata[filepath]['values'][value]:
+                        xml_fields.append(insert_delimiter(item, delimiter=""))
                     attribute_variable = AttributeVariable(
                         attribute_name=value,
                         cpp_type="str",
                         class_name=attribute_name,
-                        xml_fields=metadata[filepath]['values'][value],
+                        xml_fields=xml_fields
                     )
                     attribute_variables.append(attribute_variable)
 

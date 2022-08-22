@@ -22,38 +22,39 @@ MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError
 	mount_filter.seige_turtle = false;
    
     for (string flag_value : flag_values) {
-		if (flag_value == "Raptor") {
+    	string normalized_flag_value = normalize(flag_value);
+		if (normalized_flag_value == "raptor") {
 			mount_filter.raptor = true; 
 		}
-		else if (flag_value == "Springer") {
+		else if (normalized_flag_value == "springer") {
 			mount_filter.springer = true; 
 		}
-		else if (flag_value == "Skimmer") {
+		else if (normalized_flag_value == "skimmer") {
 			mount_filter.skimmer = true; 
 		}
-		else if (flag_value == "Jackal") {
+		else if (normalized_flag_value == "jackal") {
 			mount_filter.jackal = true; 
 		}
-		else if (flag_value == "Griffon") {
+		else if (normalized_flag_value == "griffon") {
 			mount_filter.griffon = true; 
 		}
-		else if (flag_value == "RollerBeetle") {
+		else if (normalized_flag_value == "rollerbeetle") {
 			mount_filter.roller_beetle = true; 
 		}
-		else if (flag_value == "Warclaw") {
+		else if (normalized_flag_value == "warclaw") {
 			mount_filter.warclaw = true; 
 		}
-		else if (flag_value == "Skyscale") {
+		else if (normalized_flag_value == "skyscale") {
 			mount_filter.skyscale = true; 
 		}
-		else if (flag_value == "Skiff") {
+		else if (normalized_flag_value == "skiff") {
 			mount_filter.skiff = true; 
 		}
-		else if (flag_value == "SeigeTurtle") {
+		else if (normalized_flag_value == "seigeturtle") {
 			mount_filter.seige_turtle = true; 
 		}
 		else {
-			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+			errors->push_back(new XMLAttributeValueError("Invalid Filter for MountFilter. Found " + flag_value, input));
         	continue;
         }
     }

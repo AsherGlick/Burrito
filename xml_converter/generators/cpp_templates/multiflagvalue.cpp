@@ -15,21 +15,22 @@
 {%- endfor %}
    
     for (string flag_value : flag_values) {
+    	string normalized_flag_value = normalize(flag_value);
 {%-for n, attribute_variable in enumerate(attribute_variables)%}	
 	{%-for i, value in enumerate(attribute_variable.xml_fields)%}
 		{%-if i == 0 and n == 0:%}
-		if (flag_value == "{{value}}") {
+		if (normalized_flag_value == "{{value}}") {
 			{{attribute_name}}.{{attribute_variable.attribute_name}} = true; 
 		}
 		{%- else: %}
-		else if (flag_value == "{{value}}") {
+		else if (normalized_flag_value == "{{value}}") {
 			{{attribute_name}}.{{attribute_variable.attribute_name}} = true; 
 		}
 		{%- endif %}
 	{%- endfor %}
 {%- endfor %}
 		else {
-			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+			errors->push_back(new XMLAttributeValueError("Invalid Filter for {{class_name}}. Found " + flag_value, input));
         	continue;
         }
     }

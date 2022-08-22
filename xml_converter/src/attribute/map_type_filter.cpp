@@ -36,80 +36,81 @@ MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XML
 	map_type_filter.wvw_lounge_map = false;
    
     for (string flag_value : flag_values) {
-		if (flag_value == "Unknown") {
+    	string normalized_flag_value = normalize(flag_value);
+		if (normalized_flag_value == "unknown") {
 			map_type_filter.unknown_map = true; 
 		}
-		else if (flag_value == "redirect") {
+		else if (normalized_flag_value == "redirect") {
 			map_type_filter.redirect_map = true; 
 		}
-		else if (flag_value == "charactercreate") {
+		else if (normalized_flag_value == "charactercreate") {
 			map_type_filter.character_create_map = true; 
 		}
-		else if (flag_value == "pvp") {
+		else if (normalized_flag_value == "pvp") {
 			map_type_filter.pvp_map = true; 
 		}
-		else if (flag_value == "gvg") {
+		else if (normalized_flag_value == "gvg") {
 			map_type_filter.gvg_map = true; 
 		}
-		else if (flag_value == "instance") {
+		else if (normalized_flag_value == "instance") {
 			map_type_filter.instance_map = true; 
 		}
-		else if (flag_value == "public") {
+		else if (normalized_flag_value == "public") {
 			map_type_filter.public_map = true; 
 		}
-		else if (flag_value == "tournament") {
+		else if (normalized_flag_value == "tournament") {
 			map_type_filter.tournament_map = true; 
 		}
-		else if (flag_value == "tutorial") {
+		else if (normalized_flag_value == "tutorial") {
 			map_type_filter.tutorial_map = true; 
 		}
-		else if (flag_value == "usertournament") {
+		else if (normalized_flag_value == "usertournament") {
 			map_type_filter.user_tournament_map = true; 
 		}
-		else if (flag_value == "center") {
+		else if (normalized_flag_value == "center") {
 			map_type_filter.center_map = true; 
 		}
-		else if (flag_value == "eternalbattlegrounds") {
+		else if (normalized_flag_value == "eternalbattlegrounds") {
 			map_type_filter.eternal_battlegrounds_map = true; 
 		}
-		else if (flag_value == "bluehome") {
+		else if (normalized_flag_value == "bluehome") {
 			map_type_filter.bluehome_map = true; 
 		}
-		else if (flag_value == "blueborderlands") {
+		else if (normalized_flag_value == "blueborderlands") {
 			map_type_filter.blue_borderlands_map = true; 
 		}
-		else if (flag_value == "greenhome") {
+		else if (normalized_flag_value == "greenhome") {
 			map_type_filter.green_home_map = true; 
 		}
-		else if (flag_value == "greenborderlands") {
+		else if (normalized_flag_value == "greenborderlands") {
 			map_type_filter.green_borderlands_map = true; 
 		}
-		else if (flag_value == "redhome") {
+		else if (normalized_flag_value == "redhome") {
 			map_type_filter.red_home_map = true; 
 		}
-		else if (flag_value == "redborderlands") {
+		else if (normalized_flag_value == "redborderlands") {
 			map_type_filter.red_borderlands_map = true; 
 		}
-		else if (flag_value == "fortunesvale") {
+		else if (normalized_flag_value == "fortunesvale") {
 			map_type_filter.fortunes_vale_map = true; 
 		}
-		else if (flag_value == "jumppuzzle") {
+		else if (normalized_flag_value == "jumppuzzle") {
 			map_type_filter.jump_puzzle_map = true; 
 		}
-		else if (flag_value == "obsidiansanctum") {
+		else if (normalized_flag_value == "obsidiansanctum") {
 			map_type_filter.obsidian_sanctum_map = true; 
 		}
-		else if (flag_value == "edgeofthemists") {
+		else if (normalized_flag_value == "edgeofthemists") {
 			map_type_filter.edge_of_the_mists_map = true; 
 		}
-		else if (flag_value == "publicmini") {
+		else if (normalized_flag_value == "publicmini") {
 			map_type_filter.public_mini_map = true; 
 		}
-		else if (flag_value == "wvwlounge") {
+		else if (normalized_flag_value == "wvwlounge") {
 			map_type_filter.wvw_lounge_map = true; 
 		}
 		else {
-			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+			errors->push_back(new XMLAttributeValueError("Invalid Filter for MapTypeFilter. Found " + flag_value, input));
         	continue;
         }
     }

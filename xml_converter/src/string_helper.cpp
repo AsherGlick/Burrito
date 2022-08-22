@@ -18,9 +18,9 @@ bool matches_any(string test, std::initializer_list<string> list) {
 }
 
 bool nomralized_matches_any(string test, std::initializer_list<string> list) {
-    test = normalize_type_name(test);
+    test = normalize(test);
     for (auto elem : list) {
-        if (test == normalize_type_name(elem)) {
+        if (test == normalize(elem)) {
             return true;
         }
     }
@@ -28,9 +28,9 @@ bool nomralized_matches_any(string test, std::initializer_list<string> list) {
 }
 
 bool nomralized_matches_any(string test, std::vector<string> list) {
-    test = normalize_type_name(test);
+    test = normalize(test);
     for (auto elem : list) {
-        if (test == normalize_type_name(elem)) {
+        if (test == normalize(elem)) {
             return true;
         }
     }
@@ -50,7 +50,7 @@ vector<string> split(string input, string delimiter) {
 }
 
 
-string normalize_type_name(string type_name) {
+string normalize(string type_name) {
     string output;
     output.reserve(type_name.length());
 
@@ -59,6 +59,9 @@ string normalize_type_name(string type_name) {
             output += (character - 'A' + 'a');
         }
         else if (character >= 'a' && character <= 'z') {
+            output += character;
+        }
+        else if (character >= '0' && character <= '9'){
             output += character;
         }
     }

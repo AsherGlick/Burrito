@@ -8,17 +8,18 @@
 
 CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
 	CullChirality cull_chirality;
-	if (get_attribute_value(input) == "None") {
+	string normalized_value = normalize(get_attribute_value(input));
+	if (normalized_value == "none") {
 		cull_chirality = CullChirality::none;
 	}
-	else if (get_attribute_value(input) == "Clockwise") {
+	else if (normalized_value == "clockwise") {
 		cull_chirality = CullChirality::clockwise;
 	}
-	else if (get_attribute_value(input) == "CounterClockwise") {
+	else if (normalized_value == "counterclockwise") {
 		cull_chirality = CullChirality::counter_clockwise;
 	}
 	else {
-		errors->push_back(new XMLAttributeValueError("Found a value that was not in the Enum", input));
+		errors->push_back(new XMLAttributeValueError("Found an invalid value that was not in the Enum CullChirality", input));
         cull_chirality = CullChirality::none;
     }
 	return cull_chirality;

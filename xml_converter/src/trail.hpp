@@ -48,6 +48,7 @@ class Trail: public Parseable {
         FestivalFilter festival_filter;
         UniqueId guid;
         bool is_wall;
+        int map_display_size;
         int map_id;
         MapTypeFilter map_type_filter;
         MountFilter mount_filter;

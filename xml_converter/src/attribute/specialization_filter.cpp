@@ -84,278 +84,279 @@ SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* inpu
 	specialization_filter.warrior_tactics = false;
    
     for (string flag_value : flag_values) {
-		if (flag_value == "48") {
+    	string normalized_flag_value = normalize(flag_value);
+		if (normalized_flag_value == "48") {
 			specialization_filter.elementalist_tempest = true; 
 		}
-		else if (flag_value == "Tempest") {
+		else if (normalized_flag_value == "tempest") {
 			specialization_filter.elementalist_tempest = true; 
 		}
-		else if (flag_value == "43") {
+		else if (normalized_flag_value == "43") {
 			specialization_filter.engineer_scrapper = true; 
 		}
-		else if (flag_value == "Scrapper") {
+		else if (normalized_flag_value == "scrapper") {
 			specialization_filter.engineer_scrapper = true; 
 		}
-		else if (flag_value == "27") {
+		else if (normalized_flag_value == "27") {
 			specialization_filter.guardian_dragonhunter = true; 
 		}
-		else if (flag_value == "Dragonhunter") {
+		else if (normalized_flag_value == "dragonhunter") {
 			specialization_filter.guardian_dragonhunter = true; 
 		}
-		else if (flag_value == "40") {
+		else if (normalized_flag_value == "40") {
 			specialization_filter.mesmer_chronomancer = true; 
 		}
-		else if (flag_value == "Chronomancer") {
+		else if (normalized_flag_value == "chronomancer") {
 			specialization_filter.mesmer_chronomancer = true; 
 		}
-		else if (flag_value == "34") {
+		else if (normalized_flag_value == "34") {
 			specialization_filter.necromancer_reaper = true; 
 		}
-		else if (flag_value == "Reaper") {
+		else if (normalized_flag_value == "reaper") {
 			specialization_filter.necromancer_reaper = true; 
 		}
-		else if (flag_value == "5") {
+		else if (normalized_flag_value == "5") {
 			specialization_filter.ranger_druid = true; 
 		}
-		else if (flag_value == "Druid") {
+		else if (normalized_flag_value == "druid") {
 			specialization_filter.ranger_druid = true; 
 		}
-		else if (flag_value == "52") {
+		else if (normalized_flag_value == "52") {
 			specialization_filter.revenant_herald = true; 
 		}
-		else if (flag_value == "Herald") {
+		else if (normalized_flag_value == "herald") {
 			specialization_filter.revenant_herald = true; 
 		}
-		else if (flag_value == "7") {
+		else if (normalized_flag_value == "7") {
 			specialization_filter.thief_daredevil = true; 
 		}
-		else if (flag_value == "Daredevil") {
+		else if (normalized_flag_value == "daredevil") {
 			specialization_filter.thief_daredevil = true; 
 		}
-		else if (flag_value == "18") {
+		else if (normalized_flag_value == "18") {
 			specialization_filter.warrior_berserker = true; 
 		}
-		else if (flag_value == "Berserker") {
+		else if (normalized_flag_value == "berserker") {
 			specialization_filter.warrior_berserker = true; 
 		}
-		else if (flag_value == "56") {
+		else if (normalized_flag_value == "56") {
 			specialization_filter.elementalist_weaver = true; 
 		}
-		else if (flag_value == "Weaver") {
+		else if (normalized_flag_value == "weaver") {
 			specialization_filter.elementalist_weaver = true; 
 		}
-		else if (flag_value == "57") {
+		else if (normalized_flag_value == "57") {
 			specialization_filter.engineer_holosmith = true; 
 		}
-		else if (flag_value == "Holosmith") {
+		else if (normalized_flag_value == "holosmith") {
 			specialization_filter.engineer_holosmith = true; 
 		}
-		else if (flag_value == "62") {
+		else if (normalized_flag_value == "62") {
 			specialization_filter.guardian_firebrand = true; 
 		}
-		else if (flag_value == "Firebrand") {
+		else if (normalized_flag_value == "firebrand") {
 			specialization_filter.guardian_firebrand = true; 
 		}
-		else if (flag_value == "59") {
+		else if (normalized_flag_value == "59") {
 			specialization_filter.mesmer_mirage = true; 
 		}
-		else if (flag_value == "Mirage") {
+		else if (normalized_flag_value == "mirage") {
 			specialization_filter.mesmer_mirage = true; 
 		}
-		else if (flag_value == "60") {
+		else if (normalized_flag_value == "60") {
 			specialization_filter.necromancer_scourge = true; 
 		}
-		else if (flag_value == "Scourge") {
+		else if (normalized_flag_value == "scourge") {
 			specialization_filter.necromancer_scourge = true; 
 		}
-		else if (flag_value == "55") {
+		else if (normalized_flag_value == "55") {
 			specialization_filter.ranger_soulbeast = true; 
 		}
-		else if (flag_value == "Soulbeast") {
+		else if (normalized_flag_value == "soulbeast") {
 			specialization_filter.ranger_soulbeast = true; 
 		}
-		else if (flag_value == "63") {
+		else if (normalized_flag_value == "63") {
 			specialization_filter.revenant_renegade = true; 
 		}
-		else if (flag_value == "Renegade") {
+		else if (normalized_flag_value == "renegade") {
 			specialization_filter.revenant_renegade = true; 
 		}
-		else if (flag_value == "58") {
+		else if (normalized_flag_value == "58") {
 			specialization_filter.thief_deadeye = true; 
 		}
-		else if (flag_value == "Deadeye") {
+		else if (normalized_flag_value == "deadeye") {
 			specialization_filter.thief_deadeye = true; 
 		}
-		else if (flag_value == "61") {
+		else if (normalized_flag_value == "61") {
 			specialization_filter.warrior_spellbreaker = true; 
 		}
-		else if (flag_value == "Spellbreaker") {
+		else if (normalized_flag_value == "spellbreaker") {
 			specialization_filter.warrior_spellbreaker = true; 
 		}
-		else if (flag_value == "Catalyst") {
+		else if (normalized_flag_value == "catalyst") {
 			specialization_filter.elementalist_catalyst = true; 
 		}
-		else if (flag_value == "Mechanist") {
+		else if (normalized_flag_value == "mechanist") {
 			specialization_filter.engineer_mechanist = true; 
 		}
-		else if (flag_value == "Willbender") {
+		else if (normalized_flag_value == "willbender") {
 			specialization_filter.guardian_willbender = true; 
 		}
-		else if (flag_value == "Virtuoso") {
+		else if (normalized_flag_value == "virtuoso") {
 			specialization_filter.mesmer_virtuoso = true; 
 		}
-		else if (flag_value == "Harbinger") {
+		else if (normalized_flag_value == "harbinger") {
 			specialization_filter.necromancer_harbinger = true; 
 		}
-		else if (flag_value == "Untamed") {
+		else if (normalized_flag_value == "untamed") {
 			specialization_filter.ranger_untamed = true; 
 		}
-		else if (flag_value == "Vindicator") {
+		else if (normalized_flag_value == "vindicator") {
 			specialization_filter.revenant_vindicator = true; 
 		}
-		else if (flag_value == "Specter") {
+		else if (normalized_flag_value == "specter") {
 			specialization_filter.thief_specter = true; 
 		}
-		else if (flag_value == "Bladesworn") {
+		else if (normalized_flag_value == "bladesworn") {
 			specialization_filter.warrior_bladesworn = true; 
 		}
-		else if (flag_value == "41") {
+		else if (normalized_flag_value == "41") {
 			specialization_filter.elementalist_air = true; 
 		}
-		else if (flag_value == "37") {
+		else if (normalized_flag_value == "37") {
 			specialization_filter.elementalist_arcane = true; 
 		}
-		else if (flag_value == "26") {
+		else if (normalized_flag_value == "26") {
 			specialization_filter.elementalist_earth = true; 
 		}
-		else if (flag_value == "31") {
+		else if (normalized_flag_value == "31") {
 			specialization_filter.elementalist_fire = true; 
 		}
-		else if (flag_value == "17") {
+		else if (normalized_flag_value == "17") {
 			specialization_filter.elementalist_water = true; 
 		}
-		else if (flag_value == "29") {
+		else if (normalized_flag_value == "29") {
 			specialization_filter.engineer_alchemy = true; 
 		}
-		else if (flag_value == "6") {
+		else if (normalized_flag_value == "6") {
 			specialization_filter.engineer_explosives = true; 
 		}
-		else if (flag_value == "38") {
+		else if (normalized_flag_value == "38") {
 			specialization_filter.engineer_firearms = true; 
 		}
-		else if (flag_value == "47") {
+		else if (normalized_flag_value == "47") {
 			specialization_filter.engineer_inventions = true; 
 		}
-		else if (flag_value == "21") {
+		else if (normalized_flag_value == "21") {
 			specialization_filter.engineer_tools = true; 
 		}
-		else if (flag_value == "49") {
+		else if (normalized_flag_value == "49") {
 			specialization_filter.guardian_honor = true; 
 		}
-		else if (flag_value == "16") {
+		else if (normalized_flag_value == "16") {
 			specialization_filter.guardian_radiance = true; 
 		}
-		else if (flag_value == "13") {
+		else if (normalized_flag_value == "13") {
 			specialization_filter.guardian_valor = true; 
 		}
-		else if (flag_value == "46") {
+		else if (normalized_flag_value == "46") {
 			specialization_filter.guardian_virtues = true; 
 		}
-		else if (flag_value == "42") {
+		else if (normalized_flag_value == "42") {
 			specialization_filter.guardian_zeal = true; 
 		}
-		else if (flag_value == "45") {
+		else if (normalized_flag_value == "45") {
 			specialization_filter.mesmer_chaos = true; 
 		}
-		else if (flag_value == "10") {
+		else if (normalized_flag_value == "10") {
 			specialization_filter.mesmer_domination = true; 
 		}
-		else if (flag_value == "1") {
+		else if (normalized_flag_value == "1") {
 			specialization_filter.mesmer_dueling = true; 
 		}
-		else if (flag_value == "24") {
+		else if (normalized_flag_value == "24") {
 			specialization_filter.mesmer_illusions = true; 
 		}
-		else if (flag_value == "23") {
+		else if (normalized_flag_value == "23") {
 			specialization_filter.mesmer_inspiration = true; 
 		}
-		else if (flag_value == "19") {
+		else if (normalized_flag_value == "19") {
 			specialization_filter.necromancer_blood_magic = true; 
 		}
-		else if (flag_value == "39") {
+		else if (normalized_flag_value == "39") {
 			specialization_filter.necromancer_curses = true; 
 		}
-		else if (flag_value == "2") {
+		else if (normalized_flag_value == "2") {
 			specialization_filter.necromancer_death_magic = true; 
 		}
-		else if (flag_value == "50") {
+		else if (normalized_flag_value == "50") {
 			specialization_filter.necromancer_soul_reaping = true; 
 		}
-		else if (flag_value == "53") {
+		else if (normalized_flag_value == "53") {
 			specialization_filter.necromancer_spite = true; 
 		}
-		else if (flag_value == "32") {
+		else if (normalized_flag_value == "32") {
 			specialization_filter.ranger_beastmastery = true; 
 		}
-		else if (flag_value == "8") {
+		else if (normalized_flag_value == "8") {
 			specialization_filter.ranger_marksmanship = true; 
 		}
-		else if (flag_value == "25") {
+		else if (normalized_flag_value == "25") {
 			specialization_filter.ranger_nature_magic = true; 
 		}
-		else if (flag_value == "30") {
+		else if (normalized_flag_value == "30") {
 			specialization_filter.ranger_skirmishing = true; 
 		}
-		else if (flag_value == "33") {
+		else if (normalized_flag_value == "33") {
 			specialization_filter.ranger_wilderness_survival = true; 
 		}
-		else if (flag_value == "14") {
+		else if (normalized_flag_value == "14") {
 			specialization_filter.revenant_corruption = true; 
 		}
-		else if (flag_value == "15") {
+		else if (normalized_flag_value == "15") {
 			specialization_filter.revenant_devastation = true; 
 		}
-		else if (flag_value == "3") {
+		else if (normalized_flag_value == "3") {
 			specialization_filter.revenant_invocation = true; 
 		}
-		else if (flag_value == "9") {
+		else if (normalized_flag_value == "9") {
 			specialization_filter.revenant_retribution = true; 
 		}
-		else if (flag_value == "12") {
+		else if (normalized_flag_value == "12") {
 			specialization_filter.revenant_salvation = true; 
 		}
-		else if (flag_value == "54") {
+		else if (normalized_flag_value == "54") {
 			specialization_filter.thief_acrobatics = true; 
 		}
-		else if (flag_value == "35") {
+		else if (normalized_flag_value == "35") {
 			specialization_filter.thief_critical_strikes = true; 
 		}
-		else if (flag_value == "28") {
+		else if (normalized_flag_value == "28") {
 			specialization_filter.thief_deadly_arts = true; 
 		}
-		else if (flag_value == "20") {
+		else if (normalized_flag_value == "20") {
 			specialization_filter.thief_shadow_arts = true; 
 		}
-		else if (flag_value == "44") {
+		else if (normalized_flag_value == "44") {
 			specialization_filter.thief_trickery = true; 
 		}
-		else if (flag_value == "36") {
+		else if (normalized_flag_value == "36") {
 			specialization_filter.warrior_arms = true; 
 		}
-		else if (flag_value == "22") {
+		else if (normalized_flag_value == "22") {
 			specialization_filter.warrior_defense = true; 
 		}
-		else if (flag_value == "51") {
+		else if (normalized_flag_value == "51") {
 			specialization_filter.warrior_discipline = true; 
 		}
-		else if (flag_value == "4") {
+		else if (normalized_flag_value == "4") {
 			specialization_filter.warrior_strength = true; 
 		}
-		else if (flag_value == "11") {
+		else if (normalized_flag_value == "11") {
 			specialization_filter.warrior_tactics = true; 
 		}
 		else {
-			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+			errors->push_back(new XMLAttributeValueError("Invalid Filter for SpecializationFilter. Found " + flag_value, input));
         	continue;
         }
     }

@@ -21,35 +21,36 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
 	profession_filter.revenant = false;
    
     for (string flag_value : flag_values) {
-		if (flag_value == "Guardian") {
+    	string normalized_flag_value = normalize(flag_value);
+		if (normalized_flag_value == "guardian") {
 			profession_filter.guardian = true; 
 		}
-		else if (flag_value == "Warrior") {
+		else if (normalized_flag_value == "warrior") {
 			profession_filter.warrior = true; 
 		}
-		else if (flag_value == "Engineer") {
+		else if (normalized_flag_value == "engineer") {
 			profession_filter.engineer = true; 
 		}
-		else if (flag_value == "Ranger") {
+		else if (normalized_flag_value == "ranger") {
 			profession_filter.ranger = true; 
 		}
-		else if (flag_value == "Thief") {
+		else if (normalized_flag_value == "thief") {
 			profession_filter.thief = true; 
 		}
-		else if (flag_value == "Elementalist") {
+		else if (normalized_flag_value == "elementalist") {
 			profession_filter.elementalist = true; 
 		}
-		else if (flag_value == "Mesmer") {
+		else if (normalized_flag_value == "mesmer") {
 			profession_filter.mesmer = true; 
 		}
-		else if (flag_value == "Necromancer") {
+		else if (normalized_flag_value == "necromancer") {
 			profession_filter.necromancer = true; 
 		}
-		else if (flag_value == "Revenant") {
+		else if (normalized_flag_value == "revenant") {
 			profession_filter.revenant = true; 
 		}
 		else {
-			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+			errors->push_back(new XMLAttributeValueError("Invalid Filter for ProfessionFilter. Found " + flag_value, input));
         	continue;
         }
     }

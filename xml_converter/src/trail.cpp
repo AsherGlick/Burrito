@@ -7,7 +7,7 @@ string Trail::classname() {
 }
 bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
     string attributename; 
-    attributename = normalize_type_name(get_attribute_name(attribute)); 
+    attributename = normalize(get_attribute_name(attribute)); 
     if (attributename == "achievementbit") {
         this->achievement_bitmask = parse_int(attribute, errors);
     }
@@ -58,6 +58,9 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     }
     else if (attributename == "iswall") {
         this->is_wall = parse_bool(attribute, errors);
+    }
+    else if (attributename == "mapdisplaysize") {
+        this->map_display_size = parse_int(attribute, errors);
     }
     else if (attributename == "mapid") {
         this->map_id = parse_int(attribute, errors);
