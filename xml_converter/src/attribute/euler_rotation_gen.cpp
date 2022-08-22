@@ -1,4 +1,4 @@
-#include "euler_rotation.hpp"
+#include "euler_rotation_gen.hpp"
 
 #include <string>
 #include <vector>

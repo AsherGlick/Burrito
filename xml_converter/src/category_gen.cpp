@@ -1,4 +1,4 @@
-#include "category.hpp"
+#include "category_gen.hpp"
 
 using namespace std;
 

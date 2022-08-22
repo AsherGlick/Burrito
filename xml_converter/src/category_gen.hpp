@@ -4,8 +4,8 @@
 #include <vector>
 #include "parseable.hpp"
 #include <map>
-#include "icon.hpp"
-#include "trail.hpp"
+#include "icon_gen.hpp"
+#include "trail_gen.hpp"
 
 #include "attribute/bool.hpp"
 #include "attribute/string.hpp"

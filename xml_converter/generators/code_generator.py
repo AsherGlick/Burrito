@@ -267,6 +267,12 @@ def get_attribute_variable_key(attribute_variable: AttributeVariable) -> str:
 class Generator:
     data: Dict[str, Document] = {}
 
+    def delete_generated_docs(self, dir_path: str) -> None:
+        for filepath in os.listdir(dir_path):
+            filepath = os.path.join(dir_path, filepath)
+            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_.html"):
+                os.remove(filepath)
+
     def load_input_doc(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
             filepath = os.path.join(dir_path, filepath)
@@ -324,7 +330,7 @@ class Generator:
                 if attribute_variable.class_name == "marker_category":
                     attributes_of_type_marker_category.append(attribute_variable.attribute_name)
 
-            with open(os.path.join(output_directory, lowercase(cpp_class) + ".hpp"), 'w') as f:
+            with open(os.path.join(output_directory, lowercase(cpp_class) + "_gen.hpp"), 'w') as f:
                 f.write(header_template.render(
                     cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
@@ -332,7 +338,7 @@ class Generator:
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
 
-            with open(os.path.join(output_directory, lowercase(cpp_class) + ".cpp"), 'w') as f:
+            with open(os.path.join(output_directory, lowercase(cpp_class) + "_gen.cpp"), 'w') as f:
                 f.write(code_template.render(
                     cpp_class=cpp_class,
                     cpp_class_header=lowercase(cpp_class),
@@ -371,19 +377,20 @@ class Generator:
                 if field['type'] in doc_type_to_cpp_type:
                     cpp_type = doc_type_to_cpp_type[field['type']]
                     class_name = cpp_type
+                    cpp_include_paths.add(class_name)
                 elif field['type'] == "Custom":
                     cpp_type = field['class']
                     class_name = insert_delimiter(field['class'], delimiter="_")
+                    cpp_include_paths.add(class_name)
                 elif field['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
                     cpp_type = capitalize(attribute_name, delimiter="")
                     class_name = attribute_name
+                    cpp_include_paths.add(class_name + "_gen")
                 else:
                     raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
                         field_type=field['type'],
                         attribute_name=attribute_name,
                     ))
-
-                cpp_include_paths.add(class_name)
 
                 for item in field['xml_fields']:
                     xml_fields.append(lowercase(item, delimiter=""))
@@ -475,7 +482,7 @@ class Generator:
             else:
                 continue
 
-            with open(os.path.join(output_directory, attribute_name + ".hpp"), 'w') as f:
+            with open(os.path.join(output_directory, attribute_name + "_gen.hpp"), 'w') as f:
                 f.write(env.get_template("attribute_template.hpp").render(
                     attribute_name=attribute_name,
                     attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
@@ -483,7 +490,7 @@ class Generator:
                     type=metadata[filepath]['type'],
                 ))
 
-            with open(os.path.join(output_directory, attribute_name + ".cpp"), 'w') as f:
+            with open(os.path.join(output_directory, attribute_name + "_gen.cpp"), 'w') as f:
                 f.write(template[metadata[filepath]['type']].render(
                     attribute_name=attribute_name,
                     attribute_variables=attribute_variables,
@@ -530,7 +537,7 @@ class Generator:
             for field_row in field_rows:
                 complete_field_row_list.append(field_row)
 
-            with open(os.path.join(output_directory, page + ".html"), 'w') as f:
+            with open(os.path.join(output_directory, page + "_gen.html"), 'w') as f:
 
                 f.write(template.render(
                     generated_doc=generated_doc,
@@ -765,6 +772,9 @@ def main() -> None:
         if os.path.isdir(full_markdown_doc_directory):
             generator.load_input_doc(full_markdown_doc_directory)
 
+    generator.delete_generated_docs("../web_docs")
+    generator.delete_generated_docs("../src/")
+    generator.delete_generated_docs("../src/attribute")
     generator.write_webdocs("../web_docs/")
     generator.write_cpp_classes("../src/")
     generator.write_attribute("../src/attribute")

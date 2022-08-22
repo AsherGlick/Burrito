@@ -1,4 +1,4 @@
-#include "{{attribute_name}}.hpp"
+#include "{{attribute_name}}_gen.hpp"
 
 #include <string>
 #include <vector>

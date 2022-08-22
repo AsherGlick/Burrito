@@ -1,4 +1,4 @@
-#include "trail.hpp"
+#include "trail_gen.hpp"
 
 using namespace std;
 
