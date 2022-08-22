@@ -2,7 +2,7 @@
 name: Euler Rotation
 type: CompoundValue
 applies_to: ["Icon"]
-xml_fields: ["Rotation"]
+xml_fields: ["Rotate"]
 compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: euler_rotation
 components:
