@@ -5,8 +5,8 @@
 #include "parseable.hpp"
 {%- if cpp_class == "Category": %}
 #include <map>
-#include "icon.hpp"
-#include "trail.hpp"
+#include "icon_gen.hpp"
+#include "trail_gen.hpp"
 {%- elif cpp_class == "Trail": %}
 #include <string.h>
 #include <cstdio>

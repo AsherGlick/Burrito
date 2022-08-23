@@ -1,4 +1,4 @@
-#include "cull_chirality.hpp"
+#include "cull_chirality_gen.hpp"
 
 #include <string>
 #include <vector>

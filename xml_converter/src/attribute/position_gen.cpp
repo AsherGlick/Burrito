@@ -1,4 +1,4 @@
-#include "position.hpp"
+#include "position_gen.hpp"
 
 #include <string>
 #include <vector>

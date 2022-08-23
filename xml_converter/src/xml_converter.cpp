@@ -12,9 +12,9 @@
 #include <cstdio>
 
 #include "parseable.hpp"
-#include "trail.hpp"
-#include "icon.hpp"
-#include "category.hpp"
+#include "trail_gen.hpp"
+#include "icon_gen.hpp"
+#include "category_gen.hpp"
 #include "attribute/float.hpp"
 #include "string_helper.hpp"
 #include "rapid_helpers.hpp"
