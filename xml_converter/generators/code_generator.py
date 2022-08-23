@@ -270,7 +270,7 @@ class Generator:
     def delete_generated_docs(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
             filepath = os.path.join(dir_path, filepath)
-            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_.html"):
+            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_gen.html"):
                 os.remove(filepath)
 
     def load_input_doc(self, dir_path: str) -> None:
