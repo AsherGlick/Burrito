@@ -13,4 +13,4 @@ class Color {
     string hex;
 };
 
-Color parse_Color(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

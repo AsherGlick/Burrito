@@ -13,7 +13,7 @@
 #include "attribute/image.hpp"
 #include "attribute/int.hpp"
 #include "attribute/map_type_filter.hpp"
-#include "attribute/markercategory.hpp"
+#include "attribute/marker_category.hpp"
 #include "attribute/mount_filter.hpp"
 #include "attribute/position.hpp"
 #include "attribute/profession_filter.hpp"
@@ -21,8 +21,7 @@
 #include "attribute/specialization_filter.hpp"
 #include "attribute/species_filter.hpp"
 #include "attribute/string.hpp"
-#include "attribute/uniqueid.hpp"
-
+#include "attribute/unique_id.hpp"
 using namespace std;
 
 class Icon: public Parseable {
@@ -75,6 +74,7 @@ class Icon: public Parseable {
         string tooltip_description;
         string tooltip_name;
         float trigger_range;
-
         virtual string classname();
+        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
+        bool validate_attributes_of_type_marker_category();
 };

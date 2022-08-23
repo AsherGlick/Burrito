@@ -2,26 +2,38 @@
 
 #include <string>
 #include <vector>
+#include <typeinfo>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
-
-
-EulerRotation parse_EulerAngle(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
-    vector<string> components = split(get_attribute_value(input), ",");
-
-    EulerRotation euler_angle;
-    if (components.size() == 3) {
-        euler_angle.x = stof(components[0].c_str());
-        euler_angle.y = stof(components[1].c_str());
-        euler_angle.z = stof(components[2].c_str());
+EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *){
+    EulerRotation euler_rotation;
+    vector<string> compound_values;
+    string attributename;
+    euler_rotation.x_rotation = 0;
+    euler_rotation.y_rotation = 0;
+    euler_rotation.z_rotation = 0; 
+    attributename = get_attribute_name(input); 
+    compound_values = split(get_attribute_value(input), ",");
+        
+    if (typeid(compound_values) == typeid(std::string)) {
+        if (attributename == "rotatex") {	
+            euler_rotation.x_rotation = std::stof(get_attribute_value(input)); 
+    	}
+        else if (attributename == "rotatey") {
+            euler_rotation.y_rotation = std::stof(get_attribute_value(input)); 
+        }
+        else if (attributename == "rotatez") {
+            euler_rotation.z_rotation = std::stof(get_attribute_value(input)); 
+        }
+    else {    
+        euler_rotation.x_rotation = std::stof(compound_values[0]);    
+        euler_rotation.y_rotation = std::stof(compound_values[1]);    
+        euler_rotation.z_rotation = std::stof(compound_values[2]); 
+        }
     }
-    else {
-        errors->push_back(new XMLAttributeValueError("Invlaid 'x,y,z' rotation ", input));
-    }
 
-    return euler_angle;
+    return euler_rotation;
+	
 }

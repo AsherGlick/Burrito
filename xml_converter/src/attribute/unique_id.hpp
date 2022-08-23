@@ -8,10 +8,9 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-enum CullChirality {
-    clockwise,
-    counter_clockwise,
-    none,
+class UniqueId {
+ public:
+    vector<uint8_t> guid;
 };
-CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+
+UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Color parse_Color(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
     Color color;
     color.hex = get_attribute_value(input);
     return color;

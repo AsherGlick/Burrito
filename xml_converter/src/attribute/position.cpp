@@ -2,26 +2,47 @@
 
 #include <string>
 #include <vector>
+#include <typeinfo>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
-
-
-Position parse_Position(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
-    vector<string> components = split(get_attribute_value(input), ",");
-
+Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*> *){
     Position position;
-    if (components.size() == 3) {
-        position.x = stof(components[0].c_str());
-        position.y = stof(components[1].c_str());
-        position.z = stof(components[2].c_str());
-    }
-    else {
-        errors->push_back(new XMLAttributeValueError("Invlaid 'x,y,z' rotation ", input));
+    vector<string> compound_values;
+    string attributename;
+    position.x_position = 0;
+    position.y_position = 0;
+    position.z_position = 0; 
+    attributename = get_attribute_name(input); 
+    compound_values = split(get_attribute_value(input), ",");
+        
+    if (typeid(compound_values) == typeid(std::string)) {
+        if (attributename == "xpos") {	
+            position.x_position = std::stof(get_attribute_value(input)); 
+    	}
+        else if (attributename == "positionx") {
+            position.x_position = std::stof(get_attribute_value(input)); 
+        }
+        else if (attributename == "ypos") {
+            position.y_position = std::stof(get_attribute_value(input)); 
+        }
+        else if (attributename == "positiony") {
+            position.y_position = std::stof(get_attribute_value(input)); 
+        }
+        else if (attributename == "zpos") {
+            position.z_position = std::stof(get_attribute_value(input)); 
+        }
+        else if (attributename == "positionz") {
+            position.z_position = std::stof(get_attribute_value(input)); 
+        }
+    else {    
+        position.x_position = std::stof(compound_values[0]);    
+        position.y_position = std::stof(compound_values[1]);    
+        position.z_position = std::stof(compound_values[2]); 
+        }
     }
 
     return position;
+	
 }

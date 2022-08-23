@@ -31,8 +31,8 @@ void Parseable::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *err
     }
 }
 
-bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
+bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *) {
     // I removed all of the offending variables. This whole section will be relooked at. 
-    string item = normalize_type_name(get_attribute_name(attribute));
+    string item = normalize(get_attribute_name(attribute));
     return true;
 }

@@ -22,16 +22,15 @@
 #include "attribute/image.hpp"
 #include "attribute/int.hpp"
 #include "attribute/map_type_filter.hpp"
-#include "attribute/markercategory.hpp"
+#include "attribute/marker_category.hpp"
 #include "attribute/mount_filter.hpp"
 #include "attribute/profession_filter.hpp"
 #include "attribute/specialization_filter.hpp"
 #include "attribute/species_filter.hpp"
 #include "attribute/string.hpp"
-#include "attribute/traildata.hpp"
-#include "attribute/traildatamapid.hpp"
-#include "attribute/uniqueid.hpp"
-
+#include "attribute/trail_data.hpp"
+#include "attribute/trail_data_map_id.hpp"
+#include "attribute/unique_id.hpp"
 using namespace std;
 
 class Trail: public Parseable {
@@ -49,6 +48,7 @@ class Trail: public Parseable {
         FestivalFilter festival_filter;
         UniqueId guid;
         bool is_wall;
+        int map_display_size;
         int map_id;
         MapTypeFilter map_type_filter;
         MountFilter mount_filter;
@@ -64,6 +64,7 @@ class Trail: public Parseable {
         TrailData trail_data;
         TrailDataMapId trail_data_map_id;
         float trail_scale;
-
         virtual string classname();
+        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
+        bool validate_attributes_of_type_marker_category();
 };
