@@ -7,7 +7,7 @@ string Icon::classname() {
 }
 bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
     string attributename; 
-    attributename = normalize_type_name(get_attribute_name(attribute)); 
+    attributename = normalize(get_attribute_name(attribute)); 
     if (attributename == "achievementbit") {
         this->achievement_bitmask = parse_int(attribute, errors);
     }
@@ -65,7 +65,7 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "distancefadestart") {
         this->distance_fade_start = parse_float(attribute, errors);
     }
-    else if (attributename == "rotation") {
+    else if (attributename == "rotate") {
         this->euler_rotation = parse_euler_rotation(attribute, errors);
     }
     else if (attributename == "rotatex") {

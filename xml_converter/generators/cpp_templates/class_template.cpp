@@ -27,7 +27,7 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *erro
 {%- endif %}
 bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
     string attributename; 
-    attributename = normalize_type_name(get_attribute_name(attribute));
+    attributename = normalize(get_attribute_name(attribute));
 {%-for n, attribute_variable in enumerate(attribute_variables)%}    
     {%-for i, value in enumerate(attribute_variable.xml_fields)%}
         {%-if i == 0 and n == 0:%} 

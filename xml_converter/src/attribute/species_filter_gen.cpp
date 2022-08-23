@@ -17,23 +17,24 @@ SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLE
 	species_filter.sylvari = false;
    
     for (string flag_value : flag_values) {
-		if (flag_value == "asura") {
+    	string normalized_flag_value = normalize(flag_value);
+		if (normalized_flag_value == "asura") {
 			species_filter.asura = true; 
 		}
-		else if (flag_value == "charr") {
+		else if (normalized_flag_value == "charr") {
 			species_filter.charr = true; 
 		}
-		else if (flag_value == "human") {
+		else if (normalized_flag_value == "human") {
 			species_filter.human = true; 
 		}
-		else if (flag_value == "norn") {
+		else if (normalized_flag_value == "norn") {
 			species_filter.norn = true; 
 		}
-		else if (flag_value == "sylvari") {
+		else if (normalized_flag_value == "sylvari") {
 			species_filter.sylvari = true; 
 		}
 		else {
-			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+			errors->push_back(new XMLAttributeValueError("Invalid Filter for SpeciesFilter. Found " + flag_value, input));
         	continue;
         }
     }

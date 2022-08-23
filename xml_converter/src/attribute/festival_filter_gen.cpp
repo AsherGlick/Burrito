@@ -19,32 +19,33 @@ FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XM
 	festival_filter.none = false;
    
     for (string flag_value : flag_values) {
-		if (flag_value == "DragonBash") {
+    	string normalized_flag_value = normalize(flag_value);
+		if (normalized_flag_value == "dragonbash") {
 			festival_filter.dragonbash = true; 
 		}
-		else if (flag_value == "FestivalOfTheFourWinds") {
+		else if (normalized_flag_value == "festivalofthefourwinds") {
 			festival_filter.festival_of_the_four_winds = true; 
 		}
-		else if (flag_value == "Halloween") {
+		else if (normalized_flag_value == "halloween") {
 			festival_filter.halloween = true; 
 		}
-		else if (flag_value == "LunarNewYear") {
+		else if (normalized_flag_value == "lunarnewyear") {
 			festival_filter.lunar_new_year = true; 
 		}
-		else if (flag_value == "SuperAdventureFestival") {
+		else if (normalized_flag_value == "superadventurefestival") {
 			festival_filter.super_adventure_festival = true; 
 		}
-		else if (flag_value == "SuperAdventureBox") {
+		else if (normalized_flag_value == "superadventurebox") {
 			festival_filter.super_adventure_festival = true; 
 		}
-		else if (flag_value == "Wintersday") {
+		else if (normalized_flag_value == "wintersday") {
 			festival_filter.wintersday = true; 
 		}
-		else if (flag_value == "None") {
+		else if (normalized_flag_value == "none") {
 			festival_filter.none = true; 
 		}
 		else {
-			errors->push_back(new XMLAttributeValueError("Found a value that was not in the class", input));
+			errors->push_back(new XMLAttributeValueError("Invalid Filter for FestivalFilter. Found " + flag_value, input));
         	continue;
         }
     }

@@ -24,7 +24,7 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *erro
 }
 bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
     string attributename; 
-    attributename = normalize_type_name(get_attribute_name(attribute)); 
+    attributename = normalize(get_attribute_name(attribute)); 
     if (attributename == "defaulttoggle") {
         this->default_visibility = parse_bool(attribute, errors);
     }
