@@ -1,4 +1,4 @@
-#include "{{cpp_class_header}}.hpp"
+#include "{{cpp_class_header}}_gen.hpp"
 
 using namespace std;
 

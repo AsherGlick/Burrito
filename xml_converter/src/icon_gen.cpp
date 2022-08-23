@@ -1,4 +1,4 @@
-#include "icon.hpp"
+#include "icon_gen.hpp"
 
 using namespace std;
 
