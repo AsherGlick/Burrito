@@ -16,29 +16,23 @@
 {%- endfor %} 
     attributename = get_attribute_name(input); 
     compound_values = split(get_attribute_value(input), ",");
-        
-    if (typeid(compound_values) == typeid(std::string)) {
-{%-for n, attribute_variable in enumerate(attribute_variables)%}
-    {%-for i, value in enumerate(attribute_variable.xml_fields)%}
-        {%-if i == 0 and n == 0:%}
-        if (attributename == "{{value}}") {	
-            {{attribute_name}}.{{attribute_variables[n].attribute_name}} = std::stof(get_attribute_value(input)); 
-    	}
-        {%- else %}
-        else if (attributename == "{{value}}") {
-            {{attribute_name}}.{{attribute_variables[n].attribute_name}} = std::stof(get_attribute_value(input)); 
-        }
-        {%- endif %}
-            
-    {%- endfor %} 
-{%- endfor %}
-    else {
-        {%-for n, attribute_variable in enumerate(attribute_variables)%}    
+    if (compound_values.size() == 3){
+{%-for n, attribute_variable in enumerate(attribute_variables)%}    
         {{attribute_name}}.{{attribute_variables[n].attribute_name}} = std::stof(compound_values[{{n}}]); 
-        {%- endfor %} 
-        }
+{%- endfor %} 
     }
-
     return {{attribute_name}};
-	
 }
+{%-if attribute_variables[0].xml_export == "Parent"%}
+string stringify_{{attribute_name}}({{class_name}} attribute_value){
+    string output;
+    {%-for n, attribute_variable in enumerate(attribute_variables)%}
+        {%-if n == 0:%}
+    output = to_string(attribute_value.{{attribute_variables[n].attribute_name}});
+        {%- else %}
+    output = output + "," + to_string(attribute_value.{{attribute_variables[n].attribute_name}});
+        {%- endif %}
+    {%- endfor %} 
+    return output;
+}
+{%- endif %}

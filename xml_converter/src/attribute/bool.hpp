@@ -10,3 +10,5 @@
 using namespace std;
 
 bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+
+string stringify_bool(bool attribute_value);

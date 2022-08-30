@@ -26,7 +26,7 @@ components:
   protobuf_field: "z"
   compatability: [TacO, Burrito, BlishHUD]
   
-xml_export: "Parent Only"
+xml_export: "Parent"
 ---
 Euler X Y Z rotation.
 

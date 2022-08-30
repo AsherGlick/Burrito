@@ -16,33 +16,10 @@ Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*> *){
     position.z_position = 0; 
     attributename = get_attribute_name(input); 
     compound_values = split(get_attribute_value(input), ",");
-        
-    if (typeid(compound_values) == typeid(std::string)) {
-        if (attributename == "xpos") {	
-            position.x_position = std::stof(get_attribute_value(input)); 
-    	}
-        else if (attributename == "positionx") {
-            position.x_position = std::stof(get_attribute_value(input)); 
-        }
-        else if (attributename == "ypos") {
-            position.y_position = std::stof(get_attribute_value(input)); 
-        }
-        else if (attributename == "positiony") {
-            position.y_position = std::stof(get_attribute_value(input)); 
-        }
-        else if (attributename == "zpos") {
-            position.z_position = std::stof(get_attribute_value(input)); 
-        }
-        else if (attributename == "positionz") {
-            position.z_position = std::stof(get_attribute_value(input)); 
-        }
-    else {    
+    if (compound_values.size() == 3){    
         position.x_position = std::stof(compound_values[0]);    
         position.y_position = std::stof(compound_values[1]);    
         position.z_position = std::stof(compound_values[2]); 
-        }
     }
-
     return position;
-	
 }

@@ -20,4 +20,4 @@ enum ResetBehavior {
     weekly_reset,
 };
 ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_reset_behavior(ResetBehavior attribute_value);

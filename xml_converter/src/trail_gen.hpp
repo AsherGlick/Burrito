@@ -29,42 +29,69 @@
 #include "attribute/species_filter_gen.hpp"
 #include "attribute/string.hpp"
 #include "attribute/trail_data.hpp"
-#include "attribute/trail_data_map_id.hpp"
 #include "attribute/unique_id.hpp"
 using namespace std;
 
 class Trail: public Parseable {
     public:
-        int achievement_bitmask;
-        int achievement_id;
-        float alpha;
-        float animation_speed;
-        bool can_fade;
-        MarkerCategory category;
-        Color color;
-        CullChirality cull_chirality;
-        float distance_fade_end;
-        float distance_fade_start;
         FestivalFilter festival_filter;
-        UniqueId guid;
-        bool is_wall;
-        int map_display_size;
-        int map_id;
-        MapTypeFilter map_type_filter;
-        MountFilter mount_filter;
+        bool festival_filter_is_true = false;
         ProfessionFilter profession_filter;
-        bool render_ingame;
-        bool render_on_map;
+        bool profession_filter_is_true = false;
+        float distance_fade_start;
+        bool distance_fade_start_is_true = false;
+        float distance_fade_end;
+        bool distance_fade_end_is_true = false;
+        UniqueId guid;
+        bool guid_is_true = false;
+        MountFilter mount_filter;
+        bool mount_filter_is_true = false;
+        float alpha;
+        bool alpha_is_true = false;
+        int map_id;
+        bool map_id_is_true = false;
+        MapTypeFilter map_type_filter;
+        bool map_type_filter_is_true = false;
         bool render_on_minimap;
-        string schedule;
-        float schedule_duration;
-        SpecializationFilter specialization_filter;
+        bool render_on_minimap_is_true = false;
+        CullChirality cull_chirality;
+        bool cull_chirality_is_true = false;
+        bool render_ingame;
+        bool render_ingame_is_true = false;
+        bool render_on_map;
+        bool render_on_map_is_true = false;
+        int map_display_size;
+        bool map_display_size_is_true = false;
+        bool is_wall;
+        bool is_wall_is_true = false;
         SpeciesFilter species_filter;
-        Image texture;
+        bool species_filter_is_true = false;
         TrailData trail_data;
-        TrailDataMapId trail_data_map_id;
+        bool trail_data_is_true = false;
+        SpecializationFilter specialization_filter;
+        bool specialization_filter_is_true = false;
+        int achievement_id;
+        bool achievement_id_is_true = false;
+        int achievement_bitmask;
+        bool achievement_bitmask_is_true = false;
         float trail_scale;
+        bool trail_scale_is_true = false;
+        MarkerCategory category;
+        bool category_is_true = false;
+        float schedule_duration;
+        bool schedule_duration_is_true = false;
+        string schedule;
+        bool schedule_is_true = false;
+        Color color;
+        bool color_is_true = false;
+        Image texture;
+        bool texture_is_true = false;
+        float animation_speed;
+        bool animation_speed_is_true = false;
+        bool can_fade;
+        bool can_fade_is_true = false;
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
+        virtual vector<string> as_xml() const;
         bool validate_attributes_of_type_marker_category();
 };

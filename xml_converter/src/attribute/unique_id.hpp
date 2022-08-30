@@ -14,3 +14,5 @@ class UniqueId {
 };
 
 UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+
+string stringify_unique_id(UniqueId attribute_value);

@@ -12,3 +12,5 @@ class MarkerCategory {
 };
 
 MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+
+string stringify_marker_category (MarkerCategory attribute_value); 

@@ -5,7 +5,7 @@ import frontmatter  # type:ignore
 from typing import Any, Dict, List, Tuple, Set
 import os
 import markdown
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
 
 SchemaType = Dict[str, Any]
@@ -136,9 +136,9 @@ allOf:
             xml_export:
                 type: string
                 enum:
-                    - Parent Only
+                    - Parent
                     - Parent and Children
-                    - Children Only
+                    - Children
             components:
                 type: array
                 items:
@@ -255,9 +255,13 @@ doc_type_to_cpp_type: Dict[str, str] = {
 @dataclass
 class AttributeVariable:
     attribute_name: str
+    attribute_type: str
     cpp_type: str
     class_name: str
     xml_fields: List[str]
+    default_xml_fields: List[str] = field(default_factory=list)
+    xml_export: str = ""
+    is_child: bool = False
 
 
 def get_attribute_variable_key(attribute_variable: AttributeVariable) -> str:
@@ -333,7 +337,8 @@ class Generator:
             with open(os.path.join(output_directory, lowercase(cpp_class) + "_gen.hpp"), 'w') as f:
                 f.write(header_template.render(
                     cpp_class=cpp_class,
-                    attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
+                    # attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
+                    attribute_variables=attribute_variables,
                     cpp_include_paths=sorted(cpp_include_paths),
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
@@ -343,7 +348,8 @@ class Generator:
                     cpp_class=cpp_class,
                     cpp_class_header=lowercase(cpp_class),
                     xml_class_name=cpp_classes[cpp_class],
-                    attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
+                    # attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
+                    attribute_variables=attribute_variables,
                     enumerate=enumerate,
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
@@ -366,48 +372,75 @@ class Generator:
         attribute_name: str = ""
         attribute_variables: List[AttributeVariable] = []
         xml_fields: List[str] = []
+        default_xml_fields: List[str] = []
+        xml_export: str = ""
 
-        for fieldkey, field in metadata.items():
+        for fieldkey, fieldval in metadata.items():
             for x in attribute_names:
                 if fieldkey in x:
                     attribute_name = attribute_names[x]
 
-            if doc_type in field['applies_to']:
+            if doc_type in fieldval['applies_to']:
                 xml_fields = []
-                if field['type'] in doc_type_to_cpp_type:
-                    cpp_type = doc_type_to_cpp_type[field['type']]
+                default_xml_fields = []
+                xml_export = ""
+                if fieldval['type'] in doc_type_to_cpp_type:
+                    cpp_type = doc_type_to_cpp_type[fieldval['type']]
                     class_name = cpp_type
                     cpp_include_paths.add(class_name)
-                elif field['type'] == "Custom":
-                    cpp_type = field['class']
-                    class_name = insert_delimiter(field['class'], delimiter="_")
+                elif fieldval['type'] == "Custom":
+                    if fieldval['class'] == "TrailDataMapId":
+                        continue
+                    cpp_type = fieldval['class']
+                    class_name = insert_delimiter(fieldval['class'], delimiter="_")
                     cpp_include_paths.add(class_name)
-                elif field['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
+                elif fieldval['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
                     cpp_type = capitalize(attribute_name, delimiter="")
                     class_name = attribute_name
                     cpp_include_paths.add(class_name + "_gen")
                 else:
                     raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
-                        field_type=field['type'],
+                        field_type=fieldval['type'],
                         attribute_name=attribute_name,
                     ))
 
-                for item in field['xml_fields']:
-                    xml_fields.append(lowercase(item, delimiter=""))
-
-                # Compound Values are unique in that the components have xml fields in addition to the compound variable
-                if field['type'] == "CompoundValue":
-                    for component in field['components']:
-                        for item in component['xml_fields']:
+                    # Compound Values are unique in that the components have xml fields in addition to the compound variable
+                if fieldval['type'] == "CompoundValue":
+                    xml_export = fieldval['xml_export']
+                    for i, component in enumerate(fieldval['components']):
+                        xml_fields = []
+                        default_xml_fields = []
+                        for j, item in enumerate(component['xml_fields']):
+                            if xml_export == "Children":
+                                default_xml_fields.append(item)
+                            if xml_export == "Parent":
+                                default_xml_fields.append(fieldval["xml_fields"][0])
                             xml_fields.append(lowercase(item, delimiter=""))
+                        attribute_variable = AttributeVariable(
+                            attribute_name=lowercase(component['name'], delimiter="_"),
+                            attribute_type="CompoundValue",
+                            cpp_type=doc_type_to_cpp_type[component['type']],
+                            class_name=class_name,
+                            xml_fields=xml_fields,
+                            default_xml_fields=default_xml_fields,
+                            xml_export=xml_export,
+                            is_child=True,
+                        )
+                        attribute_variables.append(attribute_variable)
 
-                attribute_variable: AttributeVariable = AttributeVariable(
+                for x in fieldval['xml_fields']:
+                    xml_fields.append(lowercase(x, delimiter=""))
+                default_xml_fields.append(fieldval['xml_fields'][0])
+
+                attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
+                    attribute_type=fieldval["type"],
                     cpp_type=cpp_type,
                     class_name=class_name,
                     xml_fields=xml_fields,
+                    default_xml_fields=default_xml_fields,
+                    xml_export=xml_export,
                 )
-
                 attribute_variables.append(attribute_variable)
 
         return attribute_variables, cpp_include_paths
@@ -451,6 +484,7 @@ class Generator:
 
                     attribute_variable = AttributeVariable(
                         attribute_name=flag,
+                        attribute_type=metadata[filepath]['type'],
                         cpp_type="bool",
                         class_name=attribute_name,
                         xml_fields=xml_fields,
@@ -468,9 +502,11 @@ class Generator:
                         xml_fields.append(normalize(item))
                     attribute_variable = AttributeVariable(
                         attribute_name=lowercase(component['name'], delimiter="_"),
+                        attribute_type=metadata[filepath]['type'],
                         cpp_type=doc_type_to_cpp_type[component['type']],
                         class_name=attribute_name,
                         xml_fields=xml_fields,
+                        xml_export=metadata[filepath]["xml_export"],
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -481,6 +517,7 @@ class Generator:
                         xml_fields.append(normalize(item))
                     attribute_variable = AttributeVariable(
                         attribute_name=value,
+                        attribute_type=metadata[filepath]['type'],
                         cpp_type="str",
                         class_name=attribute_name,
                         xml_fields=xml_fields
@@ -608,33 +645,33 @@ class Generator:
         template = env.get_template("infotable.html")
 
         field_rows = []
-        for fieldkey, field in metadata.items():
+        for fieldkey, fieldval in metadata.items():
             valid_values = ""
 
-            if field['type'] == "MultiflagValue" or field['type'] == "Enum":
+            if fieldval['type'] == "MultiflagValue" or fieldval['type'] == "Enum":
 
-                if (field["type"] == "MultiflagValue"):
-                    pairings = field["flags"]
-                elif (field["type"] == "Enum"):
-                    pairings = field["values"]
+                if (fieldval["type"] == "MultiflagValue"):
+                    pairings = fieldval["flags"]
+                elif (fieldval["type"] == "Enum"):
+                    pairings = fieldval["values"]
                 else:
                     raise ValueError("Type was MultiflagValue or Enum but not MultiflagValue or Enum. Not sure what happened.")
 
                 example = self.build_example(
-                    type=field['type'],
-                    applies_to=field['applies_to'],
-                    xml_field=field['xml_fields'][0],
+                    type=fieldval['type'],
+                    applies_to=fieldval['applies_to'],
+                    xml_field=fieldval['xml_fields'][0],
                     examples=self.get_fixed_option_examples(
-                        field_type=field['type'],
+                        field_type=fieldval['type'],
                         pairings=pairings
                     )
                 )
 
                 valid_values = "<table class='flagbox'><tr><th>XML Value</th><td></td><th>"
 
-                if (field["type"] == "MultiflagValue"):
+                if (fieldval["type"] == "MultiflagValue"):
                     valid_values += "Set Flag"
-                elif (field["type"] == "Enum"):
+                elif (fieldval["type"] == "Enum"):
                     valid_values += "Enum Value"
                 valid_values += "</th></tr>"
 
@@ -645,35 +682,35 @@ class Generator:
                     valid_values += "</td><td class='flag_arrowbox'>&#10142;</td><td class='flag_namebox'>" + elem + "</td></tr>"
                 valid_values += "</table>"
 
-            elif field['type'] == "CompoundValue":
+            elif fieldval['type'] == "CompoundValue":
 
                 example = self.build_example(
-                    type=field['type'],
-                    applies_to=field['applies_to'],
-                    xml_field=field['xml_fields'][0],
+                    type=fieldval['type'],
+                    applies_to=fieldval['applies_to'],
+                    xml_field=fieldval['xml_fields'][0],
                     examples=["???TODO???"]
                 )
-                # ",".join( [ self.get_examples(x['type'], field['applies_to'], field['xml_fields'][0]) for x in field['components'] ])
+                # ",".join( [ self.get_examples(x['type'], fieldval['applies_to'], fieldval['xml_fields'][0]) for x in fieldval['components'] ])
             else:
                 example = self.build_example(
-                    type=field['type'],
-                    applies_to=field['applies_to'],
-                    xml_field=field['xml_fields'][0],
+                    type=fieldval['type'],
+                    applies_to=fieldval['applies_to'],
+                    xml_field=fieldval['xml_fields'][0],
                     examples=self.get_examples(
-                        field_type=field['type'],
+                        field_type=fieldval['type'],
                         # pairings=pairings
                     )
                 )
-                # self.get_examples(field['type'], field['applies_to'], field['xml_fields'][0])
+                # self.get_examples(fieldval['type'], fieldval['applies_to'], fieldval['xml_fieldsval'][0])
 
             field_rows.append(FieldRow(
-                name=field["name"],
-                xml_attribute=field["xml_fields"][0],
-                alternate_xml_attributes=field["xml_fields"][1:],
-                binary_field=field["protobuf_field"],
-                data_type=field["type"],
-                supported_by_html="<br>".join(field["compatability"]),
-                usable_on_html="<br>".join(field["applies_to"]),
+                name=fieldval["name"],
+                xml_attribute=fieldval["xml_fields"][0],
+                alternate_xml_attributes=fieldval["xml_fields"][1:],
+                binary_field=fieldval["protobuf_field"],
+                data_type=fieldval["type"],
+                supported_by_html="<br>".join(fieldval["compatability"]),
+                usable_on_html="<br>".join(fieldval["applies_to"]),
                 example=example,
                 valid_values_html=valid_values,
                 is_sub_field=False,
@@ -681,20 +718,20 @@ class Generator:
                 description=content[fieldkey]  # todo:
             ))
 
-            if field['type'] == "CompoundValue":
-                for component_field in field["components"]:
+            if fieldval['type'] == "CompoundValue":
+                for component_field in fieldval["components"]:
                     field_rows.append(FieldRow(
                         name=component_field["name"],
                         xml_attribute=component_field["xml_fields"][0],
                         alternate_xml_attributes=component_field["xml_fields"][1:],
-                        binary_field=field["protobuf_field"] + "." + component_field["protobuf_field"],
+                        binary_field=fieldval["protobuf_field"] + "." + component_field["protobuf_field"],
                         data_type=component_field["type"],
                         supported_by_html="<br>".join(component_field["compatability"]),
-                        usable_on_html="<br>".join(field["applies_to"]),
+                        usable_on_html="<br>".join(fieldval["applies_to"]),
                         example=self.build_example(
                             type=component_field["type"],
-                            applies_to=field["applies_to"],
-                            xml_field=field["xml_fields"][0],
+                            applies_to=fieldval["applies_to"],
+                            xml_field=fieldval["xml_fields"][0],
                             examples=["???TODO2???"],
                         ),
                         description=content[fieldkey],
@@ -766,10 +803,10 @@ def insert_delimiter(word: str, delimiter: str = "_") -> str:
 ################################################################################
 # normalize
 #
-# A helper function to take a string and convert it to a string of  
+# A helper function to take a string and convert it to a string of
 # lowercase letters.
 ################################################################################
-def normalize(word: str) ->str:
+def normalize(word: str) -> str:
     normalized_word_array = []
 
     for i, letter in enumerate(word):

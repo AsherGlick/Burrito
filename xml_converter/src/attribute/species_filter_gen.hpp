@@ -19,4 +19,4 @@ class SpeciesFilter {
     virtual string classname() { return "SpeciesFilter"; };
 };
 SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_species_filter(SpeciesFilter attribute_value);

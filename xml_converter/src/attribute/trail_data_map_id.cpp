@@ -11,3 +11,7 @@ TrailDataMapId parse_trail_data_map_id(rapidxml::xml_attribute<>* input, vector<
     trail_data_map_id.trail_data_map_id = std::stof(get_attribute_value(input));
     return trail_data_map_id;
 }
+
+string stringify_trail_data_map_id(TrailDataMapId attribute_value){
+    return to_string(attribute_value.trail_data_map_id);   
+}

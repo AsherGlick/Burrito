@@ -36,3 +36,9 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<
     string item = normalize(get_attribute_name(attribute));
     return true;
 }
+
+vector<string> Parseable::as_xml() const{
+    vector<string> result;
+    result.push_back("a");
+    return result;
+}

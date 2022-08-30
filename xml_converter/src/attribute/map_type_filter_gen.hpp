@@ -38,4 +38,4 @@ class MapTypeFilter {
     virtual string classname() { return "MapTypeFilter"; };
 };
 MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_map_type_filter(MapTypeFilter attribute_value);

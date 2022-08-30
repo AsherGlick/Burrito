@@ -86,4 +86,4 @@ class SpecializationFilter {
     virtual string classname() { return "SpecializationFilter"; };
 };
 SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_specialization_filter(SpecializationFilter attribute_value);

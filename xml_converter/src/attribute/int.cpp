@@ -27,3 +27,7 @@ int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
 int init_int_attribute() {
     return 0;
 }
+
+string stringify_int (int attribute_value){
+    return to_string(attribute_value);    
+}
