@@ -23,11 +23,11 @@ bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
 }
 
 string stringify_bool(bool attribute_value){
-    if (attribute_value == false) {
-        return "false";
+    if (attribute_value) {
+        return "true";
     }
     else {
-        return "true";
+        return "false";
     } 
 }
     
