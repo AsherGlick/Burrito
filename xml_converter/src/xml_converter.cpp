@@ -41,21 +41,25 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     file_text = "<OverlayData>\n";
     for (const auto & category : *marker_categories) {
         string text;
-        for (const auto& s : category.second.as_xml()) { text += s; };
+        for (const auto& s : category.second.as_xml()) { 
+            text += s;
+        }
         file_text = file_text + text + "\n";
     }
 
     file_text = file_text + "<POIs>\n";
     for (const auto & parsed_poi : *parsed_pois) {
         string text; 
-        for (const auto& s : parsed_poi->as_xml()) { text += s; };
+        for (const auto& s : parsed_poi->as_xml()) { 
+            text += s; 
+        }
         file_text = file_text + text + "\n";
     }
     file_text = file_text + "</POIs>\n";
 
 
     outfile.open(new_file_path, ios::out);
-    outfile<< file_text;
+    outfile << file_text;
     outfile.close();
 }
 

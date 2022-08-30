@@ -337,8 +337,7 @@ class Generator:
             with open(os.path.join(output_directory, lowercase(cpp_class) + "_gen.hpp"), 'w') as f:
                 f.write(header_template.render(
                     cpp_class=cpp_class,
-                    # attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
-                    attribute_variables=attribute_variables,
+                    attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                     cpp_include_paths=sorted(cpp_include_paths),
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
@@ -348,8 +347,7 @@ class Generator:
                     cpp_class=cpp_class,
                     cpp_class_header=lowercase(cpp_class),
                     xml_class_name=cpp_classes[cpp_class],
-                    # attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
-                    attribute_variables=attribute_variables,
+                    attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                     enumerate=enumerate,
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
@@ -408,25 +406,25 @@ class Generator:
                 if fieldval['type'] == "CompoundValue":
                     xml_export = fieldval['xml_export']
                     for i, component in enumerate(fieldval['components']):
-                        xml_fields = []
-                        default_xml_fields = []
+                        component_xml_fields = []
+                        component_default_xml_fields = []
                         for j, item in enumerate(component['xml_fields']):
                             if xml_export == "Children":
-                                default_xml_fields.append(item)
+                                component_default_xml_fields.append(item)
                             if xml_export == "Parent":
-                                default_xml_fields.append(fieldval["xml_fields"][0])
-                            xml_fields.append(lowercase(item, delimiter=""))
-                        attribute_variable = AttributeVariable(
+                                component_default_xml_fields.append(fieldval["xml_fields"][0])
+                            component_xml_fields.append(lowercase(item, delimiter=""))
+                        component_attribute_variable = AttributeVariable(
                             attribute_name=lowercase(component['name'], delimiter="_"),
                             attribute_type="CompoundValue",
                             cpp_type=doc_type_to_cpp_type[component['type']],
                             class_name=class_name,
-                            xml_fields=xml_fields,
-                            default_xml_fields=default_xml_fields,
+                            xml_fields=component_xml_fields,
+                            default_xml_fields=component_default_xml_fields,
                             xml_export=xml_export,
                             is_child=True,
                         )
-                        attribute_variables.append(attribute_variable)
+                        attribute_variables.append(component_attribute_variable)
 
                 for x in fieldval['xml_fields']:
                     xml_fields.append(lowercase(x, delimiter=""))

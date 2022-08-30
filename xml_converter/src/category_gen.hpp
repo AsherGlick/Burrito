@@ -13,16 +13,16 @@ using namespace std;
 
 class Category: public Parseable {
     public:
-        string tooltip_name;
-        bool tooltip_name_is_true = false;
-        string name;
-        bool name_is_true = false;
-        string display_name;
-        bool display_name_is_true = false;
-        bool is_separator;
-        bool is_separator_is_true = false;
         bool default_visibility;
-        bool default_visibility_is_true = false;
+        bool default_visibility_is_set = false;
+        string display_name;
+        bool display_name_is_set = false;
+        bool is_separator;
+        bool is_separator_is_set = false;
+        string name;
+        bool name_is_set = false;
+        string tooltip_name;
+        bool tooltip_name_is_set = false;
         map<string, Category> children;
         Icon default_icon;
         Trail default_trail;

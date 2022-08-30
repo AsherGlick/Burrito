@@ -26,11 +26,8 @@ string stringify_bool(bool attribute_value){
     if (attribute_value == false) {
         return "false";
     }
-    else if (attribute_value == true){
+    else {
         return "true";
     } 
-    else{
-        return "false";
-    }
 }
     

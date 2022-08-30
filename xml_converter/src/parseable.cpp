@@ -38,7 +38,9 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<
 }
 
 vector<string> Parseable::as_xml() const{
+    cout << "error: Parseable::as_xml() should not be called";
+    exit(EXIT_FAILURE);
     vector<string> result;
-    result.push_back("a");
+    result.push_back("");
     return result;
 }

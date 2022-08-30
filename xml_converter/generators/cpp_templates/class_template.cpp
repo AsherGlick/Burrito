@@ -38,17 +38,17 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
         {%-if i == 0 and n == 0:%} 
     if (attributename == "{{value}}") {
         this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
-        this->{{attribute_variable.attribute_name}}_is_true = true;
+        this->{{attribute_variable.attribute_name}}_is_set = true;
     }
-        {%-elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.class_name != attribute_variable.attribute_name) %}
+        {%-elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.is_child == true) %}
     else if (attributename == "{{value}}") {
         this->{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
-        this->{{attribute_variable.attribute_name}}_is_true = true;
+        this->{{attribute_variable.attribute_name}}_is_set = true;
     }
         {%- else: %}
     else if (attributename == "{{value}}") {
         this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
-        this->{{attribute_variable.attribute_name}}_is_true = true;
+        this->{{attribute_variable.attribute_name}}_is_set = true;
     }
         {%- endif %}
     {%- endfor %}
@@ -74,22 +74,22 @@ vector<string> {{cpp_class}}::as_xml() const {
 {%-for attribute_variable in attribute_variables%}
     {%- if (attribute_variable.attribute_type == "CompoundValue")%}
         {%-if (attribute_variable.xml_export == "Children" and attribute_variable.is_child == true)%}
-    if (this->{{attribute_variable.attribute_name}}_is_true) {    
+    if (this->{{attribute_variable.attribute_name}}_is_set) {    
         xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + to_string(this->{{attribute_variable.attribute_name}}) + "\"");
     } 
         {%-elif (attribute_variable.xml_export == "Parent" and attribute_variable.is_child == false)%}
-    if (this->{{attribute_variable.attribute_name}}_is_true) {   
+    if (this->{{attribute_variable.attribute_name}}_is_set) {   
         xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
     }
        {%-elif (attribute_variable.xml_export == "Parent and Children")%}
             {%-for value in attribute_variable.xml_fields%} 
-    if (this->{{attribute_variable.attribute_name}}_is_true) {               
+    if (this->{{attribute_variable.attribute_name}}_is_set) {               
         xml_node_contents.push_back(" {{value}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
             {%- endfor %} 
     }
         {%- endif %} 
     {%- else: %}
-    if (this->{{attribute_variable.attribute_name}}_is_true) {
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
         xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
     }
     {%- endif %}   
