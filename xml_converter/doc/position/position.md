@@ -27,7 +27,7 @@ components:
       protobuf_field: "z"
       compatability: [TacO, Burrito, BlishHUD]
       
-xml_export: "Children Only"
+xml_export: "Children"
 ---
 An XYZ location of a point in the game world.
 

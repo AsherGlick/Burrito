@@ -28,7 +28,7 @@ class {{cpp_class}}: public Parseable {
     public:
         {%- for attribute_variable in attribute_variables: %}
         {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
-
+        bool {{attribute_variable.attribute_name}}_is_set = false;
         {%- endfor %}
 
         {%- if cpp_class == "Category": %}
@@ -40,6 +40,7 @@ class {{cpp_class}}: public Parseable {
         {%- endif %}
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
+        virtual vector<string> as_xml() const;
         {%-if attributes_of_type_marker_category %}
         bool validate_attributes_of_type_marker_category();
         {%- endif %}

@@ -36,3 +36,9 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<
     string item = normalize(get_attribute_name(attribute));
     return true;
 }
+
+vector<string> Parseable::as_xml() const{
+    throw std::runtime_error("error: Parseable::as_xml() should not be called");
+    vector<string> result;
+    return result;
+}

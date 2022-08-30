@@ -14,3 +14,5 @@ class Color {
 };
 
 Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+
+string stringify_color (Color attribute_value);

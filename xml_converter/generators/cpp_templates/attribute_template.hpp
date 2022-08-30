@@ -26,4 +26,4 @@ class {{class_name}} {
 };
 {%- endif %}
 {{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_{{attribute_name}}({{class_name}} attribute_value);

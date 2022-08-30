@@ -10,3 +10,4 @@ using namespace std;
 
 string parse_string(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
 
+string stringify_string(string attribute_value);

@@ -17,4 +17,4 @@ class Position {
     virtual string classname() { return "Position"; };
 };
 Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_position(Position attribute_value);

@@ -14,4 +14,4 @@ enum CullChirality {
     none,
 };
 CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_cull_chirality(CullChirality attribute_value);

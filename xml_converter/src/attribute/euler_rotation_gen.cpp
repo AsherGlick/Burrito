@@ -16,24 +16,17 @@ EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLE
     euler_rotation.z_rotation = 0; 
     attributename = get_attribute_name(input); 
     compound_values = split(get_attribute_value(input), ",");
-        
-    if (typeid(compound_values) == typeid(std::string)) {
-        if (attributename == "rotatex") {	
-            euler_rotation.x_rotation = std::stof(get_attribute_value(input)); 
-    	}
-        else if (attributename == "rotatey") {
-            euler_rotation.y_rotation = std::stof(get_attribute_value(input)); 
-        }
-        else if (attributename == "rotatez") {
-            euler_rotation.z_rotation = std::stof(get_attribute_value(input)); 
-        }
-    else {    
+    if (compound_values.size() == 3){    
         euler_rotation.x_rotation = std::stof(compound_values[0]);    
         euler_rotation.y_rotation = std::stof(compound_values[1]);    
         euler_rotation.z_rotation = std::stof(compound_values[2]); 
-        }
     }
-
     return euler_rotation;
-	
+}
+string stringify_euler_rotation(EulerRotation attribute_value){
+    string output;
+    output = to_string(attribute_value.x_rotation);
+    output = output + "," + to_string(attribute_value.y_rotation);
+    output = output + "," + to_string(attribute_value.z_rotation); 
+    return output;
 }

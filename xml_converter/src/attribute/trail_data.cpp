@@ -12,3 +12,7 @@ TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*> *
     trail_data.trail_data = get_attribute_value(input);
     return trail_data;
 }
+
+string stringify_trail_data(TrailData attribute_value){
+    return attribute_value.trail_data;
+}

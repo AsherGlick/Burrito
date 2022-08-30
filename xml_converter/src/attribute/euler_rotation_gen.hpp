@@ -17,4 +17,4 @@ class EulerRotation {
     virtual string classname() { return "EulerRotation"; };
 };
 EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_euler_rotation(EulerRotation attribute_value);

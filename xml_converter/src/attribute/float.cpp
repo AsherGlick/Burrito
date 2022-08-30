@@ -8,3 +8,7 @@
 float parse_float(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *) {
     return std::stof(get_attribute_value(input));
 }
+
+string stringify_float (float attribute_value){
+    return to_string(attribute_value);
+}

@@ -16,3 +16,4 @@ class Image {
 
 Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
 
+string stringify_image (Image attribute_value);

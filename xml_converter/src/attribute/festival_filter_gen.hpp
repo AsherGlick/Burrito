@@ -21,4 +21,4 @@ class FestivalFilter {
     virtual string classname() { return "FestivalFilter"; };
 };
 FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
- 
+string stringify_festival_filter(FestivalFilter attribute_value);
