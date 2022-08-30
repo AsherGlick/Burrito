@@ -35,34 +35,31 @@ bool has_suffix(std::string const &fullString, std::string const &ending) {
 void write_xml_file(string xml_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     ofstream outfile;
     string tab_string;
-    string file_text;
     string new_file_path = xml_filepath + "export.xml";
 
-    file_text = "<OverlayData>\n";
+    outfile.open(new_file_path, ios::out);
+
+    outfile << "<OverlayData>\n";
     for (const auto & category : *marker_categories) {
         string text;
         for (const auto& s : category.second.as_xml()) { 
             text += s;
         }
-        file_text = file_text + text + "\n";
+        outfile << text + "\n";
     }
 
-    file_text = file_text + "<POIs>\n";
+    outfile << "<POIs>\n";
     for (const auto & parsed_poi : *parsed_pois) {
         string text; 
         for (const auto& s : parsed_poi->as_xml()) { 
             text += s; 
         }
-        file_text = file_text + text + "\n";
+        outfile << text + "\n";
     }
-    file_text = file_text + "</POIs>\n";
+    outfile << "</POIs>\n";
 
-
-    outfile.open(new_file_path, ios::out);
-    outfile << file_text;
     outfile.close();
 }
-
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     rapidxml::xml_attribute<>* attribute = find_attribute(node, "type");
     vector<string> split_categories = split(get_attribute_value(attribute), ".");
