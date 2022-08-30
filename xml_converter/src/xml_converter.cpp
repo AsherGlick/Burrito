@@ -246,7 +246,7 @@ int main() {
     write_xml_file("./export_packs/", &marker_categories, &parsed_pois);
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
-    auto secs = std::chrono::duration_cast<std::chrono::seconds>(dur).count();
-    cout << "The write function took " << secs << " seconds to run" << endl;
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The write function took " << ms << " milliseconds to run" << endl;
     return 0;
 }
