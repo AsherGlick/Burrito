@@ -62,6 +62,9 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 }
 
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
+    // TODO: This is a slow linear search, replace with something faster.
+    //       maybe use data from already parsed node instead of searching for
+    //       the attribute.
     rapidxml::xml_attribute<>* attribute = find_attribute(node, "type");
 
     if (attribute == 0) {
@@ -238,11 +241,14 @@ void convert_taco_directory(string directory, map<string, Category>* marker_cate
 }
 
 int main() {
+    auto begin = chrono::high_resolution_clock::now();
+
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
 
     for (const auto & entry : filesystem::directory_iterator("./packs")) {
         string path = entry.path();
+
         if (entry.is_directory()) {
             convert_taco_directory(path, &marker_categories, &parsed_pois);
         }
@@ -250,12 +256,18 @@ int main() {
             continue;
         }
     }
-    cout << "Hey! We Finished Parsing" << endl;
-    auto begin = chrono::high_resolution_clock::now();
-    write_xml_file("./export_packs/", &marker_categories, &parsed_pois);
+
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The parse function took " << ms << " milliseconds to run" << endl;
+
+
+    begin = chrono::high_resolution_clock::now();
+    write_xml_file("./export_packs/", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The write function took " << ms << " milliseconds to run" << endl;
     return 0;
 }
