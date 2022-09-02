@@ -60,9 +60,18 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 
     outfile.close();
 }
+
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     rapidxml::xml_attribute<>* attribute = find_attribute(node, "type");
+
+    if (attribute == 0) {
+        // TODO: This error should really be for the entire node not just the name
+        errors->push_back(new XMLNodeNameError("No Attribute Named Type", node));
+        return nullptr;
+    }
+
     vector<string> split_categories = split(get_attribute_value(attribute), ".");
+
     if (split_categories.size() == 0) {
         errors->push_back(new XMLAttributeValueError("Empty Type", attribute));
         return nullptr;
