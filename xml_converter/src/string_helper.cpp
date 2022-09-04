@@ -50,23 +50,48 @@ vector<string> split(string input, string delimiter) {
 }
 
 
-string normalize(string type_name) {
-    string output;
-    output.reserve(type_name.length());
-
-    for (char character : type_name) {
-        if (character >= 'A' && character <= 'Z') {
-            output += (character - 'A' + 'a');
-        }
-        else if (character >= 'a' && character <= 'z') {
-            output += character;
-        }
-        else if (character >= '0' && character <= '9'){
-            output += character;
-        }
+////////////////////////////////////////////////////////////////////////////////
+// normalize
+//
+// A speedy function to return a normalized copy of a string. Normalization
+// happens according to the lookup table defined for this function.
+//
+// This lookup table maps:
+//   All Numbers 0-9 to themselves
+//   All Lowercase Letters a-z to themselves
+//   All Uppercase Letters A-Z to the lowercase letters a-z
+//   Everything else to 0
+////////////////////////////////////////////////////////////////////////////////
+static unsigned char normalize_lookup[256] = {
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,  48,  49,  50,  51,  52,  53,  54,  55,  56,  57,   0,   0,
+      0,   0,   0,   0,   0,  97,  98,  99, 100, 101, 102, 103, 104, 105, 106,
+    107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121,
+    122,   0,   0,   0,   0,   0,   0,  97,  98,  99, 100, 101, 102, 103, 104,
+    105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
+    120, 121, 122,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0
+};
+string normalize(string input_string) {
+    size_t out_index = 0;
+    for (size_t i = 0; i < input_string.length(); i++) {
+        unsigned char new_char = normalize_lookup[(unsigned char)input_string[i]];
+        input_string[out_index] = new_char;
+        out_index += (new_char > 0);
     }
 
-    return output;
+    input_string.erase(out_index);
+    return input_string;
 }
 
 

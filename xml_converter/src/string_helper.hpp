@@ -12,7 +12,7 @@ string lowercase(string);
 
 vector<string> split(string input, string delimiter);
 
-string normalize(string type_name);
+string normalize(string input_string);
 
 std::string base64_encode(uint8_t const* buf, unsigned int bufLen);
 std::vector<uint8_t> base64_decode(std::string const&);
