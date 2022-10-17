@@ -29,15 +29,15 @@ flags:
     warrior_spellbreaker: ["61", "Spellbreaker"]
 
     # TODO(#58): End of Dragons Spec Numbers
-    elementalist_catalyst: ["Catalyst"]
-    engineer_mechanist: ["Mechanist"]
-    guardian_willbender: ["Willbender"]
-    mesmer_virtuoso: ["Virtuoso"]
-    necromancer_harbinger: ["Harbinger"]
-    ranger_untamed: ["Untamed"]
-    revenant_vindicator: ["Vindicator"]
-    thief_specter: ["Specter"]
-    warrior_bladesworn: ["Bladesworn"]
+    elementalist_catalyst: ["67", "Catalyst"]
+    engineer_mechanist: ["70", "Mechanist"]
+    guardian_willbender: ["65", "Willbender"]
+    mesmer_virtuoso: ["66", "Virtuoso"]
+    necromancer_harbinger: ["64", "Harbinger"]
+    ranger_untamed: ["72", "Untamed"]
+    revenant_vindicator: ["69", "Vindicator"]
+    thief_specter: ["71", "Specter"]
+    warrior_bladesworn: ["68", "Bladesworn"]
 
     # Core Spec
     elementalist_air: ["41"]

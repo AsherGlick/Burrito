@@ -28,6 +28,8 @@ class {{cpp_class}}: public Parseable {
     public:
         {%- for attribute_variable in attribute_variables: %}
         {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
+        {%- endfor %}
+        {%- for attribute_variable in attribute_variables: %}
         bool {{attribute_variable.attribute_name}}_is_set = false;
         {%- endfor %}
 
@@ -36,11 +38,13 @@ class {{cpp_class}}: public Parseable {
         Icon default_icon;
         Trail default_trail;
 
+        virtual vector<string> as_xml() const;
         void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
+        {%- else %}
+        virtual vector<string> as_xml() const;
         {%- endif %}
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
-        virtual vector<string> as_xml() const;
         {%-if attributes_of_type_marker_category %}
         bool validate_attributes_of_type_marker_category();
         {%- endif %}
