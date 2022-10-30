@@ -18,7 +18,7 @@ message Icon {
     float distance_fade_start = 6;
     float height_offset= 7;
     Position position = 8;
-    Reset_behavior = 9;
+    Reset_behavior reset_behavior= 9;
     Trigger trigger = 10;
 
     fixed32 achievement_bit = 16;
@@ -67,7 +67,7 @@ message Trail {
     Mount_filter mount_filter = 29;
     Profession_filter profession_filter = 30;
     Specialization_filter specialization_filter = 31;
-    Species_filter species_filter =32;
+    Species_filter species_filter = 32;
 }
     
 message Texture {
