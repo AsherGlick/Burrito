@@ -1,7 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/any.proto";
-
-package Proto_Node;
 
 message Category {
     bool default_visibility = 1;
@@ -13,262 +10,281 @@ message Category {
 }
 
 message Icon {
-    fixed32 achievement_bit = 1;
-    int32 achievement_id = 2;
-    float alpha = 3;
-    bool can_fade = 4;
+    Category category = 1;
+    Texture texture = 2;
+    GUID guid = 3;
+    int32 map_id = 4;
     float distance_fade_end = 5;
     float distance_fade_start = 6;
     float height_offset= 7;
-    float __tentative__scale = 8;
-    int32 map_display_size = 9;
-    int32 map_id = 10;
-    int32 maximum_size_on_screen = 11;
-    int32 minimum_size_on_screen = 12;
-    bool __tentative__render_ingame = 13;
-    bool __tentative__render_on_map = 14;
-    bool __tentative__render_on_minimap = 15;
-    bool scale_on_map_with_zoom = 16;
-    string bhdraft__schedule = 17;
-    float bhdraft__schedule_duration = 18;
-    string tip_description = 19;
-    string tip_name = 20;
-    
-    message texture {
-        string path = 1;
-        google.protobuf.Any original_token = 2;
+    Position position = 8;
+    Reset_behavior = 9;
+    Trigger trigger = 10;
+
+    fixed32 achievement_bit = 16;
+    int32 achievement_id = 17;
+    float alpha = 18;
+    bool can_fade = 19;
+    int32 minimum_size_on_screen = 20;
+    int32 map_display_size = 21;
+    int32 maximum_size_on_screen = 22;
+    bool scale_on_map_with_zoom = 23;
+    string tip_description = 24;
+    string tip_name = 25;
+
+    float __tentative__scale = 2048;
+    bool __tentative__render_ingame = 2049;
+    bool __tentative__render_on_map = 2050;
+    bool __tentative__render_on_minimap = 2051;
+    string bhdraft__schedule = 2052;
+    float bhdraft__schedule_duration = 2053;
     }
-    
-    message position {
-        float x = 1;
-        float y = 2;
-        float z = 3;
-    }
-
-    message euler_rotation {
-        float x = 1;
-        float y = 2;
-        float z = 3;
-    }
-
-    message trigger{
-        bool auto_trigger = 1;
-        float bounce_delay = 2;
-        float bounce_duration = 3;
-        float bounce_height = 4;
-        string action_copy_clipboard = 5;
-        string action_copy_message = 6;
-        bool has_countdown = 7;
-        string action_info_message = 8;
-        bool invert_display = 9;
-        float reset_length = 10;
-        float range = 11;
-        Category action_hide_category = 12;
-        Category action_show_category = 13;
-        Category action_toggle_category = 14;
-
-        message guid{
-            int32 guid = 1;
-        }
-
-        enum reset_behavior {
-            always_visible = 0;
-            map_change = 1;
-            daily_reset = 2;
-            never = 3;
-            timer = 4;
-            map_reset = 5;
-            instance_change = 6;
-            daily_reset_per_character = 7;
-            weekly_reset = 8;
-        }
-    }
-
-}
 
 message Trail {
-    fixed32 achievement_bit = 1;
-    int32 achievement_id = 2;
-    float alpha = 3;
-    float animation_speed = 4;   
-    bool can_fade = 5; 
-    float distance_fade_end = 6;
-    float distance_fade_start = 7;
-    bool is_wall = 8;
-    string bhdraft__schedule = 9;
-    float bhdraft__schedule_duration = 10;
-    float scale = 11;
-    Category category = 12;
-    int32 map_id = 13;
+    Category category = 1;
+    Texture texture = 2;
+    GUID guid = 3;
+    int32 map_id = 4;
+    float distance_fade_end = 5;
+    float distance_fade_start = 6;
+    Trail_data trail_data = 7;
+    float animation_speed = 8;
+    Cull_chirality cull_chirality = 9;
 
-    message color {
-        string hex = 1;
-    }
+    fixed32 achievement_bit = 16;
+    int32 achievement_id = 17;
+    float alpha = 18;
+    bool can_fade = 19; 
+    float distance_fade_end = 20;
+    float distance_fade_start = 21;
+    bool is_wall = 22;
+    string bhdraft__schedule = 23;
+    float bhdraft__schedule_duration = 24;
+    float scale = 25;
+    Color color = 26;
+    Festival_filter festival_filter = 27;
+    Map_type_filter map_type_filter = 28;
+    Mount_filter mount_filter = 29;
+    Profession_filter profession_filter = 30;
+    Specialization_filter specialization_filter = 31;
+    Species_filter species_filter =32;
+}
     
-    enum cull_chirality {
+message Texture {
+    string path = 1;
+}
+    
+message Position {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Euler_rotation {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Trigger{
+    bool auto_trigger = 1;
+    float bounce_delay = 2;
+    float bounce_duration = 3;
+    float bounce_height = 4;
+    string action_copy_clipboard = 5;
+    string action_copy_message = 6;
+    bool has_countdown = 7;
+    string action_info_message = 8;
+    bool invert_display = 9;
+    float reset_length = 10;
+    float range = 11;
+    Category action_hide_category = 12;
+    Category action_show_category = 13;
+    Category action_toggle_category = 14;
+
+message GUID{
+    int32 guid = 1;
+}
+
+message Color {
+    string hex = 1;
+}
+
+enum Cull_chirality {
         none = 0;
         clockwise = 1;
         counter_clockwise = 2;
-    }
+}
+enum reset_behavior {
+        always_visible = 0;
+        map_change = 1;
+        daily_reset = 2;
+        never = 3;
+        timer = 4;
+        map_reset = 5;
+        instance_change = 6;
+        daily_reset_per_character = 7;
+        weekly_reset = 8;
+}
 
-    message festival_filter {
-        bool dragonbash = 1;
-        bool festival_of_the_four_winds = 2;
-        bool halloween = 3;
-        bool lunar_new_year = 4;
-        bool super_adventure_festival = 5;
-        bool wintersday = 6;
-        bool none = 7;
-    }
+message Festival_filter {
+    bool dragonbash = 1;
+    bool festival_of_the_four_winds = 2;
+    bool halloween = 3;
+    bool lunar_new_year = 4;
+    bool super_adventure_festival = 5;
+    bool wintersday = 6;
+    bool none = 7;
+}
 
-    message guid{
-        int32 guid = 1;
-    }
+message Guid{
+    int32 guid = 1;
+}
 
-    message map_type_filter {
-        bool unknown_map = 1;
-        bool redirect_map = 2;
-        bool character_create_map = 3;
-        bool pvp_map = 4;
-        bool gvg_map = 5;
-        bool instance_map = 6;
-        bool public_map = 7;
-        bool tournament_map = 8;
-        bool tutorial_map = 9;
-        bool user_tournament_map = 10;
-        bool center_map = 11;
-        bool eternal_battlegrounds_map = 12;
-        bool bluehome_map = 13;
-        bool blue_borderlands_map = 14;
-        bool green_home_map = 15;
-        bool green_borderlands_map = 16;
-        bool red_home_map = 17;
-        bool red_borderlands_map = 18;
-        bool fortunes_vale_map = 19;
-        bool jump_puzzle_map = 20;
-        bool obsidian_sanctum_map = 21;
-        bool edge_of_the_mists_map = 22;
-        bool public_mini_map = 23;
-        bool wvw_lounge_map = 24;
-    }
-    message mount_filter {
-        bool raptor = 1;
-        bool springer = 2;
-        bool skimmer = 3;
-        bool jackal = 4;
-        bool griffon = 5;
-        bool roller_beetle = 6;
-        bool warclaw = 7;
-        bool skyscalee = 8;
-        bool skiff = 9;
-        bool seige_turtle = 10;
-    }
-    message profession_filter {
-        bool guardian = 1;
-        bool warrior = 2;
-        bool engineer = 3;
-        bool ranger = 4;
-        bool thief = 5;
-        bool elementalist = 6;
-        bool mesmer = 7;
-        bool necromancer = 8;
-        bool revenantnt = 9;
-    }
-    message specialization_filter {
-    // Heart of Thorns Spec
-        bool elementalist_tempest = 48;
-        bool engineer_scrapper = 43;
-        bool guardian_dragonhunter = 27;
-        bool mesmer_chronomancer = 40;
-        bool necromancer_reaper = 34;
-        bool ranger_druid = 5;
-        bool revenant_herald = 52;
-        bool thief_daredevil = 7;
-        bool warrior_berserker = 18;
-    // Path of Fire Spec
-        bool elementalist_weaver = 56;
-        bool engineer_holosmith = 57;
-        bool guardian_firebrand = 62;
-        bool mesmer_mirage = 59;
-        bool necromancer_scourge = 60;
-        bool ranger_soulbeast = 55;
-        bool revenant_renegade = 63;
-        bool thief_deadeye = 58;
-        bool warrior_spellbreaker = 61;
-    // End of Dragon Spec
-        bool elmentalist_catalyst = 67;
-        bool engineer_mechanist = 70;
-        bool guardian_willbender = 65;
-        bool mesmer_virtuoso = 66;
-        bool necromancer_harbinger = 64;
-        bool ranger_untamed = 72;
-        bool revenant_vindicator = 69;
-        bool thief_specter = 71;
-        bool warrior_bladesworn = 68;
-    // Core Spec
-        bool elementalist_air = 41;
-        bool elementalist_arcane = 37;
-        bool elementalist_earth = 26;
-        bool elementalist_fire = 31;
-        bool elementalist_water = 17;
-        bool engineer_alchemy = 29;
-        bool engineer_explosives = 6;
-        bool engineer_firearms = 38;
-        bool engineer_inventions = 47;
-        bool engineer_tools = 21;
-        bool guardian_honor = 49;
-        bool guardian_radiance = 16;
-        bool guardian_valor = 13;
-        bool guardian_virtues = 46;
-        bool guardian_zeal = 42;
-        bool mesmer_chaos = 45;
-        bool mesmer_domination = 10;
-        bool mesmer_dueling = 1;
-        bool mesmer_illusions = 24;
-        bool mesmer_inspiration = 23;
-        bool necromancer_blood_magic = 19;
-        bool necromancer_curses = 39;
-        bool necromancer_death_magic = 2;
-        bool necromancer_soul_reaping = 50;
-        bool necromancer_spite = 53;
-        bool ranger_beastmastery = 32;
-        bool ranger_marksmanship = 8;
-        bool ranger_nature_magic = 25;
-        bool ranger_skirmishing = 30;
-        bool ranger_wilderness_survival = 33;
-        bool revenant_corruption = 14;
-        bool revenant_devastation = 15;
-        bool revenant_invocation = 3;
-        bool revenant_retribution = 9;
-        bool revenant_salvation = 12;
-        bool thief_acrobatics = 54;
-        bool thief_critical_strikes = 35;
-        bool thief_deadly_arts = 28;
-        bool thief_shadow_arts = 20;
-        bool thief_trickery = 44;
-        bool warrior_arms = 36;
-        bool warrior_defense = 22;
-        bool warrior_discipline = 51;
-        bool warrior_strength = 4;
-        bool warrior_tactics = 11;
-    }
+message Map_type_filter {
+    bool unknown_map = 1;
+    bool redirect_map = 2;
+    bool character_create_map = 3;
+    bool pvp_map = 4;
+    bool gvg_map = 5;
+    bool instance_map = 6;
+    bool public_map = 7;
+    bool tournament_map = 8;
+    bool tutorial_map = 9;
+    bool user_tournament_map = 10;
+    bool center_map = 11;
+    bool eternal_battlegrounds_map = 12;
+    bool bluehome_map = 13;
+    bool blue_borderlands_map = 14;
+    bool green_home_map = 15;
+    bool green_borderlands_map = 16;
+    bool red_home_map = 17;
+    bool red_borderlands_map = 18;
+    bool fortunes_vale_map = 19;
+    bool jump_puzzle_map = 20;
+    bool obsidian_sanctum_map = 21;
+    bool edge_of_the_mists_map = 22;
+    bool public_mini_map = 23;
+    bool wvw_lounge_map = 24;
+}
 
-    message species_filter {
-        bool asura = 1;
-        bool charr = 2;
-        bool human = 3;
-        bool norn = 4;
-        bool sylvari = 5;
-    }
+message Mount_filter {
+    bool raptor = 1;
+    bool springer = 2;
+    bool skimmer = 3;
+    bool jackal = 4;
+    bool griffon = 5;
+    bool roller_beetle = 6;
+    bool warclaw = 7;
+    bool skyscalee = 8;
+    bool skiff = 9;
+    bool seige_turtle = 10;
+}
+
+message Profession_filter {
+    bool guardian = 1;
+    bool warrior = 2;
+    bool engineer = 3;
+    bool ranger = 4;
+    bool thief = 5;
+    bool elementalist = 6;
+    bool mesmer = 7;
+    bool necromancer = 8;
+    bool revenantnt = 9;
+}
+
+message Specialization_filter {
+// Heart of Thorns Spec
+    bool elementalist_tempest = 1;
+    bool engineer_scrapper = 2;
+    bool guardian_dragonhunter = 3;
+    bool mesmer_chronomancer = 4;
+    bool necromancer_reaper = 5;
+    bool ranger_druid = 6;
+    bool revenant_herald = 7;
+    bool thief_daredevil = 8;
+    bool warrior_berserker = 9;
+// Path of Fire Spec
+    bool elementalist_weaver = 10;
+    bool engineer_holosmith = 11;
+    bool guardian_firebrand = 12;
+    bool mesmer_mirage = 13;
+    bool necromancer_scourge = 14;
+    bool ranger_soulbeast = 15;
+    bool revenant_renegade = 16;
+    bool thief_deadeye = 17;
+    bool warrior_spellbreaker = 18;
+// End of Dragon Spec
+    bool elmentalist_catalyst = 19;
+    bool engineer_mechanist = 20;
+    bool guardian_willbender = 21;
+    bool mesmer_virtuoso = 22;
+    bool necromancer_harbinger = 23;
+    bool ranger_untamed = 24;
+    bool revenant_vindicator = 25;
+    bool thief_specter = 26;
+    bool warrior_bladesworn = 27;
+// Core Spec
+    bool elementalist_air = 28;
+    bool elementalist_arcane = 29;
+    bool elementalist_earth = 30;
+    bool elementalist_fire = 31;
+    bool elementalist_water = 32;
+    bool engineer_alchemy = 33;
+    bool engineer_explosives = 34;
+    bool engineer_firearms = 35;
+    bool engineer_inventions = 36;
+    bool engineer_tools = 37;
+    bool guardian_honor = 38;
+    bool guardian_radiance = 39;
+    bool guardian_valor = 40;
+    bool guardian_virtues = 41;
+    bool guardian_zeal = 42;
+    bool mesmer_chaos = 43;
+    bool mesmer_domination = 44;
+    bool mesmer_dueling = 45;
+    bool mesmer_illusions = 46;
+    bool mesmer_inspiration = 47;
+    bool necromancer_blood_magic = 48;
+    bool necromancer_curses = 49;
+    bool necromancer_death_magic = 50;
+    bool necromancer_soul_reaping = 51;
+    bool necromancer_spite = 52;
+    bool ranger_beastmastery = 53;
+    bool ranger_marksmanship = 54;
+    bool ranger_nature_magic = 55;
+    bool ranger_skirmishing = 56;
+    bool ranger_wilderness_survival = 57;
+    bool revenant_corruption = 58;
+    bool revenant_devastation = 59;
+    bool revenant_invocation = 60;
+    bool revenant_retribution = 61;
+    bool revenant_salvation = 62;
+    bool thief_acrobatics = 63;
+    bool thief_critical_strikes = 64;
+    bool thief_deadly_arts = 65;
+    bool thief_shadow_arts = 66;
+    bool thief_trickery = 67;
+    bool warrior_arms = 68;
+    bool warrior_defense = 69;
+    bool warrior_discipline = 70;
+    bool warrior_strength = 71;
+    bool warrior_tactics = 72;
+}
+
+message Species_filter {
+    bool asura = 1;
+    bool charr = 2;
+    bool human = 3;
+    bool norn = 4;
+    bool sylvari = 5;
+}
     
-    message texture {
-        string path = 1;
-        google.protobuf.Any original_token = 2;
-    }
+message Texture {
+    string path = 1;
+}
 
-    message trail_data {
-        string trail_data = 1;
-    }
-
-}    
+message Trail_data {
+    string trail_data = 1;
+}
 
