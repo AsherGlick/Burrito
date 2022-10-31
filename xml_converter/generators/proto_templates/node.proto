@@ -55,8 +55,6 @@ message Trail {
     int32 achievement_id = 17;
     float alpha = 18;
     bool can_fade = 19; 
-    float distance_fade_end = 20;
-    float distance_fade_start = 21;
     bool is_wall = 22;
     string bhdraft__schedule = 23;
     float bhdraft__schedule_duration = 24;
@@ -101,6 +99,7 @@ message Trigger {
     Category action_hide_category = 12;
     Category action_show_category = 13;
     Category action_toggle_category = 14;
+}
 
 message GUID {
     int32 guid = 1;
@@ -115,6 +114,7 @@ enum CullChirality {
     clockwise = 1;
     counter_clockwise = 2;
 }
+
 enum ResetBehavior {
     always_visible = 0;
     map_change = 1;
