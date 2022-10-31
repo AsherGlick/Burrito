@@ -193,29 +193,56 @@ SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* inpu
         else if (normalized_flag_value == "spellbreaker") {
             specialization_filter.warrior_spellbreaker = true; 
         }
+        else if (normalized_flag_value == "67") {
+            specialization_filter.elementalist_catalyst = true; 
+        }
         else if (normalized_flag_value == "catalyst") {
             specialization_filter.elementalist_catalyst = true; 
+        }
+        else if (normalized_flag_value == "70") {
+            specialization_filter.engineer_mechanist = true; 
         }
         else if (normalized_flag_value == "mechanist") {
             specialization_filter.engineer_mechanist = true; 
         }
+        else if (normalized_flag_value == "65") {
+            specialization_filter.guardian_willbender = true; 
+        }
         else if (normalized_flag_value == "willbender") {
             specialization_filter.guardian_willbender = true; 
+        }
+        else if (normalized_flag_value == "66") {
+            specialization_filter.mesmer_virtuoso = true; 
         }
         else if (normalized_flag_value == "virtuoso") {
             specialization_filter.mesmer_virtuoso = true; 
         }
+        else if (normalized_flag_value == "64") {
+            specialization_filter.necromancer_harbinger = true; 
+        }
         else if (normalized_flag_value == "harbinger") {
             specialization_filter.necromancer_harbinger = true; 
+        }
+        else if (normalized_flag_value == "72") {
+            specialization_filter.ranger_untamed = true; 
         }
         else if (normalized_flag_value == "untamed") {
             specialization_filter.ranger_untamed = true; 
         }
+        else if (normalized_flag_value == "69") {
+            specialization_filter.revenant_vindicator = true; 
+        }
         else if (normalized_flag_value == "vindicator") {
             specialization_filter.revenant_vindicator = true; 
         }
+        else if (normalized_flag_value == "71") {
+            specialization_filter.thief_specter = true; 
+        }
         else if (normalized_flag_value == "specter") {
             specialization_filter.thief_specter = true; 
+        }
+        else if (normalized_flag_value == "68") {
+            specialization_filter.warrior_bladesworn = true; 
         }
         else if (normalized_flag_value == "bladesworn") {
             specialization_filter.warrior_bladesworn = true; 
@@ -420,31 +447,31 @@ string stringify_specialization_filter(SpecializationFilter attribute_value){
         output = output + "61";
     }
     if (attribute_value.elementalist_catalyst == true){
-        output = output + "catalyst";
+        output = output + "67";
     }
     if (attribute_value.engineer_mechanist == true){
-        output = output + "mechanist";
+        output = output + "70";
     }
     if (attribute_value.guardian_willbender == true){
-        output = output + "willbender";
+        output = output + "65";
     }
     if (attribute_value.mesmer_virtuoso == true){
-        output = output + "virtuoso";
+        output = output + "66";
     }
     if (attribute_value.necromancer_harbinger == true){
-        output = output + "harbinger";
+        output = output + "64";
     }
     if (attribute_value.ranger_untamed == true){
-        output = output + "untamed";
+        output = output + "72";
     }
     if (attribute_value.revenant_vindicator == true){
-        output = output + "vindicator";
+        output = output + "69";
     }
     if (attribute_value.thief_specter == true){
-        output = output + "specter";
+        output = output + "71";
     }
     if (attribute_value.warrior_bladesworn == true){
-        output = output + "bladesworn";
+        output = output + "68";
     }
     if (attribute_value.elementalist_air == true){
         output = output + "41";
