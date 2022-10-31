@@ -18,7 +18,7 @@ message Icon {
     float distance_fade_start = 6;
     float height_offset= 7;
     Position position = 8;
-    Reset_behavior reset_behavior= 9;
+    ResetBehavior reset_behavior= 9;
     Trigger trigger = 10;
 
     fixed32 achievement_bit = 16;
@@ -38,7 +38,7 @@ message Icon {
     bool __tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
-    }
+}
 
 message Trail {
     Category category = 1;
@@ -47,9 +47,9 @@ message Trail {
     int32 map_id = 4;
     float distance_fade_end = 5;
     float distance_fade_start = 6;
-    Trail_data trail_data = 7;
+    TrailData trail_data = 7;
     float animation_speed = 8;
-    Cull_chirality cull_chirality = 9;
+    CullChirality cull_chirality = 9;
 
     fixed32 achievement_bit = 16;
     int32 achievement_id = 17;
@@ -62,12 +62,12 @@ message Trail {
     float bhdraft__schedule_duration = 24;
     float scale = 25;
     Color color = 26;
-    Festival_filter festival_filter = 27;
-    Map_type_filter map_type_filter = 28;
-    Mount_filter mount_filter = 29;
-    Profession_filter profession_filter = 30;
-    Specialization_filter specialization_filter = 31;
-    Species_filter species_filter = 32;
+    FestivalFilter festival_filter = 27;
+    MapTypeFilter map_type_filter = 28;
+    MountFilter mount_filter = 29;
+    ProfessionFilter profession_filter = 30;
+    SpecializationFilter specialization_filter = 31;
+    SpeciesFilter species_filter = 32;
 }
     
 message Texture {
@@ -80,13 +80,13 @@ message Position {
     float z = 3;
 }
 
-message Euler_rotation {
+message EulerRotation {
     float x = 1;
     float y = 2;
     float z = 3;
 }
 
-message Trigger{
+message Trigger {
     bool auto_trigger = 1;
     float bounce_delay = 2;
     float bounce_duration = 3;
@@ -102,7 +102,7 @@ message Trigger{
     Category action_show_category = 13;
     Category action_toggle_category = 14;
 
-message GUID{
+message GUID {
     int32 guid = 1;
 }
 
@@ -110,24 +110,24 @@ message Color {
     string hex = 1;
 }
 
-enum Cull_chirality {
-        none = 0;
-        clockwise = 1;
-        counter_clockwise = 2;
+enum CullChirality {
+    none = 0;
+    clockwise = 1;
+    counter_clockwise = 2;
 }
-enum reset_behavior {
-        always_visible = 0;
-        map_change = 1;
-        daily_reset = 2;
-        never = 3;
-        timer = 4;
-        map_reset = 5;
-        instance_change = 6;
-        daily_reset_per_character = 7;
-        weekly_reset = 8;
+enum ResetBehavior {
+    always_visible = 0;
+    map_change = 1;
+    daily_reset = 2;
+    never = 3;
+    timer = 4;
+    map_reset = 5;
+    instance_change = 6;
+    daily_reset_per_character = 7;
+    weekly_reset = 8;
 }
 
-message Festival_filter {
+message FestivalFilter {
     bool dragonbash = 1;
     bool festival_of_the_four_winds = 2;
     bool halloween = 3;
@@ -137,11 +137,7 @@ message Festival_filter {
     bool none = 7;
 }
 
-message Guid{
-    int32 guid = 1;
-}
-
-message Map_type_filter {
+message MapTypeFilter {
     bool unknown_map = 1;
     bool redirect_map = 2;
     bool character_create_map = 3;
@@ -168,7 +164,7 @@ message Map_type_filter {
     bool wvw_lounge_map = 24;
 }
 
-message Mount_filter {
+message MountFilter {
     bool raptor = 1;
     bool springer = 2;
     bool skimmer = 3;
@@ -181,7 +177,7 @@ message Mount_filter {
     bool seige_turtle = 10;
 }
 
-message Profession_filter {
+message ProfessionFilter {
     bool guardian = 1;
     bool warrior = 2;
     bool engineer = 3;
@@ -193,8 +189,8 @@ message Profession_filter {
     bool revenantnt = 9;
 }
 
-message Specialization_filter {
-// Heart of Thorns Spec
+message SpecializationFilter {
+    // Heart of Thorns Spec
     bool elementalist_tempest = 1;
     bool engineer_scrapper = 2;
     bool guardian_dragonhunter = 3;
@@ -204,7 +200,7 @@ message Specialization_filter {
     bool revenant_herald = 7;
     bool thief_daredevil = 8;
     bool warrior_berserker = 9;
-// Path of Fire Spec
+    // Path of Fire Spec
     bool elementalist_weaver = 10;
     bool engineer_holosmith = 11;
     bool guardian_firebrand = 12;
@@ -214,7 +210,7 @@ message Specialization_filter {
     bool revenant_renegade = 16;
     bool thief_deadeye = 17;
     bool warrior_spellbreaker = 18;
-// End of Dragon Spec
+    // End of Dragon Spec
     bool elmentalist_catalyst = 19;
     bool engineer_mechanist = 20;
     bool guardian_willbender = 21;
@@ -224,7 +220,7 @@ message Specialization_filter {
     bool revenant_vindicator = 25;
     bool thief_specter = 26;
     bool warrior_bladesworn = 27;
-// Core Spec
+    // Core Spec
     bool elementalist_air = 28;
     bool elementalist_arcane = 29;
     bool elementalist_earth = 30;
@@ -272,19 +268,15 @@ message Specialization_filter {
     bool warrior_tactics = 72;
 }
 
-message Species_filter {
+message SpeciesFilter {
     bool asura = 1;
     bool charr = 2;
     bool human = 3;
     bool norn = 4;
     bool sylvari = 5;
 }
-    
-message Texture {
-    string path = 1;
-}
 
-message Trail_data {
+message TrailData {
     string trail_data = 1;
 }
 
