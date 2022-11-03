@@ -89,6 +89,9 @@ jobs:
             cd taco_parser
             cargo build --release
 
+      - name: Install protoc
+        run: sudo apt-get install protobuf-compiler 
+
       - name: Build Burrito Link
         run: |
           cd burrito_link

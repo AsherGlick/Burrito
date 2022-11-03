@@ -9,6 +9,12 @@ set(TARGET_NAME xml_converter)
 # Add Dependencies
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
+# Add Protobuf
+find_package(Protobuf REQUIRED)
+include_directories(${Protobuf_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --cpp_out=. ./generators/proto_templates/node.proto) 
+
 # Set output as executable.
 # TODO: This will eventually become a library when it gets integrated into burrito.
 add_executable (${TARGET_NAME} ${SOURCES})
