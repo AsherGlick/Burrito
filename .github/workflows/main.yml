@@ -92,6 +92,12 @@ jobs:
       - name: Install protoc
         run: sudo apt-get install protobuf-compiler 
 
+      - name: Make xml_converter
+        run: |
+            cd xml_converter
+            make
+            mv xml_converter ../output
+
       - name: Build Burrito Link
         run: |
           cd burrito_link

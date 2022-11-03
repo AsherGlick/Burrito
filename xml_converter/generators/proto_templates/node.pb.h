@@ -91,9 +91,6 @@ extern PositionDefaultTypeInternal _Position_default_instance_;
 class ProfessionFilter;
 class ProfessionFilterDefaultTypeInternal;
 extern ProfessionFilterDefaultTypeInternal _ProfessionFilter_default_instance_;
-class RICHARDS;
-class RICHARDSDefaultTypeInternal;
-extern RICHARDSDefaultTypeInternal _RICHARDS_default_instance_;
 class SpecializationFilter;
 class SpecializationFilterDefaultTypeInternal;
 extern SpecializationFilterDefaultTypeInternal _SpecializationFilter_default_instance_;
@@ -103,6 +100,9 @@ extern SpeciesFilterDefaultTypeInternal _SpeciesFilter_default_instance_;
 class Texture;
 class TextureDefaultTypeInternal;
 extern TextureDefaultTypeInternal _Texture_default_instance_;
+class Trail;
+class TrailDefaultTypeInternal;
+extern TrailDefaultTypeInternal _Trail_default_instance_;
 class TrailData;
 class TrailDataDefaultTypeInternal;
 extern TrailDataDefaultTypeInternal _TrailData_default_instance_;
@@ -121,10 +121,10 @@ template<> ::MapTypeFilter* Arena::CreateMaybeMessage<::MapTypeFilter>(Arena*);
 template<> ::MountFilter* Arena::CreateMaybeMessage<::MountFilter>(Arena*);
 template<> ::Position* Arena::CreateMaybeMessage<::Position>(Arena*);
 template<> ::ProfessionFilter* Arena::CreateMaybeMessage<::ProfessionFilter>(Arena*);
-template<> ::RICHARDS* Arena::CreateMaybeMessage<::RICHARDS>(Arena*);
 template<> ::SpecializationFilter* Arena::CreateMaybeMessage<::SpecializationFilter>(Arena*);
 template<> ::SpeciesFilter* Arena::CreateMaybeMessage<::SpeciesFilter>(Arena*);
 template<> ::Texture* Arena::CreateMaybeMessage<::Texture>(Arena*);
+template<> ::Trail* Arena::CreateMaybeMessage<::Trail>(Arena*);
 template<> ::TrailData* Arena::CreateMaybeMessage<::TrailData>(Arena*);
 template<> ::Trigger* Arena::CreateMaybeMessage<::Trigger>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -980,23 +980,23 @@ class Icon PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class RICHARDS PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:RICHARDS) */ {
+class Trail PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Trail) */ {
  public:
-  inline RICHARDS() : RICHARDS(nullptr) {};
-  virtual ~RICHARDS();
+  inline Trail() : Trail(nullptr) {};
+  virtual ~Trail();
 
-  RICHARDS(const RICHARDS& from);
-  RICHARDS(RICHARDS&& from) noexcept
-    : RICHARDS() {
+  Trail(const Trail& from);
+  Trail(Trail&& from) noexcept
+    : Trail() {
     *this = ::std::move(from);
   }
 
-  inline RICHARDS& operator=(const RICHARDS& from) {
+  inline Trail& operator=(const Trail& from) {
     CopyFrom(from);
     return *this;
   }
-  inline RICHARDS& operator=(RICHARDS&& from) noexcept {
+  inline Trail& operator=(Trail&& from) noexcept {
     if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -1014,20 +1014,20 @@ class RICHARDS PROTOBUF_FINAL :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const RICHARDS& default_instance();
+  static const Trail& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const RICHARDS* internal_default_instance() {
-    return reinterpret_cast<const RICHARDS*>(
-               &_RICHARDS_default_instance_);
+  static inline const Trail* internal_default_instance() {
+    return reinterpret_cast<const Trail*>(
+               &_Trail_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     3;
 
-  friend void swap(RICHARDS& a, RICHARDS& b) {
+  friend void swap(Trail& a, Trail& b) {
     a.Swap(&b);
   }
-  inline void Swap(RICHARDS* other) {
+  inline void Swap(Trail* other) {
     if (other == this) return;
     if (GetArena() == other->GetArena()) {
       InternalSwap(other);
@@ -1035,7 +1035,7 @@ class RICHARDS PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(RICHARDS* other) {
+  void UnsafeArenaSwap(Trail* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -1043,17 +1043,17 @@ class RICHARDS PROTOBUF_FINAL :
 
   // implements Message ----------------------------------------------
 
-  inline RICHARDS* New() const final {
-    return CreateMaybeMessage<RICHARDS>(nullptr);
+  inline Trail* New() const final {
+    return CreateMaybeMessage<Trail>(nullptr);
   }
 
-  RICHARDS* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<RICHARDS>(arena);
+  Trail* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<Trail>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const RICHARDS& from);
-  void MergeFrom(const RICHARDS& from);
+  void CopyFrom(const Trail& from);
+  void MergeFrom(const Trail& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1067,13 +1067,13 @@ class RICHARDS PROTOBUF_FINAL :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(RICHARDS* other);
+  void InternalSwap(Trail* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "RICHARDS";
+    return "Trail";
   }
   protected:
-  explicit RICHARDS(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit Trail(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -1449,7 +1449,7 @@ class RICHARDS PROTOBUF_FINAL :
   void _internal_set_scale(float value);
   public:
 
-  // @@protoc_insertion_point(class_scope:RICHARDS)
+  // @@protoc_insertion_point(class_scope:Trail)
  private:
   class _Internal;
 
@@ -6244,31 +6244,31 @@ inline void Icon::set_bhdraft__schedule_duration(float value) {
 
 // -------------------------------------------------------------------
 
-// RICHARDS
+// Trail
 
 // .Category category = 1;
-inline bool RICHARDS::_internal_has_category() const {
+inline bool Trail::_internal_has_category() const {
   return this != internal_default_instance() && category_ != nullptr;
 }
-inline bool RICHARDS::has_category() const {
+inline bool Trail::has_category() const {
   return _internal_has_category();
 }
-inline void RICHARDS::clear_category() {
+inline void Trail::clear_category() {
   if (GetArena() == nullptr && category_ != nullptr) {
     delete category_;
   }
   category_ = nullptr;
 }
-inline const ::Category& RICHARDS::_internal_category() const {
+inline const ::Category& Trail::_internal_category() const {
   const ::Category* p = category_;
   return p != nullptr ? *p : *reinterpret_cast<const ::Category*>(
       &::_Category_default_instance_);
 }
-inline const ::Category& RICHARDS::category() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.category)
+inline const ::Category& Trail::category() const {
+  // @@protoc_insertion_point(field_get:Trail.category)
   return _internal_category();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_category(
+inline void Trail::unsafe_arena_set_allocated_category(
     ::Category* category) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(category_);
@@ -6279,23 +6279,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_category(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.category)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.category)
 }
-inline ::Category* RICHARDS::release_category() {
+inline ::Category* Trail::release_category() {
   auto temp = unsafe_arena_release_category();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::Category* RICHARDS::unsafe_arena_release_category() {
-  // @@protoc_insertion_point(field_release:RICHARDS.category)
+inline ::Category* Trail::unsafe_arena_release_category() {
+  // @@protoc_insertion_point(field_release:Trail.category)
   
   ::Category* temp = category_;
   category_ = nullptr;
   return temp;
 }
-inline ::Category* RICHARDS::_internal_mutable_category() {
+inline ::Category* Trail::_internal_mutable_category() {
   
   if (category_ == nullptr) {
     auto* p = CreateMaybeMessage<::Category>(GetArena());
@@ -6303,11 +6303,11 @@ inline ::Category* RICHARDS::_internal_mutable_category() {
   }
   return category_;
 }
-inline ::Category* RICHARDS::mutable_category() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.category)
+inline ::Category* Trail::mutable_category() {
+  // @@protoc_insertion_point(field_mutable:Trail.category)
   return _internal_mutable_category();
 }
-inline void RICHARDS::set_allocated_category(::Category* category) {
+inline void Trail::set_allocated_category(::Category* category) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete category_;
@@ -6324,32 +6324,32 @@ inline void RICHARDS::set_allocated_category(::Category* category) {
     
   }
   category_ = category;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.category)
+  // @@protoc_insertion_point(field_set_allocated:Trail.category)
 }
 
 // .Texture texture = 2;
-inline bool RICHARDS::_internal_has_texture() const {
+inline bool Trail::_internal_has_texture() const {
   return this != internal_default_instance() && texture_ != nullptr;
 }
-inline bool RICHARDS::has_texture() const {
+inline bool Trail::has_texture() const {
   return _internal_has_texture();
 }
-inline void RICHARDS::clear_texture() {
+inline void Trail::clear_texture() {
   if (GetArena() == nullptr && texture_ != nullptr) {
     delete texture_;
   }
   texture_ = nullptr;
 }
-inline const ::Texture& RICHARDS::_internal_texture() const {
+inline const ::Texture& Trail::_internal_texture() const {
   const ::Texture* p = texture_;
   return p != nullptr ? *p : *reinterpret_cast<const ::Texture*>(
       &::_Texture_default_instance_);
 }
-inline const ::Texture& RICHARDS::texture() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.texture)
+inline const ::Texture& Trail::texture() const {
+  // @@protoc_insertion_point(field_get:Trail.texture)
   return _internal_texture();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_texture(
+inline void Trail::unsafe_arena_set_allocated_texture(
     ::Texture* texture) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(texture_);
@@ -6360,23 +6360,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_texture(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.texture)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.texture)
 }
-inline ::Texture* RICHARDS::release_texture() {
+inline ::Texture* Trail::release_texture() {
   auto temp = unsafe_arena_release_texture();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::Texture* RICHARDS::unsafe_arena_release_texture() {
-  // @@protoc_insertion_point(field_release:RICHARDS.texture)
+inline ::Texture* Trail::unsafe_arena_release_texture() {
+  // @@protoc_insertion_point(field_release:Trail.texture)
   
   ::Texture* temp = texture_;
   texture_ = nullptr;
   return temp;
 }
-inline ::Texture* RICHARDS::_internal_mutable_texture() {
+inline ::Texture* Trail::_internal_mutable_texture() {
   
   if (texture_ == nullptr) {
     auto* p = CreateMaybeMessage<::Texture>(GetArena());
@@ -6384,11 +6384,11 @@ inline ::Texture* RICHARDS::_internal_mutable_texture() {
   }
   return texture_;
 }
-inline ::Texture* RICHARDS::mutable_texture() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.texture)
+inline ::Texture* Trail::mutable_texture() {
+  // @@protoc_insertion_point(field_mutable:Trail.texture)
   return _internal_mutable_texture();
 }
-inline void RICHARDS::set_allocated_texture(::Texture* texture) {
+inline void Trail::set_allocated_texture(::Texture* texture) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete texture_;
@@ -6405,32 +6405,32 @@ inline void RICHARDS::set_allocated_texture(::Texture* texture) {
     
   }
   texture_ = texture;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.texture)
+  // @@protoc_insertion_point(field_set_allocated:Trail.texture)
 }
 
 // .GUID guid = 3;
-inline bool RICHARDS::_internal_has_guid() const {
+inline bool Trail::_internal_has_guid() const {
   return this != internal_default_instance() && guid_ != nullptr;
 }
-inline bool RICHARDS::has_guid() const {
+inline bool Trail::has_guid() const {
   return _internal_has_guid();
 }
-inline void RICHARDS::clear_guid() {
+inline void Trail::clear_guid() {
   if (GetArena() == nullptr && guid_ != nullptr) {
     delete guid_;
   }
   guid_ = nullptr;
 }
-inline const ::GUID& RICHARDS::_internal_guid() const {
+inline const ::GUID& Trail::_internal_guid() const {
   const ::GUID* p = guid_;
   return p != nullptr ? *p : *reinterpret_cast<const ::GUID*>(
       &::_GUID_default_instance_);
 }
-inline const ::GUID& RICHARDS::guid() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.guid)
+inline const ::GUID& Trail::guid() const {
+  // @@protoc_insertion_point(field_get:Trail.guid)
   return _internal_guid();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_guid(
+inline void Trail::unsafe_arena_set_allocated_guid(
     ::GUID* guid) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(guid_);
@@ -6441,23 +6441,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_guid(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.guid)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.guid)
 }
-inline ::GUID* RICHARDS::release_guid() {
+inline ::GUID* Trail::release_guid() {
   auto temp = unsafe_arena_release_guid();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::GUID* RICHARDS::unsafe_arena_release_guid() {
-  // @@protoc_insertion_point(field_release:RICHARDS.guid)
+inline ::GUID* Trail::unsafe_arena_release_guid() {
+  // @@protoc_insertion_point(field_release:Trail.guid)
   
   ::GUID* temp = guid_;
   guid_ = nullptr;
   return temp;
 }
-inline ::GUID* RICHARDS::_internal_mutable_guid() {
+inline ::GUID* Trail::_internal_mutable_guid() {
   
   if (guid_ == nullptr) {
     auto* p = CreateMaybeMessage<::GUID>(GetArena());
@@ -6465,11 +6465,11 @@ inline ::GUID* RICHARDS::_internal_mutable_guid() {
   }
   return guid_;
 }
-inline ::GUID* RICHARDS::mutable_guid() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.guid)
+inline ::GUID* Trail::mutable_guid() {
+  // @@protoc_insertion_point(field_mutable:Trail.guid)
   return _internal_mutable_guid();
 }
-inline void RICHARDS::set_allocated_guid(::GUID* guid) {
+inline void Trail::set_allocated_guid(::GUID* guid) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete guid_;
@@ -6486,92 +6486,92 @@ inline void RICHARDS::set_allocated_guid(::GUID* guid) {
     
   }
   guid_ = guid;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.guid)
+  // @@protoc_insertion_point(field_set_allocated:Trail.guid)
 }
 
 // int32 map_id = 4;
-inline void RICHARDS::clear_map_id() {
+inline void Trail::clear_map_id() {
   map_id_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 RICHARDS::_internal_map_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 Trail::_internal_map_id() const {
   return map_id_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 RICHARDS::map_id() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.map_id)
+inline ::PROTOBUF_NAMESPACE_ID::int32 Trail::map_id() const {
+  // @@protoc_insertion_point(field_get:Trail.map_id)
   return _internal_map_id();
 }
-inline void RICHARDS::_internal_set_map_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void Trail::_internal_set_map_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   map_id_ = value;
 }
-inline void RICHARDS::set_map_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void Trail::set_map_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_map_id(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.map_id)
+  // @@protoc_insertion_point(field_set:Trail.map_id)
 }
 
 // float distance_fade_end = 5;
-inline void RICHARDS::clear_distance_fade_end() {
+inline void Trail::clear_distance_fade_end() {
   distance_fade_end_ = 0;
 }
-inline float RICHARDS::_internal_distance_fade_end() const {
+inline float Trail::_internal_distance_fade_end() const {
   return distance_fade_end_;
 }
-inline float RICHARDS::distance_fade_end() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.distance_fade_end)
+inline float Trail::distance_fade_end() const {
+  // @@protoc_insertion_point(field_get:Trail.distance_fade_end)
   return _internal_distance_fade_end();
 }
-inline void RICHARDS::_internal_set_distance_fade_end(float value) {
+inline void Trail::_internal_set_distance_fade_end(float value) {
   
   distance_fade_end_ = value;
 }
-inline void RICHARDS::set_distance_fade_end(float value) {
+inline void Trail::set_distance_fade_end(float value) {
   _internal_set_distance_fade_end(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.distance_fade_end)
+  // @@protoc_insertion_point(field_set:Trail.distance_fade_end)
 }
 
 // float distance_fade_start = 6;
-inline void RICHARDS::clear_distance_fade_start() {
+inline void Trail::clear_distance_fade_start() {
   distance_fade_start_ = 0;
 }
-inline float RICHARDS::_internal_distance_fade_start() const {
+inline float Trail::_internal_distance_fade_start() const {
   return distance_fade_start_;
 }
-inline float RICHARDS::distance_fade_start() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.distance_fade_start)
+inline float Trail::distance_fade_start() const {
+  // @@protoc_insertion_point(field_get:Trail.distance_fade_start)
   return _internal_distance_fade_start();
 }
-inline void RICHARDS::_internal_set_distance_fade_start(float value) {
+inline void Trail::_internal_set_distance_fade_start(float value) {
   
   distance_fade_start_ = value;
 }
-inline void RICHARDS::set_distance_fade_start(float value) {
+inline void Trail::set_distance_fade_start(float value) {
   _internal_set_distance_fade_start(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.distance_fade_start)
+  // @@protoc_insertion_point(field_set:Trail.distance_fade_start)
 }
 
 // .TrailData trail_data = 7;
-inline bool RICHARDS::_internal_has_trail_data() const {
+inline bool Trail::_internal_has_trail_data() const {
   return this != internal_default_instance() && trail_data_ != nullptr;
 }
-inline bool RICHARDS::has_trail_data() const {
+inline bool Trail::has_trail_data() const {
   return _internal_has_trail_data();
 }
-inline void RICHARDS::clear_trail_data() {
+inline void Trail::clear_trail_data() {
   if (GetArena() == nullptr && trail_data_ != nullptr) {
     delete trail_data_;
   }
   trail_data_ = nullptr;
 }
-inline const ::TrailData& RICHARDS::_internal_trail_data() const {
+inline const ::TrailData& Trail::_internal_trail_data() const {
   const ::TrailData* p = trail_data_;
   return p != nullptr ? *p : *reinterpret_cast<const ::TrailData*>(
       &::_TrailData_default_instance_);
 }
-inline const ::TrailData& RICHARDS::trail_data() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.trail_data)
+inline const ::TrailData& Trail::trail_data() const {
+  // @@protoc_insertion_point(field_get:Trail.trail_data)
   return _internal_trail_data();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_trail_data(
+inline void Trail::unsafe_arena_set_allocated_trail_data(
     ::TrailData* trail_data) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(trail_data_);
@@ -6582,23 +6582,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_trail_data(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.trail_data)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.trail_data)
 }
-inline ::TrailData* RICHARDS::release_trail_data() {
+inline ::TrailData* Trail::release_trail_data() {
   auto temp = unsafe_arena_release_trail_data();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::TrailData* RICHARDS::unsafe_arena_release_trail_data() {
-  // @@protoc_insertion_point(field_release:RICHARDS.trail_data)
+inline ::TrailData* Trail::unsafe_arena_release_trail_data() {
+  // @@protoc_insertion_point(field_release:Trail.trail_data)
   
   ::TrailData* temp = trail_data_;
   trail_data_ = nullptr;
   return temp;
 }
-inline ::TrailData* RICHARDS::_internal_mutable_trail_data() {
+inline ::TrailData* Trail::_internal_mutable_trail_data() {
   
   if (trail_data_ == nullptr) {
     auto* p = CreateMaybeMessage<::TrailData>(GetArena());
@@ -6606,11 +6606,11 @@ inline ::TrailData* RICHARDS::_internal_mutable_trail_data() {
   }
   return trail_data_;
 }
-inline ::TrailData* RICHARDS::mutable_trail_data() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.trail_data)
+inline ::TrailData* Trail::mutable_trail_data() {
+  // @@protoc_insertion_point(field_mutable:Trail.trail_data)
   return _internal_mutable_trail_data();
 }
-inline void RICHARDS::set_allocated_trail_data(::TrailData* trail_data) {
+inline void Trail::set_allocated_trail_data(::TrailData* trail_data) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete trail_data_;
@@ -6627,201 +6627,201 @@ inline void RICHARDS::set_allocated_trail_data(::TrailData* trail_data) {
     
   }
   trail_data_ = trail_data;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.trail_data)
+  // @@protoc_insertion_point(field_set_allocated:Trail.trail_data)
 }
 
 // float animation_speed = 8;
-inline void RICHARDS::clear_animation_speed() {
+inline void Trail::clear_animation_speed() {
   animation_speed_ = 0;
 }
-inline float RICHARDS::_internal_animation_speed() const {
+inline float Trail::_internal_animation_speed() const {
   return animation_speed_;
 }
-inline float RICHARDS::animation_speed() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.animation_speed)
+inline float Trail::animation_speed() const {
+  // @@protoc_insertion_point(field_get:Trail.animation_speed)
   return _internal_animation_speed();
 }
-inline void RICHARDS::_internal_set_animation_speed(float value) {
+inline void Trail::_internal_set_animation_speed(float value) {
   
   animation_speed_ = value;
 }
-inline void RICHARDS::set_animation_speed(float value) {
+inline void Trail::set_animation_speed(float value) {
   _internal_set_animation_speed(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.animation_speed)
+  // @@protoc_insertion_point(field_set:Trail.animation_speed)
 }
 
 // .CullChirality cull_chirality = 9;
-inline void RICHARDS::clear_cull_chirality() {
+inline void Trail::clear_cull_chirality() {
   cull_chirality_ = 0;
 }
-inline ::CullChirality RICHARDS::_internal_cull_chirality() const {
+inline ::CullChirality Trail::_internal_cull_chirality() const {
   return static_cast< ::CullChirality >(cull_chirality_);
 }
-inline ::CullChirality RICHARDS::cull_chirality() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.cull_chirality)
+inline ::CullChirality Trail::cull_chirality() const {
+  // @@protoc_insertion_point(field_get:Trail.cull_chirality)
   return _internal_cull_chirality();
 }
-inline void RICHARDS::_internal_set_cull_chirality(::CullChirality value) {
+inline void Trail::_internal_set_cull_chirality(::CullChirality value) {
   
   cull_chirality_ = value;
 }
-inline void RICHARDS::set_cull_chirality(::CullChirality value) {
+inline void Trail::set_cull_chirality(::CullChirality value) {
   _internal_set_cull_chirality(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.cull_chirality)
+  // @@protoc_insertion_point(field_set:Trail.cull_chirality)
 }
 
 // fixed32 achievement_bit = 16;
-inline void RICHARDS::clear_achievement_bit() {
+inline void Trail::clear_achievement_bit() {
   achievement_bit_ = 0u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 RICHARDS::_internal_achievement_bit() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Trail::_internal_achievement_bit() const {
   return achievement_bit_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 RICHARDS::achievement_bit() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.achievement_bit)
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Trail::achievement_bit() const {
+  // @@protoc_insertion_point(field_get:Trail.achievement_bit)
   return _internal_achievement_bit();
 }
-inline void RICHARDS::_internal_set_achievement_bit(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void Trail::_internal_set_achievement_bit(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   
   achievement_bit_ = value;
 }
-inline void RICHARDS::set_achievement_bit(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void Trail::set_achievement_bit(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _internal_set_achievement_bit(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.achievement_bit)
+  // @@protoc_insertion_point(field_set:Trail.achievement_bit)
 }
 
 // int32 achievement_id = 17;
-inline void RICHARDS::clear_achievement_id() {
+inline void Trail::clear_achievement_id() {
   achievement_id_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 RICHARDS::_internal_achievement_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 Trail::_internal_achievement_id() const {
   return achievement_id_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 RICHARDS::achievement_id() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.achievement_id)
+inline ::PROTOBUF_NAMESPACE_ID::int32 Trail::achievement_id() const {
+  // @@protoc_insertion_point(field_get:Trail.achievement_id)
   return _internal_achievement_id();
 }
-inline void RICHARDS::_internal_set_achievement_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void Trail::_internal_set_achievement_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   achievement_id_ = value;
 }
-inline void RICHARDS::set_achievement_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void Trail::set_achievement_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_achievement_id(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.achievement_id)
+  // @@protoc_insertion_point(field_set:Trail.achievement_id)
 }
 
 // float alpha = 18;
-inline void RICHARDS::clear_alpha() {
+inline void Trail::clear_alpha() {
   alpha_ = 0;
 }
-inline float RICHARDS::_internal_alpha() const {
+inline float Trail::_internal_alpha() const {
   return alpha_;
 }
-inline float RICHARDS::alpha() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.alpha)
+inline float Trail::alpha() const {
+  // @@protoc_insertion_point(field_get:Trail.alpha)
   return _internal_alpha();
 }
-inline void RICHARDS::_internal_set_alpha(float value) {
+inline void Trail::_internal_set_alpha(float value) {
   
   alpha_ = value;
 }
-inline void RICHARDS::set_alpha(float value) {
+inline void Trail::set_alpha(float value) {
   _internal_set_alpha(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.alpha)
+  // @@protoc_insertion_point(field_set:Trail.alpha)
 }
 
 // bool can_fade = 19;
-inline void RICHARDS::clear_can_fade() {
+inline void Trail::clear_can_fade() {
   can_fade_ = false;
 }
-inline bool RICHARDS::_internal_can_fade() const {
+inline bool Trail::_internal_can_fade() const {
   return can_fade_;
 }
-inline bool RICHARDS::can_fade() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.can_fade)
+inline bool Trail::can_fade() const {
+  // @@protoc_insertion_point(field_get:Trail.can_fade)
   return _internal_can_fade();
 }
-inline void RICHARDS::_internal_set_can_fade(bool value) {
+inline void Trail::_internal_set_can_fade(bool value) {
   
   can_fade_ = value;
 }
-inline void RICHARDS::set_can_fade(bool value) {
+inline void Trail::set_can_fade(bool value) {
   _internal_set_can_fade(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.can_fade)
+  // @@protoc_insertion_point(field_set:Trail.can_fade)
 }
 
 // bool is_wall = 22;
-inline void RICHARDS::clear_is_wall() {
+inline void Trail::clear_is_wall() {
   is_wall_ = false;
 }
-inline bool RICHARDS::_internal_is_wall() const {
+inline bool Trail::_internal_is_wall() const {
   return is_wall_;
 }
-inline bool RICHARDS::is_wall() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.is_wall)
+inline bool Trail::is_wall() const {
+  // @@protoc_insertion_point(field_get:Trail.is_wall)
   return _internal_is_wall();
 }
-inline void RICHARDS::_internal_set_is_wall(bool value) {
+inline void Trail::_internal_set_is_wall(bool value) {
   
   is_wall_ = value;
 }
-inline void RICHARDS::set_is_wall(bool value) {
+inline void Trail::set_is_wall(bool value) {
   _internal_set_is_wall(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.is_wall)
+  // @@protoc_insertion_point(field_set:Trail.is_wall)
 }
 
 // string bhdraft__schedule = 23;
-inline void RICHARDS::clear_bhdraft__schedule() {
+inline void Trail::clear_bhdraft__schedule() {
   bhdraft__schedule_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline const std::string& RICHARDS::bhdraft__schedule() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.bhdraft__schedule)
+inline const std::string& Trail::bhdraft__schedule() const {
+  // @@protoc_insertion_point(field_get:Trail.bhdraft__schedule)
   return _internal_bhdraft__schedule();
 }
-inline void RICHARDS::set_bhdraft__schedule(const std::string& value) {
+inline void Trail::set_bhdraft__schedule(const std::string& value) {
   _internal_set_bhdraft__schedule(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.bhdraft__schedule)
+  // @@protoc_insertion_point(field_set:Trail.bhdraft__schedule)
 }
-inline std::string* RICHARDS::mutable_bhdraft__schedule() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.bhdraft__schedule)
+inline std::string* Trail::mutable_bhdraft__schedule() {
+  // @@protoc_insertion_point(field_mutable:Trail.bhdraft__schedule)
   return _internal_mutable_bhdraft__schedule();
 }
-inline const std::string& RICHARDS::_internal_bhdraft__schedule() const {
+inline const std::string& Trail::_internal_bhdraft__schedule() const {
   return bhdraft__schedule_.Get();
 }
-inline void RICHARDS::_internal_set_bhdraft__schedule(const std::string& value) {
+inline void Trail::_internal_set_bhdraft__schedule(const std::string& value) {
   
   bhdraft__schedule_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
 }
-inline void RICHARDS::set_bhdraft__schedule(std::string&& value) {
+inline void Trail::set_bhdraft__schedule(std::string&& value) {
   
   bhdraft__schedule_.Set(
     &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:RICHARDS.bhdraft__schedule)
+  // @@protoc_insertion_point(field_set_rvalue:Trail.bhdraft__schedule)
 }
-inline void RICHARDS::set_bhdraft__schedule(const char* value) {
+inline void Trail::set_bhdraft__schedule(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   bhdraft__schedule_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
               GetArena());
-  // @@protoc_insertion_point(field_set_char:RICHARDS.bhdraft__schedule)
+  // @@protoc_insertion_point(field_set_char:Trail.bhdraft__schedule)
 }
-inline void RICHARDS::set_bhdraft__schedule(const char* value,
+inline void Trail::set_bhdraft__schedule(const char* value,
     size_t size) {
   
   bhdraft__schedule_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:RICHARDS.bhdraft__schedule)
+  // @@protoc_insertion_point(field_set_pointer:Trail.bhdraft__schedule)
 }
-inline std::string* RICHARDS::_internal_mutable_bhdraft__schedule() {
+inline std::string* Trail::_internal_mutable_bhdraft__schedule() {
   
   return bhdraft__schedule_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline std::string* RICHARDS::release_bhdraft__schedule() {
-  // @@protoc_insertion_point(field_release:RICHARDS.bhdraft__schedule)
+inline std::string* Trail::release_bhdraft__schedule() {
+  // @@protoc_insertion_point(field_release:Trail.bhdraft__schedule)
   return bhdraft__schedule_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void RICHARDS::set_allocated_bhdraft__schedule(std::string* bhdraft__schedule) {
+inline void Trail::set_allocated_bhdraft__schedule(std::string* bhdraft__schedule) {
   if (bhdraft__schedule != nullptr) {
     
   } else {
@@ -6829,16 +6829,16 @@ inline void RICHARDS::set_allocated_bhdraft__schedule(std::string* bhdraft__sche
   }
   bhdraft__schedule_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), bhdraft__schedule,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.bhdraft__schedule)
+  // @@protoc_insertion_point(field_set_allocated:Trail.bhdraft__schedule)
 }
-inline std::string* RICHARDS::unsafe_arena_release_bhdraft__schedule() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:RICHARDS.bhdraft__schedule)
+inline std::string* Trail::unsafe_arena_release_bhdraft__schedule() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:Trail.bhdraft__schedule)
   GOOGLE_DCHECK(GetArena() != nullptr);
   
   return bhdraft__schedule_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       GetArena());
 }
-inline void RICHARDS::unsafe_arena_set_allocated_bhdraft__schedule(
+inline void Trail::unsafe_arena_set_allocated_bhdraft__schedule(
     std::string* bhdraft__schedule) {
   GOOGLE_DCHECK(GetArena() != nullptr);
   if (bhdraft__schedule != nullptr) {
@@ -6848,72 +6848,72 @@ inline void RICHARDS::unsafe_arena_set_allocated_bhdraft__schedule(
   }
   bhdraft__schedule_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       bhdraft__schedule, GetArena());
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.bhdraft__schedule)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.bhdraft__schedule)
 }
 
 // float bhdraft__schedule_duration = 24;
-inline void RICHARDS::clear_bhdraft__schedule_duration() {
+inline void Trail::clear_bhdraft__schedule_duration() {
   bhdraft__schedule_duration_ = 0;
 }
-inline float RICHARDS::_internal_bhdraft__schedule_duration() const {
+inline float Trail::_internal_bhdraft__schedule_duration() const {
   return bhdraft__schedule_duration_;
 }
-inline float RICHARDS::bhdraft__schedule_duration() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.bhdraft__schedule_duration)
+inline float Trail::bhdraft__schedule_duration() const {
+  // @@protoc_insertion_point(field_get:Trail.bhdraft__schedule_duration)
   return _internal_bhdraft__schedule_duration();
 }
-inline void RICHARDS::_internal_set_bhdraft__schedule_duration(float value) {
+inline void Trail::_internal_set_bhdraft__schedule_duration(float value) {
   
   bhdraft__schedule_duration_ = value;
 }
-inline void RICHARDS::set_bhdraft__schedule_duration(float value) {
+inline void Trail::set_bhdraft__schedule_duration(float value) {
   _internal_set_bhdraft__schedule_duration(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.bhdraft__schedule_duration)
+  // @@protoc_insertion_point(field_set:Trail.bhdraft__schedule_duration)
 }
 
 // float scale = 25;
-inline void RICHARDS::clear_scale() {
+inline void Trail::clear_scale() {
   scale_ = 0;
 }
-inline float RICHARDS::_internal_scale() const {
+inline float Trail::_internal_scale() const {
   return scale_;
 }
-inline float RICHARDS::scale() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.scale)
+inline float Trail::scale() const {
+  // @@protoc_insertion_point(field_get:Trail.scale)
   return _internal_scale();
 }
-inline void RICHARDS::_internal_set_scale(float value) {
+inline void Trail::_internal_set_scale(float value) {
   
   scale_ = value;
 }
-inline void RICHARDS::set_scale(float value) {
+inline void Trail::set_scale(float value) {
   _internal_set_scale(value);
-  // @@protoc_insertion_point(field_set:RICHARDS.scale)
+  // @@protoc_insertion_point(field_set:Trail.scale)
 }
 
 // .Color color = 26;
-inline bool RICHARDS::_internal_has_color() const {
+inline bool Trail::_internal_has_color() const {
   return this != internal_default_instance() && color_ != nullptr;
 }
-inline bool RICHARDS::has_color() const {
+inline bool Trail::has_color() const {
   return _internal_has_color();
 }
-inline void RICHARDS::clear_color() {
+inline void Trail::clear_color() {
   if (GetArena() == nullptr && color_ != nullptr) {
     delete color_;
   }
   color_ = nullptr;
 }
-inline const ::Color& RICHARDS::_internal_color() const {
+inline const ::Color& Trail::_internal_color() const {
   const ::Color* p = color_;
   return p != nullptr ? *p : *reinterpret_cast<const ::Color*>(
       &::_Color_default_instance_);
 }
-inline const ::Color& RICHARDS::color() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.color)
+inline const ::Color& Trail::color() const {
+  // @@protoc_insertion_point(field_get:Trail.color)
   return _internal_color();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_color(
+inline void Trail::unsafe_arena_set_allocated_color(
     ::Color* color) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(color_);
@@ -6924,23 +6924,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_color(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.color)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.color)
 }
-inline ::Color* RICHARDS::release_color() {
+inline ::Color* Trail::release_color() {
   auto temp = unsafe_arena_release_color();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::Color* RICHARDS::unsafe_arena_release_color() {
-  // @@protoc_insertion_point(field_release:RICHARDS.color)
+inline ::Color* Trail::unsafe_arena_release_color() {
+  // @@protoc_insertion_point(field_release:Trail.color)
   
   ::Color* temp = color_;
   color_ = nullptr;
   return temp;
 }
-inline ::Color* RICHARDS::_internal_mutable_color() {
+inline ::Color* Trail::_internal_mutable_color() {
   
   if (color_ == nullptr) {
     auto* p = CreateMaybeMessage<::Color>(GetArena());
@@ -6948,11 +6948,11 @@ inline ::Color* RICHARDS::_internal_mutable_color() {
   }
   return color_;
 }
-inline ::Color* RICHARDS::mutable_color() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.color)
+inline ::Color* Trail::mutable_color() {
+  // @@protoc_insertion_point(field_mutable:Trail.color)
   return _internal_mutable_color();
 }
-inline void RICHARDS::set_allocated_color(::Color* color) {
+inline void Trail::set_allocated_color(::Color* color) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete color_;
@@ -6969,32 +6969,32 @@ inline void RICHARDS::set_allocated_color(::Color* color) {
     
   }
   color_ = color;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.color)
+  // @@protoc_insertion_point(field_set_allocated:Trail.color)
 }
 
 // .FestivalFilter festival_filter = 27;
-inline bool RICHARDS::_internal_has_festival_filter() const {
+inline bool Trail::_internal_has_festival_filter() const {
   return this != internal_default_instance() && festival_filter_ != nullptr;
 }
-inline bool RICHARDS::has_festival_filter() const {
+inline bool Trail::has_festival_filter() const {
   return _internal_has_festival_filter();
 }
-inline void RICHARDS::clear_festival_filter() {
+inline void Trail::clear_festival_filter() {
   if (GetArena() == nullptr && festival_filter_ != nullptr) {
     delete festival_filter_;
   }
   festival_filter_ = nullptr;
 }
-inline const ::FestivalFilter& RICHARDS::_internal_festival_filter() const {
+inline const ::FestivalFilter& Trail::_internal_festival_filter() const {
   const ::FestivalFilter* p = festival_filter_;
   return p != nullptr ? *p : *reinterpret_cast<const ::FestivalFilter*>(
       &::_FestivalFilter_default_instance_);
 }
-inline const ::FestivalFilter& RICHARDS::festival_filter() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.festival_filter)
+inline const ::FestivalFilter& Trail::festival_filter() const {
+  // @@protoc_insertion_point(field_get:Trail.festival_filter)
   return _internal_festival_filter();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_festival_filter(
+inline void Trail::unsafe_arena_set_allocated_festival_filter(
     ::FestivalFilter* festival_filter) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(festival_filter_);
@@ -7005,23 +7005,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_festival_filter(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.festival_filter)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.festival_filter)
 }
-inline ::FestivalFilter* RICHARDS::release_festival_filter() {
+inline ::FestivalFilter* Trail::release_festival_filter() {
   auto temp = unsafe_arena_release_festival_filter();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::FestivalFilter* RICHARDS::unsafe_arena_release_festival_filter() {
-  // @@protoc_insertion_point(field_release:RICHARDS.festival_filter)
+inline ::FestivalFilter* Trail::unsafe_arena_release_festival_filter() {
+  // @@protoc_insertion_point(field_release:Trail.festival_filter)
   
   ::FestivalFilter* temp = festival_filter_;
   festival_filter_ = nullptr;
   return temp;
 }
-inline ::FestivalFilter* RICHARDS::_internal_mutable_festival_filter() {
+inline ::FestivalFilter* Trail::_internal_mutable_festival_filter() {
   
   if (festival_filter_ == nullptr) {
     auto* p = CreateMaybeMessage<::FestivalFilter>(GetArena());
@@ -7029,11 +7029,11 @@ inline ::FestivalFilter* RICHARDS::_internal_mutable_festival_filter() {
   }
   return festival_filter_;
 }
-inline ::FestivalFilter* RICHARDS::mutable_festival_filter() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.festival_filter)
+inline ::FestivalFilter* Trail::mutable_festival_filter() {
+  // @@protoc_insertion_point(field_mutable:Trail.festival_filter)
   return _internal_mutable_festival_filter();
 }
-inline void RICHARDS::set_allocated_festival_filter(::FestivalFilter* festival_filter) {
+inline void Trail::set_allocated_festival_filter(::FestivalFilter* festival_filter) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete festival_filter_;
@@ -7050,32 +7050,32 @@ inline void RICHARDS::set_allocated_festival_filter(::FestivalFilter* festival_f
     
   }
   festival_filter_ = festival_filter;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.festival_filter)
+  // @@protoc_insertion_point(field_set_allocated:Trail.festival_filter)
 }
 
 // .MapTypeFilter map_type_filter = 28;
-inline bool RICHARDS::_internal_has_map_type_filter() const {
+inline bool Trail::_internal_has_map_type_filter() const {
   return this != internal_default_instance() && map_type_filter_ != nullptr;
 }
-inline bool RICHARDS::has_map_type_filter() const {
+inline bool Trail::has_map_type_filter() const {
   return _internal_has_map_type_filter();
 }
-inline void RICHARDS::clear_map_type_filter() {
+inline void Trail::clear_map_type_filter() {
   if (GetArena() == nullptr && map_type_filter_ != nullptr) {
     delete map_type_filter_;
   }
   map_type_filter_ = nullptr;
 }
-inline const ::MapTypeFilter& RICHARDS::_internal_map_type_filter() const {
+inline const ::MapTypeFilter& Trail::_internal_map_type_filter() const {
   const ::MapTypeFilter* p = map_type_filter_;
   return p != nullptr ? *p : *reinterpret_cast<const ::MapTypeFilter*>(
       &::_MapTypeFilter_default_instance_);
 }
-inline const ::MapTypeFilter& RICHARDS::map_type_filter() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.map_type_filter)
+inline const ::MapTypeFilter& Trail::map_type_filter() const {
+  // @@protoc_insertion_point(field_get:Trail.map_type_filter)
   return _internal_map_type_filter();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_map_type_filter(
+inline void Trail::unsafe_arena_set_allocated_map_type_filter(
     ::MapTypeFilter* map_type_filter) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(map_type_filter_);
@@ -7086,23 +7086,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_map_type_filter(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.map_type_filter)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.map_type_filter)
 }
-inline ::MapTypeFilter* RICHARDS::release_map_type_filter() {
+inline ::MapTypeFilter* Trail::release_map_type_filter() {
   auto temp = unsafe_arena_release_map_type_filter();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::MapTypeFilter* RICHARDS::unsafe_arena_release_map_type_filter() {
-  // @@protoc_insertion_point(field_release:RICHARDS.map_type_filter)
+inline ::MapTypeFilter* Trail::unsafe_arena_release_map_type_filter() {
+  // @@protoc_insertion_point(field_release:Trail.map_type_filter)
   
   ::MapTypeFilter* temp = map_type_filter_;
   map_type_filter_ = nullptr;
   return temp;
 }
-inline ::MapTypeFilter* RICHARDS::_internal_mutable_map_type_filter() {
+inline ::MapTypeFilter* Trail::_internal_mutable_map_type_filter() {
   
   if (map_type_filter_ == nullptr) {
     auto* p = CreateMaybeMessage<::MapTypeFilter>(GetArena());
@@ -7110,11 +7110,11 @@ inline ::MapTypeFilter* RICHARDS::_internal_mutable_map_type_filter() {
   }
   return map_type_filter_;
 }
-inline ::MapTypeFilter* RICHARDS::mutable_map_type_filter() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.map_type_filter)
+inline ::MapTypeFilter* Trail::mutable_map_type_filter() {
+  // @@protoc_insertion_point(field_mutable:Trail.map_type_filter)
   return _internal_mutable_map_type_filter();
 }
-inline void RICHARDS::set_allocated_map_type_filter(::MapTypeFilter* map_type_filter) {
+inline void Trail::set_allocated_map_type_filter(::MapTypeFilter* map_type_filter) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete map_type_filter_;
@@ -7131,32 +7131,32 @@ inline void RICHARDS::set_allocated_map_type_filter(::MapTypeFilter* map_type_fi
     
   }
   map_type_filter_ = map_type_filter;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.map_type_filter)
+  // @@protoc_insertion_point(field_set_allocated:Trail.map_type_filter)
 }
 
 // .MountFilter mount_filter = 29;
-inline bool RICHARDS::_internal_has_mount_filter() const {
+inline bool Trail::_internal_has_mount_filter() const {
   return this != internal_default_instance() && mount_filter_ != nullptr;
 }
-inline bool RICHARDS::has_mount_filter() const {
+inline bool Trail::has_mount_filter() const {
   return _internal_has_mount_filter();
 }
-inline void RICHARDS::clear_mount_filter() {
+inline void Trail::clear_mount_filter() {
   if (GetArena() == nullptr && mount_filter_ != nullptr) {
     delete mount_filter_;
   }
   mount_filter_ = nullptr;
 }
-inline const ::MountFilter& RICHARDS::_internal_mount_filter() const {
+inline const ::MountFilter& Trail::_internal_mount_filter() const {
   const ::MountFilter* p = mount_filter_;
   return p != nullptr ? *p : *reinterpret_cast<const ::MountFilter*>(
       &::_MountFilter_default_instance_);
 }
-inline const ::MountFilter& RICHARDS::mount_filter() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.mount_filter)
+inline const ::MountFilter& Trail::mount_filter() const {
+  // @@protoc_insertion_point(field_get:Trail.mount_filter)
   return _internal_mount_filter();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_mount_filter(
+inline void Trail::unsafe_arena_set_allocated_mount_filter(
     ::MountFilter* mount_filter) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(mount_filter_);
@@ -7167,23 +7167,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_mount_filter(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.mount_filter)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.mount_filter)
 }
-inline ::MountFilter* RICHARDS::release_mount_filter() {
+inline ::MountFilter* Trail::release_mount_filter() {
   auto temp = unsafe_arena_release_mount_filter();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::MountFilter* RICHARDS::unsafe_arena_release_mount_filter() {
-  // @@protoc_insertion_point(field_release:RICHARDS.mount_filter)
+inline ::MountFilter* Trail::unsafe_arena_release_mount_filter() {
+  // @@protoc_insertion_point(field_release:Trail.mount_filter)
   
   ::MountFilter* temp = mount_filter_;
   mount_filter_ = nullptr;
   return temp;
 }
-inline ::MountFilter* RICHARDS::_internal_mutable_mount_filter() {
+inline ::MountFilter* Trail::_internal_mutable_mount_filter() {
   
   if (mount_filter_ == nullptr) {
     auto* p = CreateMaybeMessage<::MountFilter>(GetArena());
@@ -7191,11 +7191,11 @@ inline ::MountFilter* RICHARDS::_internal_mutable_mount_filter() {
   }
   return mount_filter_;
 }
-inline ::MountFilter* RICHARDS::mutable_mount_filter() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.mount_filter)
+inline ::MountFilter* Trail::mutable_mount_filter() {
+  // @@protoc_insertion_point(field_mutable:Trail.mount_filter)
   return _internal_mutable_mount_filter();
 }
-inline void RICHARDS::set_allocated_mount_filter(::MountFilter* mount_filter) {
+inline void Trail::set_allocated_mount_filter(::MountFilter* mount_filter) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete mount_filter_;
@@ -7212,32 +7212,32 @@ inline void RICHARDS::set_allocated_mount_filter(::MountFilter* mount_filter) {
     
   }
   mount_filter_ = mount_filter;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.mount_filter)
+  // @@protoc_insertion_point(field_set_allocated:Trail.mount_filter)
 }
 
 // .ProfessionFilter profession_filter = 30;
-inline bool RICHARDS::_internal_has_profession_filter() const {
+inline bool Trail::_internal_has_profession_filter() const {
   return this != internal_default_instance() && profession_filter_ != nullptr;
 }
-inline bool RICHARDS::has_profession_filter() const {
+inline bool Trail::has_profession_filter() const {
   return _internal_has_profession_filter();
 }
-inline void RICHARDS::clear_profession_filter() {
+inline void Trail::clear_profession_filter() {
   if (GetArena() == nullptr && profession_filter_ != nullptr) {
     delete profession_filter_;
   }
   profession_filter_ = nullptr;
 }
-inline const ::ProfessionFilter& RICHARDS::_internal_profession_filter() const {
+inline const ::ProfessionFilter& Trail::_internal_profession_filter() const {
   const ::ProfessionFilter* p = profession_filter_;
   return p != nullptr ? *p : *reinterpret_cast<const ::ProfessionFilter*>(
       &::_ProfessionFilter_default_instance_);
 }
-inline const ::ProfessionFilter& RICHARDS::profession_filter() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.profession_filter)
+inline const ::ProfessionFilter& Trail::profession_filter() const {
+  // @@protoc_insertion_point(field_get:Trail.profession_filter)
   return _internal_profession_filter();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_profession_filter(
+inline void Trail::unsafe_arena_set_allocated_profession_filter(
     ::ProfessionFilter* profession_filter) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(profession_filter_);
@@ -7248,23 +7248,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_profession_filter(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.profession_filter)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.profession_filter)
 }
-inline ::ProfessionFilter* RICHARDS::release_profession_filter() {
+inline ::ProfessionFilter* Trail::release_profession_filter() {
   auto temp = unsafe_arena_release_profession_filter();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::ProfessionFilter* RICHARDS::unsafe_arena_release_profession_filter() {
-  // @@protoc_insertion_point(field_release:RICHARDS.profession_filter)
+inline ::ProfessionFilter* Trail::unsafe_arena_release_profession_filter() {
+  // @@protoc_insertion_point(field_release:Trail.profession_filter)
   
   ::ProfessionFilter* temp = profession_filter_;
   profession_filter_ = nullptr;
   return temp;
 }
-inline ::ProfessionFilter* RICHARDS::_internal_mutable_profession_filter() {
+inline ::ProfessionFilter* Trail::_internal_mutable_profession_filter() {
   
   if (profession_filter_ == nullptr) {
     auto* p = CreateMaybeMessage<::ProfessionFilter>(GetArena());
@@ -7272,11 +7272,11 @@ inline ::ProfessionFilter* RICHARDS::_internal_mutable_profession_filter() {
   }
   return profession_filter_;
 }
-inline ::ProfessionFilter* RICHARDS::mutable_profession_filter() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.profession_filter)
+inline ::ProfessionFilter* Trail::mutable_profession_filter() {
+  // @@protoc_insertion_point(field_mutable:Trail.profession_filter)
   return _internal_mutable_profession_filter();
 }
-inline void RICHARDS::set_allocated_profession_filter(::ProfessionFilter* profession_filter) {
+inline void Trail::set_allocated_profession_filter(::ProfessionFilter* profession_filter) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete profession_filter_;
@@ -7293,32 +7293,32 @@ inline void RICHARDS::set_allocated_profession_filter(::ProfessionFilter* profes
     
   }
   profession_filter_ = profession_filter;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.profession_filter)
+  // @@protoc_insertion_point(field_set_allocated:Trail.profession_filter)
 }
 
 // .SpecializationFilter specialization_filter = 31;
-inline bool RICHARDS::_internal_has_specialization_filter() const {
+inline bool Trail::_internal_has_specialization_filter() const {
   return this != internal_default_instance() && specialization_filter_ != nullptr;
 }
-inline bool RICHARDS::has_specialization_filter() const {
+inline bool Trail::has_specialization_filter() const {
   return _internal_has_specialization_filter();
 }
-inline void RICHARDS::clear_specialization_filter() {
+inline void Trail::clear_specialization_filter() {
   if (GetArena() == nullptr && specialization_filter_ != nullptr) {
     delete specialization_filter_;
   }
   specialization_filter_ = nullptr;
 }
-inline const ::SpecializationFilter& RICHARDS::_internal_specialization_filter() const {
+inline const ::SpecializationFilter& Trail::_internal_specialization_filter() const {
   const ::SpecializationFilter* p = specialization_filter_;
   return p != nullptr ? *p : *reinterpret_cast<const ::SpecializationFilter*>(
       &::_SpecializationFilter_default_instance_);
 }
-inline const ::SpecializationFilter& RICHARDS::specialization_filter() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.specialization_filter)
+inline const ::SpecializationFilter& Trail::specialization_filter() const {
+  // @@protoc_insertion_point(field_get:Trail.specialization_filter)
   return _internal_specialization_filter();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_specialization_filter(
+inline void Trail::unsafe_arena_set_allocated_specialization_filter(
     ::SpecializationFilter* specialization_filter) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(specialization_filter_);
@@ -7329,23 +7329,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_specialization_filter(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.specialization_filter)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.specialization_filter)
 }
-inline ::SpecializationFilter* RICHARDS::release_specialization_filter() {
+inline ::SpecializationFilter* Trail::release_specialization_filter() {
   auto temp = unsafe_arena_release_specialization_filter();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::SpecializationFilter* RICHARDS::unsafe_arena_release_specialization_filter() {
-  // @@protoc_insertion_point(field_release:RICHARDS.specialization_filter)
+inline ::SpecializationFilter* Trail::unsafe_arena_release_specialization_filter() {
+  // @@protoc_insertion_point(field_release:Trail.specialization_filter)
   
   ::SpecializationFilter* temp = specialization_filter_;
   specialization_filter_ = nullptr;
   return temp;
 }
-inline ::SpecializationFilter* RICHARDS::_internal_mutable_specialization_filter() {
+inline ::SpecializationFilter* Trail::_internal_mutable_specialization_filter() {
   
   if (specialization_filter_ == nullptr) {
     auto* p = CreateMaybeMessage<::SpecializationFilter>(GetArena());
@@ -7353,11 +7353,11 @@ inline ::SpecializationFilter* RICHARDS::_internal_mutable_specialization_filter
   }
   return specialization_filter_;
 }
-inline ::SpecializationFilter* RICHARDS::mutable_specialization_filter() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.specialization_filter)
+inline ::SpecializationFilter* Trail::mutable_specialization_filter() {
+  // @@protoc_insertion_point(field_mutable:Trail.specialization_filter)
   return _internal_mutable_specialization_filter();
 }
-inline void RICHARDS::set_allocated_specialization_filter(::SpecializationFilter* specialization_filter) {
+inline void Trail::set_allocated_specialization_filter(::SpecializationFilter* specialization_filter) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete specialization_filter_;
@@ -7374,32 +7374,32 @@ inline void RICHARDS::set_allocated_specialization_filter(::SpecializationFilter
     
   }
   specialization_filter_ = specialization_filter;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.specialization_filter)
+  // @@protoc_insertion_point(field_set_allocated:Trail.specialization_filter)
 }
 
 // .SpeciesFilter species_filter = 32;
-inline bool RICHARDS::_internal_has_species_filter() const {
+inline bool Trail::_internal_has_species_filter() const {
   return this != internal_default_instance() && species_filter_ != nullptr;
 }
-inline bool RICHARDS::has_species_filter() const {
+inline bool Trail::has_species_filter() const {
   return _internal_has_species_filter();
 }
-inline void RICHARDS::clear_species_filter() {
+inline void Trail::clear_species_filter() {
   if (GetArena() == nullptr && species_filter_ != nullptr) {
     delete species_filter_;
   }
   species_filter_ = nullptr;
 }
-inline const ::SpeciesFilter& RICHARDS::_internal_species_filter() const {
+inline const ::SpeciesFilter& Trail::_internal_species_filter() const {
   const ::SpeciesFilter* p = species_filter_;
   return p != nullptr ? *p : *reinterpret_cast<const ::SpeciesFilter*>(
       &::_SpeciesFilter_default_instance_);
 }
-inline const ::SpeciesFilter& RICHARDS::species_filter() const {
-  // @@protoc_insertion_point(field_get:RICHARDS.species_filter)
+inline const ::SpeciesFilter& Trail::species_filter() const {
+  // @@protoc_insertion_point(field_get:Trail.species_filter)
   return _internal_species_filter();
 }
-inline void RICHARDS::unsafe_arena_set_allocated_species_filter(
+inline void Trail::unsafe_arena_set_allocated_species_filter(
     ::SpeciesFilter* species_filter) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(species_filter_);
@@ -7410,23 +7410,23 @@ inline void RICHARDS::unsafe_arena_set_allocated_species_filter(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:RICHARDS.species_filter)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Trail.species_filter)
 }
-inline ::SpeciesFilter* RICHARDS::release_species_filter() {
+inline ::SpeciesFilter* Trail::release_species_filter() {
   auto temp = unsafe_arena_release_species_filter();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::SpeciesFilter* RICHARDS::unsafe_arena_release_species_filter() {
-  // @@protoc_insertion_point(field_release:RICHARDS.species_filter)
+inline ::SpeciesFilter* Trail::unsafe_arena_release_species_filter() {
+  // @@protoc_insertion_point(field_release:Trail.species_filter)
   
   ::SpeciesFilter* temp = species_filter_;
   species_filter_ = nullptr;
   return temp;
 }
-inline ::SpeciesFilter* RICHARDS::_internal_mutable_species_filter() {
+inline ::SpeciesFilter* Trail::_internal_mutable_species_filter() {
   
   if (species_filter_ == nullptr) {
     auto* p = CreateMaybeMessage<::SpeciesFilter>(GetArena());
@@ -7434,11 +7434,11 @@ inline ::SpeciesFilter* RICHARDS::_internal_mutable_species_filter() {
   }
   return species_filter_;
 }
-inline ::SpeciesFilter* RICHARDS::mutable_species_filter() {
-  // @@protoc_insertion_point(field_mutable:RICHARDS.species_filter)
+inline ::SpeciesFilter* Trail::mutable_species_filter() {
+  // @@protoc_insertion_point(field_mutable:Trail.species_filter)
   return _internal_mutable_species_filter();
 }
-inline void RICHARDS::set_allocated_species_filter(::SpeciesFilter* species_filter) {
+inline void Trail::set_allocated_species_filter(::SpeciesFilter* species_filter) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
     delete species_filter_;
@@ -7455,7 +7455,7 @@ inline void RICHARDS::set_allocated_species_filter(::SpeciesFilter* species_filt
     
   }
   species_filter_ = species_filter;
-  // @@protoc_insertion_point(field_set_allocated:RICHARDS.species_filter)
+  // @@protoc_insertion_point(field_set_allocated:Trail.species_filter)
 }
 
 // -------------------------------------------------------------------

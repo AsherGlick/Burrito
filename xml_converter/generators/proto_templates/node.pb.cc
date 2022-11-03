@@ -39,10 +39,10 @@ class IconDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Icon> _instance;
 } _Icon_default_instance_;
-class RICHARDSDefaultTypeInternal {
+class TrailDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<RICHARDS> _instance;
-} _RICHARDS_default_instance_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Trail> _instance;
+} _Trail_default_instance_;
 class TextureDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Texture> _instance;
@@ -245,31 +245,6 @@ static void InitDefaultsscc_info_ProfessionFilter_generators_2fproto_5ftemplates
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ProfessionFilter_generators_2fproto_5ftemplates_2fnode_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_ProfessionFilter_generators_2fproto_5ftemplates_2fnode_2eproto}, {}};
 
-static void InitDefaultsscc_info_RICHARDS_generators_2fproto_5ftemplates_2fnode_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_RICHARDS_default_instance_;
-    new (ptr) ::RICHARDS();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::RICHARDS::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<11> scc_info_RICHARDS_generators_2fproto_5ftemplates_2fnode_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 11, 0, InitDefaultsscc_info_RICHARDS_generators_2fproto_5ftemplates_2fnode_2eproto}, {
-      &scc_info_Category_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_Texture_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_GUID_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_TrailData_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_Color_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_FestivalFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_MapTypeFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_MountFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_ProfessionFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_SpecializationFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-      &scc_info_SpeciesFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,}};
-
 static void InitDefaultsscc_info_SpecializationFilter_generators_2fproto_5ftemplates_2fnode_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -311,6 +286,31 @@ static void InitDefaultsscc_info_Texture_generators_2fproto_5ftemplates_2fnode_2
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Texture_generators_2fproto_5ftemplates_2fnode_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Texture_generators_2fproto_5ftemplates_2fnode_2eproto}, {}};
+
+static void InitDefaultsscc_info_Trail_generators_2fproto_5ftemplates_2fnode_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_Trail_default_instance_;
+    new (ptr) ::Trail();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::Trail::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<11> scc_info_Trail_generators_2fproto_5ftemplates_2fnode_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 11, 0, InitDefaultsscc_info_Trail_generators_2fproto_5ftemplates_2fnode_2eproto}, {
+      &scc_info_Category_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_Texture_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_GUID_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_TrailData_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_Color_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_FestivalFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_MapTypeFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_MountFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_ProfessionFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_SpecializationFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+      &scc_info_SpeciesFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,}};
 
 static void InitDefaultsscc_info_TrailData_generators_2fproto_5ftemplates_2fnode_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -398,34 +398,34 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_generators_2fproto_5ftemplates
   PROTOBUF_FIELD_OFFSET(::Icon, bhdraft__schedule_),
   PROTOBUF_FIELD_OFFSET(::Icon, bhdraft__schedule_duration_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::Trail, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, category_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, texture_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, guid_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, map_id_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, distance_fade_end_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, distance_fade_start_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, trail_data_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, animation_speed_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, cull_chirality_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, achievement_bit_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, achievement_id_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, alpha_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, can_fade_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, is_wall_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, bhdraft__schedule_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, bhdraft__schedule_duration_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, scale_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, color_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, festival_filter_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, map_type_filter_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, mount_filter_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, profession_filter_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, specialization_filter_),
-  PROTOBUF_FIELD_OFFSET(::RICHARDS, species_filter_),
+  PROTOBUF_FIELD_OFFSET(::Trail, category_),
+  PROTOBUF_FIELD_OFFSET(::Trail, texture_),
+  PROTOBUF_FIELD_OFFSET(::Trail, guid_),
+  PROTOBUF_FIELD_OFFSET(::Trail, map_id_),
+  PROTOBUF_FIELD_OFFSET(::Trail, distance_fade_end_),
+  PROTOBUF_FIELD_OFFSET(::Trail, distance_fade_start_),
+  PROTOBUF_FIELD_OFFSET(::Trail, trail_data_),
+  PROTOBUF_FIELD_OFFSET(::Trail, animation_speed_),
+  PROTOBUF_FIELD_OFFSET(::Trail, cull_chirality_),
+  PROTOBUF_FIELD_OFFSET(::Trail, achievement_bit_),
+  PROTOBUF_FIELD_OFFSET(::Trail, achievement_id_),
+  PROTOBUF_FIELD_OFFSET(::Trail, alpha_),
+  PROTOBUF_FIELD_OFFSET(::Trail, can_fade_),
+  PROTOBUF_FIELD_OFFSET(::Trail, is_wall_),
+  PROTOBUF_FIELD_OFFSET(::Trail, bhdraft__schedule_),
+  PROTOBUF_FIELD_OFFSET(::Trail, bhdraft__schedule_duration_),
+  PROTOBUF_FIELD_OFFSET(::Trail, scale_),
+  PROTOBUF_FIELD_OFFSET(::Trail, color_),
+  PROTOBUF_FIELD_OFFSET(::Trail, festival_filter_),
+  PROTOBUF_FIELD_OFFSET(::Trail, map_type_filter_),
+  PROTOBUF_FIELD_OFFSET(::Trail, mount_filter_),
+  PROTOBUF_FIELD_OFFSET(::Trail, profession_filter_),
+  PROTOBUF_FIELD_OFFSET(::Trail, specialization_filter_),
+  PROTOBUF_FIELD_OFFSET(::Trail, species_filter_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Texture, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -647,7 +647,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 0, 7, sizeof(::Category_ChildrenEntry_DoNotUse)},
   { 9, -1, sizeof(::Category)},
   { 20, -1, sizeof(::Icon)},
-  { 51, -1, sizeof(::RICHARDS)},
+  { 51, -1, sizeof(::Trail)},
   { 80, -1, sizeof(::Texture)},
   { 86, -1, sizeof(::Position)},
   { 94, -1, sizeof(::EulerRotation)},
@@ -667,7 +667,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Category_ChildrenEntry_DoNotUse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Category_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Icon_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_RICHARDS_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Trail_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Texture_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Position_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_EulerRotation_default_instance_),
@@ -708,128 +708,128 @@ const char descriptor_table_protodef_generators_2fproto_5ftemplates_2fnode_2epro
   "ingame\030\201\020 \001(\010\022#\n\032__tentative__render_on_"
   "map\030\202\020 \001(\010\022\'\n\036__tentative__render_on_min"
   "imap\030\203\020 \001(\010\022\032\n\021bhdraft__schedule\030\204\020 \001(\t\022"
-  "#\n\032bhdraft__schedule_duration\030\205\020 \001(\002\"\313\005\n"
-  "\010RICHARDS\022\033\n\010category\030\001 \001(\0132\t.Category\022\031"
-  "\n\007texture\030\002 \001(\0132\010.Texture\022\023\n\004guid\030\003 \001(\0132"
-  "\005.GUID\022\016\n\006map_id\030\004 \001(\005\022\031\n\021distance_fade_"
-  "end\030\005 \001(\002\022\033\n\023distance_fade_start\030\006 \001(\002\022\036"
-  "\n\ntrail_data\030\007 \001(\0132\n.TrailData\022\027\n\017animat"
-  "ion_speed\030\010 \001(\002\022&\n\016cull_chirality\030\t \001(\0162"
-  "\016.CullChirality\022\027\n\017achievement_bit\030\020 \001(\007"
-  "\022\026\n\016achievement_id\030\021 \001(\005\022\r\n\005alpha\030\022 \001(\002\022"
-  "\020\n\010can_fade\030\023 \001(\010\022\017\n\007is_wall\030\026 \001(\010\022\031\n\021bh"
-  "draft__schedule\030\027 \001(\t\022\"\n\032bhdraft__schedu"
-  "le_duration\030\030 \001(\002\022\r\n\005scale\030\031 \001(\002\022\025\n\005colo"
-  "r\030\032 \001(\0132\006.Color\022(\n\017festival_filter\030\033 \001(\013"
-  "2\017.FestivalFilter\022\'\n\017map_type_filter\030\034 \001"
-  "(\0132\016.MapTypeFilter\022\"\n\014mount_filter\030\035 \001(\013"
-  "2\014.MountFilter\022,\n\021profession_filter\030\036 \001("
-  "\0132\021.ProfessionFilter\0224\n\025specialization_f"
-  "ilter\030\037 \001(\0132\025.SpecializationFilter\022&\n\016sp"
-  "ecies_filter\030  \001(\0132\016.SpeciesFilter\"\027\n\007Te"
-  "xture\022\014\n\004path\030\001 \001(\t\"+\n\010Position\022\t\n\001x\030\001 \001"
-  "(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"0\n\rEulerRotatio"
-  "n\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"\217\003\n\007T"
-  "rigger\022\024\n\014auto_trigger\030\001 \001(\010\022\024\n\014bounce_d"
-  "elay\030\002 \001(\002\022\027\n\017bounce_duration\030\003 \001(\002\022\025\n\rb"
-  "ounce_height\030\004 \001(\002\022\035\n\025action_copy_clipbo"
-  "ard\030\005 \001(\t\022\033\n\023action_copy_message\030\006 \001(\t\022\025"
-  "\n\rhas_countdown\030\007 \001(\010\022\033\n\023action_info_mes"
-  "sage\030\010 \001(\t\022\026\n\016invert_display\030\t \001(\010\022\024\n\014re"
-  "set_length\030\n \001(\002\022\r\n\005range\030\013 \001(\002\022\'\n\024actio"
-  "n_hide_category\030\014 \001(\0132\t.Category\022\'\n\024acti"
-  "on_show_category\030\r \001(\0132\t.Category\022)\n\026act"
-  "ion_toggle_category\030\016 \001(\0132\t.Category\"\024\n\004"
-  "GUID\022\014\n\004guid\030\001 \001(\005\"\024\n\005Color\022\013\n\003hex\030\001 \001(\t"
-  "\"\267\001\n\016FestivalFilter\022\022\n\ndragonbash\030\001 \001(\010\022"
-  "\"\n\032festival_of_the_four_winds\030\002 \001(\010\022\021\n\th"
-  "alloween\030\003 \001(\010\022\026\n\016lunar_new_year\030\004 \001(\010\022 "
-  "\n\030super_adventure_festival\030\005 \001(\010\022\022\n\nwint"
-  "ersday\030\006 \001(\010\022\014\n\004none\030\007 \001(\010\"\346\004\n\rMapTypeFi"
-  "lter\022\023\n\013unknown_map\030\001 \001(\010\022\024\n\014redirect_ma"
-  "p\030\002 \001(\010\022\034\n\024character_create_map\030\003 \001(\010\022\017\n"
-  "\007pvp_map\030\004 \001(\010\022\017\n\007gvg_map\030\005 \001(\010\022\024\n\014insta"
-  "nce_map\030\006 \001(\010\022\022\n\npublic_map\030\007 \001(\010\022\026\n\016tou"
-  "rnament_map\030\010 \001(\010\022\024\n\014tutorial_map\030\t \001(\010\022"
-  "\033\n\023user_tournament_map\030\n \001(\010\022\022\n\ncenter_m"
-  "ap\030\013 \001(\010\022!\n\031eternal_battlegrounds_map\030\014 "
-  "\001(\010\022\024\n\014bluehome_map\030\r \001(\010\022\034\n\024blue_border"
-  "lands_map\030\016 \001(\010\022\026\n\016green_home_map\030\017 \001(\010\022"
-  "\035\n\025green_borderlands_map\030\020 \001(\010\022\024\n\014red_ho"
-  "me_map\030\021 \001(\010\022\033\n\023red_borderlands_map\030\022 \001("
-  "\010\022\031\n\021fortunes_vale_map\030\023 \001(\010\022\027\n\017jump_puz"
-  "zle_map\030\024 \001(\010\022\034\n\024obsidian_sanctum_map\030\025 "
-  "\001(\010\022\035\n\025edge_of_the_mists_map\030\026 \001(\010\022\027\n\017pu"
-  "blic_mini_map\030\027 \001(\010\022\026\n\016wvw_lounge_map\030\030 "
-  "\001(\010\"\301\001\n\013MountFilter\022\016\n\006raptor\030\001 \001(\010\022\020\n\010s"
-  "pringer\030\002 \001(\010\022\017\n\007skimmer\030\003 \001(\010\022\016\n\006jackal"
-  "\030\004 \001(\010\022\017\n\007griffon\030\005 \001(\010\022\025\n\rroller_beetle"
-  "\030\006 \001(\010\022\017\n\007warclaw\030\007 \001(\010\022\021\n\tskyscalee\030\010 \001"
-  "(\010\022\r\n\005skiff\030\t \001(\010\022\024\n\014seige_turtle\030\n \001(\010\""
-  "\265\001\n\020ProfessionFilter\022\020\n\010guardian\030\001 \001(\010\022\017"
-  "\n\007warrior\030\002 \001(\010\022\020\n\010engineer\030\003 \001(\010\022\016\n\006ran"
-  "ger\030\004 \001(\010\022\r\n\005thief\030\005 \001(\010\022\024\n\014elementalist"
-  "\030\006 \001(\010\022\016\n\006mesmer\030\007 \001(\010\022\023\n\013necromancer\030\010 "
-  "\001(\010\022\022\n\nrevenantnt\030\t \001(\010\"\312\017\n\024Specializati"
-  "onFilter\022\034\n\024elementalist_tempest\030\001 \001(\010\022\031"
-  "\n\021engineer_scrapper\030\002 \001(\010\022\035\n\025guardian_dr"
-  "agonhunter\030\003 \001(\010\022\033\n\023mesmer_chronomancer\030"
-  "\004 \001(\010\022\032\n\022necromancer_reaper\030\005 \001(\010\022\024\n\014ran"
-  "ger_druid\030\006 \001(\010\022\027\n\017revenant_herald\030\007 \001(\010"
-  "\022\027\n\017thief_daredevil\030\010 \001(\010\022\031\n\021warrior_ber"
-  "serker\030\t \001(\010\022\033\n\023elementalist_weaver\030\n \001("
-  "\010\022\032\n\022engineer_holosmith\030\013 \001(\010\022\032\n\022guardia"
-  "n_firebrand\030\014 \001(\010\022\025\n\rmesmer_mirage\030\r \001(\010"
-  "\022\033\n\023necromancer_scourge\030\016 \001(\010\022\030\n\020ranger_"
-  "soulbeast\030\017 \001(\010\022\031\n\021revenant_renegade\030\020 \001"
-  "(\010\022\025\n\rthief_deadeye\030\021 \001(\010\022\034\n\024warrior_spe"
-  "llbreaker\030\022 \001(\010\022\034\n\024elmentalist_catalyst\030"
-  "\023 \001(\010\022\032\n\022engineer_mechanist\030\024 \001(\010\022\033\n\023gua"
-  "rdian_willbender\030\025 \001(\010\022\027\n\017mesmer_virtuos"
-  "o\030\026 \001(\010\022\035\n\025necromancer_harbinger\030\027 \001(\010\022\026"
-  "\n\016ranger_untamed\030\030 \001(\010\022\033\n\023revenant_vindi"
-  "cator\030\031 \001(\010\022\025\n\rthief_specter\030\032 \001(\010\022\032\n\022wa"
-  "rrior_bladesworn\030\033 \001(\010\022\030\n\020elementalist_a"
-  "ir\030\034 \001(\010\022\033\n\023elementalist_arcane\030\035 \001(\010\022\032\n"
-  "\022elementalist_earth\030\036 \001(\010\022\031\n\021elementalis"
-  "t_fire\030\037 \001(\010\022\032\n\022elementalist_water\030  \001(\010"
-  "\022\030\n\020engineer_alchemy\030! \001(\010\022\033\n\023engineer_e"
-  "xplosives\030\" \001(\010\022\031\n\021engineer_firearms\030# \001"
-  "(\010\022\033\n\023engineer_inventions\030$ \001(\010\022\026\n\016engin"
-  "eer_tools\030% \001(\010\022\026\n\016guardian_honor\030& \001(\010\022"
-  "\031\n\021guardian_radiance\030\' \001(\010\022\026\n\016guardian_v"
-  "alor\030( \001(\010\022\030\n\020guardian_virtues\030) \001(\010\022\025\n\r"
-  "guardian_zeal\030* \001(\010\022\024\n\014mesmer_chaos\030+ \001("
-  "\010\022\031\n\021mesmer_domination\030, \001(\010\022\026\n\016mesmer_d"
-  "ueling\030- \001(\010\022\030\n\020mesmer_illusions\030. \001(\010\022\032"
-  "\n\022mesmer_inspiration\030/ \001(\010\022\037\n\027necromance"
-  "r_blood_magic\0300 \001(\010\022\032\n\022necromancer_curse"
-  "s\0301 \001(\010\022\037\n\027necromancer_death_magic\0302 \001(\010"
-  "\022 \n\030necromancer_soul_reaping\0303 \001(\010\022\031\n\021ne"
-  "cromancer_spite\0304 \001(\010\022\033\n\023ranger_beastmas"
-  "tery\0305 \001(\010\022\033\n\023ranger_marksmanship\0306 \001(\010\022"
-  "\033\n\023ranger_nature_magic\0307 \001(\010\022\032\n\022ranger_s"
-  "kirmishing\0308 \001(\010\022\"\n\032ranger_wilderness_su"
-  "rvival\0309 \001(\010\022\033\n\023revenant_corruption\030: \001("
-  "\010\022\034\n\024revenant_devastation\030; \001(\010\022\033\n\023reven"
-  "ant_invocation\030< \001(\010\022\034\n\024revenant_retribu"
-  "tion\030= \001(\010\022\032\n\022revenant_salvation\030> \001(\010\022\030"
-  "\n\020thief_acrobatics\030\? \001(\010\022\036\n\026thief_critic"
-  "al_strikes\030@ \001(\010\022\031\n\021thief_deadly_arts\030A "
-  "\001(\010\022\031\n\021thief_shadow_arts\030B \001(\010\022\026\n\016thief_"
-  "trickery\030C \001(\010\022\024\n\014warrior_arms\030D \001(\010\022\027\n\017"
-  "warrior_defense\030E \001(\010\022\032\n\022warrior_discipl"
-  "ine\030F \001(\010\022\030\n\020warrior_strength\030G \001(\010\022\027\n\017w"
-  "arrior_tactics\030H \001(\010\"[\n\rSpeciesFilter\022\r\n"
-  "\005asura\030\001 \001(\010\022\r\n\005charr\030\002 \001(\010\022\r\n\005human\030\003 \001"
-  "(\010\022\014\n\004norn\030\004 \001(\010\022\017\n\007sylvari\030\005 \001(\010\"\037\n\tTra"
-  "ilData\022\022\n\ntrail_data\030\001 \001(\t*\?\n\rCullChiral"
-  "ity\022\010\n\004none\020\000\022\r\n\tclockwise\020\001\022\025\n\021counter_"
-  "clockwise\020\002*\257\001\n\rResetBehavior\022\022\n\016always_"
-  "visible\020\000\022\016\n\nmap_change\020\001\022\017\n\013daily_reset"
-  "\020\002\022\t\n\005never\020\003\022\t\n\005timer\020\004\022\r\n\tmap_reset\020\005\022"
-  "\023\n\017instance_change\020\006\022\035\n\031daily_reset_per_"
-  "character\020\007\022\020\n\014weekly_reset\020\010b\006proto3"
+  "#\n\032bhdraft__schedule_duration\030\205\020 \001(\002\"\310\005\n"
+  "\005Trail\022\033\n\010category\030\001 \001(\0132\t.Category\022\031\n\007t"
+  "exture\030\002 \001(\0132\010.Texture\022\023\n\004guid\030\003 \001(\0132\005.G"
+  "UID\022\016\n\006map_id\030\004 \001(\005\022\031\n\021distance_fade_end"
+  "\030\005 \001(\002\022\033\n\023distance_fade_start\030\006 \001(\002\022\036\n\nt"
+  "rail_data\030\007 \001(\0132\n.TrailData\022\027\n\017animation"
+  "_speed\030\010 \001(\002\022&\n\016cull_chirality\030\t \001(\0162\016.C"
+  "ullChirality\022\027\n\017achievement_bit\030\020 \001(\007\022\026\n"
+  "\016achievement_id\030\021 \001(\005\022\r\n\005alpha\030\022 \001(\002\022\020\n\010"
+  "can_fade\030\023 \001(\010\022\017\n\007is_wall\030\026 \001(\010\022\031\n\021bhdra"
+  "ft__schedule\030\027 \001(\t\022\"\n\032bhdraft__schedule_"
+  "duration\030\030 \001(\002\022\r\n\005scale\030\031 \001(\002\022\025\n\005color\030\032"
+  " \001(\0132\006.Color\022(\n\017festival_filter\030\033 \001(\0132\017."
+  "FestivalFilter\022\'\n\017map_type_filter\030\034 \001(\0132"
+  "\016.MapTypeFilter\022\"\n\014mount_filter\030\035 \001(\0132\014."
+  "MountFilter\022,\n\021profession_filter\030\036 \001(\0132\021"
+  ".ProfessionFilter\0224\n\025specialization_filt"
+  "er\030\037 \001(\0132\025.SpecializationFilter\022&\n\016speci"
+  "es_filter\030  \001(\0132\016.SpeciesFilter\"\027\n\007Textu"
+  "re\022\014\n\004path\030\001 \001(\t\"+\n\010Position\022\t\n\001x\030\001 \001(\002\022"
+  "\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"0\n\rEulerRotation\022\t"
+  "\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"\217\003\n\007Trig"
+  "ger\022\024\n\014auto_trigger\030\001 \001(\010\022\024\n\014bounce_dela"
+  "y\030\002 \001(\002\022\027\n\017bounce_duration\030\003 \001(\002\022\025\n\rboun"
+  "ce_height\030\004 \001(\002\022\035\n\025action_copy_clipboard"
+  "\030\005 \001(\t\022\033\n\023action_copy_message\030\006 \001(\t\022\025\n\rh"
+  "as_countdown\030\007 \001(\010\022\033\n\023action_info_messag"
+  "e\030\010 \001(\t\022\026\n\016invert_display\030\t \001(\010\022\024\n\014reset"
+  "_length\030\n \001(\002\022\r\n\005range\030\013 \001(\002\022\'\n\024action_h"
+  "ide_category\030\014 \001(\0132\t.Category\022\'\n\024action_"
+  "show_category\030\r \001(\0132\t.Category\022)\n\026action"
+  "_toggle_category\030\016 \001(\0132\t.Category\"\024\n\004GUI"
+  "D\022\014\n\004guid\030\001 \001(\005\"\024\n\005Color\022\013\n\003hex\030\001 \001(\t\"\267\001"
+  "\n\016FestivalFilter\022\022\n\ndragonbash\030\001 \001(\010\022\"\n\032"
+  "festival_of_the_four_winds\030\002 \001(\010\022\021\n\thall"
+  "oween\030\003 \001(\010\022\026\n\016lunar_new_year\030\004 \001(\010\022 \n\030s"
+  "uper_adventure_festival\030\005 \001(\010\022\022\n\nwinters"
+  "day\030\006 \001(\010\022\014\n\004none\030\007 \001(\010\"\346\004\n\rMapTypeFilte"
+  "r\022\023\n\013unknown_map\030\001 \001(\010\022\024\n\014redirect_map\030\002"
+  " \001(\010\022\034\n\024character_create_map\030\003 \001(\010\022\017\n\007pv"
+  "p_map\030\004 \001(\010\022\017\n\007gvg_map\030\005 \001(\010\022\024\n\014instance"
+  "_map\030\006 \001(\010\022\022\n\npublic_map\030\007 \001(\010\022\026\n\016tourna"
+  "ment_map\030\010 \001(\010\022\024\n\014tutorial_map\030\t \001(\010\022\033\n\023"
+  "user_tournament_map\030\n \001(\010\022\022\n\ncenter_map\030"
+  "\013 \001(\010\022!\n\031eternal_battlegrounds_map\030\014 \001(\010"
+  "\022\024\n\014bluehome_map\030\r \001(\010\022\034\n\024blue_borderlan"
+  "ds_map\030\016 \001(\010\022\026\n\016green_home_map\030\017 \001(\010\022\035\n\025"
+  "green_borderlands_map\030\020 \001(\010\022\024\n\014red_home_"
+  "map\030\021 \001(\010\022\033\n\023red_borderlands_map\030\022 \001(\010\022\031"
+  "\n\021fortunes_vale_map\030\023 \001(\010\022\027\n\017jump_puzzle"
+  "_map\030\024 \001(\010\022\034\n\024obsidian_sanctum_map\030\025 \001(\010"
+  "\022\035\n\025edge_of_the_mists_map\030\026 \001(\010\022\027\n\017publi"
+  "c_mini_map\030\027 \001(\010\022\026\n\016wvw_lounge_map\030\030 \001(\010"
+  "\"\301\001\n\013MountFilter\022\016\n\006raptor\030\001 \001(\010\022\020\n\010spri"
+  "nger\030\002 \001(\010\022\017\n\007skimmer\030\003 \001(\010\022\016\n\006jackal\030\004 "
+  "\001(\010\022\017\n\007griffon\030\005 \001(\010\022\025\n\rroller_beetle\030\006 "
+  "\001(\010\022\017\n\007warclaw\030\007 \001(\010\022\021\n\tskyscalee\030\010 \001(\010\022"
+  "\r\n\005skiff\030\t \001(\010\022\024\n\014seige_turtle\030\n \001(\010\"\265\001\n"
+  "\020ProfessionFilter\022\020\n\010guardian\030\001 \001(\010\022\017\n\007w"
+  "arrior\030\002 \001(\010\022\020\n\010engineer\030\003 \001(\010\022\016\n\006ranger"
+  "\030\004 \001(\010\022\r\n\005thief\030\005 \001(\010\022\024\n\014elementalist\030\006 "
+  "\001(\010\022\016\n\006mesmer\030\007 \001(\010\022\023\n\013necromancer\030\010 \001(\010"
+  "\022\022\n\nrevenantnt\030\t \001(\010\"\312\017\n\024SpecializationF"
+  "ilter\022\034\n\024elementalist_tempest\030\001 \001(\010\022\031\n\021e"
+  "ngineer_scrapper\030\002 \001(\010\022\035\n\025guardian_drago"
+  "nhunter\030\003 \001(\010\022\033\n\023mesmer_chronomancer\030\004 \001"
+  "(\010\022\032\n\022necromancer_reaper\030\005 \001(\010\022\024\n\014ranger"
+  "_druid\030\006 \001(\010\022\027\n\017revenant_herald\030\007 \001(\010\022\027\n"
+  "\017thief_daredevil\030\010 \001(\010\022\031\n\021warrior_berser"
+  "ker\030\t \001(\010\022\033\n\023elementalist_weaver\030\n \001(\010\022\032"
+  "\n\022engineer_holosmith\030\013 \001(\010\022\032\n\022guardian_f"
+  "irebrand\030\014 \001(\010\022\025\n\rmesmer_mirage\030\r \001(\010\022\033\n"
+  "\023necromancer_scourge\030\016 \001(\010\022\030\n\020ranger_sou"
+  "lbeast\030\017 \001(\010\022\031\n\021revenant_renegade\030\020 \001(\010\022"
+  "\025\n\rthief_deadeye\030\021 \001(\010\022\034\n\024warrior_spellb"
+  "reaker\030\022 \001(\010\022\034\n\024elmentalist_catalyst\030\023 \001"
+  "(\010\022\032\n\022engineer_mechanist\030\024 \001(\010\022\033\n\023guardi"
+  "an_willbender\030\025 \001(\010\022\027\n\017mesmer_virtuoso\030\026"
+  " \001(\010\022\035\n\025necromancer_harbinger\030\027 \001(\010\022\026\n\016r"
+  "anger_untamed\030\030 \001(\010\022\033\n\023revenant_vindicat"
+  "or\030\031 \001(\010\022\025\n\rthief_specter\030\032 \001(\010\022\032\n\022warri"
+  "or_bladesworn\030\033 \001(\010\022\030\n\020elementalist_air\030"
+  "\034 \001(\010\022\033\n\023elementalist_arcane\030\035 \001(\010\022\032\n\022el"
+  "ementalist_earth\030\036 \001(\010\022\031\n\021elementalist_f"
+  "ire\030\037 \001(\010\022\032\n\022elementalist_water\030  \001(\010\022\030\n"
+  "\020engineer_alchemy\030! \001(\010\022\033\n\023engineer_expl"
+  "osives\030\" \001(\010\022\031\n\021engineer_firearms\030# \001(\010\022"
+  "\033\n\023engineer_inventions\030$ \001(\010\022\026\n\016engineer"
+  "_tools\030% \001(\010\022\026\n\016guardian_honor\030& \001(\010\022\031\n\021"
+  "guardian_radiance\030\' \001(\010\022\026\n\016guardian_valo"
+  "r\030( \001(\010\022\030\n\020guardian_virtues\030) \001(\010\022\025\n\rgua"
+  "rdian_zeal\030* \001(\010\022\024\n\014mesmer_chaos\030+ \001(\010\022\031"
+  "\n\021mesmer_domination\030, \001(\010\022\026\n\016mesmer_duel"
+  "ing\030- \001(\010\022\030\n\020mesmer_illusions\030. \001(\010\022\032\n\022m"
+  "esmer_inspiration\030/ \001(\010\022\037\n\027necromancer_b"
+  "lood_magic\0300 \001(\010\022\032\n\022necromancer_curses\0301"
+  " \001(\010\022\037\n\027necromancer_death_magic\0302 \001(\010\022 \n"
+  "\030necromancer_soul_reaping\0303 \001(\010\022\031\n\021necro"
+  "mancer_spite\0304 \001(\010\022\033\n\023ranger_beastmaster"
+  "y\0305 \001(\010\022\033\n\023ranger_marksmanship\0306 \001(\010\022\033\n\023"
+  "ranger_nature_magic\0307 \001(\010\022\032\n\022ranger_skir"
+  "mishing\0308 \001(\010\022\"\n\032ranger_wilderness_survi"
+  "val\0309 \001(\010\022\033\n\023revenant_corruption\030: \001(\010\022\034"
+  "\n\024revenant_devastation\030; \001(\010\022\033\n\023revenant"
+  "_invocation\030< \001(\010\022\034\n\024revenant_retributio"
+  "n\030= \001(\010\022\032\n\022revenant_salvation\030> \001(\010\022\030\n\020t"
+  "hief_acrobatics\030\? \001(\010\022\036\n\026thief_critical_"
+  "strikes\030@ \001(\010\022\031\n\021thief_deadly_arts\030A \001(\010"
+  "\022\031\n\021thief_shadow_arts\030B \001(\010\022\026\n\016thief_tri"
+  "ckery\030C \001(\010\022\024\n\014warrior_arms\030D \001(\010\022\027\n\017war"
+  "rior_defense\030E \001(\010\022\032\n\022warrior_discipline"
+  "\030F \001(\010\022\030\n\020warrior_strength\030G \001(\010\022\027\n\017warr"
+  "ior_tactics\030H \001(\010\"[\n\rSpeciesFilter\022\r\n\005as"
+  "ura\030\001 \001(\010\022\r\n\005charr\030\002 \001(\010\022\r\n\005human\030\003 \001(\010\022"
+  "\014\n\004norn\030\004 \001(\010\022\017\n\007sylvari\030\005 \001(\010\"\037\n\tTrailD"
+  "ata\022\022\n\ntrail_data\030\001 \001(\t*\?\n\rCullChirality"
+  "\022\010\n\004none\020\000\022\r\n\tclockwise\020\001\022\025\n\021counter_clo"
+  "ckwise\020\002*\257\001\n\rResetBehavior\022\022\n\016always_vis"
+  "ible\020\000\022\016\n\nmap_change\020\001\022\017\n\013daily_reset\020\002\022"
+  "\t\n\005never\020\003\022\t\n\005timer\020\004\022\r\n\tmap_reset\020\005\022\023\n\017"
+  "instance_change\020\006\022\035\n\031daily_reset_per_cha"
+  "racter\020\007\022\020\n\014weekly_reset\020\010b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_generators_2fproto_5ftemplates_2fnode_2eproto_deps[1] = {
 };
@@ -844,16 +844,16 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_gen
   &scc_info_MountFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
   &scc_info_Position_generators_2fproto_5ftemplates_2fnode_2eproto.base,
   &scc_info_ProfessionFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
-  &scc_info_RICHARDS_generators_2fproto_5ftemplates_2fnode_2eproto.base,
   &scc_info_SpecializationFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
   &scc_info_SpeciesFilter_generators_2fproto_5ftemplates_2fnode_2eproto.base,
   &scc_info_Texture_generators_2fproto_5ftemplates_2fnode_2eproto.base,
+  &scc_info_Trail_generators_2fproto_5ftemplates_2fnode_2eproto.base,
   &scc_info_TrailData_generators_2fproto_5ftemplates_2fnode_2eproto.base,
   &scc_info_Trigger_generators_2fproto_5ftemplates_2fnode_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_generators_2fproto_5ftemplates_2fnode_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_generators_2fproto_5ftemplates_2fnode_2eproto = {
-  false, false, descriptor_table_protodef_generators_2fproto_5ftemplates_2fnode_2eproto, "generators/proto_templates/node.proto", 5837,
+  false, false, descriptor_table_protodef_generators_2fproto_5ftemplates_2fnode_2eproto, "generators/proto_templates/node.proto", 5834,
   &descriptor_table_generators_2fproto_5ftemplates_2fnode_2eproto_once, descriptor_table_generators_2fproto_5ftemplates_2fnode_2eproto_sccs, descriptor_table_generators_2fproto_5ftemplates_2fnode_2eproto_deps, 16, 0,
   schemas, file_default_instances, TableStruct_generators_2fproto_5ftemplates_2fnode_2eproto::offsets,
   file_level_metadata_generators_2fproto_5ftemplates_2fnode_2eproto, 17, file_level_enum_descriptors_generators_2fproto_5ftemplates_2fnode_2eproto, file_level_service_descriptors_generators_2fproto_5ftemplates_2fnode_2eproto,
@@ -2227,96 +2227,96 @@ void Icon::InternalSwap(Icon* other) {
 
 // ===================================================================
 
-void RICHARDS::InitAsDefaultInstance() {
-  ::_RICHARDS_default_instance_._instance.get_mutable()->category_ = const_cast< ::Category*>(
+void Trail::InitAsDefaultInstance() {
+  ::_Trail_default_instance_._instance.get_mutable()->category_ = const_cast< ::Category*>(
       ::Category::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->texture_ = const_cast< ::Texture*>(
+  ::_Trail_default_instance_._instance.get_mutable()->texture_ = const_cast< ::Texture*>(
       ::Texture::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->guid_ = const_cast< ::GUID*>(
+  ::_Trail_default_instance_._instance.get_mutable()->guid_ = const_cast< ::GUID*>(
       ::GUID::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->trail_data_ = const_cast< ::TrailData*>(
+  ::_Trail_default_instance_._instance.get_mutable()->trail_data_ = const_cast< ::TrailData*>(
       ::TrailData::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->color_ = const_cast< ::Color*>(
+  ::_Trail_default_instance_._instance.get_mutable()->color_ = const_cast< ::Color*>(
       ::Color::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->festival_filter_ = const_cast< ::FestivalFilter*>(
+  ::_Trail_default_instance_._instance.get_mutable()->festival_filter_ = const_cast< ::FestivalFilter*>(
       ::FestivalFilter::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->map_type_filter_ = const_cast< ::MapTypeFilter*>(
+  ::_Trail_default_instance_._instance.get_mutable()->map_type_filter_ = const_cast< ::MapTypeFilter*>(
       ::MapTypeFilter::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->mount_filter_ = const_cast< ::MountFilter*>(
+  ::_Trail_default_instance_._instance.get_mutable()->mount_filter_ = const_cast< ::MountFilter*>(
       ::MountFilter::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->profession_filter_ = const_cast< ::ProfessionFilter*>(
+  ::_Trail_default_instance_._instance.get_mutable()->profession_filter_ = const_cast< ::ProfessionFilter*>(
       ::ProfessionFilter::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->specialization_filter_ = const_cast< ::SpecializationFilter*>(
+  ::_Trail_default_instance_._instance.get_mutable()->specialization_filter_ = const_cast< ::SpecializationFilter*>(
       ::SpecializationFilter::internal_default_instance());
-  ::_RICHARDS_default_instance_._instance.get_mutable()->species_filter_ = const_cast< ::SpeciesFilter*>(
+  ::_Trail_default_instance_._instance.get_mutable()->species_filter_ = const_cast< ::SpeciesFilter*>(
       ::SpeciesFilter::internal_default_instance());
 }
-class RICHARDS::_Internal {
+class Trail::_Internal {
  public:
-  static const ::Category& category(const RICHARDS* msg);
-  static const ::Texture& texture(const RICHARDS* msg);
-  static const ::GUID& guid(const RICHARDS* msg);
-  static const ::TrailData& trail_data(const RICHARDS* msg);
-  static const ::Color& color(const RICHARDS* msg);
-  static const ::FestivalFilter& festival_filter(const RICHARDS* msg);
-  static const ::MapTypeFilter& map_type_filter(const RICHARDS* msg);
-  static const ::MountFilter& mount_filter(const RICHARDS* msg);
-  static const ::ProfessionFilter& profession_filter(const RICHARDS* msg);
-  static const ::SpecializationFilter& specialization_filter(const RICHARDS* msg);
-  static const ::SpeciesFilter& species_filter(const RICHARDS* msg);
+  static const ::Category& category(const Trail* msg);
+  static const ::Texture& texture(const Trail* msg);
+  static const ::GUID& guid(const Trail* msg);
+  static const ::TrailData& trail_data(const Trail* msg);
+  static const ::Color& color(const Trail* msg);
+  static const ::FestivalFilter& festival_filter(const Trail* msg);
+  static const ::MapTypeFilter& map_type_filter(const Trail* msg);
+  static const ::MountFilter& mount_filter(const Trail* msg);
+  static const ::ProfessionFilter& profession_filter(const Trail* msg);
+  static const ::SpecializationFilter& specialization_filter(const Trail* msg);
+  static const ::SpeciesFilter& species_filter(const Trail* msg);
 };
 
 const ::Category&
-RICHARDS::_Internal::category(const RICHARDS* msg) {
+Trail::_Internal::category(const Trail* msg) {
   return *msg->category_;
 }
 const ::Texture&
-RICHARDS::_Internal::texture(const RICHARDS* msg) {
+Trail::_Internal::texture(const Trail* msg) {
   return *msg->texture_;
 }
 const ::GUID&
-RICHARDS::_Internal::guid(const RICHARDS* msg) {
+Trail::_Internal::guid(const Trail* msg) {
   return *msg->guid_;
 }
 const ::TrailData&
-RICHARDS::_Internal::trail_data(const RICHARDS* msg) {
+Trail::_Internal::trail_data(const Trail* msg) {
   return *msg->trail_data_;
 }
 const ::Color&
-RICHARDS::_Internal::color(const RICHARDS* msg) {
+Trail::_Internal::color(const Trail* msg) {
   return *msg->color_;
 }
 const ::FestivalFilter&
-RICHARDS::_Internal::festival_filter(const RICHARDS* msg) {
+Trail::_Internal::festival_filter(const Trail* msg) {
   return *msg->festival_filter_;
 }
 const ::MapTypeFilter&
-RICHARDS::_Internal::map_type_filter(const RICHARDS* msg) {
+Trail::_Internal::map_type_filter(const Trail* msg) {
   return *msg->map_type_filter_;
 }
 const ::MountFilter&
-RICHARDS::_Internal::mount_filter(const RICHARDS* msg) {
+Trail::_Internal::mount_filter(const Trail* msg) {
   return *msg->mount_filter_;
 }
 const ::ProfessionFilter&
-RICHARDS::_Internal::profession_filter(const RICHARDS* msg) {
+Trail::_Internal::profession_filter(const Trail* msg) {
   return *msg->profession_filter_;
 }
 const ::SpecializationFilter&
-RICHARDS::_Internal::specialization_filter(const RICHARDS* msg) {
+Trail::_Internal::specialization_filter(const Trail* msg) {
   return *msg->specialization_filter_;
 }
 const ::SpeciesFilter&
-RICHARDS::_Internal::species_filter(const RICHARDS* msg) {
+Trail::_Internal::species_filter(const Trail* msg) {
   return *msg->species_filter_;
 }
-RICHARDS::RICHARDS(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+Trail::Trail(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:RICHARDS)
+  // @@protoc_insertion_point(arena_constructor:Trail)
 }
-RICHARDS::RICHARDS(const RICHARDS& from)
+Trail::Trail(const Trail& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   bhdraft__schedule_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -2382,24 +2382,24 @@ RICHARDS::RICHARDS(const RICHARDS& from)
   ::memcpy(&map_id_, &from.map_id_,
     static_cast<size_t>(reinterpret_cast<char*>(&scale_) -
     reinterpret_cast<char*>(&map_id_)) + sizeof(scale_));
-  // @@protoc_insertion_point(copy_constructor:RICHARDS)
+  // @@protoc_insertion_point(copy_constructor:Trail)
 }
 
-void RICHARDS::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_RICHARDS_generators_2fproto_5ftemplates_2fnode_2eproto.base);
+void Trail::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Trail_generators_2fproto_5ftemplates_2fnode_2eproto.base);
   bhdraft__schedule_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   ::memset(&category_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&scale_) -
       reinterpret_cast<char*>(&category_)) + sizeof(scale_));
 }
 
-RICHARDS::~RICHARDS() {
-  // @@protoc_insertion_point(destructor:RICHARDS)
+Trail::~Trail() {
+  // @@protoc_insertion_point(destructor:Trail)
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void RICHARDS::SharedDtor() {
+void Trail::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
   bhdraft__schedule_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete category_;
@@ -2415,23 +2415,23 @@ void RICHARDS::SharedDtor() {
   if (this != internal_default_instance()) delete species_filter_;
 }
 
-void RICHARDS::ArenaDtor(void* object) {
-  RICHARDS* _this = reinterpret_cast< RICHARDS* >(object);
+void Trail::ArenaDtor(void* object) {
+  Trail* _this = reinterpret_cast< Trail* >(object);
   (void)_this;
 }
-void RICHARDS::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void Trail::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void RICHARDS::SetCachedSize(int size) const {
+void Trail::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const RICHARDS& RICHARDS::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_RICHARDS_generators_2fproto_5ftemplates_2fnode_2eproto.base);
+const Trail& Trail::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Trail_generators_2fproto_5ftemplates_2fnode_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void RICHARDS::Clear() {
-// @@protoc_insertion_point(message_clear_start:RICHARDS)
+void Trail::Clear() {
+// @@protoc_insertion_point(message_clear_start:Trail)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2487,7 +2487,7 @@ void RICHARDS::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* RICHARDS::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* Trail::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
@@ -2599,7 +2599,7 @@ const char* RICHARDS::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::i
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 186)) {
           auto str = _internal_mutable_bhdraft__schedule();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "RICHARDS.bhdraft__schedule"));
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Trail.bhdraft__schedule"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -2688,9 +2688,9 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* RICHARDS::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* Trail::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:RICHARDS)
+  // @@protoc_insertion_point(serialize_to_array_start:Trail)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2792,7 +2792,7 @@ failure:
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_bhdraft__schedule().data(), static_cast<int>(this->_internal_bhdraft__schedule().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "RICHARDS.bhdraft__schedule");
+      "Trail.bhdraft__schedule");
     target = stream->WriteStringMaybeAliased(
         23, this->_internal_bhdraft__schedule(), target);
   }
@@ -2869,12 +2869,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:RICHARDS)
+  // @@protoc_insertion_point(serialize_to_array_end:Trail)
   return target;
 }
 
-size_t RICHARDS::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:RICHARDS)
+size_t Trail::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Trail)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -3039,23 +3039,23 @@ size_t RICHARDS::ByteSizeLong() const {
   return total_size;
 }
 
-void RICHARDS::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:RICHARDS)
+void Trail::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:Trail)
   GOOGLE_DCHECK_NE(&from, this);
-  const RICHARDS* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<RICHARDS>(
+  const Trail* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<Trail>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:RICHARDS)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Trail)
     ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:RICHARDS)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:Trail)
     MergeFrom(*source);
   }
 }
 
-void RICHARDS::MergeFrom(const RICHARDS& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:RICHARDS)
+void Trail::MergeFrom(const Trail& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:Trail)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -3135,37 +3135,37 @@ void RICHARDS::MergeFrom(const RICHARDS& from) {
   }
 }
 
-void RICHARDS::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:RICHARDS)
+void Trail::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:Trail)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void RICHARDS::CopyFrom(const RICHARDS& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:RICHARDS)
+void Trail::CopyFrom(const Trail& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Trail)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool RICHARDS::IsInitialized() const {
+bool Trail::IsInitialized() const {
   return true;
 }
 
-void RICHARDS::InternalSwap(RICHARDS* other) {
+void Trail::InternalSwap(Trail* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   bhdraft__schedule_.Swap(&other->bhdraft__schedule_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(RICHARDS, scale_)
-      + sizeof(RICHARDS::scale_)
-      - PROTOBUF_FIELD_OFFSET(RICHARDS, category_)>(
+      PROTOBUF_FIELD_OFFSET(Trail, scale_)
+      + sizeof(Trail::scale_)
+      - PROTOBUF_FIELD_OFFSET(Trail, category_)>(
           reinterpret_cast<char*>(&category_),
           reinterpret_cast<char*>(&other->category_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata RICHARDS::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata Trail::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -8872,8 +8872,8 @@ template<> PROTOBUF_NOINLINE ::Category* Arena::CreateMaybeMessage< ::Category >
 template<> PROTOBUF_NOINLINE ::Icon* Arena::CreateMaybeMessage< ::Icon >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Icon >(arena);
 }
-template<> PROTOBUF_NOINLINE ::RICHARDS* Arena::CreateMaybeMessage< ::RICHARDS >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::RICHARDS >(arena);
+template<> PROTOBUF_NOINLINE ::Trail* Arena::CreateMaybeMessage< ::Trail >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Trail >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Texture* Arena::CreateMaybeMessage< ::Texture >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Texture >(arena);
