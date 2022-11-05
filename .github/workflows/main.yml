@@ -95,6 +95,7 @@ jobs:
       - name: Make xml_converter
         run: |
             cd xml_converter
+            cmake ./
             make
             mv xml_converter ../output
 
