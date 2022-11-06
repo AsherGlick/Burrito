@@ -118,11 +118,6 @@ static const std::string base64_chars =
              "abcdefghijklmnopqrstuvwxyz"
              "0123456789+/";
 
-
-static inline bool is_base64(uint8_t c) {
-  return (isalnum(c) || (c == '+') || (c == '/'));
-}
-
 std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
   std::string ret;
   int i = 0;
@@ -167,49 +162,83 @@ std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
   return ret;
 }
 
+#include "function_timers.hpp"
+
+// TODO: Write Tests For This
+static unsigned char base64_lookup[256] = {
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,  62, 255,
+    255, 255,  63,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61, 255, 255,
+    255, 255, 255, 255, 255,  0,    1,   2,   3,   4,   5,   6,   7,   8,   9,
+     10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,
+     25, 255, 255, 255, 255, 255, 255,  26,  27,  28,  29,  30,  31,  32,  33,
+     34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48,
+     49,  50,  51, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255
+};
+
 std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
-  int in_len = encoded_string.size();
-  int i = 0;
-  int j = 0;
-  int in_ = 0;
-  uint8_t char_array_4[4], char_array_3[3];
-  std::vector<uint8_t> ret;
+    int in_len = encoded_string.size();
 
-  while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
-    char_array_4[i++] = encoded_string[in_]; in_++;
-    if (i ==4) {
-        for (i = 0; i <4; i++){
-        char_array_4[i] = base64_chars.find(char_array_4[i]);
+    uint8_t char_array_4[4];
+
+    size_t input_index = 0;
+    size_t output_index = 0;
+
+    while(encoded_string[in_len-1] == '=') {
+        in_len -= 1;
+    }
+
+    std::vector<uint8_t> ret(in_len * 3 / 4);
+
+    while (in_len >= 4) {
+        for (int i = 0; i < 4; i++) {
+            char_array_4[i] = base64_lookup[encoded_string[input_index+i]];
+
+            if (char_array_4[i] == 255) {
+                // TODO: Throw an error or something
+                return std::vector<uint8_t>();
+            }
         }
 
-        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-        char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+        ret[output_index] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+        ret[output_index + 1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+        ret[output_index + 2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-        for (i = 0; (i < 3); i++){
-            ret.push_back(char_array_3[i]);
+        input_index += 4;
+        in_len -= 4;
+        output_index += 3;
+    }
+
+
+    if (in_len) {
+        int i = 0;
+        for (; i < in_len; i++) {
+            char_array_4[i] = base64_lookup[encoded_string[input_index+i]];
+
+            if (char_array_4[i] == 255) {
+                // TODO: Throw an error or something
+                return std::vector<uint8_t>();
+            }
+
         }
-      i = 0;
-    }
-  }
+        for (; i < 4; i++) {
+            char_array_4[i] = 0;
+        }
 
-  if (i) {
-    for (j = i; j <4; j++){
-        char_array_4[j] = 0;
-    }
-
-    for (j = 0; j <4; j++){
-        char_array_4[j] = base64_chars.find(char_array_4[j]);
+        ret[output_index] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+        ret[output_index + 1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+        ret[output_index + 2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
     }
 
-    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-    char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-    for (j = 0; (j < i - 1); j++){
-        ret.push_back(char_array_3[j]);
-    }
-  }
-
-  return ret;
+    return ret;
 }

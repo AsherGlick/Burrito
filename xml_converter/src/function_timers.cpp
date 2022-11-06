@@ -30,9 +30,9 @@ using namespace std;
     unsigned long call_count_##TIMER = 0; \
     void print_timer_##TIMER(ostream &out) { \
         long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration_##TIMER).count(); \
-        out << "Timer " << TIMER << "Total Duration: " << microseconds << endl; \
-        out << "Timer " << TIMER << "Call Count " << call_count_##TIMER << endl; \
-        out << "Timer " << TIMER << "Call Duration: " << float(microseconds) / float(call_count_##TIMER) << endl; \
+        out << "Timer " << TIMER << " Total Duration: " << microseconds << endl; \
+        out << "Timer " << TIMER << " Call Count " << call_count_##TIMER << endl; \
+        out << "Timer " << TIMER << " Call Duration: " << float(microseconds) / float(call_count_##TIMER) << endl; \
     } \
     void print_timer_##TIMER() {print_timer_##TIMER(cout);}
 
