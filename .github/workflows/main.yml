@@ -95,7 +95,7 @@ jobs:
       - name: Make xml_converter
         run: |
             cd xml_converter
-            cmake ./
+            protoc --proto_path=generators/proto_templates --cpp_out=src/ generators/proto_templates/waypoint.proto) 
             make
             mv xml_converter ../output
 

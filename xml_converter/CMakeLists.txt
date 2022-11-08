@@ -9,8 +9,6 @@ set(TARGET_NAME xml_converter)
 # Add Protobuf
 find_package(Protobuf REQUIRED)
 include_directories(${Protobuf_INCLUDE_DIRS})
-# include_directories()
-EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=generators/proto_templates --cpp_out=src/ generators/proto_templates/waypoint.proto) 
 
 # Add Dependencies
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.cc")
