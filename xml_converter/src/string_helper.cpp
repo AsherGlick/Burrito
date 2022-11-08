@@ -174,7 +174,7 @@ std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
 //   +   62
 //   /   63
 //   Everything else to 255 (invalid character)
-//   = is mapped as an error because it gets caught early as a termination
+//   = is invalid because trailing ='s are stripped any any others are invalid
 ////////////////////////////////////////////////////////////////////////////////
 static unsigned char base64_lookup[256] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
