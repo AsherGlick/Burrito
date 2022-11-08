@@ -1,18 +1,18 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
+class XMLError;
+
 class UniqueId {
  public:
-    vector<uint8_t> guid;
+    std::vector<uint8_t> guid;
 };
 
-UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
 
-string stringify_unique_id(UniqueId attribute_value);
+std::string stringify_unique_id(UniqueId attribute_value);

@@ -1,23 +1,20 @@
-#include <string.h>
-
-#include <iostream>
-#include <fstream>
-#include <iterator>
-#include <ostream>
-#include <string>
-#include <string_view>
-#include <vector>
+#include <algorithm>
+#include <chrono>
 #include <filesystem>
-#include <functional>
-#include <cstdio>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
-#include "parseable.hpp"
-#include "trail_gen.hpp"
-#include "icon_gen.hpp"
 #include "category_gen.hpp"
-#include "attribute/float.hpp"
-#include "string_helper.hpp"
+#include "icon_gen.hpp"
+#include "parseable.hpp"
 #include "rapid_helpers.hpp"
+#include "string_helper.hpp"
+#include "trail_gen.hpp"
 
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
@@ -42,7 +39,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     outfile << "<OverlayData>\n";
     for (const auto & category : *marker_categories) {
         string text;
-        for (const auto& s : category.second.as_xml()) { 
+        for (const auto& s : category.second.as_xml()) {
             text += s;
         }
         outfile << text + "\n";
@@ -50,9 +47,9 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 
     outfile << "<POIs>\n";
     for (const auto & parsed_poi : *parsed_pois) {
-        string text; 
-        for (const auto& s : parsed_poi->as_xml()) { 
-            text += s; 
+        string text;
+        for (const auto& s : parsed_poi->as_xml()) {
+            text += s;
         }
         outfile << text + "\n";
     }

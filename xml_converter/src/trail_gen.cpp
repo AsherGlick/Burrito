@@ -1,6 +1,15 @@
 #include "trail_gen.hpp"
-#include <typeinfo>
+
+#include <iosfwd>
 #include <string>
+
+#include "rapidxml-1.13/rapidxml.hpp"
+#include "attribute/bool.hpp"
+#include "attribute/float.hpp"
+#include "attribute/int.hpp"
+#include "attribute/string.hpp"
+#include "rapid_helpers.hpp"
+#include "string_helper.hpp"
 
 using namespace std;
 

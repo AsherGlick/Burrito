@@ -1,10 +1,14 @@
 #include "species_filter_gen.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
 
 #include "../rapid_helpers.hpp"
+#include "../string_helper.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+
+using namespace std;
 
 SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     SpeciesFilter species_filter;

@@ -1,11 +1,15 @@
 #include "unique_id.hpp"
 
+#include <cstdint>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+
+using namespace std;
 
 UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
     UniqueId unique_id;

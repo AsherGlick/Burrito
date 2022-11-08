@@ -1,11 +1,14 @@
 #include "euler_rotation_gen.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
-#include <typeinfo>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
+
+using namespace std;
 
 EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *){
     EulerRotation euler_rotation;

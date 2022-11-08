@@ -1,10 +1,14 @@
 #include "map_type_filter_gen.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
+
+using namespace std;
 
 MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     MapTypeFilter map_type_filter;

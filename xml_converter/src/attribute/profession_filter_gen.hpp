@@ -3,11 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
+class XMLError;
+
 class ProfessionFilter {
  public:
     bool elementalist;
@@ -20,7 +19,7 @@ class ProfessionFilter {
     bool thief;
     bool warrior;
 
-    virtual string classname() { return "ProfessionFilter"; };
+    virtual std::string classname() { return "ProfessionFilter"; };
 };
-ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
-string stringify_profession_filter(ProfessionFilter attribute_value);
+ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+std::string stringify_profession_filter(ProfessionFilter attribute_value);

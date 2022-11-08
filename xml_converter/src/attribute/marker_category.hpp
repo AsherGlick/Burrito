@@ -3,14 +3,15 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+
+class XMLError;
 
 class MarkerCategory {
  public:    
-    string category;
+    std::string category;
 };
 
-MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
 
-string stringify_marker_category (MarkerCategory attribute_value); 
+std::string stringify_marker_category (MarkerCategory attribute_value); 

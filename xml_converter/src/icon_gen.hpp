@@ -1,17 +1,12 @@
 #pragma once
-#include "rapidxml-1.13/rapidxml.hpp"
 #include <string>
 #include <vector>
-#include "parseable.hpp"
 
-#include "attribute/bool.hpp"
 #include "attribute/color.hpp"
 #include "attribute/cull_chirality_gen.hpp"
 #include "attribute/euler_rotation_gen.hpp"
 #include "attribute/festival_filter_gen.hpp"
-#include "attribute/float.hpp"
 #include "attribute/image.hpp"
-#include "attribute/int.hpp"
 #include "attribute/map_type_filter_gen.hpp"
 #include "attribute/marker_category.hpp"
 #include "attribute/mount_filter_gen.hpp"
@@ -20,9 +15,13 @@
 #include "attribute/reset_behavior_gen.hpp"
 #include "attribute/specialization_filter_gen.hpp"
 #include "attribute/species_filter_gen.hpp"
-#include "attribute/string.hpp"
 #include "attribute/unique_id.hpp"
-using namespace std;
+#include "parseable.hpp"
+
+#include "rapidxml-1.13/rapidxml.hpp"
+
+class XMLError;
+
 
 class Icon: public Parseable {
     public:
@@ -46,9 +45,9 @@ class Icon: public Parseable {
         bool category_is_set = false;
         Color color;
         bool color_is_set = false;
-        string copy_clipboard;
+        std::string copy_clipboard;
         bool copy_clipboard_is_set = false;
-        string copy_message;
+        std::string copy_message;
         bool copy_message_is_set = false;
         CullChirality cull_chirality;
         bool cull_chirality_is_set = false;
@@ -72,7 +71,7 @@ class Icon: public Parseable {
         bool icon_is_set = false;
         float icon_size;
         bool icon_size_is_set = false;
-        string info_message;
+        std::string info_message;
         bool info_message_is_set = false;
         bool invert_visibility;
         bool invert_visibility_is_set = false;
@@ -104,7 +103,7 @@ class Icon: public Parseable {
         bool reset_length_is_set = false;
         bool scale_on_map_with_zoom;
         bool scale_on_map_with_zoom_is_set = false;
-        string schedule;
+        std::string schedule;
         bool schedule_is_set = false;
         float schedule_duration;
         bool schedule_duration_is_set = false;
@@ -116,9 +115,9 @@ class Icon: public Parseable {
         bool species_filter_is_set = false;
         MarkerCategory toggle_category;
         bool toggle_category_is_set = false;
-        string tooltip_description;
+        std::string tooltip_description;
         bool tooltip_description_is_set = false;
-        string tooltip_name;
+        std::string tooltip_name;
         bool tooltip_name_is_set = false;
         float trigger_range;
         bool trigger_range_is_set = false;
@@ -134,8 +133,8 @@ class Icon: public Parseable {
         bool z_position_is_set = false;
         float z_rotation;
         bool z_rotation_is_set = false;
-        virtual string classname();
-        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
-        virtual vector<string> as_xml() const;
+        virtual std::string classname();
+        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*> *errors);
+        virtual std::vector<std::string> as_xml() const;
         bool validate_attributes_of_type_marker_category();
 };

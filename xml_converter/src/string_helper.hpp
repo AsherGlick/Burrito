@@ -1,18 +1,19 @@
 #pragma once
 
+#include <cstdint>
+#include <initializer_list>
 #include <string>
 #include <vector>
-using namespace std;
 
-bool matches_any(string test, std::initializer_list<string> list);
-bool normalized_matches_any(string test, std::initializer_list<string> list);
-bool normalized_matches_any(string test, std::vector<string> list);
+bool matches_any(std::string test, std::initializer_list<std::string> list);
+bool normalized_matches_any(std::string test, std::initializer_list<std::string> list);
+bool normalized_matches_any(std::string test, std::vector<std::string> list);
 
-string lowercase(string);
+std::string lowercase(std::string);
 
-vector<string> split(string input, string delimiter);
+std::vector<std::string> split(std::string input, std::string delimiter);
 
-string normalize(string input_string);
+std::string normalize(std::string input_string);
 
 std::string base64_encode(uint8_t const* buf, unsigned int bufLen);
 std::vector<uint8_t> base64_decode(std::string const&);

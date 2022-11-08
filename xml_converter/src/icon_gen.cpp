@@ -1,6 +1,15 @@
 #include "icon_gen.hpp"
-#include <typeinfo>
+
 #include <string>
+#include <iosfwd>
+#include "rapid_helpers.hpp"
+#include "string_helper.hpp"
+#include "attribute/bool.hpp"
+#include "attribute/float.hpp"
+#include "attribute/int.hpp"
+#include "attribute/string.hpp"
+
+#include "rapidxml-1.13/rapidxml.hpp"
 
 using namespace std;
 

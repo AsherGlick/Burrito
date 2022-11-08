@@ -1,10 +1,14 @@
 #include "reset_behavior_gen.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
+
+using namespace std;
 
 ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     ResetBehavior reset_behavior;

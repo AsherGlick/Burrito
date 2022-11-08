@@ -1,7 +1,11 @@
 #include "rapid_helpers.hpp"
-#include "rapidxml-1.13/rapidxml.hpp"
+
+#include <sys/types.h>
 #include <iostream>
 #include <string>
+
+#include "rapidxml-1.13/rapidxml.hpp"
+
 using namespace std;
 
 string find_attribute_value(rapidxml::xml_node<>* node, string attribute_name) {

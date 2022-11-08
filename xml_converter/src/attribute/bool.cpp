@@ -1,11 +1,11 @@
 #include "bool.hpp"
 
-#include <stdexcept>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
-#include "../rapidxml-1.13/rapidxml.hpp"
 #include "../rapid_helpers.hpp"
+#include "../rapidxml-1.13/rapidxml.hpp"
 
 using namespace std;
 

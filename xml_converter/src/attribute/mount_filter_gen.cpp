@@ -1,10 +1,14 @@
 #include "mount_filter_gen.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
+
+using namespace std;
 
 MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
     MountFilter mount_filter;

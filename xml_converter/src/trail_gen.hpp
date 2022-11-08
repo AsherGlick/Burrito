@@ -1,36 +1,22 @@
 #pragma once
-#include "rapidxml-1.13/rapidxml.hpp"
+
 #include <string>
 #include <vector>
-#include "parseable.hpp"
-#include <string.h>
-#include <cstdio>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <iostream>
-#include <iterator>
-#include <ostream>
-#include <string_view>
-#include "rapidxml-1.13/rapidxml_print.hpp"
-
-#include "attribute/bool.hpp"
 #include "attribute/color.hpp"
 #include "attribute/cull_chirality_gen.hpp"
 #include "attribute/festival_filter_gen.hpp"
-#include "attribute/float.hpp"
 #include "attribute/image.hpp"
-#include "attribute/int.hpp"
 #include "attribute/map_type_filter_gen.hpp"
 #include "attribute/marker_category.hpp"
 #include "attribute/mount_filter_gen.hpp"
 #include "attribute/profession_filter_gen.hpp"
 #include "attribute/specialization_filter_gen.hpp"
 #include "attribute/species_filter_gen.hpp"
-#include "attribute/string.hpp"
 #include "attribute/trail_data.hpp"
 #include "attribute/unique_id.hpp"
-using namespace std;
+#include "parseable.hpp"
+#include "rapidxml-1.13/rapidxml.hpp"
+class XMLError;
 
 class Trail: public Parseable {
     public:
@@ -76,7 +62,7 @@ class Trail: public Parseable {
         bool render_on_map_is_set = false;
         bool render_on_minimap;
         bool render_on_minimap_is_set = false;
-        string schedule;
+        std::string schedule;
         bool schedule_is_set = false;
         float schedule_duration;
         bool schedule_duration_is_set = false;
@@ -90,8 +76,8 @@ class Trail: public Parseable {
         bool trail_data_is_set = false;
         float trail_scale;
         bool trail_scale_is_set = false;
-        virtual string classname();
-        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
-        virtual vector<string> as_xml() const;
+        virtual std::string classname();
+        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*> *errors);
+        virtual std::vector<std::string> as_xml() const;
         bool validate_attributes_of_type_marker_category();
 };

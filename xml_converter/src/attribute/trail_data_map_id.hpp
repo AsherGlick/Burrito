@@ -3,15 +3,15 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 
-using namespace std;
+class XMLError;
+
 class TrailDataMapId {
-public:    
+  public:    
     int trail_data_map_id;
 };
 
-TrailDataMapId parse_trail_data_map_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+TrailDataMapId parse_trail_data_map_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
 
-string stringify_trail_data_map_id(TrailDataMapId attribute_value);
+std::string stringify_trail_data_map_id(TrailDataMapId attribute_value);

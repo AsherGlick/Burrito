@@ -3,11 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 
-using namespace std;
+class XMLError;
 
-string parse_string(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+std::string parse_string(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
 
-string stringify_string(string attribute_value);
+std::string stringify_string(std::string attribute_value);

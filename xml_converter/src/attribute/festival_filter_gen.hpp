@@ -3,11 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
+class XMLError;
+
 class FestivalFilter {
  public:
     bool dragonbash;
@@ -18,7 +17,7 @@ class FestivalFilter {
     bool super_adventure_festival;
     bool wintersday;
 
-    virtual string classname() { return "FestivalFilter"; };
+    virtual std::string classname() { return "FestivalFilter"; };
 };
-FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
-string stringify_festival_filter(FestivalFilter attribute_value);
+FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+std::string stringify_festival_filter(FestivalFilter attribute_value);

@@ -1,6 +1,15 @@
 #include "category_gen.hpp"
-#include <typeinfo>
+
+#include <iosfwd>
 #include <string>
+#include <type_traits>
+
+#include "rapid_helpers.hpp"
+#include "string_helper.hpp"
+#include "attribute/bool.hpp"
+#include "attribute/string.hpp"
+
+#include "rapidxml-1.13/rapidxml.hpp"
 
 using namespace std;
 

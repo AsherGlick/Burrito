@@ -1,7 +1,8 @@
 #include "string_helper.hpp"
 
-#include <iostream>
 #include <cstddef>
+#include <cstdint>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -95,6 +96,12 @@ string normalize(string input_string) {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+// lowercase
+// 
+// A function to return a string where all of the letters have been lowercased.
+// Only works on ASCII strings.
+////////////////////////////////////////////////////////////////////////////////
 string lowercase(string input) {
     string output;
     output.reserve(input.length());
@@ -163,7 +170,6 @@ std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
   return ret;
 }
 
-#include "function_timers.hpp"
 
 // TODO: Write Tests For This
 ////////////////////////////////////////////////////////////////////////////////
@@ -213,7 +219,7 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
 
     while (in_len >= 4) {
         for (int i = 0; i < 4; i++) {
-            char_array_4[i] = base64_lookup[encoded_string[input_index+i]];
+            char_array_4[i] = base64_lookup[(uint8_t)encoded_string[input_index+i]];
 
             if (char_array_4[i] == 255) {
                 // TODO: Throw an error or something
@@ -233,13 +239,12 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
     if (in_len) {
         int i = 0;
         for (; i < in_len; i++) {
-            char_array_4[i] = base64_lookup[encoded_string[input_index+i]];
+            char_array_4[i] = base64_lookup[(uint8_t)encoded_string[input_index+i]];
 
             if (char_array_4[i] == 255) {
                 // TODO: Throw an error or something
                 return std::vector<uint8_t>();
             }
-
         }
         for (; i < 4; i++) {
             char_array_4[i] = 0;

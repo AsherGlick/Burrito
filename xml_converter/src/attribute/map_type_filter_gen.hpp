@@ -3,11 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
+class XMLError;
+
 class MapTypeFilter {
  public:
     bool blue_borderlands_map;
@@ -35,7 +34,7 @@ class MapTypeFilter {
     bool user_tournament_map;
     bool wvw_lounge_map;
 
-    virtual string classname() { return "MapTypeFilter"; };
+    virtual std::string classname() { return "MapTypeFilter"; };
 };
-MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
-string stringify_map_type_filter(MapTypeFilter attribute_value);
+MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+std::string stringify_map_type_filter(MapTypeFilter attribute_value);

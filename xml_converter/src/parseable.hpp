@@ -2,12 +2,9 @@
 
 #include <string>
 #include <vector>
-#include <map>
 
-#include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
-
-using namespace std;
+class XMLError;
 
 class Parseable {
  private:
@@ -16,15 +13,15 @@ class Parseable {
    
  public:
     // A stringy representation of a human readable classname. Used for errors.
-    virtual string classname();
+    virtual std::string classname();
 
     // A default parser function to parse an entire XML node into the class.
-    void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
+    void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*> *errors);
 
     // A default parser function to parse a single XML attribute into the class.
-    virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
+    virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*> *errors);
 
     // 
-    virtual vector<string> as_xml() const;
+    virtual std::vector<std::string> as_xml() const;
 
 };

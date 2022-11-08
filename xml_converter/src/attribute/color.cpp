@@ -1,5 +1,6 @@
 #include "color.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
 

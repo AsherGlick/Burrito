@@ -3,11 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
+class XMLError;
+
 class SpecializationFilter {
  public:
     bool elementalist_air;
@@ -83,7 +82,7 @@ class SpecializationFilter {
     bool warrior_strength;
     bool warrior_tactics;
 
-    virtual string classname() { return "SpecializationFilter"; };
+    virtual std::string classname() { return "SpecializationFilter"; };
 };
-SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
-string stringify_specialization_filter(SpecializationFilter attribute_value);
+SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+std::string stringify_specialization_filter(SpecializationFilter attribute_value);
