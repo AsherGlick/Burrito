@@ -112,6 +112,7 @@ string lowercase(string input) {
 
 
 // Functions to either encode or decode base64 strings
+
 // Obtained from https://stackoverflow.com/questions/180947/base64-decode-snippet-in-c
 static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -165,6 +166,16 @@ std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
 #include "function_timers.hpp"
 
 // TODO: Write Tests For This
+////////////////////////////////////////////////////////////////////////////////
+// This lookup table maps all base64 characters to their numerical equivalents
+//   A-Z  0-25
+//   a-z 26-51
+//   0-9 52-61
+//   +   62
+//   /   63
+//   Everything else to 255 (invalid character)
+//   = is mapped as an error because it gets caught early as a termination
+////////////////////////////////////////////////////////////////////////////////
 static unsigned char base64_lookup[256] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -218,7 +229,6 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
         in_len -= 4;
         output_index += 3;
     }
-
 
     if (in_len) {
         int i = 0;
