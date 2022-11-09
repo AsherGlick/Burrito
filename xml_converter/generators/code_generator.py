@@ -5,6 +5,7 @@ import frontmatter  # type:ignore
 from typing import Any, Dict, List, Tuple, Set
 import os
 import markdown
+import subprocess
 from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
 
@@ -220,6 +221,9 @@ def validate_front_matter_schema(front_matter: Any) -> str:
         return "Error Message: {} (Path: {}".format(e.message, e.json_path)
     return ""
 
+# def validate_protobuf_schema() 
+         # validate(front_matter, proto.safe_load(schema))
+# Write this later
 
 @dataclass
 class Document:
@@ -274,7 +278,7 @@ class Generator:
     def delete_generated_docs(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
             filepath = os.path.join(dir_path, filepath)
-            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_gen.html"):
+            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_gen.html") or filepath.endswith("pb/h") or filepath.endswith("pb.cc"):
                 os.remove(filepath)
 
     def load_input_doc(self, dir_path: str) -> None:
@@ -295,6 +299,10 @@ class Generator:
                 metadata=document.metadata,
                 content=document.content
             )
+
+    def write_proto_files(self, output_directory: str) -> None:
+        args = "protoc --proto_path=./proto_templates --cpp_out=" + output_directory + " ./proto_templates/waypoint.proto"
+        os.system(args)           
 
     ############################################################################
     # write_cpp_classes
@@ -837,6 +845,7 @@ def main() -> None:
     generator.delete_generated_docs("../src/")
     generator.delete_generated_docs("../src/attribute")
     generator.write_webdocs("../web_docs/")
+    generator.write_proto_files("../src/")
     generator.write_cpp_classes("../src/")
     generator.write_attribute("../src/attribute")
 
