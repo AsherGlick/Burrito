@@ -1,3 +1,5 @@
+#!/bin/bash
+
 source ./venv/bin/activate
 
 readarray -d '' FILES < <(find . -type f -name "*.py" -not -path "*/venv/*"  -print0)
