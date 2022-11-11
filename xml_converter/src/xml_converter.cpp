@@ -18,7 +18,7 @@
 #include "attribute/float.hpp"
 #include "string_helper.hpp"
 #include "rapid_helpers.hpp"
-#include "waypoint.pb.h"
+#include "../proto/waypoint.pb.h"
 
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
@@ -229,9 +229,19 @@ void convert_taco_directory(string directory, map<string, Category>* marker_cate
     }
 }
 
+void test_proto (){
+    waypoint::Category testcategory;
+    testcategory.set_display_name("TEST");
+    string output = testcategory.display_name();
+    if (output != "TEST") {
+        cout << "Error in test_proto" <<endl;
+    }
+}
+
 int main() {
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
+    test_proto();
 
     for (const auto & entry : filesystem::directory_iterator("./packs")) {
         string path = entry.path();

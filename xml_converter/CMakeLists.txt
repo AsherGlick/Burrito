@@ -5,14 +5,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Generate Protobuf
 INCLUDE(FindProtobuf) 
-FIND_PACKAGE(Protobuf REQUIRED)
 ADD_SUBDIRECTORY(proto)
 
 # Name Output File
 set(TARGET_NAME xml_converter)
 
 # Add Dependencies
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.cc")
+file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 # Set output as executable.
 # TODO: This will eventually become a library when it gets integrated into burrito.

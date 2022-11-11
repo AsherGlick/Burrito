@@ -95,9 +95,11 @@ jobs:
       - name: Build xml_converter
         run: |
             cd xml_converter
-            cmake ./
+            mkdir build
+            cd build
+            cmake ..
             make
-            mv xml_converter ../output
+            mv xml_converter ../../output
 
       - name: Build Burrito Link
         run: |

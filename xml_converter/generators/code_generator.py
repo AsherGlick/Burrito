@@ -221,10 +221,6 @@ def validate_front_matter_schema(front_matter: Any) -> str:
         return "Error Message: {} (Path: {}".format(e.message, e.json_path)
     return ""
 
-# def validate_protobuf_schema() 
-         # validate(front_matter, proto.safe_load(schema))
-# Write this later
-
 @dataclass
 class Document:
     metadata: SchemaType
