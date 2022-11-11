@@ -27,8 +27,8 @@ class Category: public Parseable {
         Icon default_icon;
         Trail default_trail;
 
-        virtual vector<string> as_xml() const;
         void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
+        virtual vector<string> as_xml() const;
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
 };

@@ -278,7 +278,7 @@ class Generator:
     def delete_generated_docs(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
             filepath = os.path.join(dir_path, filepath)
-            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_gen.html") or filepath.endswith("pb/h") or filepath.endswith("pb.cc"):
+            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_gen.html"):
                 os.remove(filepath)
 
     def load_input_doc(self, dir_path: str) -> None:
@@ -299,10 +299,6 @@ class Generator:
                 metadata=document.metadata,
                 content=document.content
             )
-
-    def write_proto_files(self, output_directory: str) -> None:
-        args = "protoc --proto_path=./proto_templates --cpp_out=" + output_directory + " ./proto_templates/waypoint.proto"
-        os.system(args)           
 
     ############################################################################
     # write_cpp_classes
@@ -845,7 +841,6 @@ def main() -> None:
     generator.delete_generated_docs("../src/")
     generator.delete_generated_docs("../src/attribute")
     generator.write_webdocs("../web_docs/")
-    generator.write_proto_files("../src/")
     generator.write_cpp_classes("../src/")
     generator.write_attribute("../src/attribute")
 

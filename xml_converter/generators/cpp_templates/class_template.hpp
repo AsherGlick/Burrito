@@ -40,8 +40,8 @@ class {{cpp_class}}: public Parseable {
 
         void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
         {%- else %}
-        virtual vector<string> as_xml() const;
         {%- endif %}
+        virtual vector<string> as_xml() const;
         virtual string classname();
         bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
         {%-if attributes_of_type_marker_category %}

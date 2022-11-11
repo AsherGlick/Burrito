@@ -94,8 +94,7 @@ jobs:
 
       - name: Build xml_converter
         run: |
-            cd xml_converter/generators
-            python ./code_generator.py
+            cd xml_converter
             cmake ..
             make
             mv xml_converter ../output

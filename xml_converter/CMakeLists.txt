@@ -3,12 +3,13 @@ project (XMLConverter)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Generate Protobuf
+INCLUDE(FindProtobuf) 
+FIND_PACKAGE(Protobuf REQUIRED)
+ADD_SUBDIRECTORY(proto)
+
 # Name Output File
 set(TARGET_NAME xml_converter)
-
-# Add Protobuf
-find_package(Protobuf REQUIRED)
-include_directories(${Protobuf_INCLUDE_DIRS})
 
 # Add Dependencies
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.cc")
@@ -18,7 +19,7 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.cc")
 add_executable (${TARGET_NAME} ${SOURCES})
 
 # include libraies
-target_link_libraries(${TARGET_NAME} ${Protobuf_LIBRARIES})
+target_link_libraries(${TARGET_NAME} proto ${Protobuf_LIBRARIES})
 
 # Require C++ 17 or newer.
 target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)
