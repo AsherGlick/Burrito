@@ -18,7 +18,7 @@
 #include "attribute/float.hpp"
 #include "string_helper.hpp"
 #include "rapid_helpers.hpp"
-#include "../proto/waypoint.pb.h"
+#include "waypoint.pb.h"
 
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
