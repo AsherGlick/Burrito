@@ -5,7 +5,7 @@ PROTOBUF_GENERATE_CPP(PROTO_SRC PROTO_HEADER waypoint.proto)
 ADD_LIBRARY(proto ${PROTO_HEADER} ${PROTO_SRC})
 
 add_custom_command(TARGET proto PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${PROTO_HEADER} ${PROTO_SRC} ../src)
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROTO_HEADER} ${PROTO_SRC} ../../src)
 
 add_custom_command(TARGET proto POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm ${PROTO_HEADER} ${PROTO_SRC})
