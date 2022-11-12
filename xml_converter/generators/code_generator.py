@@ -5,7 +5,6 @@ import frontmatter  # type:ignore
 from typing import Any, Dict, List, Tuple, Set
 import os
 import markdown
-import subprocess
 from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
 
@@ -822,8 +821,6 @@ def normalize(word: str) -> str:
 # The first function that gets called. Is in change of parsing the input
 # markdown files, and then creating the desired output files.
 ################################################################################
-
-
 def main() -> None:
     generator = Generator()
     markdown_doc_directory = "../doc"
