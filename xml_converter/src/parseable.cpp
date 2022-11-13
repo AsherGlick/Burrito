@@ -36,7 +36,7 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>*, std::vector<XMLEr
 }
 
 
-std::vector<std::string> Parseable::as_xml() const{
+std::vector<std::string> Parseable::as_xml() const {
     throw std::runtime_error("error: Parseable::as_xml() should not be called");
     std::vector<std::string> result;
     return result;

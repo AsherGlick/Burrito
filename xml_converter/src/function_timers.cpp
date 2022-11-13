@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstdint>
 #include <iostream>
 #include <ratio>
 
@@ -19,17 +20,16 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 #define TIMER_IMPLEMENTATION(TIMER) \
-    std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long, ratio<1, 1000000000>>> begin_##TIMER; \
-    std::chrono::duration<long, ratio<1, 1000000000>> duration_##TIMER; \
-    unsigned long call_count_##TIMER = 0; \
+    std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<int64_t, ratio<1, 1000000000>>> begin_##TIMER; \
+    std::chrono::duration<int64_t, ratio<1, 1000000000>> duration_##TIMER; \
+    uint64_t call_count_##TIMER = 0; \
     void print_timer_##TIMER(ostream &out) { \
-        long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration_##TIMER).count(); \
+        int64_t microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration_##TIMER).count(); \
         out << "Timer " << TIMER << " Total Duration: " << microseconds << endl; \
         out << "Timer " << TIMER << " Call Count " << call_count_##TIMER << endl; \
         out << "Timer " << TIMER << " Call Duration: " << float(microseconds) / float(call_count_##TIMER) << endl; \
     } \
     void print_timer_##TIMER() {print_timer_##TIMER(cout);}
-
 
 TIMER_IMPLEMENTATION(0)
 TIMER_IMPLEMENTATION(1)

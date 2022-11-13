@@ -20,6 +20,6 @@ UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *) 
     return unique_id;
 }
 
-string stringify_unique_id(UniqueId attribute_value){
+string stringify_unique_id(UniqueId attribute_value) {
     return base64_encode(&attribute_value.guid[0], attribute_value.guid.size());
 }

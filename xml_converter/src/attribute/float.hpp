@@ -9,4 +9,4 @@ class XMLError;
 
 float parse_float(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
 
-std::string stringify_float (float attribute_value);
+std::string stringify_float(float attribute_value);

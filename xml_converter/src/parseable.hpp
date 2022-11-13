@@ -7,10 +7,6 @@
 class XMLError;
 
 class Parseable {
- private:
- 
- protected:
-   
  public:
     // A stringy representation of a human readable classname. Used for errors.
     virtual std::string classname();
@@ -21,7 +17,5 @@ class Parseable {
     // A default parser function to parse a single XML attribute into the class.
     virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*> *errors);
 
-    // 
     virtual std::vector<std::string> as_xml() const;
-
 };

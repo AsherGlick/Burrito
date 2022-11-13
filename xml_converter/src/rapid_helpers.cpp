@@ -10,7 +10,7 @@ using namespace std;
 
 string find_attribute_value(rapidxml::xml_node<>* node, string attribute_name) {
     auto attribute = node->first_attribute(attribute_name.data(), attribute_name.size(), false);
-    
+
     return string(attribute->value(), attribute->value_size());
 }
 
@@ -94,13 +94,12 @@ TextPosition get_line_number(char* source, char* start_index) {
 // This function creates a new string with all the tabs replaced with four
 // spaces. This is done to normalize the size of the strings when printed.
 ////////////////////////////////////////////////////////////////////////////////
-string replace_tabs(string input){
+string replace_tabs(string input) {
     string tab = "\t";
     string spaces = "    ";
 
     auto iterator = input.find(tab);
-    while (iterator != string::npos)
-    {
+    while (iterator != string::npos) {
         input.replace(iterator, tab.size(), spaces);
         iterator = input.find(tab);
     }
@@ -115,7 +114,6 @@ string replace_tabs(string input){
 // in order to do so.
 ////////////////////////////////////////////////////////////////////////////////
 string generate_generic_error(string error_message, char* source, string filepath, char* start_index, uint length) {
-
     string BOLD_COLOR = "\033[1m";
     string RED_COLOR = "\033[31;1m";
     string DEFAULT_COLOR = "\033[0m";

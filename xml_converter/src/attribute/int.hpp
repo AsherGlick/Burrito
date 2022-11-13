@@ -9,6 +9,4 @@ class XMLError;
 
 int parse_int(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
 
-int init_int_attribute();
-
-std::string stringify_int (int attribute_value);
+std::string stringify_int(int attribute_value);

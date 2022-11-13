@@ -8,10 +8,10 @@
 class XMLError;
 
 class MarkerCategory {
- public:    
+ public:
     std::string category;
 };
 
 MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
 
-std::string stringify_marker_category (MarkerCategory attribute_value); 
+std::string stringify_marker_category(MarkerCategory attribute_value);

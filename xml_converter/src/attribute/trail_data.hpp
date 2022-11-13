@@ -8,7 +8,7 @@
 class XMLError;
 
 class TrailData {
-public:    
+ public:
     std::string trail_data;
 };
 

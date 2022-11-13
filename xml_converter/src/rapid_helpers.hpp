@@ -22,22 +22,22 @@ std::string get_node_name(rapidxml::xml_node<>* node);
 ////////////////////////////////////////////////////////////////////////////////
 class XMLError {
  protected:
-	std::string error_message;
+    std::string error_message;
  public:
-	void print_error();
+    void print_error();
 };
 
 class XMLAttributeNameError: public XMLError {
  public:
-	XMLAttributeNameError(std::string message, rapidxml::xml_attribute<>* attribute);
+    XMLAttributeNameError(std::string message, rapidxml::xml_attribute<>* attribute);
 };
 
 class XMLAttributeValueError: public XMLError {
  public:
-	XMLAttributeValueError(std::string message, rapidxml::xml_attribute<>* attribute);
+    XMLAttributeValueError(std::string message, rapidxml::xml_attribute<>* attribute);
 };
 
 class XMLNodeNameError: public XMLError {
  public:
-	XMLNodeNameError(std::string message, rapidxml::xml_node<>* node);
+    XMLNodeNameError(std::string message, rapidxml::xml_node<>* node);
 };

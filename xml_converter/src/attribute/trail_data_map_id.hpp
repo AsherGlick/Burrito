@@ -8,7 +8,7 @@
 class XMLError;
 
 class TrailDataMapId {
-  public:    
+ public:
     int trail_data_map_id;
 };
 
