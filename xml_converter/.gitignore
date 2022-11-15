@@ -9,3 +9,5 @@ xml_converter
 venv/
 web_docs
 __pycache__/
+build/
+export_packs/

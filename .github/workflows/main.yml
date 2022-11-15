@@ -89,6 +89,18 @@ jobs:
             cd taco_parser
             cargo build --release
 
+      - name: Install protoc
+        run: sudo apt-get install protobuf-compiler 
+
+      - name: Build xml_converter
+        run: |
+            cd xml_converter
+            mkdir build
+            cd build
+            cmake ..
+            make
+            mv xml_converter ../../output
+
       - name: Build Burrito Link
         run: |
           cd burrito_link

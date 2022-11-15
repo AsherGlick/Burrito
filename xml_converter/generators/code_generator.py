@@ -220,7 +220,6 @@ def validate_front_matter_schema(front_matter: Any) -> str:
         return "Error Message: {} (Path: {}".format(e.message, e.json_path)
     return ""
 
-
 @dataclass
 class Document:
     metadata: SchemaType
@@ -822,8 +821,6 @@ def normalize(word: str) -> str:
 # The first function that gets called. Is in change of parsing the input
 # markdown files, and then creating the desired output files.
 ################################################################################
-
-
 def main() -> None:
     generator = Generator()
     markdown_doc_directory = "../doc"
