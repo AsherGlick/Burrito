@@ -3,12 +3,12 @@
 #include <iosfwd>
 #include <string>
 
-#include "rapidxml-1.13/rapidxml.hpp"
 #include "attribute/bool.hpp"
 #include "attribute/float.hpp"
 #include "attribute/int.hpp"
 #include "attribute/string.hpp"
 #include "rapid_helpers.hpp"
+#include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
 
 using namespace std;
@@ -16,9 +16,9 @@ using namespace std;
 string Trail::classname() {
     return "Trail";
 }
-bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
-    string attributename; 
-    attributename = normalize(get_attribute_name(attribute)); 
+bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+    string attributename;
+    attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
         this->achievement_bitmask = parse_int(attribute, errors);
         this->achievement_bitmask_is_set = true;

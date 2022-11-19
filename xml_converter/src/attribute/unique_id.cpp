@@ -11,7 +11,7 @@
 
 using namespace std;
 
-UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     UniqueId unique_id;
     string base64;
     base64 = get_attribute_value(input);

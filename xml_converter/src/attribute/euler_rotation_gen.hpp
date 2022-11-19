@@ -13,7 +13,9 @@ class EulerRotation {
     float y_rotation;
     float z_rotation;
 
-    virtual std::string classname() { return "EulerRotation"; };
+    virtual std::string classname() {
+        return "EulerRotation";
+    };
 };
-EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_euler_rotation(EulerRotation attribute_value);

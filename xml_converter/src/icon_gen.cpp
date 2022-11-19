@@ -1,24 +1,24 @@
 #include "icon_gen.hpp"
 
-#include <string>
 #include <iosfwd>
-#include "rapid_helpers.hpp"
-#include "string_helper.hpp"
+#include <string>
+
 #include "attribute/bool.hpp"
 #include "attribute/float.hpp"
 #include "attribute/int.hpp"
 #include "attribute/string.hpp"
-
+#include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
+#include "string_helper.hpp"
 
 using namespace std;
 
 string Icon::classname() {
     return "POI";
 }
-bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors) {
-    string attributename; 
-    attributename = normalize(get_attribute_name(attribute)); 
+bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+    string attributename;
+    attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
         this->achievement_bitmask = parse_int(attribute, errors);
         this->achievement_bitmask_is_set = true;
@@ -344,7 +344,7 @@ vector<string> Icon::as_xml() const {
     if (this->distance_fade_start_is_set) {
         xml_node_contents.push_back(" FadeNear=\"" + stringify_float(this->distance_fade_start) + "\"");
     }
-    if (this->euler_rotation_is_set) {   
+    if (this->euler_rotation_is_set) {
         xml_node_contents.push_back(" Rotate=\"" + stringify_euler_rotation(this->euler_rotation) + "\"");
     }
     if (this->festival_filter_is_set) {
@@ -440,13 +440,13 @@ vector<string> Icon::as_xml() const {
     if (this->trigger_range_is_set) {
         xml_node_contents.push_back(" TriggerRange=\"" + stringify_float(this->trigger_range) + "\"");
     }
-    if (this->x_position_is_set) {    
+    if (this->x_position_is_set) {
         xml_node_contents.push_back(" XPos=\"" + to_string(this->x_position) + "\"");
     }
-    if (this->y_position_is_set) {    
+    if (this->y_position_is_set) {
         xml_node_contents.push_back(" YPos=\"" + to_string(this->y_position) + "\"");
     }
-    if (this->z_position_is_set) {    
+    if (this->z_position_is_set) {
         xml_node_contents.push_back(" ZPos=\"" + to_string(this->z_position) + "\"");
     }
     xml_node_contents.push_back("/>");

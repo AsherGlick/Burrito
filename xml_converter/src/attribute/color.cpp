@@ -15,7 +15,7 @@ using namespace std;
 // Parses a Color from the value of a rapidxml::xml_attribute.
 // TODO(#98): Color should be saved in a better format then the raw hex string.
 ////////////////////////////////////////////////////////////////////////////////
-Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     Color color;
     color.hex = get_attribute_value(input);
     return color;

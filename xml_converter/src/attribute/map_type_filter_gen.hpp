@@ -34,7 +34,9 @@ class MapTypeFilter {
     bool user_tournament_map;
     bool wvw_lounge_map;
 
-    virtual std::string classname() { return "MapTypeFilter"; };
+    virtual std::string classname() {
+        return "MapTypeFilter";
+    };
 };
-MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_map_type_filter(MapTypeFilter attribute_value);

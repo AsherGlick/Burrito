@@ -7,6 +7,6 @@
 
 class XMLError;
 
-std::string parse_string(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+std::string parse_string(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_string(std::string attribute_value);

@@ -12,6 +12,6 @@ class TrailDataMapId {
     int trail_data_map_id;
 };
 
-TrailDataMapId parse_trail_data_map_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+TrailDataMapId parse_trail_data_map_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_trail_data_map_id(TrailDataMapId attribute_value);

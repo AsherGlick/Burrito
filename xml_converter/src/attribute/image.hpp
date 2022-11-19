@@ -13,6 +13,6 @@ class Image {
     rapidxml::xml_attribute<>* original_token;
 };
 
-Image parse_image(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+Image parse_image(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_image(Image attribute_value);

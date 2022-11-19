@@ -1,10 +1,9 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
-#include <iostream>
 #include <chrono>
+#include <cstdint>
+#include <iostream>
+#include <ratio>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Function Timers
@@ -29,7 +28,7 @@
     extern std::chrono::duration<int64_t, std::ratio<1, 1000000000>> duration_##TIMER; \
     extern uint64_t call_count_##TIMER; \
     inline void start_timer_##TIMER() { \
-       begin_##TIMER = std::chrono::high_resolution_clock::now(); \
+        begin_##TIMER = std::chrono::high_resolution_clock::now(); \
     } \
     inline void stop_timer_##TIMER() { \
         auto end = std::chrono::high_resolution_clock::now(); \
@@ -37,7 +36,7 @@
         call_count_##TIMER += 1; \
     } \
     void print_timer_##TIMER(); \
-    void print_timer_##TIMER(std::ostream);
+    void print_timer_##TIMER(std::ostream&);
 
 TIMER_PROTOTYPE(0)
 TIMER_PROTOTYPE(1)

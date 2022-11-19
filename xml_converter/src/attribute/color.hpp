@@ -12,6 +12,6 @@ class Color {
     std::string hex;
 };
 
-Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_color(Color attribute_value);

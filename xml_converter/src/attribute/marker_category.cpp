@@ -11,7 +11,7 @@
 //
 // Parses a MarkerCategory from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *) {
+MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*>*) {
     MarkerCategory marker_category;
     marker_category.category = get_attribute_value(input);
     return marker_category;

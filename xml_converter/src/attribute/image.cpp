@@ -14,7 +14,7 @@ using namespace std;
 //
 // Parses the path to an image from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     Image image;
     image.path = get_attribute_value(input);
     image.original_token = input;

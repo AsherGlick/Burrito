@@ -12,6 +12,6 @@ class TrailData {
     std::string trail_data;
 };
 
-TrailData parse_trail_data(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+TrailData parse_trail_data(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_trail_data(TrailData attribute_value);

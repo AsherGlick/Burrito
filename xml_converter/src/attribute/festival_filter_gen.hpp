@@ -17,7 +17,9 @@ class FestivalFilter {
     bool super_adventure_festival;
     bool wintersday;
 
-    virtual std::string classname() { return "FestivalFilter"; };
+    virtual std::string classname() {
+        return "FestivalFilter";
+    };
 };
-FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_festival_filter(FestivalFilter attribute_value);

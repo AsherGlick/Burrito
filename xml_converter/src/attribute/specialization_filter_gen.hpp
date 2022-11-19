@@ -82,7 +82,9 @@ class SpecializationFilter {
     bool warrior_strength;
     bool warrior_tactics;
 
-    virtual std::string classname() { return "SpecializationFilter"; };
+    virtual std::string classname() {
+        return "SpecializationFilter";
+    };
 };
-SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_specialization_filter(SpecializationFilter attribute_value);

@@ -18,5 +18,5 @@ enum ResetBehavior {
     timer,
     weekly_reset,
 };
-ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_reset_behavior(ResetBehavior attribute_value);

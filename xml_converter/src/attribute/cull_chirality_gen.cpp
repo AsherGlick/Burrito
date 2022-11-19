@@ -10,7 +10,7 @@
 
 using namespace std;
 
-CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
+CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
     CullChirality cull_chirality;
     string normalized_value = normalize(get_attribute_value(input));
     if (normalized_value == "none") {
@@ -29,7 +29,7 @@ CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLE
     return cull_chirality;
 }
 
-string stringify_cull_chirality(CullChirality attribute_value){
+string stringify_cull_chirality(CullChirality attribute_value) {
     if (attribute_value == CullChirality::none) {
         return "none";
     }

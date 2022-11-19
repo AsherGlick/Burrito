@@ -13,7 +13,9 @@ class Position {
     float y_position;
     float z_position;
 
-    virtual std::string classname() { return "Position"; };
+    virtual std::string classname() {
+        return "Position";
+    };
 };
-Position parse_position(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+Position parse_position(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_position(Position attribute_value);

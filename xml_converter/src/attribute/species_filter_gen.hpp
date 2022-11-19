@@ -15,7 +15,9 @@ class SpeciesFilter {
     bool norn;
     bool sylvari;
 
-    virtual std::string classname() { return "SpeciesFilter"; };
+    virtual std::string classname() {
+        return "SpeciesFilter";
+    };
 };
-SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_species_filter(SpeciesFilter attribute_value);

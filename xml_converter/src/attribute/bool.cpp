@@ -16,7 +16,7 @@ using namespace std;
 // evaluated as `true`. 'false' or '0' are evaluated as `false`. Everything is
 // is also evaluated as false but appends an error to the errors vector.
 ////////////////////////////////////////////////////////////////////////////////
-bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
+bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
     if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
         return false;
     }

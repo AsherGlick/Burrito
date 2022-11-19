@@ -10,18 +10,17 @@
 
 using namespace std;
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // parse_int
 //
 // Parses an int from the value of a rapidxml::xml_attribute. Adds an error
 // if the value cannot be parsed properly.
 ////////////////////////////////////////////////////////////////////////////////
-int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
+int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
     try {
         return stoi(get_attribute_value(input));
     }
-    catch(std::invalid_argument const& exception) {
+    catch (std::invalid_argument const& exception) {
         errors->push_back(new XMLAttributeValueError("Invalid integer value", input));
         return 0;
     }
@@ -32,7 +31,6 @@ int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors) {
     //     std::cout << "std::stoll('" << s << "'): " << ll << "; pos: " << pos << '\n';
     // }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // stringify_int

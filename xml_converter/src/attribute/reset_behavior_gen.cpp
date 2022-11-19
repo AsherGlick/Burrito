@@ -10,7 +10,7 @@
 
 using namespace std;
 
-ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors){
+ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
     ResetBehavior reset_behavior;
     string normalized_value = normalize(get_attribute_value(input));
     if (normalized_value == "0") {
@@ -74,7 +74,7 @@ ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLE
     return reset_behavior;
 }
 
-string stringify_reset_behavior(ResetBehavior attribute_value){
+string stringify_reset_behavior(ResetBehavior attribute_value) {
     if (attribute_value == ResetBehavior::always_visible) {
         return "0";
     }

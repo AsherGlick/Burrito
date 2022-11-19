@@ -13,18 +13,18 @@
 #include "icon_gen.hpp"
 #include "parseable.hpp"
 #include "rapid_helpers.hpp"
+#include "rapidxml-1.13/rapidxml.hpp"
+#include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
 #include "trail_gen.hpp"
 
-#include "rapidxml-1.13/rapidxml.hpp"
-#include "rapidxml-1.13/rapidxml_utils.hpp"
-
 using namespace std;
 
-bool has_suffix(std::string const &fullString, std::string const &ending) {
+bool has_suffix(std::string const& fullString, std::string const& ending) {
     if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
-    } else {
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    }
+    else {
         return false;
     }
 }
@@ -37,7 +37,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     outfile.open(new_file_path, ios::out);
 
     outfile << "<OverlayData>\n";
-    for (const auto & category : *marker_categories) {
+    for (const auto& category : *marker_categories) {
         string text;
         for (const auto& s : category.second.as_xml()) {
             text += s;
@@ -46,7 +46,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     }
 
     outfile << "<POIs>\n";
-    for (const auto & parsed_poi : *parsed_pois) {
+    for (const auto& parsed_poi : *parsed_pois) {
         string text;
         for (const auto& s : parsed_poi->as_xml()) {
             text += s;
@@ -96,7 +96,6 @@ Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker
     return output;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // parse_pois
 //
@@ -137,7 +136,6 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
     return markers;
 }
 
-
 void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, int depth = 0) {
     if (get_node_name(node) == "MarkerCategory") {
         string name = lowercase(find_attribute_value(node, "name"));
@@ -146,14 +144,13 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
         this_category->init_from_xml(node, errors);
 
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
-            parse_marker_categories(child_node, &(this_category->children), errors, depth +1);
+            parse_marker_categories(child_node, &(this_category->children), errors, depth + 1);
         }
     }
     else {
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // parse_xml_file
@@ -201,12 +198,11 @@ bool filename_comp(string a, string b) {
     return lowercase(a) < lowercase(b);
 }
 
-
 vector<string> get_xml_files(string directory) {
     vector<string> files;
     vector<string> subfolders;
 
-    for (const auto & entry : filesystem::directory_iterator(directory)) {
+    for (const auto& entry : filesystem::directory_iterator(directory)) {
         string path = entry.path();
         if (entry.is_directory()) {
             subfolders.push_back(path);
@@ -221,9 +217,9 @@ vector<string> get_xml_files(string directory) {
     std::sort(files.begin(), files.end(), filename_comp);
     std::sort(subfolders.begin(), subfolders.end(), filename_comp);
 
-    for (const string & subfolder : subfolders) {
+    for (const string& subfolder : subfolders) {
         vector<string> subfiles = get_xml_files(subfolder);
-        files.insert(files.end(), subfiles.begin(), subfiles.end() );
+        files.insert(files.end(), subfiles.begin(), subfiles.end());
     }
 
     return files;
@@ -232,7 +228,7 @@ vector<string> get_xml_files(string directory) {
 void convert_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     vector<string> xml_files = get_xml_files(directory);
 
-    for (const string & path : xml_files) {
+    for (const string& path : xml_files) {
         parse_xml_file(path, marker_categories, parsed_pois);
     }
 }
@@ -243,7 +239,7 @@ int main() {
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
 
-    for (const auto & entry : filesystem::directory_iterator("./packs")) {
+    for (const auto& entry : filesystem::directory_iterator("./packs")) {
         string path = entry.path();
 
         if (entry.is_directory()) {
@@ -258,7 +254,6 @@ int main() {
     auto dur = end - begin;
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The parse function took " << ms << " milliseconds to run" << endl;
-
 
     begin = chrono::high_resolution_clock::now();
     write_xml_file("./export_packs/", &marker_categories, &parsed_pois);

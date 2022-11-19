@@ -1,14 +1,67 @@
 #!/bin/bash
 
-cpplint --quiet --recursive --exclude="src/rapidxml-1.13" --filter=-whitespace/newline,-whitespace/line_length,-readability/braces,-legal/copyright,-build/namespaces,-readability/casting,-build/c++11 src/
-# TODO: remove readability/casting from the filter. It was temporarily added
-# because the changes required would need testing unfitting of the original
-# style check update commit.
+error_count=0
+
+# Run cpplint
+filters=""
+  # Automated line length restrictions often cause more pain then they solve.
+  # Lines should be kept in check via code review.
+  filters+="-whitespace/line_length,"
+  # These two are just wrong brace styling, fight me.
+  filters+="-readability/braces,"
+  filters+="-whitespace/newline,"
+  # Copyright is handled on the repo level.
+  # An argument could be made this should be uncommented.
+  filters+="-legal/copyright,"
+  # This is probably a good thing to have but there is no way to only allow
+  # `using namespace std` in `.cpp` files. So we are allowing it everywhere
+  # hoping that iwyu makes it annoying to use it in header files.
+  # An argument could be made that this should be uncommented.
+  filters+="-build/namespaces,"
+  # Something like this is useful but the error message should say
+  # "issue number" not "username". There is no clear method for how that could
+  # be changed  use it right now
+  filters+="-readability/todo,"
+  # We do not have the same library usage restrictions in C++11 as Google so ignore them
+  filters+="-build/c++11,"
+
+cpplint --quiet --recursive --exclude="src/rapidxml-1.13" --filter=${filters} src/
+if (( $? > 0 )); then
+    error_count=`expr $error_count + 1`
+fi
 
 # Run Include What You Use
-iwyu_tool -p .
+#
+# We have 2 sed filters here, they could be combined but they are split for clarity
+# The first one removes all blank lines
+# The second one removes all "everything is good" lines from iwyu
+#
+# TODO: When this or newer versions of iwyu_tool that carry over the exit codes
+# from the include-what-you-use command calls are more widely standard this can
+# be replaced with just a call to iwyu_tool instead.
+../third_party/iwyu_tool.py -p . -o quiet
+# include-what-you-use has a "success code" of 2 for a legacy reason.
+if (( $? > 2 )); then
+    error_count=`expr $error_count + 1`
+fi
+
+
+# Validate that clang-format would make no changes
+readarray -d '' FILES < <(find src/ -type f \( -name "*.cpp" -o -name "*.hpp" \) -not -path "*/rapidxml-1.13/*" -print0)
+clang-format -Werror --dry-run -i "${FILES[@]}"
+if (( $? > 0 )); then
+    error_count=`expr $error_count + 1`
+fi
+
 
 # Run the python presubmit for the "generators" subdirectory.
 pushd generators
 ./presubmit.sh
+if (( $? > 0 )); then
+    error_count=`expr $error_count + 1`
+fi
 popd
+
+
+
+exit $error_count

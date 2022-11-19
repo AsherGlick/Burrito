@@ -13,6 +13,6 @@ class UniqueId {
     std::vector<uint8_t> guid;
 };
 
-UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*> *errors);
+UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_unique_id(UniqueId attribute_value);
