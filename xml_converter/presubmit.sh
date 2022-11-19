@@ -24,7 +24,11 @@ filters=""
   filters+="-readability/todo,"
   # We do not have the same library usage restrictions in C++11 as Google so ignore them
   filters+="-build/c++11,"
+  # Include subdir might make sense in google's blaze build system but not in ours
+  filters+="-build/include_subdir,"
 
+echo "cpplint"
+echo "-------"
 cpplint --quiet --recursive --exclude="src/rapidxml-1.13" --filter=${filters} src/
 if (( $? > 0 )); then
     error_count=`expr $error_count + 1`
@@ -39,14 +43,18 @@ fi
 # TODO: When this or newer versions of iwyu_tool that carry over the exit codes
 # from the include-what-you-use command calls are more widely standard this can
 # be replaced with just a call to iwyu_tool instead.
+echo "Include What You Use"
+echo "--------------------"
 ../third_party/iwyu_tool.py -p . -o quiet
 # include-what-you-use has a "success code" of 2 for a legacy reason.
-if (( $? > 2 )); then
+if [[ $? -ne 2 ]]; then
     error_count=`expr $error_count + 1`
 fi
 
 
 # Validate that clang-format would make no changes
+echo "Clang Format"
+echo "------------"
 readarray -d '' FILES < <(find src/ -type f \( -name "*.cpp" -o -name "*.hpp" \) -not -path "*/rapidxml-1.13/*" -print0)
 clang-format -Werror --dry-run -i "${FILES[@]}"
 if (( $? > 0 )); then
