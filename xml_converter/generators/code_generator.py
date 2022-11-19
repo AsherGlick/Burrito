@@ -306,7 +306,6 @@ class Generator:
         print("Writing XML Node Cpp Classes")
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(loader=file_loader)
-        attribute_names: Dict[str, str] = {}
         header_template: Template = env.get_template("class_template.hpp")
         code_template: Template = env.get_template("class_template.cpp")
         attributes_of_type_marker_category: List[str] = []
@@ -316,19 +315,11 @@ class Generator:
             "Trail": "Trail"
         }
 
-        for filepath in self.data.keys():
-            filename = os.path.basename(filepath)
-            attribute_names[filepath] = filename.split(".md")[0]
-
         for cpp_class in cpp_classes:
-            metadata: Dict[str, SchemaType] = {}
             attributes_of_type_marker_category = []
 
-            for attribute_name in attribute_names:
-                metadata[attribute_name] = self.data[attribute_name].metadata
-
             attribute_variables: List[AttributeVariable]
-            attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
+            attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(cpp_class)
 
             for attribute_variable in attribute_variables:
                 if attribute_variable.class_name == "marker_category":
@@ -361,9 +352,7 @@ class Generator:
     ############################################################################
     def generate_cpp_variable_data(
         self,
-        metadata: Dict[str, SchemaType],
         doc_type: str,
-        attribute_names: Dict[str, str] = {}
     ) -> Tuple[List[AttributeVariable], Set[str]]:
 
         cpp_include_paths: Set[str] = set()
@@ -373,29 +362,32 @@ class Generator:
         default_xml_fields: List[str] = []
         xml_export: str = ""
 
-        for fieldkey, fieldval in metadata.items():
-            for x in attribute_names:
-                if fieldkey in x:
-                    attribute_name = attribute_names[x]
+        for filepath, document in self.data.items():
+            attribute_name = self.variable_name_from_markdown_path(filepath)
+            fieldval = document.metadata
 
             if doc_type in fieldval['applies_to']:
                 xml_fields = []
                 default_xml_fields = []
                 xml_export = ""
+
                 if fieldval['type'] in doc_type_to_cpp_type:
                     cpp_type = doc_type_to_cpp_type[fieldval['type']]
                     class_name = cpp_type
                     cpp_include_paths.add(class_name)
+
                 elif fieldval['type'] == "Custom":
                     if fieldval['class'] == "TrailDataMapId":
                         continue
                     cpp_type = fieldval['class']
                     class_name = insert_delimiter(fieldval['class'], delimiter="_")
                     cpp_include_paths.add(class_name)
+
                 elif fieldval['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
                     cpp_type = capitalize(attribute_name, delimiter="")
                     class_name = attribute_name
                     cpp_include_paths.add(class_name + "_gen")
+
                 else:
                     raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
                         field_type=fieldval['type'],
@@ -442,6 +434,15 @@ class Generator:
                 attribute_variables.append(attribute_variable)
 
         return attribute_variables, cpp_include_paths
+
+    ############################################################################
+    # variable_name_from_markdown_path
+    #
+    # Takes the name of a markdown file and returns the variable name that
+    # should be used internally to store that value.
+    ############################################################################
+    def variable_name_from_markdown_path(self, filepath: str) -> str:
+        return os.path.splitext(os.path.basename(filepath))[0]
 
     ############################################################################
     # write_attributes
