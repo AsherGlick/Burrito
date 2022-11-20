@@ -56,12 +56,18 @@ jobs:
           pip install -r requirements.txt
 
 
-      - name: Create xml_converter makefile
+      - name: Install protoc
+        run: sudo apt-get install protobuf-compiler 
+
+
+      - name: Build xml_converter
         run: |
           cd xml_converter
           mkdir -v -p build
           cd build
           cmake ..
+          make
+          mv xml_converter ../../output
           cp compile_commands.json ../compile_commands.json
 
 
@@ -126,17 +132,6 @@ jobs:
             cd taco_parser
             cargo build --release
 
-      - name: Install protoc
-        run: sudo apt-get install protobuf-compiler 
-
-      - name: Build xml_converter
-        run: |
-            cd xml_converter
-            mkdir -v -p build
-            cd build
-            cmake ..
-            make
-            mv xml_converter ../../output
 
       - name: Build Burrito Link
         run: |
