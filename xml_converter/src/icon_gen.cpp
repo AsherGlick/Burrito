@@ -11,11 +11,13 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
 
+
 using namespace std;
 
 string Icon::classname() {
     return "POI";
 }
+
 bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
@@ -288,11 +290,12 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     }
     return true;
 }
+
 bool Icon::validate_attributes_of_type_marker_category() {
-    // TODO: validate "show_category"
-    // TODO: validate "hide_category"
-    // TODO: validate "toggle_category"
     // TODO: validate "category"
+    // TODO: validate "hide_category"
+    // TODO: validate "show_category"
+    // TODO: validate "toggle_category"
     return true;
 }
 

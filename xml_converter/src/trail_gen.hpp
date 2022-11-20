@@ -17,7 +17,10 @@
 #include "attribute/unique_id.hpp"
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
+
 class XMLError;
+
+
 
 class Trail : public Parseable {
  public:

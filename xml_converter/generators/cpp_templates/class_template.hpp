@@ -1,47 +1,37 @@
 #pragma once
-#include "rapidxml-1.13/rapidxml.hpp"
-#include <string>
-#include <vector>
-#include "parseable.hpp"
-{%- if cpp_class == "Category": %}
-#include <map>
-#include "icon_gen.hpp"
-#include "trail_gen.hpp"
-{%- elif cpp_class == "Trail": %}
-#include <string.h>
-#include <cstdio>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <iostream>
-#include <iterator>
-#include <ostream>
-#include <string_view>
-#include "rapidxml-1.13/rapidxml_print.hpp"
-{%- endif %}
-{% for cpp_include_path in cpp_include_paths %}
-#include "attribute/{{cpp_include_path}}.hpp"
-{%- endfor %}
-using namespace std;
 
-class {{cpp_class}}: public Parseable {
-    public:
-        {%- for attribute_variable in attribute_variables: %}
-        {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
-        bool {{attribute_variable.attribute_name}}_is_set = false;
-        {%- endfor %}
+{% for absolute_include in cpp_includes.sorted_hpp_absolute_includes() %}
+#include <{{absolute_include}}>
+{% endfor %}
 
-        {%- if cpp_class == "Category": %}
-        map<string, Category> children;
-        Icon default_icon;
-        Trail default_trail;
+{% for relative_include in cpp_includes.sorted_hpp_relative_includes() %}
+#include "{{relative_include}}"
+{% endfor %}
 
-        void init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*> *errors);
-        {%- endif %}
-        virtual string classname();
-        bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*> *errors);
-        virtual vector<string> as_xml() const;
-        {%-if attributes_of_type_marker_category %}
-        bool validate_attributes_of_type_marker_category();
-        {%- endif %}
+{% for forward_declaration in cpp_includes.sorted_hpp_forward_declarations() %}
+class {{forward_declaration}};
+{% endfor %}
+
+
+
+class {{cpp_class}} : public Parseable {
+ public:
+    {% for attribute_variable in attribute_variables: %}
+    {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
+    bool {{attribute_variable.attribute_name}}_is_set = false;
+    {% endfor %}
+
+    {%- if cpp_class == "Category": %}
+    std::map<std::string, Category> children;
+    Icon default_icon;
+    Trail default_trail;
+
+    void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors);
+    {% endif %}
+    virtual std::string classname();
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
+    virtual std::vector<std::string> as_xml() const;
+    {% if attributes_of_type_marker_category %}
+    bool validate_attributes_of_type_marker_category();
+    {% endif %}
 };

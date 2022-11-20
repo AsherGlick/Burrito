@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <vector>
 
@@ -20,6 +21,8 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 
 class XMLError;
+
+
 
 class Icon : public Parseable {
  public:

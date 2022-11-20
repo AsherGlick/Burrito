@@ -11,6 +11,8 @@
 
 class XMLError;
 
+
+
 class Category : public Parseable {
  public:
     bool default_visibility;
