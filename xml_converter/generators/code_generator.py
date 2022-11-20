@@ -528,7 +528,7 @@ class Generator:
         os.makedirs(output_directory, exist_ok=True)
 
         file_loader = FileSystemLoader('cpp_templates')
-        env = Environment(loader=file_loader, keep_trailing_newline=True, trim_blocks=True)
+        env = Environment(loader=file_loader, keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True)
         attribute_names: Dict[str, str] = {}
         attribute_variables: List[AttributeVariable] = []
         attribute_variable: AttributeVariable

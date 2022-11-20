@@ -15,7 +15,7 @@ class Position {
 
     virtual std::string classname() {
         return "Position";
-    };
+    }
 };
 Position parse_position(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_position(Position attribute_value);

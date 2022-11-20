@@ -21,7 +21,7 @@ class ProfessionFilter {
 
     virtual std::string classname() {
         return "ProfessionFilter";
-    };
+    }
 };
 ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_profession_filter(ProfessionFilter attribute_value);

@@ -19,7 +19,7 @@ class FestivalFilter {
 
     virtual std::string classname() {
         return "FestivalFilter";
-    };
+    }
 };
 FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_festival_filter(FestivalFilter attribute_value);
