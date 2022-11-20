@@ -3,16 +3,15 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 
-using namespace std;
+class XMLError;
 
 class Color {
  public:
-    string hex;
+    std::string hex;
 };
 
-Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
+Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
-string stringify_color (Color attribute_value);
+std::string stringify_color(Color attribute_value);

@@ -1,5 +1,6 @@
 #include "color.hpp"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
 
@@ -8,12 +9,23 @@
 
 using namespace std;
 
-Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+////////////////////////////////////////////////////////////////////////////////
+// parse_color
+//
+// Parses a Color from the value of a rapidxml::xml_attribute.
+// TODO(#98): Color should be saved in a better format then the raw hex string.
+////////////////////////////////////////////////////////////////////////////////
+Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     Color color;
     color.hex = get_attribute_value(input);
     return color;
 }
 
-string stringify_color (Color attribute_value){
+////////////////////////////////////////////////////////////////////////////////
+// stringify_color
+//
+// Converts a Color into a stringy value so it can be saved to xml.
+////////////////////////////////////////////////////////////////////////////////
+string stringify_color(Color attribute_value) {
     return attribute_value.hex;
 }

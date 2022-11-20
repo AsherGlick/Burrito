@@ -1,5 +1,7 @@
 #include "unique_id.hpp"
 
+#include <cstdint>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
@@ -7,7 +9,9 @@
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
 
-UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *) {
+using namespace std;
+
+UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     UniqueId unique_id;
     string base64;
     base64 = get_attribute_value(input);
@@ -16,6 +20,6 @@ UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*> *) 
     return unique_id;
 }
 
-string stringify_unique_id(UniqueId attribute_value){
+string stringify_unique_id(UniqueId attribute_value) {
     return base64_encode(&attribute_value.guid[0], attribute_value.guid.size());
 }

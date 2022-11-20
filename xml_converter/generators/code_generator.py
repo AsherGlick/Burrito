@@ -220,6 +220,7 @@ def validate_front_matter_schema(front_matter: Any) -> str:
         return "Error Message: {} (Path: {}".format(e.message, e.json_path)
     return ""
 
+
 @dataclass
 class Document:
     metadata: SchemaType
@@ -242,12 +243,37 @@ class FieldRow:
     description: str
 
 
+# TODO: Eventually replace all references to `doc_type_to_cpp_type` with
+# references to `documentation_type_data` because they contain the same data
 doc_type_to_cpp_type: Dict[str, str] = {
     "Fixed32": "int",
     "Int32": "int",
     "Boolean": "bool",
     "Float32": "float",
-    "String": "string",
+    "String": "std::string",
+}
+
+documentation_type_data = {
+    "Fixed32": {
+        "class_name": "int",
+        "cpp_type": "int",
+    },
+    "Int32": {
+        "class_name": "int",
+        "cpp_type": "int",
+    },
+    "Boolean": {
+        "class_name": "bool",
+        "cpp_type": "bool",
+    },
+    "Float32": {
+        "class_name": "float",
+        "cpp_type": "float",
+    },
+    "String": {
+        "class_name": "string",
+        "cpp_type": "std::string"
+    }
 }
 
 
@@ -261,6 +287,40 @@ class AttributeVariable:
     default_xml_fields: List[str] = field(default_factory=list)
     xml_export: str = ""
     is_child: bool = False
+
+
+################################################################################
+# CPPInclude
+#
+# A series of include paths and forward declarations for a pair of hpp and cpp
+# files to use at the top of the file.
+################################################################################
+@dataclass
+class CPPInclude:
+    hpp_relative_includes: Set[str] = field(default_factory=set)
+    hpp_absolute_includes: Set[str] = field(default_factory=set)
+    hpp_forward_declarations: Set[str] = field(default_factory=set)
+    cpp_relative_includes: Set[str] = field(default_factory=set)
+    cpp_absolute_includes: Set[str] = field(default_factory=set)
+    cpp_forward_declarations: Set[str] = field(default_factory=set)
+
+    def sorted_hpp_relative_includes(self) -> List[str]:
+        return sorted(self.hpp_relative_includes)
+
+    def sorted_hpp_absolute_includes(self) -> List[str]:
+        return sorted(self.hpp_absolute_includes)
+
+    def sorted_hpp_forward_declarations(self) -> List[str]:
+        return sorted(self.hpp_forward_declarations)
+
+    def sorted_cpp_relative_includes(self) -> List[str]:
+        return sorted(self.cpp_relative_includes)
+
+    def sorted_cpp_absolute_includes(self) -> List[str]:
+        return sorted(self.cpp_absolute_includes)
+
+    def sorted_cpp_forward_declarations(self) -> List[str]:
+        return sorted(self.cpp_forward_declarations)
 
 
 def get_attribute_variable_key(attribute_variable: AttributeVariable) -> str:
@@ -304,8 +364,7 @@ class Generator:
     def write_cpp_classes(self, output_directory: str) -> None:
         print("Writing XML Node Cpp Classes")
         file_loader = FileSystemLoader('cpp_templates')
-        env = Environment(loader=file_loader)
-        attribute_names: Dict[str, str] = {}
+        env = Environment(loader=file_loader, keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True)
         header_template: Template = env.get_template("class_template.hpp")
         code_template: Template = env.get_template("class_template.cpp")
         attributes_of_type_marker_category: List[str] = []
@@ -315,19 +374,11 @@ class Generator:
             "Trail": "Trail"
         }
 
-        for filepath in self.data.keys():
-            filename = os.path.basename(filepath)
-            attribute_names[filepath] = filename.split(".md")[0]
-
         for cpp_class in cpp_classes:
-            metadata: Dict[str, SchemaType] = {}
             attributes_of_type_marker_category = []
 
-            for attribute_name in attribute_names:
-                metadata[attribute_name] = self.data[attribute_name].metadata
-
             attribute_variables: List[AttributeVariable]
-            attribute_variables, cpp_include_paths = self.generate_cpp_variable_data(metadata, cpp_class, attribute_names)
+            attribute_variables, cpp_includes = self.generate_cpp_variable_data(cpp_class)
 
             for attribute_variable in attribute_variables:
                 if attribute_variable.class_name == "marker_category":
@@ -337,13 +388,14 @@ class Generator:
                 f.write(header_template.render(
                     cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
-                    cpp_include_paths=sorted(cpp_include_paths),
+                    cpp_includes=cpp_includes,
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
 
             with open(os.path.join(output_directory, lowercase(cpp_class) + "_gen.cpp"), 'w') as f:
                 f.write(code_template.render(
                     cpp_class=cpp_class,
+                    cpp_includes=cpp_includes,
                     cpp_class_header=lowercase(cpp_class),
                     xml_class_name=cpp_classes[cpp_class],
                     attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
@@ -354,47 +406,68 @@ class Generator:
     ############################################################################
     # generate_cpp_variable_data
     #
-    # This will return a list of tuples containing a tuple of the variables
-    # needed for the templates, and a set of all of the dependencies
-    # those variables will need to have included.
+    # Generate a list of all the variables this cpp class will have as well as
+    # data about what other files need to be included in the associated hpp and
+    # cpp files.
     ############################################################################
     def generate_cpp_variable_data(
         self,
-        metadata: Dict[str, SchemaType],
         doc_type: str,
-        attribute_names: Dict[str, str] = {}
-    ) -> Tuple[List[AttributeVariable], Set[str]]:
+    ) -> Tuple[List[AttributeVariable], CPPInclude]:
 
-        cpp_include_paths: Set[str] = set()
+        cpp_includes: CPPInclude = CPPInclude()
         attribute_name: str = ""
         attribute_variables: List[AttributeVariable] = []
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
         xml_export: str = ""
 
-        for fieldkey, fieldval in metadata.items():
-            for x in attribute_names:
-                if fieldkey in x:
-                    attribute_name = attribute_names[x]
+        cpp_includes.hpp_absolute_includes.add("string")
+        cpp_includes.hpp_absolute_includes.add("vector")
+        cpp_includes.hpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
+        cpp_includes.hpp_relative_includes.add("parseable.hpp")
+        cpp_includes.hpp_forward_declarations.add("XMLError")
+
+        cpp_includes.cpp_absolute_includes.add("iosfwd")
+        cpp_includes.cpp_absolute_includes.add("string")
+        cpp_includes.cpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
+        cpp_includes.cpp_relative_includes.add("string_helper.hpp")
+        cpp_includes.cpp_relative_includes.add("rapid_helpers.hpp")
+
+        if (doc_type == "Category"):
+            cpp_includes.hpp_absolute_includes.add("map")
+            cpp_includes.hpp_relative_includes.add("icon_gen.hpp")
+            cpp_includes.hpp_relative_includes.add("trail_gen.hpp")
+
+            cpp_includes.cpp_absolute_includes.add("type_traits")
+
+        for filepath, document in sorted(self.data.items()):
+            attribute_name = self.variable_name_from_markdown_path(filepath)
+            fieldval = document.metadata
 
             if doc_type in fieldval['applies_to']:
                 xml_fields = []
                 default_xml_fields = []
                 xml_export = ""
-                if fieldval['type'] in doc_type_to_cpp_type:
-                    cpp_type = doc_type_to_cpp_type[fieldval['type']]
-                    class_name = cpp_type
-                    cpp_include_paths.add(class_name)
+
+                if fieldval['type'] in documentation_type_data:
+                    cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
+                    class_name = documentation_type_data[fieldval['type']]["class_name"]
+                    cpp_includes.cpp_relative_includes.add("attribute/{}.hpp".format(class_name))
+
                 elif fieldval['type'] == "Custom":
                     if fieldval['class'] == "TrailDataMapId":
                         continue
                     cpp_type = fieldval['class']
                     class_name = insert_delimiter(fieldval['class'], delimiter="_")
-                    cpp_include_paths.add(class_name)
+                    cpp_includes.hpp_relative_includes.add("attribute/{}.hpp".format(class_name))
+
                 elif fieldval['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
                     cpp_type = capitalize(attribute_name, delimiter="")
                     class_name = attribute_name
-                    cpp_include_paths.add(class_name + "_gen")
+
+                    cpp_includes.hpp_relative_includes.add("attribute/{}_gen.hpp".format(class_name))
+
                 else:
                     raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
                         field_type=fieldval['type'],
@@ -440,7 +513,16 @@ class Generator:
                 )
                 attribute_variables.append(attribute_variable)
 
-        return attribute_variables, cpp_include_paths
+        return attribute_variables, cpp_includes
+
+    ############################################################################
+    # variable_name_from_markdown_path
+    #
+    # Takes the name of a markdown file and returns the variable name that
+    # should be used internally to store that value.
+    ############################################################################
+    def variable_name_from_markdown_path(self, filepath: str) -> str:
+        return os.path.splitext(os.path.basename(filepath))[0]
 
     ############################################################################
     # write_attributes
@@ -452,7 +534,7 @@ class Generator:
         os.makedirs(output_directory, exist_ok=True)
 
         file_loader = FileSystemLoader('cpp_templates')
-        env = Environment(loader=file_loader)
+        env = Environment(loader=file_loader, keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True)
         attribute_names: Dict[str, str] = {}
         attribute_variables: List[AttributeVariable] = []
         attribute_variable: AttributeVariable

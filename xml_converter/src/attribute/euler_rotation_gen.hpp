@@ -3,18 +3,19 @@
 #include <string>
 #include <vector>
 
-#include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../string_helper.hpp"
 
-using namespace std;
+class XMLError;
+
 class EulerRotation {
  public:
     float x_rotation;
     float y_rotation;
     float z_rotation;
 
-    virtual string classname() { return "EulerRotation"; };
+    virtual std::string classname() {
+        return "EulerRotation";
+    }
 };
-EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLError*> *errors);
-string stringify_euler_rotation(EulerRotation attribute_value);
+EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+std::string stringify_euler_rotation(EulerRotation attribute_value);

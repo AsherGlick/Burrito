@@ -1,10 +1,10 @@
 #include "string_helper.hpp"
 
-#include <iostream>
 #include <cstddef>
+#include <cstdint>
+#include <iostream>
 #include <string>
 #include <vector>
-
 
 using namespace std;
 
@@ -17,7 +17,7 @@ bool matches_any(string test, std::initializer_list<string> list) {
     return false;
 }
 
-bool nomralized_matches_any(string test, std::initializer_list<string> list) {
+bool normalized_matches_any(string test, std::initializer_list<string> list) {
     test = normalize(test);
     for (auto elem : list) {
         if (test == normalize(elem)) {
@@ -27,7 +27,7 @@ bool nomralized_matches_any(string test, std::initializer_list<string> list) {
     return false;
 }
 
-bool nomralized_matches_any(string test, std::vector<string> list) {
+bool normalized_matches_any(string test, std::vector<string> list) {
     test = normalize(test);
     for (auto elem : list) {
         if (test == normalize(elem)) {
@@ -36,7 +36,6 @@ bool nomralized_matches_any(string test, std::vector<string> list) {
     }
     return false;
 }
-
 
 vector<string> split(string input, string delimiter) {
     vector<string> output;
@@ -48,7 +47,6 @@ vector<string> split(string input, string delimiter) {
     output.push_back(input);
     return output;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // normalize
@@ -62,6 +60,7 @@ vector<string> split(string input, string delimiter) {
 //   All Uppercase Letters A-Z to the lowercase letters a-z
 //   Everything else to 0
 ////////////////////////////////////////////////////////////////////////////////
+// clang-format off
 static unsigned char normalize_lookup[256] = {
       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
@@ -82,6 +81,7 @@ static unsigned char normalize_lookup[256] = {
       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
       0
 };
+// clang-format on
 string normalize(string input_string) {
     size_t out_index = 0;
     for (size_t i = 0; i < input_string.length(); i++) {
@@ -94,7 +94,12 @@ string normalize(string input_string) {
     return input_string;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+// lowercase
+//
+// A function to return a string where all of the letters have been lowercased.
+// Only works on ASCII strings.
+////////////////////////////////////////////////////////////////////////////////
 string lowercase(string input) {
     string output;
     output.reserve(input.length());
@@ -110,62 +115,58 @@ string lowercase(string input) {
     return output;
 }
 
-
 // Functions to either encode or decode base64 strings
 
 // Obtained from https://stackoverflow.com/questions/180947/base64-decode-snippet-in-c
-static const std::string base64_chars =
-             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-             "abcdefghijklmnopqrstuvwxyz"
-             "0123456789+/";
+static const char base64_chars[] =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz"
+    "0123456789+/";
 
 std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
-  std::string ret;
-  int i = 0;
-  int j = 0;
-  uint8_t char_array_3[3];
-  uint8_t char_array_4[4];
+    std::string ret;
+    int i = 0;
+    int j = 0;
+    uint8_t char_array_3[3];
+    uint8_t char_array_4[4];
 
-  while (bufLen--) {
-    char_array_3[i++] = *(buf++);
-    if (i == 3) {
-      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-      char_array_4[3] = char_array_3[2] & 0x3f;
+    while (bufLen--) {
+        char_array_3[i++] = *(buf++);
+        if (i == 3) {
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[3] = char_array_3[2] & 0x3f;
 
-      for(i = 0; (i <4) ; i++){
-        ret += base64_chars[char_array_4[i]];
-        }   
-      i = 0;
-    }
-  }
-
-  if (i){
-    for(j = i; j < 3; j++){
-      char_array_3[j] = '\0';
+            for (i = 0; (i < 4); i++) {
+                ret += base64_chars[char_array_4[i]];
+            }
+            i = 0;
+        }
     }
 
-    char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-    char_array_4[3] = char_array_3[2] & 0x3f;
+    if (i) {
+        for (j = i; j < 3; j++) {
+            char_array_3[j] = '\0';
+        }
 
-    for (j = 0; (j < i + 1); j++){
-      ret += base64_chars[char_array_4[j]];
+        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+        char_array_4[3] = char_array_3[2] & 0x3f;
+
+        for (j = 0; (j < i + 1); j++) {
+            ret += base64_chars[char_array_4[j]];
+        }
+
+        while (i++ < 3) {
+            ret += '=';
+        }
     }
 
-    while((i++ < 3)){
-      ret += '=';
-    }
-  }
-
-  return ret;
+    return ret;
 }
 
-#include "function_timers.hpp"
-
-// TODO: Write Tests For This
 ////////////////////////////////////////////////////////////////////////////////
 // This lookup table maps all base64 characters to their numerical equivalents
 //   A-Z  0-25
@@ -176,6 +177,7 @@ std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
 //   Everything else to 255 (invalid character)
 //   = is invalid because trailing ='s are stripped any any others are invalid
 ////////////////////////////////////////////////////////////////////////////////
+// clang-format off
 static unsigned char base64_lookup[256] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -196,6 +198,7 @@ static unsigned char base64_lookup[256] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255
 };
+// clang-format on
 
 std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
     int in_len = encoded_string.size();
@@ -205,7 +208,7 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
     size_t input_index = 0;
     size_t output_index = 0;
 
-    while(encoded_string[in_len-1] == '=') {
+    while (encoded_string[in_len - 1] == '=') {
         in_len -= 1;
     }
 
@@ -213,7 +216,7 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
 
     while (in_len >= 4) {
         for (int i = 0; i < 4; i++) {
-            char_array_4[i] = base64_lookup[encoded_string[input_index+i]];
+            char_array_4[i] = base64_lookup[(uint8_t)encoded_string[input_index + i]];
 
             if (char_array_4[i] == 255) {
                 // TODO: Throw an error or something
@@ -233,13 +236,12 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
     if (in_len) {
         int i = 0;
         for (; i < in_len; i++) {
-            char_array_4[i] = base64_lookup[encoded_string[input_index+i]];
+            char_array_4[i] = base64_lookup[(uint8_t)encoded_string[input_index + i]];
 
             if (char_array_4[i] == 255) {
                 // TODO: Throw an error or something
                 return std::vector<uint8_t>();
             }
-
         }
         for (; i < 4; i++) {
             char_array_4[i] = 0;
