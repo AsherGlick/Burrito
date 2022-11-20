@@ -4,7 +4,7 @@ type: Int32
 applies_to: [Icon, Trail]
 compatability: [TacO, BlishHUD, Burrito]
 xml_fields: ["AchievementId"]
-protobuf_field: "achievement_id"
+protobuf_field: achievement_id
 ---
 An achivement that, if completed, will hide this marker
 

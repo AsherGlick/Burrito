@@ -242,6 +242,7 @@ class FieldRow:
     sub_fields: List["FieldRow"]
     description: str
 
+
 # TODO: Eventually replace all references to `doc_type_to_cpp_type` with
 # references to `documentation_type_data` because they contain the same data
 doc_type_to_cpp_type: Dict[str, str] = {

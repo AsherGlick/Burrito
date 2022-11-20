@@ -3,7 +3,7 @@ name: Trail Data
 type: Custom
 class: TrailData
 xml_fields: ["TrailData"]
-protobuf_field: traildata
+protobuf_field: trail_data
 side_effects: [Map ID]
 applies_to: [Trail]
 compatability: [TacO, BlishHUD, Burrito]

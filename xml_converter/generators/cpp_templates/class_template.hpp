@@ -16,6 +16,8 @@ class {{cpp_class}} : public Parseable {
  public:
     {% for attribute_variable in attribute_variables: %}
     {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
+    {% endfor %}
+    {% for attribute_variable in attribute_variables: %}
     bool {{attribute_variable.attribute_name}}_is_set = false;
     {% endfor %}
 
