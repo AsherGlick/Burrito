@@ -17,6 +17,7 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
 #include "trail_gen.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -233,11 +234,21 @@ void convert_taco_directory(string directory, map<string, Category>* marker_cate
     }
 }
 
+void test_proto() {
+    waypoint::Category testcategory;
+    testcategory.set_display_name("TEST");
+    string output = testcategory.display_name();
+    if (output != "TEST") {
+        cout << "Error in test_proto" << endl;
+    }
+}
+
 int main() {
     auto begin = chrono::high_resolution_clock::now();
 
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
+    test_proto();
 
     for (const auto& entry : filesystem::directory_iterator("./packs")) {
         string path = entry.path();

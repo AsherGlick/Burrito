@@ -453,9 +453,14 @@ def main(compilation_db_path, source_files, verbose, formatter, jobs,
     compilation_db = slice_compilation_db(compilation_db, source_files)
 
     # Transform compilation db entries into a list of IWYU invocations.
-    invocations = [
-        Invocation.from_compile_command(e, extra_args) for e in compilation_db
-    ]
+    invocations = []
+
+    for e in compilation_db:
+        # A quick hack for burrito to ignroe protobuf files.
+        # TODO: Maybe this can be expanded on and contributed back to iwyu
+        if e["file"].endswith("pb.cc"):
+            continue
+        invocations.append(Invocation.from_compile_command(e, extra_args)) 
 
     return execute(invocations, verbose, formatter, jobs, max_load_average)
 

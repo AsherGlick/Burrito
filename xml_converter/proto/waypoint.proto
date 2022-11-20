@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package waypoint;
+
 message Category {
     bool default_visibility = 1;
     string display_name = 2;

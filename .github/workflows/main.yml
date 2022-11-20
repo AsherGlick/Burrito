@@ -59,7 +59,7 @@ jobs:
       - name: Create xml_converter makefile
         run: |
           cd xml_converter
-          mkdir build
+          mkdir -v -p build
           cd build
           cmake ..
           cp compile_commands.json ../compile_commands.json
@@ -112,7 +112,7 @@ jobs:
 
 
       - name: Create the Output Directory
-        run: mkdir output
+        run: mkdir -v -p output
       
 
       - name: Build X11_FG
@@ -126,6 +126,17 @@ jobs:
             cd taco_parser
             cargo build --release
 
+      - name: Install protoc
+        run: sudo apt-get install protobuf-compiler 
+
+      - name: Build xml_converter
+        run: |
+            cd xml_converter
+            mkdir -v -p build
+            cd build
+            cmake ..
+            make
+            mv xml_converter ../../output
 
       - name: Build Burrito Link
         run: |
@@ -136,7 +147,7 @@ jobs:
 
       - name: Build Burrito
         run: |
-          mkdir build
+          mkdir -v -p build
           ./Godot_v${GODOT_VERSION}-stable_linux_headless.64 --export "Linux/X11"
           chmod +x build/burrito.x86_64
           mv build/burrito.x86_64 output/

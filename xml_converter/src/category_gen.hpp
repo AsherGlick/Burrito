@@ -28,7 +28,7 @@ class Category : public Parseable {
     Trail default_trail;
 
     void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors);
+    virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
-    virtual std::vector<std::string> as_xml() const;
 };

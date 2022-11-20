@@ -28,9 +28,9 @@ class {{cpp_class}} : public Parseable {
 
     void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors);
     {% endif %}
+    virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
-    virtual std::vector<std::string> as_xml() const;
     {% if attributes_of_type_marker_category %}
     bool validate_attributes_of_type_marker_category();
     {% endif %}
