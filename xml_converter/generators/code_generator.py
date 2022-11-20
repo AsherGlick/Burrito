@@ -242,7 +242,8 @@ class FieldRow:
     sub_fields: List["FieldRow"]
     description: str
 
-
+# TODO: Eventually replace all references to `doc_type_to_cpp_type` with
+# references to `documentation_type_data` because they contain the same data
 doc_type_to_cpp_type: Dict[str, str] = {
     "Fixed32": "int",
     "Int32": "int",
@@ -275,7 +276,6 @@ documentation_type_data = {
 }
 
 
-
 @dataclass
 class AttributeVariable:
     attribute_name: str
@@ -305,17 +305,21 @@ class CPPInclude:
 
     def sorted_hpp_relative_includes(self) -> List[str]:
         return sorted(self.hpp_relative_includes)
+
     def sorted_hpp_absolute_includes(self) -> List[str]:
         return sorted(self.hpp_absolute_includes)
+
     def sorted_hpp_forward_declarations(self) -> List[str]:
         return sorted(self.hpp_forward_declarations)
+
     def sorted_cpp_relative_includes(self) -> List[str]:
         return sorted(self.cpp_relative_includes)
+
     def sorted_cpp_absolute_includes(self) -> List[str]:
         return sorted(self.cpp_absolute_includes)
+
     def sorted_cpp_forward_declarations(self) -> List[str]:
         return sorted(self.cpp_forward_declarations)
-
 
 
 def get_attribute_variable_key(attribute_variable: AttributeVariable) -> str:
@@ -429,11 +433,12 @@ class Generator:
         cpp_includes.cpp_relative_includes.add("string_helper.hpp")
         cpp_includes.cpp_relative_includes.add("rapid_helpers.hpp")
 
-
         if (doc_type == "Category"):
             cpp_includes.hpp_absolute_includes.add("map")
             cpp_includes.hpp_relative_includes.add("icon_gen.hpp")
             cpp_includes.hpp_relative_includes.add("trail_gen.hpp")
+
+            cpp_includes.cpp_absolute_includes.add("type_traits")
 
         for filepath, document in sorted(self.data.items()):
             attribute_name = self.variable_name_from_markdown_path(filepath)

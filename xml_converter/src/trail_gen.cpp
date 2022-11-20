@@ -11,7 +11,6 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
 
-
 using namespace std;
 
 string Trail::classname() {
@@ -170,7 +169,6 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     }
     return true;
 }
-
 bool Trail::validate_attributes_of_type_marker_category() {
     // TODO: validate "category"
     return true;

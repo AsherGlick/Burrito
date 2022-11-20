@@ -2,13 +2,13 @@
 
 #include <iosfwd>
 #include <string>
+#include <type_traits>
 
 #include "attribute/bool.hpp"
 #include "attribute/string.hpp"
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
-
 
 using namespace std;
 
@@ -58,8 +58,6 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
     }
     return true;
 }
-
-
 vector<string> Category::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<MarkerCategory ");

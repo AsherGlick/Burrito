@@ -22,8 +22,6 @@
 
 class XMLError;
 
-
-
 class Icon : public Parseable {
  public:
     int achievement_bitmask;

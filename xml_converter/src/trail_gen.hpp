@@ -20,8 +20,6 @@
 
 class XMLError;
 
-
-
 class Trail : public Parseable {
  public:
     int achievement_bitmask;

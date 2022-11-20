@@ -12,8 +12,6 @@
 class {{forward_declaration}};
 {% endfor %}
 
-
-
 class {{cpp_class}} : public Parseable {
  public:
     {% for attribute_variable in attribute_variables: %}

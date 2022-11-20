@@ -11,7 +11,6 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
 
-
 using namespace std;
 
 string Icon::classname() {
@@ -290,7 +289,6 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     }
     return true;
 }
-
 bool Icon::validate_attributes_of_type_marker_category() {
     // TODO: validate "category"
     // TODO: validate "hide_category"

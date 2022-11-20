@@ -11,7 +11,6 @@
 {% for forward_declaration in cpp_includes.sorted_cpp_forward_declarations() %}
 class {{forward_declaration}};
 {% endfor %}
-
 using namespace std;
 
 string {{cpp_class}}::classname() {
@@ -63,7 +62,8 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     return true;
 }
 
-{% if attributes_of_type_marker_category %}
+{%- if attributes_of_type_marker_category %}
+
 bool {{cpp_class}}::validate_attributes_of_type_marker_category() {
     {% for attribute in attributes_of_type_marker_category %}
     // TODO: validate "{{attribute}}"
