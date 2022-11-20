@@ -220,6 +220,7 @@ def validate_front_matter_schema(front_matter: Any) -> str:
         return "Error Message: {} (Path: {}".format(e.message, e.json_path)
     return ""
 
+
 @dataclass
 class Document:
     metadata: SchemaType
