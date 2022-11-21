@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <winsock2.h>
-#include <windows.h>
 #include <string.h>
 #include <time.h>
+#include <winsock2.h>
+#include <windows.h>
 
 // Enumerations of the different packet types that can be sent
 #define PACKET_FRAME 1
@@ -17,7 +17,6 @@ struct rolling_average_5 {
     float points[5];
 };
 
-
 float get_rolling_average(struct rolling_average_5 *points) {
     float sum = 0;
     for (int i = 0; i < 5; i++) {
@@ -25,7 +24,6 @@ float get_rolling_average(struct rolling_average_5 *points) {
     }
     return sum / 5.0;
 }
-
 
 void replace_point_in_rolling_average(struct rolling_average_5 *points, float newvalue) {
     points->points[points->index] = newvalue;
@@ -89,7 +87,6 @@ struct LinkedMem {
     // An Empty Array, this field is not used by guild wars 2
     wchar_t description[2048];
 };
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // MumbleContext struct
@@ -161,9 +158,7 @@ struct MumbleContext *lc = NULL;
 long program_timeout = 0;
 long program_startime = 0;
 
-
 time_t rawtime;
-
 
 #ifdef _WIN32
 
@@ -183,29 +178,27 @@ void initMumble() {
 
     handle_lm = CreateFileMapping(
         INVALID_HANDLE_VALUE,  // use paging file
-        NULL,                  // default security
-        PAGE_READWRITE,        // read/write access
-        0,                     // maximum object size (high-order DWORD)
-        BUF_SIZE,              // maximum object size (low-order DWORD)
-        "MumbleLink");         // name of mapping object
-                               // createfilemapping returns NULL when it fails, we print the error code for debugging purposes.
+        NULL,  // default security
+        PAGE_READWRITE,  // read/write access
+        0,  // maximum object size (high-order DWORD)
+        BUF_SIZE,  // maximum object size (low-order DWORD)
+        "MumbleLink");  // name of mapping object
 
+    // CreateFileMapping returns NULL when it fails, we print the error code for debugging purposes.
     if (handle_lm == NULL) {
-        printf("Could not create file mapping object (%lu).\n",
-               GetLastError());
+        printf("Could not create file mapping object (%lu).\n", GetLastError());
         return;
     }
 
     mapped_lm = (LPTSTR)MapViewOfFile(
-        handle_lm,            // handle to map object
+        handle_lm,  // handle to map object
         FILE_MAP_ALL_ACCESS,  // read/write permission
         0,
         0,
         BUF_SIZE);
 
     if (mapped_lm == NULL) {
-        printf("Could not map view of file (%lu).\n",
-               GetLastError());
+        printf("Could not map view of file (%lu).\n", GetLastError());
 
         CloseHandle(handle_lm);
 
@@ -262,7 +255,8 @@ int connect_and_or_send() {
 
         // Exit with error
         return -1;
-    } else {
+    }
+    else {
         printf("Client: The Winsock DLL status is %s.\n", wsaData.szSystemStatus);
     }
     // Create a new socket to receive datagrams on.
@@ -278,7 +272,8 @@ int connect_and_or_send() {
 
         // Exit with error
         return -1;
-    } else {
+    }
+    else {
         printf("Client: socket() is OK!\n");
     }
 
@@ -297,7 +292,7 @@ int connect_and_or_send() {
     DWORD lastuitick = 0;
     // Send data packages to the receiver(Server).
     do {
-        if (program_timeout != 0 && clock()-program_startime > program_timeout) {
+        if (program_timeout != 0 && clock() - program_startime > program_timeout) {
             BufLength = 1;
             // Set the first byte of the packet to indicate this packet is a `Heaver Context Updater` packet
             SendBuf[0] = PACKET_LINK_TIMEOUT;
@@ -420,7 +415,6 @@ int connect_and_or_send() {
             memcpy(SendBuf + BufLength, &lc->mapId, sizeof(lc->mapId));
             BufLength += sizeof(lc->mapId);
 
-
             // Get and send the linux x server window id
             UINT32 x11_window_id = 0;
             HWND window_handle = NULL;
@@ -445,7 +439,6 @@ int connect_and_or_send() {
 
             memcpy(SendBuf + BufLength, &x11_window_id, sizeof(x11_window_id));
             BufLength += sizeof(x11_window_id);
-
 
             // Convert and send the JSON 'identity' payload
             char utf8str[1024];
@@ -477,7 +470,6 @@ int connect_and_or_send() {
             // break;
         }
 
-
         // Update the count for the `Heaver Context Updater` packet and reset
         // it to 0 when it hits a threshold value.
         count += 1;
@@ -486,10 +478,10 @@ int connect_and_or_send() {
         }
     } while (TRUE);
 
-
     if (closesocket(SendingSocket) != 0) {
         printf("Client: closesocket() failed! Error code: %d\n", WSAGetLastError());
-    } else {
+    }
+    else {
         printf("Server: closesocket() is OK\n");
     }
 
@@ -499,7 +491,8 @@ int connect_and_or_send() {
 
     if (WSACleanup() != 0) {
         printf("Client: WSACleanup() failed! Error code: %d\n", WSAGetLastError());
-    } else {
+    }
+    else {
         printf("Client: WSACleanup() is OK\n");
     }
 
@@ -514,17 +507,15 @@ int connect_and_or_send() {
     return 0;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // The main function initializes some global variables and shared memory. Then
 // calls the connect_and_or_send process which loops until termination.
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv) {
-
     for (int i = 0; i < argc; i++) {
         // If a timeout flag is passed in then set the timeout value
         if (strcmp(argv[i], "--timeout") == 0) {
-            i = i+1;
+            i = i + 1;
             program_timeout = atol(argv[i]) * CLOCKS_PER_SEC;
             program_startime = clock();
         }
