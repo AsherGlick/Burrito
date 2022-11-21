@@ -51,10 +51,10 @@ float fAvatarAveragePosition[3];
 // https://www.mumble.info/documentation/developer/positional-audio/link-plugin/
 ////////////////////////////////////////////////////////////////////////////////
 struct LinkedMem {
-    UINT32 uiVersion;
+    uint32_t uiVersion;
 
     // The current update tick
-    DWORD uiTick;
+    uint32_t uiTick;
 
     // The XYZ location of the player
     float fAvatarPosition[3];
@@ -81,10 +81,10 @@ struct LinkedMem {
     wchar_t identity[256];
 
     // A value that is always 48
-    UINT32 context_len;
+    uint32_t context_len;
 
     // A binary chunk containing another struct. See the MumbleContext struct below
-    unsigned char context[256];
+    uint8_t context[256];
 
     // An Empty Array, this field is not used by guild wars 2
     wchar_t description[2048];
@@ -103,15 +103,15 @@ struct LinkedMem {
 struct MumbleContext {
     // The current address of the guild wars 2 server the player is connected to
     // can be a ipv4 `sockaddr_in` or a ipv6 `sockaddr_in6`
-    unsigned char serverAddress[28];
+    uint8_t serverAddress[28];
 
     // The Guild Wars 2 id for the map the player is currently in
-    UINT32 mapId;
+    uint32_t mapId;
 
-    UINT32 mapType;
-    UINT32 shardId;
-    UINT32 instance;
-    UINT32 buildId;
+    uint32_t mapType;
+    uint32_t shardId;
+    uint32_t instance;
+    uint32_t buildId;
 
     // A bitmask of various boolean element of the UI state
     //   Bit 1 = IsMapOpen
@@ -121,13 +121,13 @@ struct MumbleContext {
     //   Bit 5 = Is in Competitive game mode
     //   Bit 6 = Textbox has focus
     //   Bit 7 = Is in Combat
-    UINT32 uiState;
+    uint32_t uiState;
 
     // The width of the minimap in pixels
-    UINT16 compassWidth;
+    uint16_t compassWidth;
 
     // The height of the minimap in pixels
-    UINT16 compassHeight;
+    uint16_t compassHeight;
 
     // The rotation of the minimap contents in radians
     float compassRotation;
@@ -146,10 +146,10 @@ struct MumbleContext {
     float mapScale;
 
     // The windows process id of the Guild Wars 2 process
-    UINT32 processId;
+    uint32_t processId;
 
     // An enum representing which mount is currenty being used by the player
-    UINT8 mountIndex;
+    uint8_t mountIndex;
 
     // Extra bytes that are not currently accounted for or are unused in the context
     uint8_t _padding[171];
@@ -513,6 +513,7 @@ int connect_and_or_send() {
     return 0;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // The main function initializes some global variables and shared memory. Then
 // calls the connect_and_or_send process which loops until termination.
@@ -540,3 +541,10 @@ int main(int argc, char **argv) {
 // Sanity check our memory map structs on compile.
 static_assert(sizeof(struct LinkedMem) == 5460, "LinkedMem is expected to be 5460 bytes long.");
 static_assert(sizeof(struct MumbleContext) == 256, "MumbleContext is expected to be 256 bytes long.");
+
+// Sanity check our various datatypes on compile.
+static_assert(sizeof(float) == 4, "float is expected to be 32 bits long.");
+static_assert(sizeof(uint8_t) == 1, "uint8_t is expected to be 8 bits long.");
+static_assert(sizeof(uint16_t) == 2, "uint16_t is expected to be 16 bits long.");
+static_assert(sizeof(uint32_t) == 4, "uint32_t is expected to be 32 bits long.");
+static_assert(sizeof(wchar_t) == 2, "wchar_t is expected to be 16 bits long.");
