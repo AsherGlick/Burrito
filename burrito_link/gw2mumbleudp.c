@@ -1,6 +1,8 @@
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <stdint.h>
 #include <winsock2.h>
 #include <windows.h>
 
@@ -88,6 +90,7 @@ struct LinkedMem {
     wchar_t description[2048];
 };
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // MumbleContext struct
 //
@@ -147,6 +150,9 @@ struct MumbleContext {
 
     // An enum representing which mount is currenty being used by the player
     UINT8 mountIndex;
+
+    // Extra bytes that are not currently accounted for or are unused in the context
+    uint8_t _padding[171];
 };
 
 // global variables
@@ -529,3 +535,8 @@ int main(int argc, char **argv) {
 
     connect_and_or_send();
 }
+
+
+// Sanity check our memory map structs on compile.
+static_assert(sizeof(struct LinkedMem) == 5460, "LinkedMem is expected to be 5460 bytes long.");
+static_assert(sizeof(struct MumbleContext) == 256, "MumbleContext is expected to be 256 bytes long.");
