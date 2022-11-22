@@ -108,6 +108,38 @@ void initMumble() {
     printf("successfully opened mumble link shared memory..\n");
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// x11_window_id_from_windows_process_id()
+//
+// When running a program in wine a property `__wine_x11_whole_window` is set.
+// This function attempts to read that property and return it.
+////////////////////////////////////////////////////////////////////////////////
+uint32_t x11_window_id_from_windows_process_id(uint32_t windows_process_id) {
+    // Get and send the linux x server window id
+    UINT32 x11_window_id = 0;
+    HWND window_handle = NULL;
+    BOOL CALLBACK EnumWindowsProcMy(HWND hwnd, LPARAM lParam) {
+        DWORD processId;
+        GetWindowThreadProcessId(hwnd, &processId);
+        if (processId == lParam) {
+            window_handle = hwnd;
+            return FALSE;
+        }
+        return TRUE;
+    }
+    EnumWindows(EnumWindowsProcMy, windows_process_id);
+
+    HANDLE possible_x11_window_id = GetProp(window_handle, "__wine_x11_whole_window");
+    if (possible_x11_window_id != NULL) {
+        x11_window_id = (size_t)possible_x11_window_id;
+    }
+    // else {
+    //     printf("No Linux ID\n");
+    // }
+    return x11_window_id;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // connect_and_or_send()
 //
@@ -291,27 +323,7 @@ int connect_and_or_send() {
             memcpy(SendBuf + BufLength, &lc->mapId, sizeof(lc->mapId));
             BufLength += sizeof(lc->mapId);
 
-            // Get and send the linux x server window id
-            UINT32 x11_window_id = 0;
-            HWND window_handle = NULL;
-            BOOL CALLBACK EnumWindowsProcMy(HWND hwnd, LPARAM lParam) {
-                DWORD processId;
-                GetWindowThreadProcessId(hwnd, &processId);
-                if (processId == lParam) {
-                    window_handle = hwnd;
-                    return FALSE;
-                }
-                return TRUE;
-            }
-            EnumWindows(EnumWindowsProcMy, lc->processId);
-
-            HANDLE possible_x11_window_id = GetProp(window_handle, "__wine_x11_whole_window");
-            if (possible_x11_window_id != NULL) {
-                x11_window_id = (size_t)possible_x11_window_id;
-            }
-            // else {
-            //     printf("No Linux ID\n");
-            // }
+            uint32_t x11_window_id = x11_window_id_from_windows_process_id(lc->processId);
 
             memcpy(SendBuf + BufLength, &x11_window_id, sizeof(x11_window_id));
             BufLength += sizeof(x11_window_id);
