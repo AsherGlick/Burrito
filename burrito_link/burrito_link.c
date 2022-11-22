@@ -13,6 +13,15 @@
 #define PACKET_METADATA 2
 #define PACKET_LINK_TIMEOUT 3
 
+
+// The max buffer size for data that is being sent to burriot over the UDP socket
+#define MaxBufferSize 1024
+
+// A state variable to keep track of the previous cycle's map_id to determine
+// if the map_id has changed in this cycle.
+int last_map_id = 0;
+
+
 // Do a rolling average on the player position because that seems to be
 // Roughly what the camera position is doing and doing this will remove
 // some weird jitter I hope
@@ -52,7 +61,6 @@ struct MumbleContext *lc = NULL;
 long program_timeout = 0;
 long program_startime = 0;
 
-time_t rawtime;
 
 #ifdef _WIN32
 
@@ -120,11 +128,6 @@ void initMumble() {
     }
 #endif
 }
-
-int last_map_id = 0;
-
-// The max buffer size for data that is being sent to burriot over the UDP socket
-#define MaxBufferSize 1024
 
 ////////////////////////////////////////////////////////////////////////////////
 // connect_and_or_send()
