@@ -62,17 +62,13 @@ long program_timeout = 0;
 long program_startime = 0;
 
 
-#ifdef _WIN32
-
 // handle to the shared memory of Mumble link . close at the end of program. windows will only release the shared memory once ALL handles are closed,
 // so we don't have to worry about other processes like arcdps or other overlays if they are using this.
 HANDLE handle_lm;
 // the pointer to the mapped view of the file. close before handle.
 LPCTSTR mapped_lm;
-#endif
 
 void initMumble() {
-#ifdef _WIN32
     // creates a shared memory IF it doesn't exist. otherwise, it returns the existing shared memory handle.
     // reference: https://docs.microsoft.com/en-us/windows/win32/memory/creating-named-shared-memory
 
@@ -110,23 +106,6 @@ void initMumble() {
 
     lc = (struct MumbleContext *)lm->context;
     printf("successfully opened mumble link shared memory..\n");
-#else
-    char memname[256];
-    snprintf(memname, sizeof(memname), "/MumbleLink.%d", getuid());
-
-    int shmfd = shm_open(memname, O_RDWR, S_IRUSR | S_IWUSR);
-
-    if (shmfd < 0) {
-        return;
-    }
-
-    lm = (struct LinkedMem *)(mmap(NULL, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0));
-
-    if (lm == (void *)(-1)) {
-        lm = NULL;
-        return;
-    }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -393,12 +372,10 @@ int connect_and_or_send() {
         printf("Client: WSACleanup() is OK\n");
     }
 
-#ifdef _WIN32
     // unmap the shared memory from our process address space.
     UnmapViewOfFile(mapped_lm);
     // close LinkedMemory handle
     CloseHandle(handle_lm);
-#endif
 
     // Back to the system
     return 0;
