@@ -59,6 +59,26 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     outfile.close();
 }
 
+void write_protobuf_file(string xml_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    ofstream outfile;
+    string new_file_path = xml_filepath + "export.data";
+
+    outfile.open(new_file_path, ios::out | ios_base::binary);
+    for (const auto& category : *marker_categories) {
+        std::string text;
+        text = category.second.as_protobuf();
+        outfile << text;
+    }
+
+    for (const auto& parsed_poi : *parsed_pois) {
+        std::string text;
+        text = parsed_poi->as_protobuf();
+        outfile << text;
+    }
+
+    outfile.close();
+}
+
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     // TODO: This is a slow linear search, replace with something faster.
     //       maybe use data from already parsed node instead of searching for
@@ -250,7 +270,7 @@ int main() {
     map<string, Category> marker_categories;
     test_proto();
 
-    for (const auto& entry : filesystem::directory_iterator("./packs")) {
+    for (const auto& entry : filesystem::directory_iterator("../packs")) {
         string path = entry.path();
 
         if (entry.is_directory()) {
@@ -267,10 +287,17 @@ int main() {
     cout << "The parse function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("./export_packs/", &marker_categories, &parsed_pois);
+    write_xml_file("../export_packs/", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    cout << "The write function took " << ms << " milliseconds to run" << endl;
+    cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+
+    begin = chrono::high_resolution_clock::now();
+    write_protobuf_file("../export_packs/", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
     return 0;
 }

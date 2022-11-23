@@ -7,8 +7,9 @@ message Category {
     string display_name = 2;
     bool is_separator = 3;
     string name = 4;
-    string tooltip_name = 5;
+    string tip_description = 5;
     map <string, Category> children = 6;
+    string type = 7;
 }
 
 message Icon {
@@ -33,6 +34,7 @@ message Icon {
     bool scale_on_map_with_zoom = 23;
     string tip_description = 24;
     string tip_name = 25;
+    Color color = 26;    
 
     float __tentative__scale = 2048;
     bool __tentative__render_ingame = 2049;
@@ -57,17 +59,22 @@ message Trail {
     int32 achievement_id = 17;
     float alpha = 18;
     bool can_fade = 19; 
-    bool is_wall = 22;
-    string bhdraft__schedule = 23;
-    float bhdraft__schedule_duration = 24;
-    float scale = 25;
-    Color color = 26;
-    FestivalFilter festival_filter = 27;
-    MapTypeFilter map_type_filter = 28;
-    MountFilter mount_filter = 29;
-    ProfessionFilter profession_filter = 30;
-    SpecializationFilter specialization_filter = 31;
-    SpeciesFilter species_filter = 32;
+    bool is_wall = 20;
+    float scale = 21;
+    Color color = 22;
+    FestivalFilter festival_filter = 23;
+    MapTypeFilter map_type_filter = 24;
+    MountFilter mount_filter = 25;
+    ProfessionFilter profession_filter = 26;
+    SpecializationFilter specialization_filter = 27;
+    SpeciesFilter species_filter = 28;
+    int32 map_display_size = 29;
+
+    bool __tentative__render_ingame = 2049;
+    bool __tentative__render_on_map = 2050;
+    bool __tentative__render_on_minimap = 2051;
+    string bhdraft__schedule = 2052;
+    float bhdraft__schedule_duration = 2053;
 }
     
 message Texture {
@@ -104,7 +111,7 @@ message Trigger {
 }
 
 message GUID {
-    int32 guid = 1;
+    string guid = 1;
 }
 
 message Color {

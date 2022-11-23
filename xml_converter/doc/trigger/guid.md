@@ -4,7 +4,7 @@ type: Custom
 class: UniqueId
 xml_fields: ["GUID"]
 applies_to: ["Icon", "Trail"]
-protobuf_field: "guid"
+protobuf_field: guid
 compatability: [TacO, BlishHUD, Burrito]
 ---
 A globally unique identifier value to make sure this maker's trigger reset data is always assocaited with this marker and never lost or confused with other markers.

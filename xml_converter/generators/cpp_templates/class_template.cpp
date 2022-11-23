@@ -1,4 +1,5 @@
 #include "{{cpp_class_header}}_gen.hpp"
+#include "waypoint.pb.h"
 
 {% for absolute_include in cpp_includes.sorted_cpp_absolute_includes() %}
 #include <{{absolute_include}}>
@@ -115,4 +116,48 @@ vector<string> {{cpp_class}}::as_xml() const {
     xml_node_contents.push_back("/>");
 {% endif %}
     return xml_node_contents;
+}
+
+std::string {{cpp_class}}::as_protobuf() const {
+    waypoint::{{cpp_class}} proto_{{cpp_class_header}};
+    {% if cpp_class == "Icon": %}
+    ::waypoint::Trigger trigger;
+    {% endif %} 
+{%for attribute_variable in attribute_variables%}
+    {% if (attribute_variable.is_trigger == true)%}
+        {% if (attribute_variable.attribute_type == "Custom")%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        trigger.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+        }
+        {% elif (attribute_variable.attribute_type in ["MultiflagValue","Enum", "CompoundValue"])%}
+        // 
+        {% else: %}
+    // if (this->{{attribute_variable.attribute_name}}_is_set) {
+        // proto_{{cpp_class_header}}.trigger.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+        // }
+        // {% endif %}
+    {% else: %}
+        {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
+//TODO: TrailDataMapID is different
+        {% elif (attribute_variable.attribute_type == "Custom")%}
+    // if (this->{{attribute_variable.attribute_name}}_is_set) {
+    //     proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+    //     }
+        {% elif (attribute_variable.attribute_type in ["MultiflagValue","Enum", "CompoundValue"])%}
+    // if (this->{{attribute_variable.attribute_name}}_is_set) {
+    //     this->proto_{{cpp_class_header}}->{{attribute_variable.class_name}}->set_allocated(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}})
+    //     }
+        {% else: %}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+        }
+        {% endif %}
+     {% endif %}    
+{% endfor %}
+{% if cpp_class == "Icon": %}
+    proto_{{cpp_class_header}}.set_allocated_trigger(&trigger);
+{% endif %} 
+    std::string output; 
+    proto_{{cpp_class_header}}.SerializeToString(&output);
+    return output;
 }

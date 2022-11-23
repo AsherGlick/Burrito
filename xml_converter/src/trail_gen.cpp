@@ -1,4 +1,5 @@
 #include "trail_gen.hpp"
+#include "waypoint.pb.h"
 
 #include <iosfwd>
 #include <string>
@@ -263,4 +264,125 @@ vector<string> Trail::as_xml() const {
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;
+}
+
+std::string Trail::as_protobuf() const {
+    waypoint::Trail proto_trail;
+ 
+    if (this->achievement_bitmask_is_set) {
+        proto_trail.set_achievement_bit(to_proto_int(this->achievement_bitmask));
+        }
+    
+    if (this->achievement_id_is_set) {
+        proto_trail.set_achievement_id(to_proto_int(this->achievement_id));
+        }
+    
+    if (this->alpha_is_set) {
+        proto_trail.set_alpha(to_proto_float(this->alpha));
+        }
+    
+    if (this->animation_speed_is_set) {
+        proto_trail.set_animation_speed(to_proto_float(this->animation_speed));
+        }
+    
+    if (this->can_fade_is_set) {
+        proto_trail.set_can_fade(to_proto_bool(this->can_fade));
+        }
+    
+    // if (this->category_is_set) {
+    //     proto_trail.category.set_allocated_category(to_proto_marker_category(this->category));
+    //     }
+    
+    // if (this->color_is_set) {
+    //     proto_trail.color.set_allocated_color(to_proto_color(this->color));
+    //     }
+    
+    // if (this->cull_chirality_is_set) {
+    //     this->proto_trail->cull_chirality->set_allocated(to_proto_cull_chirality(this->cull_chirality)
+    //     }
+    
+    if (this->distance_fade_end_is_set) {
+        proto_trail.set_distance_fade_end(to_proto_float(this->distance_fade_end));
+        }
+    
+    if (this->distance_fade_start_is_set) {
+        proto_trail.set_distance_fade_start(to_proto_float(this->distance_fade_start));
+        }
+    
+    // if (this->festival_filter_is_set) {
+    //     this->proto_trail->festival_filter->set_allocated(to_proto_festival_filter(this->festival_filter)
+    //     }
+    
+    // if (this->guid_is_set) {
+    //     proto_trail.guid.set_allocated_guid(to_proto_unique_id(this->guid));
+    //     }
+    
+    if (this->is_wall_is_set) {
+        proto_trail.set_is_wall(to_proto_bool(this->is_wall));
+        }
+    
+    if (this->map_display_size_is_set) {
+        proto_trail.set_map_display_size(to_proto_int(this->map_display_size));
+        }
+    
+    if (this->map_id_is_set) {
+        proto_trail.set_map_id(to_proto_int(this->map_id));
+        }
+    
+    // if (this->map_type_filter_is_set) {
+    //     this->proto_trail->map_type_filter->set_allocated(to_proto_map_type_filter(this->map_type_filter)
+    //     }
+    
+    // if (this->mount_filter_is_set) {
+    //     this->proto_trail->mount_filter->set_allocated(to_proto_mount_filter(this->mount_filter)
+    //     }
+    
+    // if (this->profession_filter_is_set) {
+    //     this->proto_trail->profession_filter->set_allocated(to_proto_profession_filter(this->profession_filter)
+    //     }
+    
+    if (this->render_ingame_is_set) {
+        proto_trail.set___tentative__render_ingame(to_proto_bool(this->render_ingame));
+        }
+    
+    if (this->render_on_map_is_set) {
+        proto_trail.set___tentative__render_on_map(to_proto_bool(this->render_on_map));
+        }
+    
+    if (this->render_on_minimap_is_set) {
+        proto_trail.set___tentative__render_on_minimap(to_proto_bool(this->render_on_minimap));
+        }
+    
+    if (this->schedule_is_set) {
+        proto_trail.set_bhdraft__schedule(to_proto_string(this->schedule));
+        }
+    
+    if (this->schedule_duration_is_set) {
+        proto_trail.set_bhdraft__schedule_duration(to_proto_float(this->schedule_duration));
+        }
+    
+    // if (this->specialization_filter_is_set) {
+    //     this->proto_trail->specialization_filter->set_allocated(to_proto_specialization_filter(this->specialization_filter)
+    //     }
+    
+    // if (this->species_filter_is_set) {
+    //     this->proto_trail->species_filter->set_allocated(to_proto_species_filter(this->species_filter)
+    //     }
+    
+    // if (this->texture_is_set) {
+    //     proto_trail.texture.set_allocated_texture(to_proto_image(this->texture));
+    //     }
+    
+    // if (this->trail_data_is_set) {
+    //     proto_trail.trail_data.set_allocated_trail_data(to_proto_trail_data(this->trail_data));
+    //     }
+    
+    if (this->trail_scale_is_set) {
+        proto_trail.set_scale(to_proto_float(this->trail_scale));
+        }
+    
+ 
+    std::string output; 
+    proto_trail.SerializeToString(&output);
+    return output;
 }

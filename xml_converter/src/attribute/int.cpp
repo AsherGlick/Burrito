@@ -40,3 +40,12 @@ int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
 string stringify_int(int attribute_value) {
     return to_string(attribute_value);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_int
+//
+// Returns the int so that it can be saved to proto.
+////////////////////////////////////////////////////////////////////////////////
+int to_proto_int(int attribute_value){
+    return attribute_value;
+}

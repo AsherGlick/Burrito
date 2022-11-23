@@ -17,18 +17,21 @@ class Category : public Parseable {
     std::string display_name;
     bool is_separator;
     std::string name;
-    std::string tooltip_name;
+    std::string tooltip_description;
     bool default_visibility_is_set = false;
     bool display_name_is_set = false;
     bool is_separator_is_set = false;
     bool name_is_set = false;
-    bool tooltip_name_is_set = false;
+    bool tooltip_description_is_set = false;
+    bool set_trigger = false;
     std::map<std::string, Category> children;
     Icon default_icon;
     Trail default_trail;
+
 
     void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors);
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
+    virtual std::string as_protobuf() const; 
 };

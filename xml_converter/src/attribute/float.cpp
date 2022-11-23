@@ -23,3 +23,12 @@ float parse_float(rapidxml::xml_attribute<>* input, std::vector<XMLError*>*) {
 std::string stringify_float(float attribute_value) {
     return std::to_string(attribute_value);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_float
+//
+// Returns the float so that it can be saved to proto.
+////////////////////////////////////////////////////////////////////////////////
+float to_proto_float(float attribute_value){
+    return attribute_value;
+}

@@ -37,3 +37,9 @@ std::vector<std::string> Parseable::as_xml() const {
     std::vector<std::string> result;
     return result;
 }
+
+std::string Parseable::as_protobuf() const {
+    throw std::runtime_error("error: Parseable::as_proto() should not be called");
+    std::string result;
+    return result;
+}

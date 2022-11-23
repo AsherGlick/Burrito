@@ -28,3 +28,14 @@ string parse_string(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 string stringify_string(string attribute_value) {
     return attribute_value;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_string
+//
+// Returns the same string that was passed in which is encoded directly into
+// proto. This function exists for stylistic convenience with all the other
+// attribute stringify functions.
+////////////////////////////////////////////////////////////////////////////////
+string to_proto_string(string attribute_value) {
+    return attribute_value;
+}

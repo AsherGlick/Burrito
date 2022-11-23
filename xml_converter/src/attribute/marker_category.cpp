@@ -26,3 +26,16 @@ MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vect
 std::string stringify_marker_category(MarkerCategory attribute_value) {
     return attribute_value.category;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_marker_category
+//
+// Returns a MarkerCategory so that it can be saved to proto. 
+////////////////////////////////////////////////////////////////////////////////
+waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value) {
+    waypoint::Category* category;
+    category->set_type(attribute_value.category);
+    return category;
+}
+
+// TODO: Make sure this works. 

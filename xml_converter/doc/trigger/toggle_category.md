@@ -3,7 +3,7 @@ name: Toggle Category
 type: Custom
 class: MarkerCategory
 applies_to: [Icon]
-xml_fields: [Toggle]
+xml_fields: [Toggle, toggleCategory]
 protobuf_field: trigger.action_toggle_category
 compatability: [TacO, BlishHUD, Burrito]
 ---

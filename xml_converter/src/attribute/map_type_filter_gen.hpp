@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "waypoint.pb.h"
 
 class XMLError;
 
@@ -40,3 +41,4 @@ class MapTypeFilter {
 };
 MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_map_type_filter(MapTypeFilter attribute_value);
+// waypoint::MapTypeFilter* to_proto_map_type_filter(MapTypeFilter attribute_value);

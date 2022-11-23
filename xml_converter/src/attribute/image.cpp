@@ -28,3 +28,14 @@ Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 string stringify_image(Image attribute_value) {
     return attribute_value.path;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_image
+//
+// Converts an Image into a waypoint::Image pointer to save to proto.
+////////////////////////////////////////////////////////////////////////////////
+waypoint::Texture* to_proto_image(Image attribute_value) {
+    waypoint::Texture* texture;
+    texture->set_path(attribute_value.path);
+    return texture;
+}

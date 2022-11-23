@@ -1,4 +1,5 @@
 #include "category_gen.hpp"
+#include "waypoint.pb.h"
 
 #include <iosfwd>
 #include <string>
@@ -50,8 +51,8 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
         this->name_is_set = true;
     }
     else if (attributename == "tipdescription") {
-        this->tooltip_name = parse_string(attribute, errors);
-        this->tooltip_name_is_set = true;
+        this->tooltip_description = parse_string(attribute, errors);
+        this->tooltip_description_is_set = true;
     }
     else {
         return false;
@@ -73,8 +74,8 @@ vector<string> Category::as_xml() const {
     if (this->name_is_set) {
         xml_node_contents.push_back(" Name=\"" + stringify_string(this->name) + "\"");
     }
-    if (this->tooltip_name_is_set) {
-        xml_node_contents.push_back(" TipDescription=\"" + stringify_string(this->tooltip_name) + "\"");
+    if (this->tooltip_description_is_set) {
+        xml_node_contents.push_back(" TipDescription=\"" + stringify_string(this->tooltip_description) + "\"");
     }
     xml_node_contents.push_back(">\n");
 
@@ -89,4 +90,33 @@ vector<string> Category::as_xml() const {
 
     xml_node_contents.push_back("</MarkerCategory>\n");
     return xml_node_contents;
+}
+
+std::string Category::as_protobuf() const {
+    waypoint::Category proto_category;
+ 
+    if (this->default_visibility_is_set) {
+        proto_category.set_default_visibility(to_proto_bool(this->default_visibility));
+        }
+    
+    if (this->display_name_is_set) {
+        proto_category.set_display_name(to_proto_string(this->display_name));
+        }
+    
+    if (this->is_separator_is_set) {
+        proto_category.set_is_separator(to_proto_bool(this->is_separator));
+        }
+    
+    if (this->name_is_set) {
+        proto_category.set_name(to_proto_string(this->name));
+        }
+    
+    if (this->tooltip_description_is_set) {
+        proto_category.set_tip_description(to_proto_string(this->tooltip_description));
+        }
+    
+ 
+    std::string output; 
+    proto_category.SerializeToString(&output);
+    return output;
 }

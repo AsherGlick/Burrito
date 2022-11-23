@@ -1,12 +1,12 @@
 ---
-name: Tooltip Description
+name: Tooltip Name
 type: String
-applies_to: [Icon, Category]
-xml_fields: [TipDescription]
-protobuf_field: tip_description
+applies_to: [Icon]
+xml_fields: [TipName]
+protobuf_field: tip_name
 compatability: [TacO, BlishHUD, Burrito]
 ---
-The full text of the tooltip.
+The name of the tooltip when hovering over the minimap.
 
 Notes
 =====

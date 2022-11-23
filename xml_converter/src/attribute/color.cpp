@@ -29,3 +29,14 @@ Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 string stringify_color(Color attribute_value) {
     return attribute_value.hex;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_color
+//
+// Converts a Color into a stringy value so it can be saved to xml.
+////////////////////////////////////////////////////////////////////////////////
+waypoint::Color* to_proto_color(Color attribute_value) {
+    waypoint::Color* color;
+    color->set_hex(attribute_value.hex);
+    return color;
+}

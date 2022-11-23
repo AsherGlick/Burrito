@@ -23,3 +23,9 @@ UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 string stringify_unique_id(UniqueId attribute_value) {
     return base64_encode(&attribute_value.guid[0], attribute_value.guid.size());
 }
+
+waypoint::GUID* to_proto_unique_id(UniqueId attribute_value){
+    waypoint::GUID* guid;
+    guid->set_guid(base64_encode(&attribute_value.guid[0], attribute_value.guid.size()));
+    return guid;
+}
