@@ -27,10 +27,12 @@ set(CMAKE_SYSTEM_NAME Windows)
 SET(DX11LIB d3d11.dll)
 
 # Will this build a library
-add_library(${DX11LIB} SHARED dllmain.c)
+add_library(${DX11LIB} SHARED dllmain.c burrito_link.c)
 
 target_compile_options(${DX11LIB} PRIVATE -mwindows)
 target_compile_options(${DX11LIB} PRIVATE -static-libgcc -static-libstdc++)
+
+target_link_libraries(${DX11LIB} PRIVATE "ws2_32")
 
 set_target_properties(${DX11LIB} PROPERTIES
     PREFIX ""

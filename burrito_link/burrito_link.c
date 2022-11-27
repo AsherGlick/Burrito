@@ -393,6 +393,15 @@ int connect_and_or_send() {
     return 0;
 }
 
+void run_link() {
+    playerx_avg.index = 0;
+    playery_avg.index = 0;
+    playerz_avg.index = 0;
+
+    initMumble();
+
+    connect_and_or_send();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // The main function initializes some global variables and shared memory. Then
@@ -408,11 +417,5 @@ int main(int argc, char **argv) {
         }
     }
 
-    playerx_avg.index = 0;
-    playery_avg.index = 0;
-    playerz_avg.index = 0;
-
-    initMumble();
-
-    connect_and_or_send();
+    run_link();
 }

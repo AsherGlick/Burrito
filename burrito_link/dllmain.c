@@ -251,6 +251,20 @@ CEXTERN HRESULT WINAPI D3D11CoreCreateDevice(
 }
 
 
+// Forward declare the run_link() function defined in burrito_link.c
+void run_link();
+
+// Call the burrito link function from the thread.
+// TODO: There is something odd here that causes a crash as gw2 is exiting.
+// Because gw2 is exiting the crash does not really matter. I am guessing it
+// has something to do with how we handle the infinite wait loop inside
+// burrito_link and that we dont clean it up ever.
+void WINAPI BurritoLinkThread() {
+    run_link();
+    return;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // DllMain
 //
@@ -280,6 +294,9 @@ BOOL WINAPI DllMain(
         case DLL_PROCESS_ATTACH:
             // TODO: Here is where we want to create a new process.
             printf("DLL_PROCESS_ATTACH\n");
+
+            CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BurritoLinkThread, NULL, 0, NULL);
+
             break;
 
         // Do thread-specific initialization.
