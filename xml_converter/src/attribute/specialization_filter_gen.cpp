@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "specialization_filter_gen.hpp"
 
 #include <iosfwd>
@@ -613,4 +614,225 @@ string stringify_specialization_filter(SpecializationFilter attribute_value) {
         output = output + "11";
     }
     return output;
+}
+
+waypoint::SpecializationFilter* to_proto_specialization_filter (SpecializationFilter attribute_value) {
+    waypoint::SpecializationFilter* specialization_filter = new waypoint::SpecializationFilter();
+    if (attribute_value.elementalist_tempest == true) {
+        specialization_filter->set_elementalist_tempest(true);
+    }
+    if (attribute_value.engineer_scrapper == true) {
+        specialization_filter->set_engineer_scrapper(true);
+    }
+    if (attribute_value.guardian_dragonhunter == true) {
+        specialization_filter->set_guardian_dragonhunter(true);
+    }
+    if (attribute_value.mesmer_chronomancer == true) {
+        specialization_filter->set_mesmer_chronomancer(true);
+    }
+    if (attribute_value.necromancer_reaper == true) {
+        specialization_filter->set_necromancer_reaper(true);
+    }
+    if (attribute_value.ranger_druid == true) {
+        specialization_filter->set_ranger_druid(true);
+    }
+    if (attribute_value.revenant_herald == true) {
+        specialization_filter->set_revenant_herald(true);
+    }
+    if (attribute_value.thief_daredevil == true) {
+        specialization_filter->set_thief_daredevil(true);
+    }
+    if (attribute_value.warrior_berserker == true) {
+        specialization_filter->set_warrior_berserker(true);
+    }
+    if (attribute_value.elementalist_weaver == true) {
+        specialization_filter->set_elementalist_weaver(true);
+    }
+    if (attribute_value.engineer_holosmith == true) {
+        specialization_filter->set_engineer_holosmith(true);
+    }
+    if (attribute_value.guardian_firebrand == true) {
+        specialization_filter->set_guardian_firebrand(true);
+    }
+    if (attribute_value.mesmer_mirage == true) {
+        specialization_filter->set_mesmer_mirage(true);
+    }
+    if (attribute_value.necromancer_scourge == true) {
+        specialization_filter->set_necromancer_scourge(true);
+    }
+    if (attribute_value.ranger_soulbeast == true) {
+        specialization_filter->set_ranger_soulbeast(true);
+    }
+    if (attribute_value.revenant_renegade == true) {
+        specialization_filter->set_revenant_renegade(true);
+    }
+    if (attribute_value.thief_deadeye == true) {
+        specialization_filter->set_thief_deadeye(true);
+    }
+    if (attribute_value.warrior_spellbreaker == true) {
+        specialization_filter->set_warrior_spellbreaker(true);
+    }
+    if (attribute_value.elementalist_catalyst == true) {
+        specialization_filter->set_elementalist_catalyst(true);
+    }
+    if (attribute_value.engineer_mechanist == true) {
+        specialization_filter->set_engineer_mechanist(true);
+    }
+    if (attribute_value.guardian_willbender == true) {
+        specialization_filter->set_guardian_willbender(true);
+    }
+    if (attribute_value.mesmer_virtuoso == true) {
+        specialization_filter->set_mesmer_virtuoso(true);
+    }
+    if (attribute_value.necromancer_harbinger == true) {
+        specialization_filter->set_necromancer_harbinger(true);
+    }
+    if (attribute_value.ranger_untamed == true) {
+        specialization_filter->set_ranger_untamed(true);
+    }
+    if (attribute_value.revenant_vindicator == true) {
+        specialization_filter->set_revenant_vindicator(true);
+    }
+    if (attribute_value.thief_specter == true) {
+        specialization_filter->set_thief_specter(true);
+    }
+    if (attribute_value.warrior_bladesworn == true) {
+        specialization_filter->set_warrior_bladesworn(true);
+    }
+    if (attribute_value.elementalist_air == true) {
+        specialization_filter->set_elementalist_air(true);
+    }
+    if (attribute_value.elementalist_arcane == true) {
+        specialization_filter->set_elementalist_arcane(true);
+    }
+    if (attribute_value.elementalist_earth == true) {
+        specialization_filter->set_elementalist_earth(true);
+    }
+    if (attribute_value.elementalist_fire == true) {
+        specialization_filter->set_elementalist_fire(true);
+    }
+    if (attribute_value.elementalist_water == true) {
+        specialization_filter->set_elementalist_water(true);
+    }
+    if (attribute_value.engineer_alchemy == true) {
+        specialization_filter->set_engineer_alchemy(true);
+    }
+    if (attribute_value.engineer_explosives == true) {
+        specialization_filter->set_engineer_explosives(true);
+    }
+    if (attribute_value.engineer_firearms == true) {
+        specialization_filter->set_engineer_firearms(true);
+    }
+    if (attribute_value.engineer_inventions == true) {
+        specialization_filter->set_engineer_inventions(true);
+    }
+    if (attribute_value.engineer_tools == true) {
+        specialization_filter->set_engineer_tools(true);
+    }
+    if (attribute_value.guardian_honor == true) {
+        specialization_filter->set_guardian_honor(true);
+    }
+    if (attribute_value.guardian_radiance == true) {
+        specialization_filter->set_guardian_radiance(true);
+    }
+    if (attribute_value.guardian_valor == true) {
+        specialization_filter->set_guardian_valor(true);
+    }
+    if (attribute_value.guardian_virtues == true) {
+        specialization_filter->set_guardian_virtues(true);
+    }
+    if (attribute_value.guardian_zeal == true) {
+        specialization_filter->set_guardian_zeal(true);
+    }
+    if (attribute_value.mesmer_chaos == true) {
+        specialization_filter->set_mesmer_chaos(true);
+    }
+    if (attribute_value.mesmer_domination == true) {
+        specialization_filter->set_mesmer_domination(true);
+    }
+    if (attribute_value.mesmer_dueling == true) {
+        specialization_filter->set_mesmer_dueling(true);
+    }
+    if (attribute_value.mesmer_illusions == true) {
+        specialization_filter->set_mesmer_illusions(true);
+    }
+    if (attribute_value.mesmer_inspiration == true) {
+        specialization_filter->set_mesmer_inspiration(true);
+    }
+    if (attribute_value.necromancer_blood_magic == true) {
+        specialization_filter->set_necromancer_blood_magic(true);
+    }
+    if (attribute_value.necromancer_curses == true) {
+        specialization_filter->set_necromancer_curses(true);
+    }
+    if (attribute_value.necromancer_death_magic == true) {
+        specialization_filter->set_necromancer_death_magic(true);
+    }
+    if (attribute_value.necromancer_soul_reaping == true) {
+        specialization_filter->set_necromancer_soul_reaping(true);
+    }
+    if (attribute_value.necromancer_spite == true) {
+        specialization_filter->set_necromancer_spite(true);
+    }
+    if (attribute_value.ranger_beastmastery == true) {
+        specialization_filter->set_ranger_beastmastery(true);
+    }
+    if (attribute_value.ranger_marksmanship == true) {
+        specialization_filter->set_ranger_marksmanship(true);
+    }
+    if (attribute_value.ranger_nature_magic == true) {
+        specialization_filter->set_ranger_nature_magic(true);
+    }
+    if (attribute_value.ranger_skirmishing == true) {
+        specialization_filter->set_ranger_skirmishing(true);
+    }
+    if (attribute_value.ranger_wilderness_survival == true) {
+        specialization_filter->set_ranger_wilderness_survival(true);
+    }
+    if (attribute_value.revenant_corruption == true) {
+        specialization_filter->set_revenant_corruption(true);
+    }
+    if (attribute_value.revenant_devastation == true) {
+        specialization_filter->set_revenant_devastation(true);
+    }
+    if (attribute_value.revenant_invocation == true) {
+        specialization_filter->set_revenant_invocation(true);
+    }
+    if (attribute_value.revenant_retribution == true) {
+        specialization_filter->set_revenant_retribution(true);
+    }
+    if (attribute_value.revenant_salvation == true) {
+        specialization_filter->set_revenant_salvation(true);
+    }
+    if (attribute_value.thief_acrobatics == true) {
+        specialization_filter->set_thief_acrobatics(true);
+    }
+    if (attribute_value.thief_critical_strikes == true) {
+        specialization_filter->set_thief_critical_strikes(true);
+    }
+    if (attribute_value.thief_deadly_arts == true) {
+        specialization_filter->set_thief_deadly_arts(true);
+    }
+    if (attribute_value.thief_shadow_arts == true) {
+        specialization_filter->set_thief_shadow_arts(true);
+    }
+    if (attribute_value.thief_trickery == true) {
+        specialization_filter->set_thief_trickery(true);
+    }
+    if (attribute_value.warrior_arms == true) {
+        specialization_filter->set_warrior_arms(true);
+    }
+    if (attribute_value.warrior_defense == true) {
+        specialization_filter->set_warrior_defense(true);
+    }
+    if (attribute_value.warrior_discipline == true) {
+        specialization_filter->set_warrior_discipline(true);
+    }
+    if (attribute_value.warrior_strength == true) {
+        specialization_filter->set_warrior_strength(true);
+    }
+    if (attribute_value.warrior_tactics == true) {
+        specialization_filter->set_warrior_tactics(true);
+    }
+    return specialization_filter;
 }

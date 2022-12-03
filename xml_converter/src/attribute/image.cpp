@@ -35,7 +35,7 @@ string stringify_image(Image attribute_value) {
 // Converts an Image into a waypoint::Image pointer to save to proto.
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::Texture* to_proto_image(Image attribute_value) {
-    waypoint::Texture* texture;
+    waypoint::Texture* texture = new waypoint::Texture();
     texture->set_path(attribute_value.path);
     return texture;
 }

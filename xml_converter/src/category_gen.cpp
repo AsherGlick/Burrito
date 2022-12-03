@@ -97,26 +97,37 @@ std::string Category::as_protobuf() const {
  
     if (this->default_visibility_is_set) {
         proto_category.set_default_visibility(to_proto_bool(this->default_visibility));
-        }
+    }
     
     if (this->display_name_is_set) {
         proto_category.set_display_name(to_proto_string(this->display_name));
-        }
+    }
     
     if (this->is_separator_is_set) {
         proto_category.set_is_separator(to_proto_bool(this->is_separator));
-        }
+    }
     
     if (this->name_is_set) {
         proto_category.set_name(to_proto_string(this->name));
-        }
+    }
     
     if (this->tooltip_description_is_set) {
         proto_category.set_tip_description(to_proto_string(this->tooltip_description));
-        }
+    }
     
  
     std::string output; 
     proto_category.SerializeToString(&output);
+
+    for (const auto& [key, val] : this->children) {
+        std::string text;
+        for (const auto& s : val.as_protobuf()) {
+            text += s;
+        }
+        output += text; 
+    }
+
+
+
     return output;
 }

@@ -5,6 +5,7 @@
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "waypoint.pb.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // parse_marker_category
@@ -33,7 +34,7 @@ std::string stringify_marker_category(MarkerCategory attribute_value) {
 // Returns a MarkerCategory so that it can be saved to proto. 
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value) {
-    waypoint::Category* category;
+    waypoint::Category* category = new waypoint::Category();
     category->set_type(attribute_value.category);
     return category;
 }

@@ -499,7 +499,7 @@ class Generator:
                             xml_fields=component_xml_fields,
                             default_xml_fields=component_default_xml_fields,
                             xml_export=xml_export,
-                            protobuf_field=fieldval["protobuf_field"],
+                            protobuf_field=component["protobuf_field"],
                             is_child=True,
                         )
                         attribute_variables.append(component_attribute_variable)
@@ -611,7 +611,7 @@ class Generator:
                         class_name=attribute_name,
                         xml_fields=xml_fields,
                         xml_export=metadata[filepath]["xml_export"],
-                        protobuf_field=protobuf_field,
+                        protobuf_field=component["protobuf_field"],
                         is_trigger=is_trigger,
                     )
                     attribute_variables.append(attribute_variable)

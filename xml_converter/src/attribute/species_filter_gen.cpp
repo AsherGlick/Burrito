@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "species_filter_gen.hpp"
 
 #include <iosfwd>
@@ -63,4 +64,24 @@ string stringify_species_filter(SpeciesFilter attribute_value) {
         output = output + "sylvari";
     }
     return output;
+}
+
+waypoint::SpeciesFilter* to_proto_species_filter (SpeciesFilter attribute_value) {
+    waypoint::SpeciesFilter* species_filter = new waypoint::SpeciesFilter();
+    if (attribute_value.asura == true) {
+        species_filter->set_asura(true);
+    }
+    if (attribute_value.charr == true) {
+        species_filter->set_charr(true);
+    }
+    if (attribute_value.human == true) {
+        species_filter->set_human(true);
+    }
+    if (attribute_value.norn == true) {
+        species_filter->set_norn(true);
+    }
+    if (attribute_value.sylvari == true) {
+        species_filter->set_sylvari(true);
+    }
+    return species_filter;
 }

@@ -1,3 +1,4 @@
+#include "waypoint.pb.h"
 #include "cull_chirality_gen.hpp"
 
 #include <iosfwd>
@@ -42,4 +43,21 @@ string stringify_cull_chirality(CullChirality attribute_value) {
     else {
         return "CullChirality::none";
     }
+}
+
+waypoint::CullChirality to_proto_cull_chirality (CullChirality attribute_value) {
+    waypoint::CullChirality cull_chirality;
+    if (attribute_value == CullChirality::none) {
+        cull_chirality = waypoint::CullChirality::none;
+    }
+    else if (attribute_value == CullChirality::clockwise) {
+        cull_chirality = waypoint::CullChirality::clockwise;
+    }
+    else if (attribute_value == CullChirality::counter_clockwise) {
+        cull_chirality = waypoint::CullChirality::counter_clockwise;
+    }
+    else {
+        cull_chirality = waypoint::CullChirality::none;
+    }
+    return cull_chirality;
 }

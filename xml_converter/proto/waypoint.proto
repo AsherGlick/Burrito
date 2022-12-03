@@ -8,7 +8,7 @@ message Category {
     bool is_separator = 3;
     string name = 4;
     string tip_description = 5;
-    map <string, Category> children = 6;
+    Category children = 6;
     string type = 7;
 }
 
@@ -21,8 +21,8 @@ message Icon {
     float distance_fade_start = 6;
     float height_offset= 7;
     Position position = 8;
-    ResetBehavior reset_behavior= 9;
-    Trigger trigger = 10;
+    Trigger trigger = 9;
+    EulerRotation euler_rotation = 10;
 
     fixed32 achievement_bit = 16;
     int32 achievement_id = 17;
@@ -35,6 +35,13 @@ message Icon {
     string tip_description = 24;
     string tip_name = 25;
     Color color = 26;    
+    FestivalFilter festival_filter = 27;
+    MapTypeFilter map_type_filter = 28;
+    MountFilter mount_filter = 29;
+    ProfessionFilter profession_filter = 30;
+    SpecializationFilter specialization_filter = 31;
+    SpeciesFilter species_filter = 32;
+    CullChirality cull_chirality = 33;
 
     float __tentative__scale = 2048;
     bool __tentative__render_ingame = 2049;
@@ -53,7 +60,6 @@ message Trail {
     float distance_fade_start = 6;
     TrailData trail_data = 7;
     float animation_speed = 8;
-    CullChirality cull_chirality = 9;
 
     fixed32 achievement_bit = 16;
     int32 achievement_id = 17;
@@ -69,6 +75,7 @@ message Trail {
     SpecializationFilter specialization_filter = 27;
     SpeciesFilter species_filter = 28;
     int32 map_display_size = 29;
+    CullChirality cull_chirality = 30;
 
     bool __tentative__render_ingame = 2049;
     bool __tentative__render_on_map = 2050;
@@ -108,6 +115,7 @@ message Trigger {
     Category action_hide_category = 12;
     Category action_show_category = 13;
     Category action_toggle_category = 14;
+    ResetBehavior reset_behavior= 15;
 }
 
 message GUID {
@@ -181,7 +189,7 @@ message MountFilter {
     bool griffon = 5;
     bool roller_beetle = 6;
     bool warclaw = 7;
-    bool skyscalee = 8;
+    bool skyscale = 8;
     bool skiff = 9;
     bool seige_turtle = 10;
 }
@@ -195,7 +203,7 @@ message ProfessionFilter {
     bool elementalist = 6;
     bool mesmer = 7;
     bool necromancer = 8;
-    bool revenantnt = 9;
+    bool revenant = 9;
 }
 
 message SpecializationFilter {
@@ -220,7 +228,7 @@ message SpecializationFilter {
     bool thief_deadeye = 17;
     bool warrior_spellbreaker = 18;
     // End of Dragon Spec
-    bool elmentalist_catalyst = 19;
+    bool elementalist_catalyst = 19;
     bool engineer_mechanist = 20;
     bool guardian_willbender = 21;
     bool mesmer_virtuoso = 22;

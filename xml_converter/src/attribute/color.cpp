@@ -36,7 +36,7 @@ string stringify_color(Color attribute_value) {
 // Converts a Color into a stringy value so it can be saved to xml.
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::Color* to_proto_color(Color attribute_value) {
-    waypoint::Color* color;
+    waypoint::Color* color = new waypoint::Color();
     color->set_hex(attribute_value.hex);
     return color;
 }

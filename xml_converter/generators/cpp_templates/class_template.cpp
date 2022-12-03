@@ -121,43 +121,61 @@ vector<string> {{cpp_class}}::as_xml() const {
 std::string {{cpp_class}}::as_protobuf() const {
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% if cpp_class == "Icon": %}
-    ::waypoint::Trigger trigger;
+    waypoint::Trigger* trigger = new waypoint::Trigger();
+    bool set_trigger = false;
     {% endif %} 
 {%for attribute_variable in attribute_variables%}
     {% if (attribute_variable.is_trigger == true)%}
         {% if (attribute_variable.attribute_type == "Custom")%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
-        trigger.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-        }
-        {% elif (attribute_variable.attribute_type in ["MultiflagValue","Enum", "CompoundValue"])%}
-        // 
+        trigger->set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+        set_trigger = true;
+    }
         {% else: %}
-    // if (this->{{attribute_variable.attribute_name}}_is_set) {
-        // proto_{{cpp_class_header}}.trigger.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-        // }
-        // {% endif %}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        trigger->set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+        set_trigger = true;
+    }
+        {% endif %}
     {% else: %}
         {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
 //TODO: TrailDataMapID is different
-        {% elif (attribute_variable.attribute_type == "Custom")%}
-    // if (this->{{attribute_variable.attribute_name}}_is_set) {
-    //     proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-    //     }
-        {% elif (attribute_variable.attribute_type in ["MultiflagValue","Enum", "CompoundValue"])%}
-    // if (this->{{attribute_variable.attribute_name}}_is_set) {
-    //     this->proto_{{cpp_class_header}}->{{attribute_variable.class_name}}->set_allocated(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}})
-    //     }
+        {% elif (attribute_variable.attribute_type == "Enum")%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}})); 
+    }
+        {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.is_child == false%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        proto_{{cpp_class_header}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+    }
+        {% elif attribute_variable.is_child == true%}
         {% else: %}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-        }
+    }
         {% endif %}
      {% endif %}    
 {% endfor %}
 {% if cpp_class == "Icon": %}
-    proto_{{cpp_class_header}}.set_allocated_trigger(&trigger);
+    if (set_trigger){
+            proto_{{cpp_class_header}}.set_allocated_trigger(trigger);
+    }
 {% endif %} 
     std::string output; 
     proto_{{cpp_class_header}}.SerializeToString(&output);
+
+    {% if cpp_class == "Category": %}
+    for (const auto& [key, val] : this->children) {
+        std::string text;
+        for (const auto& s : val.as_protobuf()) {
+            text += s;
+        }
+        output += text; 
+    }
+
+
+    {% endif %}
+
     return output;
 }
+

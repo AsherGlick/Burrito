@@ -8,6 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ string stringify_unique_id(UniqueId attribute_value) {
 }
 
 waypoint::GUID* to_proto_unique_id(UniqueId attribute_value){
-    waypoint::GUID* guid;
+    waypoint::GUID* guid = new waypoint::GUID();
     guid->set_guid(base64_encode(&attribute_value.guid[0], attribute_value.guid.size()));
     return guid;
 }

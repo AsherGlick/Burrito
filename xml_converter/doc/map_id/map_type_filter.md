@@ -3,7 +3,7 @@ name: Map Type Filter
 type: MultiflagValue
 applies_to: [Icon, Trail]
 xml_fields: [MapID]
-protobuf_field: map_type
+protobuf_field: map_type_filter
 compatability: [TacO, BlishHUD, Burrito]
 flags:
   # Unknown map type

@@ -15,4 +15,4 @@ enum CullChirality {
 };
 CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_cull_chirality(CullChirality attribute_value);
-// waypoint::CullChirality* to_proto_cull_chirality(CullChirality attribute_value);
+waypoint::CullChirality to_proto_cull_chirality(CullChirality attribute_value);

@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "map_type_filter_gen.hpp"
 
 #include <iosfwd>
@@ -196,4 +197,81 @@ string stringify_map_type_filter(MapTypeFilter attribute_value) {
         output = output + "wvwlounge";
     }
     return output;
+}
+
+waypoint::MapTypeFilter* to_proto_map_type_filter (MapTypeFilter attribute_value) {
+    waypoint::MapTypeFilter* map_type_filter = new waypoint::MapTypeFilter();
+    if (attribute_value.unknown_map == true) {
+        map_type_filter->set_unknown_map(true);
+    }
+    if (attribute_value.redirect_map == true) {
+        map_type_filter->set_redirect_map(true);
+    }
+    if (attribute_value.character_create_map == true) {
+        map_type_filter->set_character_create_map(true);
+    }
+    if (attribute_value.pvp_map == true) {
+        map_type_filter->set_pvp_map(true);
+    }
+    if (attribute_value.gvg_map == true) {
+        map_type_filter->set_gvg_map(true);
+    }
+    if (attribute_value.instance_map == true) {
+        map_type_filter->set_instance_map(true);
+    }
+    if (attribute_value.public_map == true) {
+        map_type_filter->set_public_map(true);
+    }
+    if (attribute_value.tournament_map == true) {
+        map_type_filter->set_tournament_map(true);
+    }
+    if (attribute_value.tutorial_map == true) {
+        map_type_filter->set_tutorial_map(true);
+    }
+    if (attribute_value.user_tournament_map == true) {
+        map_type_filter->set_user_tournament_map(true);
+    }
+    if (attribute_value.center_map == true) {
+        map_type_filter->set_center_map(true);
+    }
+    if (attribute_value.eternal_battlegrounds_map == true) {
+        map_type_filter->set_eternal_battlegrounds_map(true);
+    }
+    if (attribute_value.bluehome_map == true) {
+        map_type_filter->set_bluehome_map(true);
+    }
+    if (attribute_value.blue_borderlands_map == true) {
+        map_type_filter->set_blue_borderlands_map(true);
+    }
+    if (attribute_value.green_home_map == true) {
+        map_type_filter->set_green_home_map(true);
+    }
+    if (attribute_value.green_borderlands_map == true) {
+        map_type_filter->set_green_borderlands_map(true);
+    }
+    if (attribute_value.red_home_map == true) {
+        map_type_filter->set_red_home_map(true);
+    }
+    if (attribute_value.red_borderlands_map == true) {
+        map_type_filter->set_red_borderlands_map(true);
+    }
+    if (attribute_value.fortunes_vale_map == true) {
+        map_type_filter->set_fortunes_vale_map(true);
+    }
+    if (attribute_value.jump_puzzle_map == true) {
+        map_type_filter->set_jump_puzzle_map(true);
+    }
+    if (attribute_value.obsidian_sanctum_map == true) {
+        map_type_filter->set_obsidian_sanctum_map(true);
+    }
+    if (attribute_value.edge_of_the_mists_map == true) {
+        map_type_filter->set_edge_of_the_mists_map(true);
+    }
+    if (attribute_value.public_mini_map == true) {
+        map_type_filter->set_public_mini_map(true);
+    }
+    if (attribute_value.wvw_lounge_map == true) {
+        map_type_filter->set_wvw_lounge_map(true);
+    }
+    return map_type_filter;
 }

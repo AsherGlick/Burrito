@@ -22,4 +22,4 @@ class SpeciesFilter {
 };
 SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_species_filter(SpeciesFilter attribute_value);
-// waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value);
+waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value);

@@ -20,4 +20,4 @@ class Position {
 };
 Position parse_position(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_position(Position attribute_value);
-// waypoint::Position* to_proto_position(Position attribute_value);
+waypoint::Position* to_proto_position(Position attribute_value);

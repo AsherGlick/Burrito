@@ -89,4 +89,4 @@ class SpecializationFilter {
 };
 SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_specialization_filter(SpecializationFilter attribute_value);
-// waypoint::SpecializationFilter* to_proto_specialization_filter(SpecializationFilter attribute_value);
+waypoint::SpecializationFilter* to_proto_specialization_filter(SpecializationFilter attribute_value);

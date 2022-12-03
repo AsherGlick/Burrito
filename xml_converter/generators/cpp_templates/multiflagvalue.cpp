@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "{{attribute_name}}_gen.hpp"
 
 #include <iosfwd>
@@ -49,4 +50,14 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     }
 {% endfor %}
     return output;
+}
+
+waypoint::{{class_name}}* to_proto_{{attribute_name}} ({{class_name}} attribute_value) {
+    waypoint::{{class_name}}* {{attribute_name}} = new waypoint::{{class_name}}();
+    {% for n, attribute_variable in enumerate(attribute_variables)%}
+    if (attribute_value.{{attribute_variable.attribute_name}} == true) {
+        {{attribute_name}}->set_{{attribute_variable.attribute_name}}(true);
+    }
+    {% endfor %}
+    return {{attribute_name}};
 }

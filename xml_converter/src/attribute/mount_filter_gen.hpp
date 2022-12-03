@@ -27,4 +27,4 @@ class MountFilter {
 };
 MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_mount_filter(MountFilter attribute_value);
-// waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value);
+waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value);

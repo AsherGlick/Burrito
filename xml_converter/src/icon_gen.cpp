@@ -461,225 +461,229 @@ vector<string> Icon::as_xml() const {
 
 std::string Icon::as_protobuf() const {
     waypoint::Icon proto_icon;
-    ::waypoint::Trigger trigger;
+    waypoint::Trigger* trigger = new waypoint::Trigger();
+    bool set_trigger = false;
  
     if (this->achievement_bitmask_is_set) {
         proto_icon.set_achievement_bit(to_proto_int(this->achievement_bitmask));
-        }
+    }
     
     if (this->achievement_id_is_set) {
         proto_icon.set_achievement_id(to_proto_int(this->achievement_id));
-        }
+    }
     
     if (this->alpha_is_set) {
         proto_icon.set_alpha(to_proto_float(this->alpha));
-        }
+    }
     
-    // if (this->auto_trigger_is_set) {
-        // proto_icon.trigger.set_auto_trigger(to_proto_bool(this->auto_trigger));
-        // }
-        //     
-    // if (this->bounce_delay_is_set) {
-        // proto_icon.trigger.set_bounce_delay(to_proto_float(this->bounce_delay));
-        // }
-        //     
-    // if (this->bounce_duration_is_set) {
-        // proto_icon.trigger.set_bounce_duration(to_proto_float(this->bounce_duration));
-        // }
-        //     
-    // if (this->bounce_height_is_set) {
-        // proto_icon.trigger.set_bounce_height(to_proto_float(this->bounce_height));
-        // }
-        //     
+    if (this->auto_trigger_is_set) {
+        trigger->set_auto_trigger(to_proto_bool(this->auto_trigger));
+        set_trigger = true;
+    }
+    
+    if (this->bounce_delay_is_set) {
+        trigger->set_bounce_delay(to_proto_float(this->bounce_delay));
+        set_trigger = true;
+    }
+    
+    if (this->bounce_duration_is_set) {
+        trigger->set_bounce_duration(to_proto_float(this->bounce_duration));
+        set_trigger = true;
+    }
+    
+    if (this->bounce_height_is_set) {
+        trigger->set_bounce_height(to_proto_float(this->bounce_height));
+        set_trigger = true;
+    }
+    
     if (this->can_fade_is_set) {
         proto_icon.set_can_fade(to_proto_bool(this->can_fade));
-        }
+    }
     
-    // if (this->category_is_set) {
-    //     proto_icon.category.set_allocated_category(to_proto_marker_category(this->category));
-    //     }
+    if (this->category_is_set) {
+        proto_icon.set_allocated_category(to_proto_marker_category(this->category));
+    }
     
-    // if (this->color_is_set) {
-    //     proto_icon.color.set_allocated_color(to_proto_color(this->color));
-    //     }
+    if (this->color_is_set) {
+        proto_icon.set_allocated_color(to_proto_color(this->color));
+    }
     
-    // if (this->copy_clipboard_is_set) {
-        // proto_icon.trigger.set_action_copy_clipboard(to_proto_string(this->copy_clipboard));
-        // }
-        //     
-    // if (this->copy_message_is_set) {
-        // proto_icon.trigger.set_action_copy_message(to_proto_string(this->copy_message));
-        // }
-        //     
-    // if (this->cull_chirality_is_set) {
-    //     this->proto_icon->cull_chirality->set_allocated(to_proto_cull_chirality(this->cull_chirality)
-    //     }
+    if (this->copy_clipboard_is_set) {
+        trigger->set_action_copy_clipboard(to_proto_string(this->copy_clipboard));
+        set_trigger = true;
+    }
+    
+    if (this->copy_message_is_set) {
+        trigger->set_action_copy_message(to_proto_string(this->copy_message));
+        set_trigger = true;
+    }
+    
+    if (this->cull_chirality_is_set) {
+        proto_icon.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality)); 
+    }
     
     if (this->distance_fade_end_is_set) {
         proto_icon.set_distance_fade_end(to_proto_float(this->distance_fade_end));
-        }
+    }
     
     if (this->distance_fade_start_is_set) {
         proto_icon.set_distance_fade_start(to_proto_float(this->distance_fade_start));
-        }
+    }
     
-    // if (this->euler_rotation_is_set) {
-    //     this->proto_icon->euler_rotation->set_allocated(to_proto_euler_rotation(this->euler_rotation)
-    //     }
+    if (this->euler_rotation_is_set) {
+        proto_icon.set_allocated_euler_rotation(to_proto_euler_rotation(this->euler_rotation));
+    }
     
-    // if (this->festival_filter_is_set) {
-    //     this->proto_icon->festival_filter->set_allocated(to_proto_festival_filter(this->festival_filter)
-    //     }
+    if (this->festival_filter_is_set) {
+        proto_icon.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
+    }
     
-    // if (this->guid_is_set) {
-    //     proto_icon.guid.set_allocated_guid(to_proto_unique_id(this->guid));
-    //     }
+    if (this->guid_is_set) {
+        proto_icon.set_allocated_guid(to_proto_unique_id(this->guid));
+    }
     
-    // if (this->has_countdown_is_set) {
-        // proto_icon.trigger.set_has_countdown(to_proto_bool(this->has_countdown));
-        // }
-        //     
+    if (this->has_countdown_is_set) {
+        trigger->set_has_countdown(to_proto_bool(this->has_countdown));
+        set_trigger = true;
+    }
+    
     if (this->heightoffset_is_set) {
         proto_icon.set_height_offset(to_proto_float(this->heightoffset));
-        }
+    }
     
     if (this->hide_category_is_set) {
-        trigger.set_allocated_action_hide_category(to_proto_marker_category(this->hide_category));
-        }
+        trigger->set_allocated_action_hide_category(to_proto_marker_category(this->hide_category));
+        set_trigger = true;
+    }
     
-    // if (this->icon_is_set) {
-    //     proto_icon.texture.set_allocated_texture(to_proto_image(this->icon));
-    //     }
+    if (this->icon_is_set) {
+        proto_icon.set_allocated_texture(to_proto_image(this->icon));
+    }
     
     if (this->icon_size_is_set) {
         proto_icon.set___tentative__scale(to_proto_float(this->icon_size));
-        }
+    }
     
-    // if (this->info_message_is_set) {
-        // proto_icon.trigger.set_action_info_message(to_proto_string(this->info_message));
-        // }
-        //     
-    // if (this->invert_visibility_is_set) {
-        // proto_icon.trigger.set_invert_display(to_proto_bool(this->invert_visibility));
-        // }
-        //     
+    if (this->info_message_is_set) {
+        trigger->set_action_info_message(to_proto_string(this->info_message));
+        set_trigger = true;
+    }
+    
+    if (this->invert_visibility_is_set) {
+        trigger->set_invert_display(to_proto_bool(this->invert_visibility));
+        set_trigger = true;
+    }
+    
     if (this->map_display_size_is_set) {
         proto_icon.set_map_display_size(to_proto_int(this->map_display_size));
-        }
+    }
     
     if (this->map_id_is_set) {
         proto_icon.set_map_id(to_proto_int(this->map_id));
-        }
+    }
     
-    // if (this->map_type_filter_is_set) {
-    //     this->proto_icon->map_type_filter->set_allocated(to_proto_map_type_filter(this->map_type_filter)
-    //     }
+    if (this->map_type_filter_is_set) {
+        proto_icon.set_allocated_map_type_filter(to_proto_map_type_filter(this->map_type_filter));
+    }
     
     if (this->maximum_size_on_screen_is_set) {
         proto_icon.set_maximum_size_on_screen(to_proto_int(this->maximum_size_on_screen));
-        }
+    }
     
     if (this->minimum_size_on_screen_is_set) {
         proto_icon.set_minimum_size_on_screen(to_proto_int(this->minimum_size_on_screen));
-        }
+    }
     
-    // if (this->mount_filter_is_set) {
-    //     this->proto_icon->mount_filter->set_allocated(to_proto_mount_filter(this->mount_filter)
-    //     }
+    if (this->mount_filter_is_set) {
+        proto_icon.set_allocated_mount_filter(to_proto_mount_filter(this->mount_filter));
+    }
     
-    // if (this->position_is_set) {
-    //     this->proto_icon->position->set_allocated(to_proto_position(this->position)
-    //     }
+    if (this->position_is_set) {
+        proto_icon.set_allocated_position(to_proto_position(this->position));
+    }
     
-    // if (this->profession_filter_is_set) {
-    //     this->proto_icon->profession_filter->set_allocated(to_proto_profession_filter(this->profession_filter)
-    //     }
+    if (this->profession_filter_is_set) {
+        proto_icon.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
+    }
     
     if (this->render_ingame_is_set) {
         proto_icon.set___tentative__render_ingame(to_proto_bool(this->render_ingame));
-        }
+    }
     
     if (this->render_on_map_is_set) {
         proto_icon.set___tentative__render_on_map(to_proto_bool(this->render_on_map));
-        }
+    }
     
     if (this->render_on_minimap_is_set) {
         proto_icon.set___tentative__render_on_minimap(to_proto_bool(this->render_on_minimap));
-        }
+    }
     
-        // 
+    if (this->reset_behavior_is_set) {
+        trigger->set_reset_behavior(to_proto_reset_behavior(this->reset_behavior));
+        set_trigger = true;
+    }
     
-    // if (this->reset_length_is_set) {
-        // proto_icon.trigger.set_reset_length(to_proto_float(this->reset_length));
-        // }
-        //     
+    if (this->reset_length_is_set) {
+        trigger->set_reset_length(to_proto_float(this->reset_length));
+        set_trigger = true;
+    }
+    
     if (this->scale_on_map_with_zoom_is_set) {
         proto_icon.set_scale_on_map_with_zoom(to_proto_bool(this->scale_on_map_with_zoom));
-        }
+    }
     
     if (this->schedule_is_set) {
         proto_icon.set_bhdraft__schedule(to_proto_string(this->schedule));
-        }
+    }
     
     if (this->schedule_duration_is_set) {
         proto_icon.set_bhdraft__schedule_duration(to_proto_float(this->schedule_duration));
-        }
+    }
     
     if (this->show_category_is_set) {
-        trigger.set_allocated_action_show_category(to_proto_marker_category(this->show_category));
-        }
+        trigger->set_allocated_action_show_category(to_proto_marker_category(this->show_category));
+        set_trigger = true;
+    }
     
-    // if (this->specialization_filter_is_set) {
-    //     this->proto_icon->specialization_filter->set_allocated(to_proto_specialization_filter(this->specialization_filter)
-    //     }
+    if (this->specialization_filter_is_set) {
+        proto_icon.set_allocated_specialization_filter(to_proto_specialization_filter(this->specialization_filter));
+    }
     
-    // if (this->species_filter_is_set) {
-    //     this->proto_icon->species_filter->set_allocated(to_proto_species_filter(this->species_filter)
-    //     }
+    if (this->species_filter_is_set) {
+        proto_icon.set_allocated_species_filter(to_proto_species_filter(this->species_filter));
+    }
     
     if (this->toggle_category_is_set) {
-        trigger.set_allocated_action_toggle_category(to_proto_marker_category(this->toggle_category));
-        }
+        trigger->set_allocated_action_toggle_category(to_proto_marker_category(this->toggle_category));
+        set_trigger = true;
+    }
     
     if (this->tooltip_description_is_set) {
         proto_icon.set_tip_description(to_proto_string(this->tooltip_description));
-        }
+    }
     
     if (this->tooltip_name_is_set) {
         proto_icon.set_tip_name(to_proto_string(this->tooltip_name));
-        }
+    }
     
-    // if (this->trigger_range_is_set) {
-        // proto_icon.trigger.set_range(to_proto_float(this->trigger_range));
-        // }
-        //     
-    // if (this->x_position_is_set) {
-    //     this->proto_icon->position->set_allocated(to_proto_position(this->x_position)
-    //     }
+    if (this->trigger_range_is_set) {
+        trigger->set_range(to_proto_float(this->trigger_range));
+        set_trigger = true;
+    }
     
-    // if (this->x_rotation_is_set) {
-    //     this->proto_icon->euler_rotation->set_allocated(to_proto_euler_rotation(this->x_rotation)
-    //     }
     
-    // if (this->y_position_is_set) {
-    //     this->proto_icon->position->set_allocated(to_proto_position(this->y_position)
-    //     }
     
-    // if (this->y_rotation_is_set) {
-    //     this->proto_icon->euler_rotation->set_allocated(to_proto_euler_rotation(this->y_rotation)
-    //     }
     
-    // if (this->z_position_is_set) {
-    //     this->proto_icon->position->set_allocated(to_proto_position(this->z_position)
-    //     }
     
-    // if (this->z_rotation_is_set) {
-    //     this->proto_icon->euler_rotation->set_allocated(to_proto_euler_rotation(this->z_rotation)
-    //     }
     
-    proto_icon.set_allocated_trigger(&trigger);
+    
+    if (set_trigger){
+            proto_icon.set_allocated_trigger(trigger);
+    }
  
     std::string output; 
     proto_icon.SerializeToString(&output);
+
+
     return output;
 }

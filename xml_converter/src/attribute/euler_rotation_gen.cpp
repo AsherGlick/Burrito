@@ -33,3 +33,11 @@ string stringify_euler_rotation(EulerRotation attribute_value) {
     output = output + "," + to_string(attribute_value.z_rotation);
     return output;
 }
+ 
+waypoint::EulerRotation* to_proto_euler_rotation (EulerRotation attribute_value) {
+    waypoint::EulerRotation* euler_rotation = new waypoint::EulerRotation();
+    euler_rotation->set_x(attribute_value.x_rotation);
+    euler_rotation->set_y(attribute_value.y_rotation);
+    euler_rotation->set_z(attribute_value.z_rotation);
+    return euler_rotation;
+}

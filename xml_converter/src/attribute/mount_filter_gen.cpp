@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "mount_filter_gen.hpp"
 
 #include <iosfwd>
@@ -98,4 +99,39 @@ string stringify_mount_filter(MountFilter attribute_value) {
         output = output + "seigeturtle";
     }
     return output;
+}
+
+waypoint::MountFilter* to_proto_mount_filter (MountFilter attribute_value) {
+    waypoint::MountFilter* mount_filter = new waypoint::MountFilter();
+    if (attribute_value.raptor == true) {
+        mount_filter->set_raptor(true);
+    }
+    if (attribute_value.springer == true) {
+        mount_filter->set_springer(true);
+    }
+    if (attribute_value.skimmer == true) {
+        mount_filter->set_skimmer(true);
+    }
+    if (attribute_value.jackal == true) {
+        mount_filter->set_jackal(true);
+    }
+    if (attribute_value.griffon == true) {
+        mount_filter->set_griffon(true);
+    }
+    if (attribute_value.roller_beetle == true) {
+        mount_filter->set_roller_beetle(true);
+    }
+    if (attribute_value.warclaw == true) {
+        mount_filter->set_warclaw(true);
+    }
+    if (attribute_value.skyscale == true) {
+        mount_filter->set_skyscale(true);
+    }
+    if (attribute_value.skiff == true) {
+        mount_filter->set_skiff(true);
+    }
+    if (attribute_value.seige_turtle == true) {
+        mount_filter->set_seige_turtle(true);
+    }
+    return mount_filter;
 }

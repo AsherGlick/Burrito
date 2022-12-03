@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "profession_filter_gen.hpp"
 
 #include <iosfwd>
@@ -91,4 +92,36 @@ string stringify_profession_filter(ProfessionFilter attribute_value) {
         output = output + "revenant";
     }
     return output;
+}
+
+waypoint::ProfessionFilter* to_proto_profession_filter (ProfessionFilter attribute_value) {
+    waypoint::ProfessionFilter* profession_filter = new waypoint::ProfessionFilter();
+    if (attribute_value.guardian == true) {
+        profession_filter->set_guardian(true);
+    }
+    if (attribute_value.warrior == true) {
+        profession_filter->set_warrior(true);
+    }
+    if (attribute_value.engineer == true) {
+        profession_filter->set_engineer(true);
+    }
+    if (attribute_value.ranger == true) {
+        profession_filter->set_ranger(true);
+    }
+    if (attribute_value.thief == true) {
+        profession_filter->set_thief(true);
+    }
+    if (attribute_value.elementalist == true) {
+        profession_filter->set_elementalist(true);
+    }
+    if (attribute_value.mesmer == true) {
+        profession_filter->set_mesmer(true);
+    }
+    if (attribute_value.necromancer == true) {
+        profession_filter->set_necromancer(true);
+    }
+    if (attribute_value.revenant == true) {
+        profession_filter->set_revenant(true);
+    }
+    return profession_filter;
 }

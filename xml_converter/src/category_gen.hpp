@@ -23,7 +23,6 @@ class Category : public Parseable {
     bool is_separator_is_set = false;
     bool name_is_set = false;
     bool tooltip_description_is_set = false;
-    bool set_trigger = false;
     std::map<std::string, Category> children;
     Icon default_icon;
     Trail default_trail;

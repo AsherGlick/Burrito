@@ -20,7 +20,9 @@ class {{cpp_class}} : public Parseable {
     {% for attribute_variable in attribute_variables: %}
     bool {{attribute_variable.attribute_name}}_is_set = false;
     {% endfor %}
+    {% if cpp_class == "Icon": %}
     bool set_trigger = false;
+    {% endif %}
     {% if cpp_class == "Category": %}
     std::map<std::string, Category> children;
     Icon default_icon;
