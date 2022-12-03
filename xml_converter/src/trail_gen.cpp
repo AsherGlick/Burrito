@@ -266,8 +266,7 @@ vector<string> Trail::as_xml() const {
     return xml_node_contents;
 }
 
-std::string Trail::as_protobuf() const {
-    waypoint::Trail proto_trail;
+waypoint::Trail Trail::as_protobuf(waypoint::Trail proto_trail) const {
  
     if (this->achievement_bitmask_is_set) {
         proto_trail.set_achievement_bit(to_proto_int(this->achievement_bitmask));
@@ -382,9 +381,8 @@ std::string Trail::as_protobuf() const {
     }
     
  
-    std::string output; 
-    proto_trail.SerializeToString(&output);
-
-
-    return output;
+    return proto_trail;
 }
+    
+// Trail::from_protobuf()
+

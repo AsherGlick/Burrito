@@ -92,8 +92,7 @@ vector<string> Category::as_xml() const {
     return xml_node_contents;
 }
 
-std::string Category::as_protobuf() const {
-    waypoint::Category proto_category;
+waypoint::Category Category::as_protobuf(waypoint::Category proto_category) const {
  
     if (this->default_visibility_is_set) {
         proto_category.set_default_visibility(to_proto_bool(this->default_visibility));
@@ -116,18 +115,13 @@ std::string Category::as_protobuf() const {
     }
     
  
-    std::string output; 
-    proto_category.SerializeToString(&output);
-
     for (const auto& [key, val] : this->children) {
-        std::string text;
-        for (const auto& s : val.as_protobuf()) {
-            text += s;
-        }
-        output += text; 
+        waypoint::Category proto_category_child;
+        val.as_protobuf(proto_category_child);
+        proto_category.add_children()->CopyFrom(proto_category_child);
     }
-
-
-
-    return output;
+    return proto_category;
 }
+    
+// Category::from_protobuf()
+

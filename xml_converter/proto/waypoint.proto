@@ -2,13 +2,19 @@ syntax = "proto3";
 
 package waypoint;
 
+message Waypoint {
+    repeated Category category = 1;
+    repeated Icon icon = 2;
+    repeated Trail trail = 3;
+}
+
 message Category {
     bool default_visibility = 1;
     string display_name = 2;
     bool is_separator = 3;
     string name = 4;
     string tip_description = 5;
-    Category children = 6;
+    repeated Category children = 6;
     string type = 7;
 }
 

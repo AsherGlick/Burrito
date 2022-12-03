@@ -6,6 +6,7 @@
 
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
+#include "waypoint.pb.h"
 
 std::string Parseable::classname() {
     return "Parseable";
@@ -38,8 +39,18 @@ std::vector<std::string> Parseable::as_xml() const {
     return result;
 }
 
-std::string Parseable::as_protobuf() const {
+waypoint::Icon Parseable::as_protobuf(waypoint::Icon proto_Icon) const {
     throw std::runtime_error("error: Parseable::as_proto() should not be called");
-    std::string result;
-    return result;
+    return proto_Icon;
 }
+
+waypoint::Trail Parseable::as_protobuf(waypoint::Trail proto_Trail) const {
+    throw std::runtime_error("error: Parseable::as_proto() should not be called");
+    return proto_Trail;
+}
+
+waypoint::Category Parseable::as_protobuf(waypoint::Category proto_Category) const {
+    throw std::runtime_error("error: Parseable::as_proto() should not be called");
+    return proto_Category;
+}
+

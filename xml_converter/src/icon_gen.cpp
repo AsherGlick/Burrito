@@ -459,8 +459,7 @@ vector<string> Icon::as_xml() const {
     return xml_node_contents;
 }
 
-std::string Icon::as_protobuf() const {
-    waypoint::Icon proto_icon;
+waypoint::Icon Icon::as_protobuf(waypoint::Icon proto_icon) const {
     waypoint::Trigger* trigger = new waypoint::Trigger();
     bool set_trigger = false;
  
@@ -681,9 +680,8 @@ std::string Icon::as_protobuf() const {
             proto_icon.set_allocated_trigger(trigger);
     }
  
-    std::string output; 
-    proto_icon.SerializeToString(&output);
-
-
-    return output;
+    return proto_icon;
 }
+    
+// Icon::from_protobuf()
+

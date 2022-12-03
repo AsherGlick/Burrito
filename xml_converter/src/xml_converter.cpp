@@ -33,9 +33,8 @@ bool has_suffix(std::string const& fullString, std::string const& ending) {
 void write_xml_file(string xml_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     ofstream outfile;
     string tab_string;
-    string new_file_path = xml_filepath + "export.xml";
 
-    outfile.open(new_file_path, ios::out);
+    outfile.open(xml_filepath, ios::out);
 
     outfile << "<OverlayData>\n";
     for (const auto& category : *marker_categories) {
@@ -59,25 +58,39 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     outfile.close();
 }
 
-void write_protobuf_file(string xml_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void write_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     ofstream outfile;
-    string new_file_path = xml_filepath + "export.data";
+    waypoint::Waypoint proto_message;
 
-    outfile.open(new_file_path, ios::out | ios_base::binary);
+    outfile.open(proto_filepath, ios::out | ios_base::binary);
     for (const auto& category : *marker_categories) {
-        std::string text;
-        text = category.second.as_protobuf();
-        outfile << text;
+        waypoint::Category proto_category;
+        proto_category = category.second.as_protobuf(proto_category);
+        proto_message.add_category()->CopyFrom(proto_category);
     }
 
     for (const auto& parsed_poi : *parsed_pois) {
-        std::string text;
-        text = parsed_poi->as_protobuf();
-        outfile << text;
+        if (parsed_poi->classname() == "POI"){
+            waypoint::Icon proto_Icon;
+            proto_Icon = parsed_poi->as_protobuf(proto_Icon);
+            proto_message.add_icon()->CopyFrom(proto_Icon);
+        }
+        if (parsed_poi->classname() == "Trail"){
+            waypoint::Trail proto_Trail;
+            proto_Trail = parsed_poi->as_protobuf(proto_Trail);
+            proto_message.add_trail()->CopyFrom(proto_Trail);
+        }
     }
-
+    proto_message.SerializeToOstream(&outfile);
     outfile.close();
 }
+
+// void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois){
+//     fstream infile;
+
+//     infile.open(proto_filepath, ios::in | ios_base::binary);
+
+// }
 
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     // TODO: This is a slow linear search, replace with something faster.
@@ -287,17 +300,32 @@ int main() {
     cout << "The parse function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("../export_packs/", &marker_categories, &parsed_pois);
+    write_xml_file("../export_packs/export.xml", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_protobuf_file("../export_packs/", &marker_categories, &parsed_pois);
+    write_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
+
+    // begin = chrono::high_resolution_clock::now();
+    // read_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
+    // end = chrono::high_resolution_clock::now();
+    // dur = end - begin;
+    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    // cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
+
+    // begin = chrono::high_resolution_clock::now();
+    // write_xml_file("../export_packs/export2.xml", &marker_categories, &parsed_pois);
+    // end = chrono::high_resolution_clock::now();
+    // dur = end - begin;
+    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    // cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+
     return 0;
 }

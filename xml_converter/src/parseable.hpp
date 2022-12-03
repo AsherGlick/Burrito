@@ -20,5 +20,10 @@ class Parseable {
 
     virtual std::vector<std::string> as_xml() const;
 
-    virtual std::string as_protobuf() const;
+    virtual waypoint::Icon as_protobuf(waypoint::Icon proto_Icon) const;
+
+    virtual waypoint::Trail as_protobuf(waypoint::Trail proto_Trail) const;
+
+    virtual waypoint::Category as_protobuf(waypoint::Category proto_Category) const;
+
 };

@@ -118,8 +118,7 @@ vector<string> {{cpp_class}}::as_xml() const {
     return xml_node_contents;
 }
 
-std::string {{cpp_class}}::as_protobuf() const {
-    waypoint::{{cpp_class}} proto_{{cpp_class_header}};
+waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) const {
     {% if cpp_class == "Icon": %}
     waypoint::Trigger* trigger = new waypoint::Trigger();
     bool set_trigger = false;
@@ -161,21 +160,15 @@ std::string {{cpp_class}}::as_protobuf() const {
             proto_{{cpp_class_header}}.set_allocated_trigger(trigger);
     }
 {% endif %} 
-    std::string output; 
-    proto_{{cpp_class_header}}.SerializeToString(&output);
-
     {% if cpp_class == "Category": %}
     for (const auto& [key, val] : this->children) {
-        std::string text;
-        for (const auto& s : val.as_protobuf()) {
-            text += s;
-        }
-        output += text; 
+        waypoint::{{cpp_class}} proto_{{cpp_class_header}}_child;
+        val.as_protobuf(proto_{{cpp_class_header}}_child);
+        proto_{{cpp_class_header}}.add_children()->CopyFrom(proto_{{cpp_class_header}}_child);
     }
-
-
-    {% endif %}
-
-    return output;
+{% endif %}
+    return proto_{{cpp_class_header}};
 }
+    
+// {{cpp_class}}::from_protobuf()
 
