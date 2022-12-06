@@ -41,9 +41,17 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
 {% endif %}
  
 waypoint::{{class_name}}* to_proto_{{attribute_name}} ({{class_name}} attribute_value) {
-    waypoint::{{class_name}}* {{attribute_name}} = new waypoint::{{class_name}}();
+    waypoint::{{class_name}}* proto_{{attribute_name}} = new waypoint::{{class_name}}();
     {% for attribute_variable in attribute_variables %}
-    {{attribute_name}}->set_{{attribute_variable.protobuf_field}}(attribute_value.{{attribute_variable.attribute_name}});
+    proto_{{attribute_name}}->set_{{attribute_variable.protobuf_field}}(attribute_value.{{attribute_variable.attribute_name}});
+    {% endfor %}
+    return proto_{{attribute_name}};
+}
+
+{{class_name}} from_proto_{{attribute_name}} (waypoint::{{class_name}} proto_{{attribute_name}}) {
+    {{class_name}} {{attribute_name}};
+    {% for attribute_variable in attribute_variables: %}
+    {{attribute_name}}.{{attribute_variable.attribute_name}} = proto_{{attribute_name}}.{{attribute_variable.protobuf_field}}();
     {% endfor %}
     return {{attribute_name}};
 }

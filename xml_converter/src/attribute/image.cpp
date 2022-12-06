@@ -39,3 +39,14 @@ waypoint::Texture* to_proto_image(Image attribute_value) {
     texture->set_path(attribute_value.path);
     return texture;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_image
+//
+// Parses a waypoint::Image from proto
+////////////////////////////////////////////////////////////////////////////////
+Image from_proto_image(waypoint::Texture attribute_value) {
+    Image image;
+    image.path = attribute_value.path();
+    return image;
+}

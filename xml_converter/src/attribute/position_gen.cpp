@@ -28,9 +28,17 @@ Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 }
  
 waypoint::Position* to_proto_position (Position attribute_value) {
-    waypoint::Position* position = new waypoint::Position();
-    position->set_x(attribute_value.x_position);
-    position->set_y(attribute_value.y_position);
-    position->set_z(attribute_value.z_position);
+    waypoint::Position* proto_position = new waypoint::Position();
+    proto_position->set_x(attribute_value.x_position);
+    proto_position->set_y(attribute_value.y_position);
+    proto_position->set_z(attribute_value.z_position);
+    return proto_position;
+}
+
+Position from_proto_position (waypoint::Position proto_position) {
+    Position position;
+    position.x_position = proto_position.x();
+    position.y_position = proto_position.y();
+    position.z_position = proto_position.z();
     return position;
 }

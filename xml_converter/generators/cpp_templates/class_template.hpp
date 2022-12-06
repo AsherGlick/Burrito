@@ -35,6 +35,7 @@ class {{cpp_class}} : public Parseable {
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
     waypoint::{{cpp_class}} as_protobuf(waypoint::{{cpp_class}}) const; 
+    void parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}});
     {% if attributes_of_type_marker_category %}
     bool validate_attributes_of_type_marker_category();
     {% endif %}

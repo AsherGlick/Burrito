@@ -25,3 +25,4 @@ class FestivalFilter {
 FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_festival_filter(FestivalFilter attribute_value);
 waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value);
+FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter);

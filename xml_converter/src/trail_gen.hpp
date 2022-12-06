@@ -82,5 +82,6 @@ class Trail : public Parseable {
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
     waypoint::Trail as_protobuf(waypoint::Trail) const; 
+    void parse_protobuf(waypoint::Trail proto_trail);
     bool validate_attributes_of_type_marker_category();
 };

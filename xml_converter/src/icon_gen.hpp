@@ -137,5 +137,6 @@ class Icon : public Parseable {
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
     waypoint::Icon as_protobuf(waypoint::Icon) const; 
+    void parse_protobuf(waypoint::Icon proto_icon);
     bool validate_attributes_of_type_marker_category();
 };

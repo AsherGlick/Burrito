@@ -33,3 +33,4 @@ waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_va
 {% else: %}
 waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value);
 {% endif %}
+{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}});

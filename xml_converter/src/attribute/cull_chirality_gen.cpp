@@ -1,4 +1,3 @@
-#include "waypoint.pb.h"
 #include "cull_chirality_gen.hpp"
 
 #include <iosfwd>
@@ -46,18 +45,35 @@ string stringify_cull_chirality(CullChirality attribute_value) {
 }
 
 waypoint::CullChirality to_proto_cull_chirality (CullChirality attribute_value) {
-    waypoint::CullChirality cull_chirality;
+    waypoint::CullChirality proto_cull_chirality;
     if (attribute_value == CullChirality::none) {
-        cull_chirality = waypoint::CullChirality::none;
+        proto_cull_chirality = waypoint::CullChirality::none;
     }
     else if (attribute_value == CullChirality::clockwise) {
-        cull_chirality = waypoint::CullChirality::clockwise;
+        proto_cull_chirality = waypoint::CullChirality::clockwise;
     }
     else if (attribute_value == CullChirality::counter_clockwise) {
-        cull_chirality = waypoint::CullChirality::counter_clockwise;
+        proto_cull_chirality = waypoint::CullChirality::counter_clockwise;
     }
     else {
-        cull_chirality = waypoint::CullChirality::none;
+        proto_cull_chirality = waypoint::CullChirality::none;
+    }
+    return proto_cull_chirality;
+}
+
+CullChirality from_proto_cull_chirality (waypoint::CullChirality proto_cull_chirality) {
+    CullChirality cull_chirality;
+    if (proto_cull_chirality == waypoint::CullChirality::none){
+        cull_chirality = CullChirality::none;
+    }
+    else if (proto_cull_chirality == waypoint::CullChirality::clockwise) {
+        cull_chirality = CullChirality::clockwise;
+    }
+    else if (proto_cull_chirality == waypoint::CullChirality::counter_clockwise) {
+        cull_chirality = CullChirality::counter_clockwise;
+    }
+    else {
+        cull_chirality = CullChirality::none;
     }
     return cull_chirality;
 }

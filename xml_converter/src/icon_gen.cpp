@@ -1,3 +1,4 @@
+#include <cstddef>
 #include "icon_gen.hpp"
 #include "waypoint.pb.h"
 
@@ -683,5 +684,299 @@ waypoint::Icon Icon::as_protobuf(waypoint::Icon proto_icon) const {
     return proto_icon;
 }
     
-// Icon::from_protobuf()
+void Icon::parse_protobuf(waypoint::Icon proto_icon){
+    waypoint::Trigger trigger = proto_icon.trigger();
+ 
 
+    if (proto_icon.achievement_bit() != 0) {
+        this->achievement_bitmask = from_proto_int(proto_icon.achievement_bit());
+        this->achievement_bitmask_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.achievement_id() != 0) {
+        this->achievement_id = from_proto_int(proto_icon.achievement_id());
+        this->achievement_id_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.alpha() != 0) {
+        this->alpha = from_proto_float(proto_icon.alpha());
+        this->alpha_is_set = true;
+    }
+ 
+ 
+    if (trigger.auto_trigger() != 0) {
+        this->auto_trigger = from_proto_bool(trigger.auto_trigger());
+        this->auto_trigger_is_set = true;
+    }
+ 
+    if (trigger.bounce_delay() != 0) {
+        this->bounce_delay = from_proto_float(trigger.bounce_delay());
+        this->bounce_delay_is_set = true;
+    }
+ 
+    if (trigger.bounce_duration() != 0) {
+        this->bounce_duration = from_proto_float(trigger.bounce_duration());
+        this->bounce_duration_is_set = true;
+    }
+ 
+    if (trigger.bounce_height() != 0) {
+        this->bounce_height = from_proto_float(trigger.bounce_height());
+        this->bounce_height_is_set = true;
+    }
+ 
+    if (proto_icon.can_fade() != 0) {
+        this->can_fade = from_proto_bool(proto_icon.can_fade());
+        this->can_fade_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.has_category()) {
+        this->category = from_proto_marker_category(proto_icon.category());
+        this->category_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.has_color()) {
+        this->color = from_proto_color(proto_icon.color());
+        this->color_is_set = true;
+        }
+ 
+ 
+  
+    if (trigger.action_copy_clipboard() != "") {
+        this->copy_clipboard = from_proto_string(trigger.action_copy_clipboard());
+        this->copy_clipboard_is_set = true;
+    }
+ 
+  
+    if (trigger.action_copy_message() != "") {
+        this->copy_message = from_proto_string(trigger.action_copy_message());
+        this->copy_message_is_set = true;
+    }
+ 
+    if (proto_icon.cull_chirality() != 0) {
+        this->cull_chirality = from_proto_cull_chirality(proto_icon.cull_chirality());
+        this->cull_chirality_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.distance_fade_end() != 0) {
+        this->distance_fade_end = from_proto_float(proto_icon.distance_fade_end());
+        this->distance_fade_end_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.distance_fade_start() != 0) {
+        this->distance_fade_start = from_proto_float(proto_icon.distance_fade_start());
+        this->distance_fade_start_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.has_euler_rotation()) {
+        this->euler_rotation = from_proto_euler_rotation(proto_icon.euler_rotation());
+        this->euler_rotation_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.has_festival_filter()) {
+        this->festival_filter = from_proto_festival_filter(proto_icon.festival_filter());
+        this->festival_filter_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.has_guid()) {
+        this->guid = from_proto_unique_id(proto_icon.guid());
+        this->guid_is_set = true;
+        }
+ 
+ 
+    if (trigger.has_countdown() != 0) {
+        this->has_countdown = from_proto_bool(trigger.has_countdown());
+        this->has_countdown_is_set = true;
+    }
+ 
+    if (proto_icon.height_offset() != 0) {
+        this->heightoffset = from_proto_float(proto_icon.height_offset());
+        this->heightoffset_is_set = true;
+    }
+ 
+ 
+    if (trigger.has_action_hide_category()) {
+        this->hide_category = from_proto_marker_category(trigger.action_hide_category());
+        this->hide_category_is_set = true;
+    }
+ 
+    if (proto_icon.has_texture()) {
+        this->icon = from_proto_image(proto_icon.texture());
+        this->icon_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.__tentative__scale() != 0) {
+        this->icon_size = from_proto_float(proto_icon.__tentative__scale());
+        this->icon_size_is_set = true;
+    }
+ 
+ 
+  
+    if (trigger.action_info_message() != "") {
+        this->info_message = from_proto_string(trigger.action_info_message());
+        this->info_message_is_set = true;
+    }
+ 
+    if (trigger.invert_display() != 0) {
+        this->invert_visibility = from_proto_bool(trigger.invert_display());
+        this->invert_visibility_is_set = true;
+    }
+ 
+    if (proto_icon.map_display_size() != 0) {
+        this->map_display_size = from_proto_int(proto_icon.map_display_size());
+        this->map_display_size_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.map_id() != 0) {
+        this->map_id = from_proto_int(proto_icon.map_id());
+        this->map_id_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.has_map_type_filter()) {
+        this->map_type_filter = from_proto_map_type_filter(proto_icon.map_type_filter());
+        this->map_type_filter_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.maximum_size_on_screen() != 0) {
+        this->maximum_size_on_screen = from_proto_int(proto_icon.maximum_size_on_screen());
+        this->maximum_size_on_screen_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.minimum_size_on_screen() != 0) {
+        this->minimum_size_on_screen = from_proto_int(proto_icon.minimum_size_on_screen());
+        this->minimum_size_on_screen_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.has_mount_filter()) {
+        this->mount_filter = from_proto_mount_filter(proto_icon.mount_filter());
+        this->mount_filter_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.has_position()) {
+        this->position = from_proto_position(proto_icon.position());
+        this->position_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.has_profession_filter()) {
+        this->profession_filter = from_proto_profession_filter(proto_icon.profession_filter());
+        this->profession_filter_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.__tentative__render_ingame() != 0) {
+        this->render_ingame = from_proto_bool(proto_icon.__tentative__render_ingame());
+        this->render_ingame_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.__tentative__render_on_map() != 0) {
+        this->render_on_map = from_proto_bool(proto_icon.__tentative__render_on_map());
+        this->render_on_map_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.__tentative__render_on_minimap() != 0) {
+        this->render_on_minimap = from_proto_bool(proto_icon.__tentative__render_on_minimap());
+        this->render_on_minimap_is_set = true;
+    }
+ 
+ 
+    if (trigger.reset_behavior() != 0) {
+        this->reset_behavior = from_proto_reset_behavior(trigger.reset_behavior());
+        this->reset_behavior_is_set = true;
+    }
+ 
+    if (trigger.reset_length() != 0) {
+        this->reset_length = from_proto_float(trigger.reset_length());
+        this->reset_length_is_set = true;
+    }
+ 
+    if (proto_icon.scale_on_map_with_zoom() != 0) {
+        this->scale_on_map_with_zoom = from_proto_bool(proto_icon.scale_on_map_with_zoom());
+        this->scale_on_map_with_zoom_is_set = true;
+    }
+ 
+ 
+  
+    if (proto_icon.bhdraft__schedule() != "") {
+        this->schedule = from_proto_string(proto_icon.bhdraft__schedule());
+        this->schedule_is_set = true;
+    }
+ 
+ 
+    if (proto_icon.bhdraft__schedule_duration() != 0) {
+        this->schedule_duration = from_proto_float(proto_icon.bhdraft__schedule_duration());
+        this->schedule_duration_is_set = true;
+    }
+ 
+ 
+    if (trigger.has_action_show_category()) {
+        this->show_category = from_proto_marker_category(trigger.action_show_category());
+        this->show_category_is_set = true;
+    }
+ 
+    if (proto_icon.has_specialization_filter()) {
+        this->specialization_filter = from_proto_specialization_filter(proto_icon.specialization_filter());
+        this->specialization_filter_is_set = true;
+        }
+ 
+ 
+    if (proto_icon.has_species_filter()) {
+        this->species_filter = from_proto_species_filter(proto_icon.species_filter());
+        this->species_filter_is_set = true;
+        }
+ 
+ 
+    if (trigger.has_action_toggle_category()) {
+        this->toggle_category = from_proto_marker_category(trigger.action_toggle_category());
+        this->toggle_category_is_set = true;
+    }
+ 
+  
+    if (proto_icon.tip_description() != "") {
+        this->tooltip_description = from_proto_string(proto_icon.tip_description());
+        this->tooltip_description_is_set = true;
+    }
+ 
+ 
+  
+    if (proto_icon.tip_name() != "") {
+        this->tooltip_name = from_proto_string(proto_icon.tip_name());
+        this->tooltip_name_is_set = true;
+    }
+ 
+ 
+    if (trigger.range() != 0) {
+        this->trigger_range = from_proto_float(trigger.range());
+        this->trigger_range_is_set = true;
+    }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+}

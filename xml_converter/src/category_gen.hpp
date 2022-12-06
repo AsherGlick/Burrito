@@ -33,4 +33,5 @@ class Category : public Parseable {
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
     waypoint::Category as_protobuf(waypoint::Category) const; 
+    void parse_protobuf(waypoint::Category proto_category);
 };

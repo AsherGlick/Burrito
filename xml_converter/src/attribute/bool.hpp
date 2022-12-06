@@ -13,3 +13,5 @@ bool parse_bool(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors
 std::string stringify_bool(bool attribute_value);
 
 bool to_proto_bool (bool attribute_value);
+
+bool from_proto_bool (bool attribute_value);

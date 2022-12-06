@@ -30,3 +30,9 @@ waypoint::GUID* to_proto_unique_id(UniqueId attribute_value){
     guid->set_guid(base64_encode(&attribute_value.guid[0], attribute_value.guid.size()));
     return guid;
 }
+
+UniqueId from_proto_unique_id(waypoint::GUID attribute_value){
+    UniqueId unique_id;
+    unique_id.guid = base64_decode(attribute_value.guid());
+    return unique_id;
+}

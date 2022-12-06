@@ -1,3 +1,4 @@
+#include <cstddef>
 #include "category_gen.hpp"
 #include "waypoint.pb.h"
 
@@ -117,11 +118,46 @@ waypoint::Category Category::as_protobuf(waypoint::Category proto_category) cons
  
     for (const auto& [key, val] : this->children) {
         waypoint::Category proto_category_child;
-        val.as_protobuf(proto_category_child);
+        proto_category_child = val.as_protobuf(proto_category_child);
         proto_category.add_children()->CopyFrom(proto_category_child);
     }
     return proto_category;
 }
     
-// Category::from_protobuf()
+void Category::parse_protobuf(waypoint::Category proto_category){
+ 
 
+    if (proto_category.default_visibility() != 0) {
+        this->default_visibility = from_proto_bool(proto_category.default_visibility());
+        this->default_visibility_is_set = true;
+    }
+ 
+ 
+  
+    if (proto_category.display_name() != "") {
+        this->display_name = from_proto_string(proto_category.display_name());
+        this->display_name_is_set = true;
+    }
+ 
+ 
+    if (proto_category.is_separator() != 0) {
+        this->is_separator = from_proto_bool(proto_category.is_separator());
+        this->is_separator_is_set = true;
+    }
+ 
+ 
+  
+    if (proto_category.name() != "") {
+        this->name = from_proto_string(proto_category.name());
+        this->name_is_set = true;
+    }
+ 
+ 
+  
+    if (proto_category.tip_description() != "") {
+        this->tooltip_description = from_proto_string(proto_category.tip_description());
+        this->tooltip_description_is_set = true;
+    }
+ 
+ 
+}

@@ -34,8 +34,19 @@ string stringify_string(string attribute_value) {
 //
 // Returns the same string that was passed in which is encoded directly into
 // proto. This function exists for stylistic convenience with all the other
-// attribute stringify functions.
+// attribute to_proto functions.
 ////////////////////////////////////////////////////////////////////////////////
 string to_proto_string(string attribute_value) {
+    return attribute_value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_string
+//
+// Returns the same string that was parsed from proto.
+// This function exists for stylistic convenience with all the other
+// attribute from_proto functions.
+////////////////////////////////////////////////////////////////////////////////
+string from_proto_string(string attribute_value) {
     return attribute_value;
 }

@@ -57,3 +57,16 @@ bool to_proto_bool (bool attribute_value) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_bool
+//
+// Converts a bool into a bool so that it can be saved to memory.
+////////////////////////////////////////////////////////////////////////////////
+bool from_proto_bool (bool attribute_value) {
+    if (attribute_value) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}

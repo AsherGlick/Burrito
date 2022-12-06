@@ -53,7 +53,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
         }
         outfile << text + "\n";
     }
-    outfile << "</POIs>\n";
+    outfile << "</POIs>\n</OverlayData>\n";
 
     outfile.close();
 }
@@ -85,12 +85,6 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
     outfile.close();
 }
 
-// void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois){
-//     fstream infile;
-
-//     infile.open(proto_filepath, ios::in | ios_base::binary);
-
-// }
 
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     // TODO: This is a slow linear search, replace with something faster.
@@ -170,19 +164,42 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
     return markers;
 }
 
+vector<Parseable*> parse_proto_pois(waypoint::Waypoint proto_message) {
+    vector<Parseable*> markers;
+
+    for (int i = 0; i < proto_message.icon_size(); i++) {
+        Icon* icon = new Icon();
+        icon->parse_protobuf(proto_message.icon(i));
+        markers.push_back(icon);
+    }
+    for (int i = 0; i < proto_message.trail_size(); i++) {
+        Trail* trail = new Trail();
+        trail->parse_protobuf(proto_message.trail(i));
+        markers.push_back(trail); 
+    }
+    return markers;
+}
+
 void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, int depth = 0) {
     if (get_node_name(node) == "MarkerCategory") {
         string name = lowercase(find_attribute_value(node, "name"));
 
         Category* this_category = &(*marker_categories)[name];
         this_category->init_from_xml(node, errors);
-
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
             parse_marker_categories(child_node, &(this_category->children), errors, depth + 1);
         }
     }
     else {
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
+    }
+}
+void parse_proto_marker_categories(::waypoint::Category proto_category, map<string, Category>* marker_categories){
+    string name = proto_category.name();
+    Category* this_category = &(*marker_categories)[name];
+    this_category->parse_protobuf(proto_category);
+    for (int i = 0; i < proto_category.children_size(); i++) {
+        parse_proto_marker_categories(proto_category.children(i), &(this_category->children));
     }
 }
 
@@ -228,6 +245,19 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     }
 }
 
+void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois){
+    fstream infile;
+    waypoint::Waypoint proto_message;
+
+    infile.open(proto_filepath, ios::in | ios_base::binary);
+    proto_message.ParseFromIstream(&infile);
+    for (int i = 0; i < proto_message.category_size(); i++) {
+        parse_proto_marker_categories(proto_message.category(i), marker_categories);
+    }
+    vector<Parseable*> temp_vector = parse_proto_pois(proto_message);
+    move(temp_vector.begin(), temp_vector.end(), back_inserter(*parsed_pois));
+}
+
 bool filename_comp(string a, string b) {
     return lowercase(a) < lowercase(b);
 }
@@ -270,6 +300,9 @@ void convert_taco_directory(string directory, map<string, Category>* marker_cate
 void test_proto() {
     waypoint::Category testcategory;
     testcategory.set_display_name("TEST");
+    if (testcategory.name() != ""){
+    cout << "Error in test_proto"  << endl; 
+    }   
     string output = testcategory.display_name();
     if (output != "TEST") {
         cout << "Error in test_proto" << endl;
@@ -313,19 +346,27 @@ int main() {
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 
-    // begin = chrono::high_resolution_clock::now();
-    // read_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
-    // end = chrono::high_resolution_clock::now();
-    // dur = end - begin;
-    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    // cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
-    // begin = chrono::high_resolution_clock::now();
-    // write_xml_file("../export_packs/export2.xml", &marker_categories, &parsed_pois);
-    // end = chrono::high_resolution_clock::now();
-    // dur = end - begin;
-    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    // cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+////////////////////////////////////////////////////////////////////////////////////////
+/// This section tests that the protobuf file can be parsed back to xml
+////////////////////////////////////////////////////////////////////////////////////////
+
+    parsed_pois.clear();
+    marker_categories.clear();
+
+    begin = chrono::high_resolution_clock::now();
+    read_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
+
+    begin = chrono::high_resolution_clock::now();
+    write_xml_file("../export_packs/export2.xml", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     return 0;
 }

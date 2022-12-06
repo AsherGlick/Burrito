@@ -67,21 +67,41 @@ string stringify_species_filter(SpeciesFilter attribute_value) {
 }
 
 waypoint::SpeciesFilter* to_proto_species_filter (SpeciesFilter attribute_value) {
-    waypoint::SpeciesFilter* species_filter = new waypoint::SpeciesFilter();
+    waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
     if (attribute_value.asura == true) {
-        species_filter->set_asura(true);
+        proto_species_filter->set_asura(true);
     }
     if (attribute_value.charr == true) {
-        species_filter->set_charr(true);
+        proto_species_filter->set_charr(true);
     }
     if (attribute_value.human == true) {
-        species_filter->set_human(true);
+        proto_species_filter->set_human(true);
     }
     if (attribute_value.norn == true) {
-        species_filter->set_norn(true);
+        proto_species_filter->set_norn(true);
     }
     if (attribute_value.sylvari == true) {
-        species_filter->set_sylvari(true);
+        proto_species_filter->set_sylvari(true);
+    }
+    return proto_species_filter;
+}
+
+SpeciesFilter from_proto_species_filter (waypoint::SpeciesFilter proto_species_filter) {
+    SpeciesFilter species_filter;
+    if (proto_species_filter.asura() == true) {
+        species_filter.asura = true;
+    }
+    if (proto_species_filter.charr() == true) {
+        species_filter.charr = true;
+    }
+    if (proto_species_filter.human() == true) {
+        species_filter.human = true;
+    }
+    if (proto_species_filter.norn() == true) {
+        species_filter.norn = true;
+    }
+    if (proto_species_filter.sylvari() == true) {
+        species_filter.sylvari = true;
     }
     return species_filter;
 }

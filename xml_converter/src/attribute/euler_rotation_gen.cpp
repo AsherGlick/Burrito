@@ -35,9 +35,17 @@ string stringify_euler_rotation(EulerRotation attribute_value) {
 }
  
 waypoint::EulerRotation* to_proto_euler_rotation (EulerRotation attribute_value) {
-    waypoint::EulerRotation* euler_rotation = new waypoint::EulerRotation();
-    euler_rotation->set_x(attribute_value.x_rotation);
-    euler_rotation->set_y(attribute_value.y_rotation);
-    euler_rotation->set_z(attribute_value.z_rotation);
+    waypoint::EulerRotation* proto_euler_rotation = new waypoint::EulerRotation();
+    proto_euler_rotation->set_x(attribute_value.x_rotation);
+    proto_euler_rotation->set_y(attribute_value.y_rotation);
+    proto_euler_rotation->set_z(attribute_value.z_rotation);
+    return proto_euler_rotation;
+}
+
+EulerRotation from_proto_euler_rotation (waypoint::EulerRotation proto_euler_rotation) {
+    EulerRotation euler_rotation;
+    euler_rotation.x_rotation = proto_euler_rotation.x();
+    euler_rotation.y_rotation = proto_euler_rotation.y();
+    euler_rotation.z_rotation = proto_euler_rotation.z();
     return euler_rotation;
 }

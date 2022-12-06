@@ -1,4 +1,3 @@
-#include "waypoint.pb.h"
 #include "reset_behavior_gen.hpp"
 
 #include <iosfwd>
@@ -136,63 +135,125 @@ string stringify_reset_behavior(ResetBehavior attribute_value) {
 }
 
 waypoint::ResetBehavior to_proto_reset_behavior (ResetBehavior attribute_value) {
-    waypoint::ResetBehavior reset_behavior;
+    waypoint::ResetBehavior proto_reset_behavior;
     if (attribute_value == ResetBehavior::always_visible) {
-        reset_behavior = waypoint::ResetBehavior::always_visible;
+        proto_reset_behavior = waypoint::ResetBehavior::always_visible;
     }
     else if (attribute_value == ResetBehavior::always_visible) {
-        reset_behavior = waypoint::ResetBehavior::always_visible;
+        proto_reset_behavior = waypoint::ResetBehavior::always_visible;
     }
     else if (attribute_value == ResetBehavior::map_change) {
-        reset_behavior = waypoint::ResetBehavior::map_change;
+        proto_reset_behavior = waypoint::ResetBehavior::map_change;
     }
     else if (attribute_value == ResetBehavior::map_change) {
-        reset_behavior = waypoint::ResetBehavior::map_change;
+        proto_reset_behavior = waypoint::ResetBehavior::map_change;
     }
     else if (attribute_value == ResetBehavior::daily_reset) {
-        reset_behavior = waypoint::ResetBehavior::daily_reset;
+        proto_reset_behavior = waypoint::ResetBehavior::daily_reset;
     }
     else if (attribute_value == ResetBehavior::daily_reset) {
-        reset_behavior = waypoint::ResetBehavior::daily_reset;
+        proto_reset_behavior = waypoint::ResetBehavior::daily_reset;
     }
     else if (attribute_value == ResetBehavior::never) {
-        reset_behavior = waypoint::ResetBehavior::never;
+        proto_reset_behavior = waypoint::ResetBehavior::never;
     }
     else if (attribute_value == ResetBehavior::never) {
-        reset_behavior = waypoint::ResetBehavior::never;
+        proto_reset_behavior = waypoint::ResetBehavior::never;
     }
     else if (attribute_value == ResetBehavior::timer) {
-        reset_behavior = waypoint::ResetBehavior::timer;
+        proto_reset_behavior = waypoint::ResetBehavior::timer;
     }
     else if (attribute_value == ResetBehavior::timer) {
-        reset_behavior = waypoint::ResetBehavior::timer;
+        proto_reset_behavior = waypoint::ResetBehavior::timer;
     }
     else if (attribute_value == ResetBehavior::map_reset) {
-        reset_behavior = waypoint::ResetBehavior::map_reset;
+        proto_reset_behavior = waypoint::ResetBehavior::map_reset;
     }
     else if (attribute_value == ResetBehavior::map_reset) {
-        reset_behavior = waypoint::ResetBehavior::map_reset;
+        proto_reset_behavior = waypoint::ResetBehavior::map_reset;
     }
     else if (attribute_value == ResetBehavior::instance_change) {
-        reset_behavior = waypoint::ResetBehavior::instance_change;
+        proto_reset_behavior = waypoint::ResetBehavior::instance_change;
     }
     else if (attribute_value == ResetBehavior::instance_change) {
-        reset_behavior = waypoint::ResetBehavior::instance_change;
+        proto_reset_behavior = waypoint::ResetBehavior::instance_change;
     }
     else if (attribute_value == ResetBehavior::daily_reset_per_character) {
-        reset_behavior = waypoint::ResetBehavior::daily_reset_per_character;
+        proto_reset_behavior = waypoint::ResetBehavior::daily_reset_per_character;
     }
     else if (attribute_value == ResetBehavior::daily_reset_per_character) {
-        reset_behavior = waypoint::ResetBehavior::daily_reset_per_character;
+        proto_reset_behavior = waypoint::ResetBehavior::daily_reset_per_character;
     }
     else if (attribute_value == ResetBehavior::weekly_reset) {
-        reset_behavior = waypoint::ResetBehavior::weekly_reset;
+        proto_reset_behavior = waypoint::ResetBehavior::weekly_reset;
     }
     else if (attribute_value == ResetBehavior::weekly_reset) {
-        reset_behavior = waypoint::ResetBehavior::weekly_reset;
+        proto_reset_behavior = waypoint::ResetBehavior::weekly_reset;
     }
     else {
-        reset_behavior = waypoint::ResetBehavior::always_visible;
+        proto_reset_behavior = waypoint::ResetBehavior::always_visible;
+    }
+    return proto_reset_behavior;
+}
+
+ResetBehavior from_proto_reset_behavior (waypoint::ResetBehavior proto_reset_behavior) {
+    ResetBehavior reset_behavior;
+    if (proto_reset_behavior == waypoint::ResetBehavior::always_visible){
+        reset_behavior = ResetBehavior::always_visible;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::always_visible) {
+        reset_behavior = ResetBehavior::always_visible;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::map_change) {
+        reset_behavior = ResetBehavior::map_change;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::map_change) {
+        reset_behavior = ResetBehavior::map_change;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::daily_reset) {
+        reset_behavior = ResetBehavior::daily_reset;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::daily_reset) {
+        reset_behavior = ResetBehavior::daily_reset;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::never) {
+        reset_behavior = ResetBehavior::never;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::never) {
+        reset_behavior = ResetBehavior::never;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::timer) {
+        reset_behavior = ResetBehavior::timer;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::timer) {
+        reset_behavior = ResetBehavior::timer;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::map_reset) {
+        reset_behavior = ResetBehavior::map_reset;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::map_reset) {
+        reset_behavior = ResetBehavior::map_reset;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::instance_change) {
+        reset_behavior = ResetBehavior::instance_change;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::instance_change) {
+        reset_behavior = ResetBehavior::instance_change;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::daily_reset_per_character) {
+        reset_behavior = ResetBehavior::daily_reset_per_character;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::daily_reset_per_character) {
+        reset_behavior = ResetBehavior::daily_reset_per_character;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::weekly_reset) {
+        reset_behavior = ResetBehavior::weekly_reset;
+    }
+    else if (proto_reset_behavior == waypoint::ResetBehavior::weekly_reset) {
+        reset_behavior = ResetBehavior::weekly_reset;
+    }
+    else {
+        reset_behavior = ResetBehavior::always_visible;
     }
     return reset_behavior;
 }

@@ -1,4 +1,3 @@
-#include "waypoint.pb.h"
 #include "{{attribute_name}}_gen.hpp"
 
 #include <iosfwd>
@@ -54,22 +53,43 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
 }
 
 waypoint::{{class_name}} to_proto_{{attribute_name}} ({{class_name}} attribute_value) {
-    waypoint::{{class_name}} {{attribute_name}};
+    waypoint::{{class_name}} proto_{{attribute_name}};
     {% for n, attribute_variable in enumerate(attribute_variables) %}
     {% for i, value in enumerate(attribute_variable.xml_fields) %}
     {% if i == 0 and n == 0: %}
     if (attribute_value == {{class_name}}::{{attribute_variable.attribute_name}}) {
-        {{attribute_name}} = waypoint::{{class_name}}::{{attribute_variable.attribute_name}};
+        proto_{{attribute_name}} = waypoint::{{class_name}}::{{attribute_variable.attribute_name}};
     }
     {% else: %}
     else if (attribute_value == {{class_name}}::{{attribute_variable.attribute_name}}) {
-        {{attribute_name}} = waypoint::{{class_name}}::{{attribute_variable.attribute_name}};
+        proto_{{attribute_name}} = waypoint::{{class_name}}::{{attribute_variable.attribute_name}};
     }
     {% endif %}
     {% endfor %}
     {% endfor %}
     else {
-        {{attribute_name}} = waypoint::{{class_name}}::{{attribute_variables[0].attribute_name}};
+        proto_{{attribute_name}} = waypoint::{{class_name}}::{{attribute_variables[0].attribute_name}};
+    }
+    return proto_{{attribute_name}};
+}
+
+{{class_name}} from_proto_{{attribute_name}} (waypoint::{{class_name}} proto_{{attribute_name}}) {
+    {{class_name}} {{attribute_name}};
+    {% for n, attribute_variable in enumerate(attribute_variables) %}
+    {% for i, value in enumerate(attribute_variable.xml_fields) %}
+    {% if i == 0 and n == 0: %}
+    if (proto_{{attribute_name}} == waypoint::{{class_name}}::{{attribute_variable.attribute_name}}){
+        {{attribute_name}} = {{class_name}}::{{attribute_variable.attribute_name}};
+    }
+    {% else: %}
+    else if (proto_{{attribute_name}} == waypoint::{{class_name}}::{{attribute_variable.attribute_name}}) {
+        {{attribute_name}} = {{class_name}}::{{attribute_variable.attribute_name}};
+    }
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    else {
+        {{attribute_name}} = {{class_name}}::{{attribute_variables[0].attribute_name}};
     }
     return {{attribute_name}};
 }

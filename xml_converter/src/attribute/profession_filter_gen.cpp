@@ -95,33 +95,65 @@ string stringify_profession_filter(ProfessionFilter attribute_value) {
 }
 
 waypoint::ProfessionFilter* to_proto_profession_filter (ProfessionFilter attribute_value) {
-    waypoint::ProfessionFilter* profession_filter = new waypoint::ProfessionFilter();
+    waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
     if (attribute_value.guardian == true) {
-        profession_filter->set_guardian(true);
+        proto_profession_filter->set_guardian(true);
     }
     if (attribute_value.warrior == true) {
-        profession_filter->set_warrior(true);
+        proto_profession_filter->set_warrior(true);
     }
     if (attribute_value.engineer == true) {
-        profession_filter->set_engineer(true);
+        proto_profession_filter->set_engineer(true);
     }
     if (attribute_value.ranger == true) {
-        profession_filter->set_ranger(true);
+        proto_profession_filter->set_ranger(true);
     }
     if (attribute_value.thief == true) {
-        profession_filter->set_thief(true);
+        proto_profession_filter->set_thief(true);
     }
     if (attribute_value.elementalist == true) {
-        profession_filter->set_elementalist(true);
+        proto_profession_filter->set_elementalist(true);
     }
     if (attribute_value.mesmer == true) {
-        profession_filter->set_mesmer(true);
+        proto_profession_filter->set_mesmer(true);
     }
     if (attribute_value.necromancer == true) {
-        profession_filter->set_necromancer(true);
+        proto_profession_filter->set_necromancer(true);
     }
     if (attribute_value.revenant == true) {
-        profession_filter->set_revenant(true);
+        proto_profession_filter->set_revenant(true);
+    }
+    return proto_profession_filter;
+}
+
+ProfessionFilter from_proto_profession_filter (waypoint::ProfessionFilter proto_profession_filter) {
+    ProfessionFilter profession_filter;
+    if (proto_profession_filter.guardian() == true) {
+        profession_filter.guardian = true;
+    }
+    if (proto_profession_filter.warrior() == true) {
+        profession_filter.warrior = true;
+    }
+    if (proto_profession_filter.engineer() == true) {
+        profession_filter.engineer = true;
+    }
+    if (proto_profession_filter.ranger() == true) {
+        profession_filter.ranger = true;
+    }
+    if (proto_profession_filter.thief() == true) {
+        profession_filter.thief = true;
+    }
+    if (proto_profession_filter.elementalist() == true) {
+        profession_filter.elementalist = true;
+    }
+    if (proto_profession_filter.mesmer() == true) {
+        profession_filter.mesmer = true;
+    }
+    if (proto_profession_filter.necromancer() == true) {
+        profession_filter.necromancer = true;
+    }
+    if (proto_profession_filter.revenant() == true) {
+        profession_filter.revenant = true;
     }
     return profession_filter;
 }

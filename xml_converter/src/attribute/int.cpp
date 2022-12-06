@@ -49,3 +49,12 @@ string stringify_int(int attribute_value) {
 int to_proto_int(int attribute_value){
     return attribute_value;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_int
+//
+// Parses the int from proto.
+////////////////////////////////////////////////////////////////////////////////
+int from_proto_int(int attribute_value){
+    return attribute_value;
+}
