@@ -29,7 +29,7 @@ std::string stringify_float(float attribute_value) {
 //
 // Returns the float so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
-float to_proto_float(float attribute_value){
+float to_proto_float(float attribute_value) {
     return attribute_value;
 }
 
@@ -38,6 +38,6 @@ float to_proto_float(float attribute_value){
 //
 // Parses the float from proto.
 ////////////////////////////////////////////////////////////////////////////////
-float from_proto_float(float attribute_value){
+float from_proto_float(float attribute_value) {
     return attribute_value;
 }

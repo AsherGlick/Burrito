@@ -46,7 +46,7 @@ string stringify_int(int attribute_value) {
 //
 // Returns the int so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
-int to_proto_int(int attribute_value){
+int to_proto_int(int attribute_value) {
     return attribute_value;
 }
 
@@ -55,6 +55,6 @@ int to_proto_int(int attribute_value){
 //
 // Parses the int from proto.
 ////////////////////////////////////////////////////////////////////////////////
-int from_proto_int(int attribute_value){
+int from_proto_int(int attribute_value) {
     return attribute_value;
 }

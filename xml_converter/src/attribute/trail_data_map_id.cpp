@@ -34,7 +34,7 @@ string stringify_trail_data_map_id(TrailDataMapId attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 // to_proto_trail_data
 //
-// Returns a TrailDataMapID so that it can be saved to proto. 
+// Returns a TrailDataMapID so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
 // waypoint::TrailDataMapID* to_proto_trail_data(TrailDataMapID attribute_value) {
 //     waypoint::TrailData* trail_data;

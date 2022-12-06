@@ -25,5 +25,4 @@ class Parseable {
     virtual waypoint::Trail as_protobuf(waypoint::Trail proto_Trail) const;
 
     virtual waypoint::Category as_protobuf(waypoint::Category proto_Category) const;
-
 };

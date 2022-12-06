@@ -31,7 +31,7 @@ std::string stringify_marker_category(MarkerCategory attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 // to_proto_marker_category
 //
-// Returns a waypoint::Category so that it can be saved to proto. 
+// Returns a waypoint::Category so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value) {
     waypoint::Category* category = new waypoint::Category();

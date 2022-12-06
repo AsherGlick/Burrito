@@ -48,7 +48,7 @@ string stringify_bool(bool attribute_value) {
 //
 // Converts a bool into a bool so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
-bool to_proto_bool (bool attribute_value) {
+bool to_proto_bool(bool attribute_value) {
     if (attribute_value) {
         return true;
     }
@@ -62,7 +62,7 @@ bool to_proto_bool (bool attribute_value) {
 //
 // Converts a bool into a bool so that it can be saved to memory.
 ////////////////////////////////////////////////////////////////////////////////
-bool from_proto_bool (bool attribute_value) {
+bool from_proto_bool(bool attribute_value) {
     if (attribute_value) {
         return true;
     }

@@ -70,12 +70,12 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
     }
 
     for (const auto& parsed_poi : *parsed_pois) {
-        if (parsed_poi->classname() == "POI"){
+        if (parsed_poi->classname() == "POI") {
             waypoint::Icon proto_Icon;
             proto_Icon = parsed_poi->as_protobuf(proto_Icon);
             proto_message.add_icon()->CopyFrom(proto_Icon);
         }
-        if (parsed_poi->classname() == "Trail"){
+        if (parsed_poi->classname() == "Trail") {
             waypoint::Trail proto_Trail;
             proto_Trail = parsed_poi->as_protobuf(proto_Trail);
             proto_message.add_trail()->CopyFrom(proto_Trail);
@@ -84,7 +84,6 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
     proto_message.SerializeToOstream(&outfile);
     outfile.close();
 }
-
 
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     // TODO: This is a slow linear search, replace with something faster.
@@ -175,7 +174,7 @@ vector<Parseable*> parse_proto_pois(waypoint::Waypoint proto_message) {
     for (int i = 0; i < proto_message.trail_size(); i++) {
         Trail* trail = new Trail();
         trail->parse_protobuf(proto_message.trail(i));
-        markers.push_back(trail); 
+        markers.push_back(trail);
     }
     return markers;
 }
@@ -194,7 +193,7 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
     }
 }
-void parse_proto_marker_categories(::waypoint::Category proto_category, map<string, Category>* marker_categories){
+void parse_proto_marker_categories(::waypoint::Category proto_category, map<string, Category>* marker_categories) {
     string name = proto_category.name();
     Category* this_category = &(*marker_categories)[name];
     this_category->parse_protobuf(proto_category);
@@ -245,7 +244,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     }
 }
 
-void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois){
+void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     fstream infile;
     waypoint::Waypoint proto_message;
 
@@ -300,9 +299,9 @@ void convert_taco_directory(string directory, map<string, Category>* marker_cate
 void test_proto() {
     waypoint::Category testcategory;
     testcategory.set_display_name("TEST");
-    if (testcategory.name() != ""){
-    cout << "Error in test_proto"  << endl; 
-    }   
+    if (testcategory.name() != "") {
+        cout << "Error in test_proto" << endl;
+    }
     string output = testcategory.display_name();
     if (output != "TEST") {
         cout << "Error in test_proto" << endl;
@@ -346,10 +345,9 @@ int main() {
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 
-
-////////////////////////////////////////////////////////////////////////////////////////
-/// This section tests that the protobuf file can be parsed back to xml
-////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
+    /// This section tests that the protobuf file can be parsed back to xml
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     parsed_pois.clear();
     marker_categories.clear();

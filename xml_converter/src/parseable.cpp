@@ -53,4 +53,3 @@ waypoint::Category Parseable::as_protobuf(waypoint::Category proto_Category) con
     throw std::runtime_error("error: Parseable::as_proto() should not be called");
     return proto_Category;
 }
-

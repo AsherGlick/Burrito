@@ -17,6 +17,6 @@ Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* erro
 
 std::string stringify_color(Color attribute_value);
 
-waypoint::Color* to_proto_color(Color attribute_value); 
+waypoint::Color* to_proto_color(Color attribute_value);
 
 Color from_proto_color(waypoint::Color attribute_value);

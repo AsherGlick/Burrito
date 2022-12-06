@@ -32,7 +32,7 @@ string stringify_trail_data(TrailData attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 // to_proto_trail_data
 //
-// Returns a waypoint::TrailData so that it can be saved to proto. 
+// Returns a waypoint::TrailData so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
     waypoint::TrailData* trail_data = new waypoint::TrailData();
@@ -43,7 +43,7 @@ waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 // from_proto_trail_data
 //
-// Returns a TrailData parsed from proto. 
+// Returns a TrailData parsed from proto.
 ////////////////////////////////////////////////////////////////////////////////
 TrailData from_proto_trail_data(waypoint::TrailData attribute_value) {
     TrailData trail_data;
