@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "festival_filter_gen.hpp"
 
 #include <iosfwd>
@@ -8,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -83,7 +83,7 @@ string stringify_festival_filter(FestivalFilter attribute_value) {
     return output;
 }
 
-waypoint::FestivalFilter* to_proto_festival_filter (FestivalFilter attribute_value) {
+waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {
     waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
     if (attribute_value.dragonbash == true) {
         proto_festival_filter->set_dragonbash(true);
@@ -109,7 +109,7 @@ waypoint::FestivalFilter* to_proto_festival_filter (FestivalFilter attribute_val
     return proto_festival_filter;
 }
 
-FestivalFilter from_proto_festival_filter (waypoint::FestivalFilter proto_festival_filter) {
+FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter) {
     FestivalFilter festival_filter;
     if (proto_festival_filter.dragonbash() == true) {
         festival_filter.dragonbash = true;

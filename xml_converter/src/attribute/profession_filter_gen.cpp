@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "profession_filter_gen.hpp"
 
 #include <iosfwd>
@@ -8,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -94,7 +94,7 @@ string stringify_profession_filter(ProfessionFilter attribute_value) {
     return output;
 }
 
-waypoint::ProfessionFilter* to_proto_profession_filter (ProfessionFilter attribute_value) {
+waypoint::ProfessionFilter* to_proto_profession_filter(ProfessionFilter attribute_value) {
     waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
     if (attribute_value.guardian == true) {
         proto_profession_filter->set_guardian(true);
@@ -126,7 +126,7 @@ waypoint::ProfessionFilter* to_proto_profession_filter (ProfessionFilter attribu
     return proto_profession_filter;
 }
 
-ProfessionFilter from_proto_profession_filter (waypoint::ProfessionFilter proto_profession_filter) {
+ProfessionFilter from_proto_profession_filter(waypoint::ProfessionFilter proto_profession_filter) {
     ProfessionFilter profession_filter;
     if (proto_profession_filter.guardian() == true) {
         profession_filter.guardian = true;

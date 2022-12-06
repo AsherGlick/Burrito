@@ -7,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -52,7 +53,7 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     }
 }
 
-waypoint::{{class_name}} to_proto_{{attribute_name}} ({{class_name}} attribute_value) {
+waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_value) {
     waypoint::{{class_name}} proto_{{attribute_name}};
     {% for n, attribute_variable in enumerate(attribute_variables) %}
     {% for i, value in enumerate(attribute_variable.xml_fields) %}
@@ -73,12 +74,12 @@ waypoint::{{class_name}} to_proto_{{attribute_name}} ({{class_name}} attribute_v
     return proto_{{attribute_name}};
 }
 
-{{class_name}} from_proto_{{attribute_name}} (waypoint::{{class_name}} proto_{{attribute_name}}) {
+{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}}) {
     {{class_name}} {{attribute_name}};
     {% for n, attribute_variable in enumerate(attribute_variables) %}
     {% for i, value in enumerate(attribute_variable.xml_fields) %}
     {% if i == 0 and n == 0: %}
-    if (proto_{{attribute_name}} == waypoint::{{class_name}}::{{attribute_variable.attribute_name}}){
+    if (proto_{{attribute_name}} == waypoint::{{class_name}}::{{attribute_variable.attribute_name}}) {
         {{attribute_name}} = {{class_name}}::{{attribute_variable.attribute_name}};
     }
     {% else: %}

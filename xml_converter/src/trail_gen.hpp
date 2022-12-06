@@ -17,6 +17,7 @@
 #include "attribute/unique_id.hpp"
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
+#include "waypoint.pb.h"
 
 class XMLError;
 
@@ -81,7 +82,7 @@ class Trail : public Parseable {
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
-    waypoint::Trail as_protobuf(waypoint::Trail) const; 
+    waypoint::Trail as_protobuf(waypoint::Trail) const;
     void parse_protobuf(waypoint::Trail proto_trail);
     bool validate_attributes_of_type_marker_category();
 };

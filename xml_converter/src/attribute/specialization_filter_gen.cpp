@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "specialization_filter_gen.hpp"
 
 #include <iosfwd>
@@ -8,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -616,7 +616,7 @@ string stringify_specialization_filter(SpecializationFilter attribute_value) {
     return output;
 }
 
-waypoint::SpecializationFilter* to_proto_specialization_filter (SpecializationFilter attribute_value) {
+waypoint::SpecializationFilter* to_proto_specialization_filter(SpecializationFilter attribute_value) {
     waypoint::SpecializationFilter* proto_specialization_filter = new waypoint::SpecializationFilter();
     if (attribute_value.elementalist_tempest == true) {
         proto_specialization_filter->set_elementalist_tempest(true);
@@ -837,7 +837,7 @@ waypoint::SpecializationFilter* to_proto_specialization_filter (SpecializationFi
     return proto_specialization_filter;
 }
 
-SpecializationFilter from_proto_specialization_filter (waypoint::SpecializationFilter proto_specialization_filter) {
+SpecializationFilter from_proto_specialization_filter(waypoint::SpecializationFilter proto_specialization_filter) {
     SpecializationFilter specialization_filter;
     if (proto_specialization_filter.elementalist_tempest() == true) {
         specialization_filter.elementalist_tempest = true;

@@ -8,6 +8,7 @@
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "trail_gen.hpp"
+#include "waypoint.pb.h"
 
 class XMLError;
 
@@ -27,11 +28,10 @@ class Category : public Parseable {
     Icon default_icon;
     Trail default_trail;
 
-
     void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors);
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
-    waypoint::Category as_protobuf(waypoint::Category) const; 
+    waypoint::Category as_protobuf(waypoint::Category) const;
     void parse_protobuf(waypoint::Category proto_category);
 };

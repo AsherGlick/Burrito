@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "map_type_filter_gen.hpp"
 
 #include <iosfwd>
@@ -8,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -199,7 +199,7 @@ string stringify_map_type_filter(MapTypeFilter attribute_value) {
     return output;
 }
 
-waypoint::MapTypeFilter* to_proto_map_type_filter (MapTypeFilter attribute_value) {
+waypoint::MapTypeFilter* to_proto_map_type_filter(MapTypeFilter attribute_value) {
     waypoint::MapTypeFilter* proto_map_type_filter = new waypoint::MapTypeFilter();
     if (attribute_value.unknown_map == true) {
         proto_map_type_filter->set_unknown_map(true);
@@ -276,7 +276,7 @@ waypoint::MapTypeFilter* to_proto_map_type_filter (MapTypeFilter attribute_value
     return proto_map_type_filter;
 }
 
-MapTypeFilter from_proto_map_type_filter (waypoint::MapTypeFilter proto_map_type_filter) {
+MapTypeFilter from_proto_map_type_filter(waypoint::MapTypeFilter proto_map_type_filter) {
     MapTypeFilter map_type_filter;
     if (proto_map_type_filter.unknown_map() == true) {
         map_type_filter.unknown_map = true;

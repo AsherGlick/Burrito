@@ -7,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -44,7 +45,7 @@ string stringify_cull_chirality(CullChirality attribute_value) {
     }
 }
 
-waypoint::CullChirality to_proto_cull_chirality (CullChirality attribute_value) {
+waypoint::CullChirality to_proto_cull_chirality(CullChirality attribute_value) {
     waypoint::CullChirality proto_cull_chirality;
     if (attribute_value == CullChirality::none) {
         proto_cull_chirality = waypoint::CullChirality::none;
@@ -61,9 +62,9 @@ waypoint::CullChirality to_proto_cull_chirality (CullChirality attribute_value) 
     return proto_cull_chirality;
 }
 
-CullChirality from_proto_cull_chirality (waypoint::CullChirality proto_cull_chirality) {
+CullChirality from_proto_cull_chirality(waypoint::CullChirality proto_cull_chirality) {
     CullChirality cull_chirality;
-    if (proto_cull_chirality == waypoint::CullChirality::none){
+    if (proto_cull_chirality == waypoint::CullChirality::none) {
         cull_chirality = CullChirality::none;
     }
     else if (proto_cull_chirality == waypoint::CullChirality::clockwise) {

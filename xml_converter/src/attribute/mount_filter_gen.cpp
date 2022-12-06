@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "mount_filter_gen.hpp"
 
 #include <iosfwd>
@@ -8,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -101,7 +101,7 @@ string stringify_mount_filter(MountFilter attribute_value) {
     return output;
 }
 
-waypoint::MountFilter* to_proto_mount_filter (MountFilter attribute_value) {
+waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value) {
     waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
     if (attribute_value.raptor == true) {
         proto_mount_filter->set_raptor(true);
@@ -136,7 +136,7 @@ waypoint::MountFilter* to_proto_mount_filter (MountFilter attribute_value) {
     return proto_mount_filter;
 }
 
-MountFilter from_proto_mount_filter (waypoint::MountFilter proto_mount_filter) {
+MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter) {
     MountFilter mount_filter;
     if (proto_mount_filter.raptor() == true) {
         mount_filter.raptor = true;

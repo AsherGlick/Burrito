@@ -7,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -33,8 +34,8 @@ string stringify_euler_rotation(EulerRotation attribute_value) {
     output = output + "," + to_string(attribute_value.z_rotation);
     return output;
 }
- 
-waypoint::EulerRotation* to_proto_euler_rotation (EulerRotation attribute_value) {
+
+waypoint::EulerRotation* to_proto_euler_rotation(EulerRotation attribute_value) {
     waypoint::EulerRotation* proto_euler_rotation = new waypoint::EulerRotation();
     proto_euler_rotation->set_x(attribute_value.x_rotation);
     proto_euler_rotation->set_y(attribute_value.y_rotation);
@@ -42,7 +43,7 @@ waypoint::EulerRotation* to_proto_euler_rotation (EulerRotation attribute_value)
     return proto_euler_rotation;
 }
 
-EulerRotation from_proto_euler_rotation (waypoint::EulerRotation proto_euler_rotation) {
+EulerRotation from_proto_euler_rotation(waypoint::EulerRotation proto_euler_rotation) {
     EulerRotation euler_rotation;
     euler_rotation.x_rotation = proto_euler_rotation.x();
     euler_rotation.y_rotation = proto_euler_rotation.y();

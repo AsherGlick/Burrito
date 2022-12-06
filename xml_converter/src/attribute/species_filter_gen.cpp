@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "species_filter_gen.hpp"
 
 #include <iosfwd>
@@ -8,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -66,7 +66,7 @@ string stringify_species_filter(SpeciesFilter attribute_value) {
     return output;
 }
 
-waypoint::SpeciesFilter* to_proto_species_filter (SpeciesFilter attribute_value) {
+waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value) {
     waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
     if (attribute_value.asura == true) {
         proto_species_filter->set_asura(true);
@@ -86,7 +86,7 @@ waypoint::SpeciesFilter* to_proto_species_filter (SpeciesFilter attribute_value)
     return proto_species_filter;
 }
 
-SpeciesFilter from_proto_species_filter (waypoint::SpeciesFilter proto_species_filter) {
+SpeciesFilter from_proto_species_filter(waypoint::SpeciesFilter proto_species_filter) {
     SpeciesFilter species_filter;
     if (proto_species_filter.asura() == true) {
         species_filter.asura = true;

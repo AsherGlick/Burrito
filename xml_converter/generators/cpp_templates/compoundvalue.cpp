@@ -7,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -39,8 +40,8 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     return output;
 }
 {% endif %}
- 
-waypoint::{{class_name}}* to_proto_{{attribute_name}} ({{class_name}} attribute_value) {
+
+waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
     waypoint::{{class_name}}* proto_{{attribute_name}} = new waypoint::{{class_name}}();
     {% for attribute_variable in attribute_variables %}
     proto_{{attribute_name}}->set_{{attribute_variable.protobuf_field}}(attribute_value.{{attribute_variable.attribute_name}});
@@ -48,7 +49,7 @@ waypoint::{{class_name}}* to_proto_{{attribute_name}} ({{class_name}} attribute_
     return proto_{{attribute_name}};
 }
 
-{{class_name}} from_proto_{{attribute_name}} (waypoint::{{class_name}} proto_{{attribute_name}}) {
+{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}}) {
     {{class_name}} {{attribute_name}};
     {% for attribute_variable in attribute_variables: %}
     {{attribute_name}}.{{attribute_variable.attribute_name}} = proto_{{attribute_name}}.{{attribute_variable.protobuf_field}}();

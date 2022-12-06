@@ -7,6 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -134,7 +135,7 @@ string stringify_reset_behavior(ResetBehavior attribute_value) {
     }
 }
 
-waypoint::ResetBehavior to_proto_reset_behavior (ResetBehavior attribute_value) {
+waypoint::ResetBehavior to_proto_reset_behavior(ResetBehavior attribute_value) {
     waypoint::ResetBehavior proto_reset_behavior;
     if (attribute_value == ResetBehavior::always_visible) {
         proto_reset_behavior = waypoint::ResetBehavior::always_visible;
@@ -196,9 +197,9 @@ waypoint::ResetBehavior to_proto_reset_behavior (ResetBehavior attribute_value) 
     return proto_reset_behavior;
 }
 
-ResetBehavior from_proto_reset_behavior (waypoint::ResetBehavior proto_reset_behavior) {
+ResetBehavior from_proto_reset_behavior(waypoint::ResetBehavior proto_reset_behavior) {
     ResetBehavior reset_behavior;
-    if (proto_reset_behavior == waypoint::ResetBehavior::always_visible){
+    if (proto_reset_behavior == waypoint::ResetBehavior::always_visible) {
         reset_behavior = ResetBehavior::always_visible;
     }
     else if (proto_reset_behavior == waypoint::ResetBehavior::always_visible) {
