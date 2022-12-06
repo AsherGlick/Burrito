@@ -425,7 +425,7 @@ class Generator:
         default_xml_fields: List[str] = []
         xml_export: str = ""
         protobuf_field: str = ""
-        is_trigger: bool = False;
+        is_trigger: bool = False
 
         cpp_includes.hpp_absolute_includes.add("string")
         cpp_includes.hpp_absolute_includes.add("vector")
@@ -482,10 +482,10 @@ class Generator:
                     # Compound Values are unique in that the components have xml fields in addition to the compound variable
                 if fieldval['type'] == "CompoundValue":
                     xml_export = fieldval['xml_export']
-                    for i, component in enumerate(fieldval['components']):
+                    for component in fieldval['components']:
                         component_xml_fields = []
                         component_default_xml_fields = []
-                        for j, item in enumerate(component['xml_fields']):
+                        for item in component['xml_fields']:
                             if xml_export == "Children":
                                 component_default_xml_fields.append(item)
                             if xml_export == "Parent":
