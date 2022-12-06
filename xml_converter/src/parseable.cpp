@@ -1,5 +1,6 @@
 #include "parseable.hpp"
 
+#include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <vector>

@@ -1,7 +1,6 @@
 #include "trail_gen.hpp"
 
 #include <algorithm>
-#include <cstddef>
 #include <iosfwd>
 #include <string>
 

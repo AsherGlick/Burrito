@@ -4,9 +4,11 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "waypoint.pb.h"
 
 class XMLError;
+namespace waypoint {
+class TrailData;
+}
 
 class TrailData {
  public:

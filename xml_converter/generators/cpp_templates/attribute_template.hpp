@@ -4,17 +4,22 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+{% if type == "Enum":%}
 #include "waypoint.pb.h"
 
 class XMLError;
 
-{% if type == "Enum":%}
 enum {{class_name}} {
     {% for attribute_variable in attribute_variables: %}
     {{attribute_variable.attribute_name}},
     {% endfor %}
 };
 {% else: %}
+class XMLError;
+namespace waypoint {
+class {{class_name}};
+}
+
 class {{class_name}} {
  public:
     {% for attribute_variable in attribute_variables: %}
