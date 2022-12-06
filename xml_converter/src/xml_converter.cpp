@@ -332,41 +332,41 @@ int main() {
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The parse function took " << ms << " milliseconds to run" << endl;
 
-//     begin = chrono::high_resolution_clock::now();
-//     write_xml_file("../export_packs/export.xml", &marker_categories, &parsed_pois);
-//     end = chrono::high_resolution_clock::now();
-//     dur = end - begin;
-//     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-//     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+    begin = chrono::high_resolution_clock::now();
+    write_xml_file("../export_packs/export.xml", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
-//     begin = chrono::high_resolution_clock::now();
-//     write_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
-//     end = chrono::high_resolution_clock::now();
-//     dur = end - begin;
-//     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-//     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
+    begin = chrono::high_resolution_clock::now();
+    write_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 
 
-// ////////////////////////////////////////////////////////////////////////////////////////
-// /// This section tests that the protobuf file can be parsed back to xml
-// ////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+/// This section tests that the protobuf file can be parsed back to xml
+////////////////////////////////////////////////////////////////////////////////////////
 
-//     parsed_pois.clear();
-//     marker_categories.clear();
+    parsed_pois.clear();
+    marker_categories.clear();
 
-//     begin = chrono::high_resolution_clock::now();
-//     read_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
-//     end = chrono::high_resolution_clock::now();
-//     dur = end - begin;
-//     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-//     cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
+    begin = chrono::high_resolution_clock::now();
+    read_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
-//     begin = chrono::high_resolution_clock::now();
-//     write_xml_file("../export_packs/export2.xml", &marker_categories, &parsed_pois);
-//     end = chrono::high_resolution_clock::now();
-//     dur = end - begin;
-//     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-//     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+    begin = chrono::high_resolution_clock::now();
+    write_xml_file("../export_packs/export2.xml", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     return 0;
 }
