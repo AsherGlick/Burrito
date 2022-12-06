@@ -1,6 +1,5 @@
 #include "icon_gen.hpp"
 
-#include <algorithm>
 #include <iosfwd>
 #include <string>
 

@@ -1,6 +1,5 @@
 #include "reset_behavior_gen.hpp"
 
-#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>

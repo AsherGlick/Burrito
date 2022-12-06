@@ -1,6 +1,5 @@
 #include "cull_chirality_gen.hpp"
 
-#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>

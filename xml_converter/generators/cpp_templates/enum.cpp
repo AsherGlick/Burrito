@@ -1,6 +1,5 @@
 #include "{{attribute_name}}_gen.hpp"
 
-#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>

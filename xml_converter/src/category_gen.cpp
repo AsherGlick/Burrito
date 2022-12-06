@@ -1,6 +1,5 @@
 #include "category_gen.hpp"
 
-#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <type_traits>

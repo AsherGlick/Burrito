@@ -1,6 +1,5 @@
 #include "map_type_filter_gen.hpp"
 
-#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>

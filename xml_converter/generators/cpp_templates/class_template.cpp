@@ -1,6 +1,5 @@
 #include "{{cpp_class_header}}_gen.hpp"
 
-#include <algorithm>
 {% for absolute_include in cpp_includes.sorted_cpp_absolute_includes() %}
 #include <{{absolute_include}}>
 {% endfor %}
