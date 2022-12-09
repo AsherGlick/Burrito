@@ -1,11 +1,13 @@
+#include <dirent.h>
 #include <algorithm>
 #include <chrono>
-#include <filesystem>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <map>
 #include <string>
+#include <system_error>
 #include <utility>
 #include <vector>
 
@@ -64,21 +66,18 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
 
     outfile.open(proto_filepath, ios::out | ios_base::binary);
     for (const auto& category : *marker_categories) {
-        waypoint::Category proto_category;
-        proto_category = category.second.as_protobuf(proto_category);
-        proto_message.add_category()->CopyFrom(proto_category);
+        waypoint::Waypoint proto_category = category.second.as_protobuf();
+        proto_message.add_category()->CopyFrom(proto_category.category(0));
     }
 
     for (const auto& parsed_poi : *parsed_pois) {
         if (parsed_poi->classname() == "POI") {
-            waypoint::Icon proto_Icon;
-            proto_Icon = parsed_poi->as_protobuf(proto_Icon);
-            proto_message.add_icon()->CopyFrom(proto_Icon);
+            waypoint::Waypoint poi = parsed_poi->as_protobuf();
+            proto_message.add_icon()->CopyFrom(poi.icon(0));
         }
         if (parsed_poi->classname() == "Trail") {
-            waypoint::Trail proto_Trail;
-            proto_Trail = parsed_poi->as_protobuf(proto_Trail);
-            proto_message.add_trail()->CopyFrom(proto_Trail);
+            waypoint::Waypoint poi = parsed_poi->as_protobuf();
+            proto_message.add_trail()->CopyFrom(poi.trail(0));
         }
     }
     proto_message.SerializeToOstream(&outfile);
@@ -264,27 +263,35 @@ bool filename_comp(string a, string b) {
 vector<string> get_xml_files(string directory) {
     vector<string> files;
     vector<string> subfolders;
-
-    for (const auto& entry : filesystem::directory_iterator(directory)) {
-        string path = entry.path();
-        if (entry.is_directory()) {
+    string path;
+    DIR *dir = opendir(directory.c_str());
+    struct dirent *entry = readdir(dir);
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_DIR && has_suffix(directory, ".") == false) {
+            path = directory + "/";
+            path += entry->d_name;
             subfolders.push_back(path);
         }
+        else if (has_suffix(entry->d_name, ".xml")) {
+            path = directory + "/";
+            path += entry->d_name;
+            files.push_back(path);
+        }
         else {
-            if (has_suffix(path, ".xml")) {
-                files.push_back(path);
-            }
+            continue;
         }
     }
+    closedir(dir);
 
     std::sort(files.begin(), files.end(), filename_comp);
     std::sort(subfolders.begin(), subfolders.end(), filename_comp);
 
-    for (const string& subfolder : subfolders) {
-        vector<string> subfiles = get_xml_files(subfolder);
-        files.insert(files.end(), subfiles.begin(), subfiles.end());
+    for (const std::string &subfolder : subfolders) {
+            if (has_suffix(subfolder, ".") == false && has_suffix(subfolder, "..") == false) {
+                vector<string> subfiles = get_xml_files(subfolder);
+                files.insert(files.end(), subfiles.begin(), subfiles.end());
+            }
     }
-
     return files;
 }
 
@@ -301,10 +308,12 @@ void test_proto() {
     testcategory.set_display_name("TEST");
     if (testcategory.name() != "") {
         cout << "Error in test_proto" << endl;
+        throw std::error_code();
     }
     string output = testcategory.display_name();
     if (output != "TEST") {
         cout << "Error in test_proto" << endl;
+        throw std::error_code();
     }
 }
 
@@ -315,16 +324,17 @@ int main() {
     map<string, Category> marker_categories;
     test_proto();
 
-    for (const auto& entry : filesystem::directory_iterator("../packs")) {
-        string path = entry.path();
-
-        if (entry.is_directory()) {
+    string directory = "./packs";
+    DIR *dir = opendir(directory.c_str());
+    struct dirent *entry = readdir(dir);
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_DIR) {
+            string path = directory + "/";
+            path += entry->d_name;
             convert_taco_directory(path, &marker_categories, &parsed_pois);
         }
-        else {
-            continue;
-        }
     }
+    closedir(dir);
 
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -332,14 +342,14 @@ int main() {
     cout << "The parse function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("../export_packs/export.xml", &marker_categories, &parsed_pois);
+    write_xml_file("./export_packs/export.xml", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
+    write_protobuf_file("./export_packs/export.data", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
@@ -353,14 +363,14 @@ int main() {
     marker_categories.clear();
 
     begin = chrono::high_resolution_clock::now();
-    read_protobuf_file("../export_packs/export.data", &marker_categories, &parsed_pois);
+    read_protobuf_file("./export_packs/export.data", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("../export_packs/export2.xml", &marker_categories, &parsed_pois);
+    write_xml_file("./export_packs/export2.xml", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();

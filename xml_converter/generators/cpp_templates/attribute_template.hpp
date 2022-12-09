@@ -11,7 +11,7 @@ class XMLError;
 
 enum {{class_name}} {
     {% for attribute_variable in attribute_variables: %}
-    {{attribute_variable.attribute_name}},
+        {{attribute_variable.attribute_name}},
     {% endfor %}
 };
 {% else: %}

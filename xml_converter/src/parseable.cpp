@@ -1,5 +1,6 @@
 #include "parseable.hpp"
 
+#include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -39,17 +40,8 @@ std::vector<std::string> Parseable::as_xml() const {
     return result;
 }
 
-waypoint::Icon Parseable::as_protobuf(waypoint::Icon proto_Icon) const {
-    throw std::runtime_error("error: Parseable::as_proto() should not be called");
-    return proto_Icon;
-}
-
-waypoint::Trail Parseable::as_protobuf(waypoint::Trail proto_Trail) const {
-    throw std::runtime_error("error: Parseable::as_proto() should not be called");
-    return proto_Trail;
-}
-
-waypoint::Category Parseable::as_protobuf(waypoint::Category proto_Category) const {
-    throw std::runtime_error("error: Parseable::as_proto() should not be called");
-    return proto_Category;
+waypoint::Waypoint Parseable::as_protobuf() const {
+    throw std::runtime_error("error: Parseable::as_protobuf() should not be called");
+    waypoint::Waypoint result;
+    return result;
 }

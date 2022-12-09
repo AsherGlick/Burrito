@@ -6,9 +6,7 @@
 #include "../rapidxml-1.13/rapidxml.hpp"
 
 class XMLError;
-namespace waypoint {
-class Color;
-}
+namespace waypoint {class Color;}
 
 class Color {
  public:
