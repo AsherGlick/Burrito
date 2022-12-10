@@ -104,70 +104,30 @@ string stringify_mount_filter(MountFilter attribute_value) {
 
 waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value) {
     waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
-    if (attribute_value.raptor == true) {
-        proto_mount_filter->set_raptor(true);
-    }
-    if (attribute_value.springer == true) {
-        proto_mount_filter->set_springer(true);
-    }
-    if (attribute_value.skimmer == true) {
-        proto_mount_filter->set_skimmer(true);
-    }
-    if (attribute_value.jackal == true) {
-        proto_mount_filter->set_jackal(true);
-    }
-    if (attribute_value.griffon == true) {
-        proto_mount_filter->set_griffon(true);
-    }
-    if (attribute_value.roller_beetle == true) {
-        proto_mount_filter->set_roller_beetle(true);
-    }
-    if (attribute_value.warclaw == true) {
-        proto_mount_filter->set_warclaw(true);
-    }
-    if (attribute_value.skyscale == true) {
-        proto_mount_filter->set_skyscale(true);
-    }
-    if (attribute_value.skiff == true) {
-        proto_mount_filter->set_skiff(true);
-    }
-    if (attribute_value.seige_turtle == true) {
-        proto_mount_filter->set_seige_turtle(true);
-    }
+    proto_mount_filter->set_raptor(attribute_value.raptor);
+    proto_mount_filter->set_springer(attribute_value.springer);
+    proto_mount_filter->set_skimmer(attribute_value.skimmer);
+    proto_mount_filter->set_jackal(attribute_value.jackal);
+    proto_mount_filter->set_griffon(attribute_value.griffon);
+    proto_mount_filter->set_roller_beetle(attribute_value.roller_beetle);
+    proto_mount_filter->set_warclaw(attribute_value.warclaw);
+    proto_mount_filter->set_skyscale(attribute_value.skyscale);
+    proto_mount_filter->set_skiff(attribute_value.skiff);
+    proto_mount_filter->set_seige_turtle(attribute_value.seige_turtle);
     return proto_mount_filter;
 }
 
 MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter) {
     MountFilter mount_filter;
-    if (proto_mount_filter.raptor() == true) {
-        mount_filter.raptor = true;
-    }
-    if (proto_mount_filter.springer() == true) {
-        mount_filter.springer = true;
-    }
-    if (proto_mount_filter.skimmer() == true) {
-        mount_filter.skimmer = true;
-    }
-    if (proto_mount_filter.jackal() == true) {
-        mount_filter.jackal = true;
-    }
-    if (proto_mount_filter.griffon() == true) {
-        mount_filter.griffon = true;
-    }
-    if (proto_mount_filter.roller_beetle() == true) {
-        mount_filter.roller_beetle = true;
-    }
-    if (proto_mount_filter.warclaw() == true) {
-        mount_filter.warclaw = true;
-    }
-    if (proto_mount_filter.skyscale() == true) {
-        mount_filter.skyscale = true;
-    }
-    if (proto_mount_filter.skiff() == true) {
-        mount_filter.skiff = true;
-    }
-    if (proto_mount_filter.seige_turtle() == true) {
-        mount_filter.seige_turtle = true;
-    }
+    mount_filter.raptor = proto_mount_filter.raptor();
+    mount_filter.springer = proto_mount_filter.springer();
+    mount_filter.skimmer = proto_mount_filter.skimmer();
+    mount_filter.jackal = proto_mount_filter.jackal();
+    mount_filter.griffon = proto_mount_filter.griffon();
+    mount_filter.roller_beetle = proto_mount_filter.roller_beetle();
+    mount_filter.warclaw = proto_mount_filter.warclaw();
+    mount_filter.skyscale = proto_mount_filter.skyscale();
+    mount_filter.skiff = proto_mount_filter.skiff();
+    mount_filter.seige_turtle = proto_mount_filter.seige_turtle();
     return mount_filter;
 }

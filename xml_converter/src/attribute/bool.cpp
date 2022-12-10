@@ -42,31 +42,3 @@ string stringify_bool(bool attribute_value) {
         return "false";
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// to_proto_bool
-//
-// Converts a bool into a bool so that it can be saved to proto.
-////////////////////////////////////////////////////////////////////////////////
-bool to_proto_bool(bool attribute_value) {
-    if (attribute_value) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// from_proto_bool
-//
-// Converts a bool into a bool so that it can be saved to memory.
-////////////////////////////////////////////////////////////////////////////////
-bool from_proto_bool(bool attribute_value) {
-    if (attribute_value) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}

@@ -27,12 +27,15 @@ string stringify_unique_id(UniqueId attribute_value) {
 
 waypoint::GUID* to_proto_unique_id(UniqueId attribute_value) {
     waypoint::GUID* guid = new waypoint::GUID();
-    guid->set_guid(base64_encode(&attribute_value.guid[0], attribute_value.guid.size()));
+    std::string s(attribute_value.guid.begin(), attribute_value.guid.end());
+    guid->set_guid(s);
     return guid;
 }
 
 UniqueId from_proto_unique_id(waypoint::GUID attribute_value) {
     UniqueId unique_id;
-    unique_id.guid = base64_decode(attribute_value.guid());
+    string s = attribute_value.guid();
+    std::vector<uint8_t> guid(s.begin(), s.end());
+    unique_id.guid = guid;
     return unique_id;
 }

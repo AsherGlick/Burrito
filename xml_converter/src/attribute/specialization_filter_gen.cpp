@@ -619,442 +619,154 @@ string stringify_specialization_filter(SpecializationFilter attribute_value) {
 
 waypoint::SpecializationFilter* to_proto_specialization_filter(SpecializationFilter attribute_value) {
     waypoint::SpecializationFilter* proto_specialization_filter = new waypoint::SpecializationFilter();
-    if (attribute_value.elementalist_tempest == true) {
-        proto_specialization_filter->set_elementalist_tempest(true);
-    }
-    if (attribute_value.engineer_scrapper == true) {
-        proto_specialization_filter->set_engineer_scrapper(true);
-    }
-    if (attribute_value.guardian_dragonhunter == true) {
-        proto_specialization_filter->set_guardian_dragonhunter(true);
-    }
-    if (attribute_value.mesmer_chronomancer == true) {
-        proto_specialization_filter->set_mesmer_chronomancer(true);
-    }
-    if (attribute_value.necromancer_reaper == true) {
-        proto_specialization_filter->set_necromancer_reaper(true);
-    }
-    if (attribute_value.ranger_druid == true) {
-        proto_specialization_filter->set_ranger_druid(true);
-    }
-    if (attribute_value.revenant_herald == true) {
-        proto_specialization_filter->set_revenant_herald(true);
-    }
-    if (attribute_value.thief_daredevil == true) {
-        proto_specialization_filter->set_thief_daredevil(true);
-    }
-    if (attribute_value.warrior_berserker == true) {
-        proto_specialization_filter->set_warrior_berserker(true);
-    }
-    if (attribute_value.elementalist_weaver == true) {
-        proto_specialization_filter->set_elementalist_weaver(true);
-    }
-    if (attribute_value.engineer_holosmith == true) {
-        proto_specialization_filter->set_engineer_holosmith(true);
-    }
-    if (attribute_value.guardian_firebrand == true) {
-        proto_specialization_filter->set_guardian_firebrand(true);
-    }
-    if (attribute_value.mesmer_mirage == true) {
-        proto_specialization_filter->set_mesmer_mirage(true);
-    }
-    if (attribute_value.necromancer_scourge == true) {
-        proto_specialization_filter->set_necromancer_scourge(true);
-    }
-    if (attribute_value.ranger_soulbeast == true) {
-        proto_specialization_filter->set_ranger_soulbeast(true);
-    }
-    if (attribute_value.revenant_renegade == true) {
-        proto_specialization_filter->set_revenant_renegade(true);
-    }
-    if (attribute_value.thief_deadeye == true) {
-        proto_specialization_filter->set_thief_deadeye(true);
-    }
-    if (attribute_value.warrior_spellbreaker == true) {
-        proto_specialization_filter->set_warrior_spellbreaker(true);
-    }
-    if (attribute_value.elementalist_catalyst == true) {
-        proto_specialization_filter->set_elementalist_catalyst(true);
-    }
-    if (attribute_value.engineer_mechanist == true) {
-        proto_specialization_filter->set_engineer_mechanist(true);
-    }
-    if (attribute_value.guardian_willbender == true) {
-        proto_specialization_filter->set_guardian_willbender(true);
-    }
-    if (attribute_value.mesmer_virtuoso == true) {
-        proto_specialization_filter->set_mesmer_virtuoso(true);
-    }
-    if (attribute_value.necromancer_harbinger == true) {
-        proto_specialization_filter->set_necromancer_harbinger(true);
-    }
-    if (attribute_value.ranger_untamed == true) {
-        proto_specialization_filter->set_ranger_untamed(true);
-    }
-    if (attribute_value.revenant_vindicator == true) {
-        proto_specialization_filter->set_revenant_vindicator(true);
-    }
-    if (attribute_value.thief_specter == true) {
-        proto_specialization_filter->set_thief_specter(true);
-    }
-    if (attribute_value.warrior_bladesworn == true) {
-        proto_specialization_filter->set_warrior_bladesworn(true);
-    }
-    if (attribute_value.elementalist_air == true) {
-        proto_specialization_filter->set_elementalist_air(true);
-    }
-    if (attribute_value.elementalist_arcane == true) {
-        proto_specialization_filter->set_elementalist_arcane(true);
-    }
-    if (attribute_value.elementalist_earth == true) {
-        proto_specialization_filter->set_elementalist_earth(true);
-    }
-    if (attribute_value.elementalist_fire == true) {
-        proto_specialization_filter->set_elementalist_fire(true);
-    }
-    if (attribute_value.elementalist_water == true) {
-        proto_specialization_filter->set_elementalist_water(true);
-    }
-    if (attribute_value.engineer_alchemy == true) {
-        proto_specialization_filter->set_engineer_alchemy(true);
-    }
-    if (attribute_value.engineer_explosives == true) {
-        proto_specialization_filter->set_engineer_explosives(true);
-    }
-    if (attribute_value.engineer_firearms == true) {
-        proto_specialization_filter->set_engineer_firearms(true);
-    }
-    if (attribute_value.engineer_inventions == true) {
-        proto_specialization_filter->set_engineer_inventions(true);
-    }
-    if (attribute_value.engineer_tools == true) {
-        proto_specialization_filter->set_engineer_tools(true);
-    }
-    if (attribute_value.guardian_honor == true) {
-        proto_specialization_filter->set_guardian_honor(true);
-    }
-    if (attribute_value.guardian_radiance == true) {
-        proto_specialization_filter->set_guardian_radiance(true);
-    }
-    if (attribute_value.guardian_valor == true) {
-        proto_specialization_filter->set_guardian_valor(true);
-    }
-    if (attribute_value.guardian_virtues == true) {
-        proto_specialization_filter->set_guardian_virtues(true);
-    }
-    if (attribute_value.guardian_zeal == true) {
-        proto_specialization_filter->set_guardian_zeal(true);
-    }
-    if (attribute_value.mesmer_chaos == true) {
-        proto_specialization_filter->set_mesmer_chaos(true);
-    }
-    if (attribute_value.mesmer_domination == true) {
-        proto_specialization_filter->set_mesmer_domination(true);
-    }
-    if (attribute_value.mesmer_dueling == true) {
-        proto_specialization_filter->set_mesmer_dueling(true);
-    }
-    if (attribute_value.mesmer_illusions == true) {
-        proto_specialization_filter->set_mesmer_illusions(true);
-    }
-    if (attribute_value.mesmer_inspiration == true) {
-        proto_specialization_filter->set_mesmer_inspiration(true);
-    }
-    if (attribute_value.necromancer_blood_magic == true) {
-        proto_specialization_filter->set_necromancer_blood_magic(true);
-    }
-    if (attribute_value.necromancer_curses == true) {
-        proto_specialization_filter->set_necromancer_curses(true);
-    }
-    if (attribute_value.necromancer_death_magic == true) {
-        proto_specialization_filter->set_necromancer_death_magic(true);
-    }
-    if (attribute_value.necromancer_soul_reaping == true) {
-        proto_specialization_filter->set_necromancer_soul_reaping(true);
-    }
-    if (attribute_value.necromancer_spite == true) {
-        proto_specialization_filter->set_necromancer_spite(true);
-    }
-    if (attribute_value.ranger_beastmastery == true) {
-        proto_specialization_filter->set_ranger_beastmastery(true);
-    }
-    if (attribute_value.ranger_marksmanship == true) {
-        proto_specialization_filter->set_ranger_marksmanship(true);
-    }
-    if (attribute_value.ranger_nature_magic == true) {
-        proto_specialization_filter->set_ranger_nature_magic(true);
-    }
-    if (attribute_value.ranger_skirmishing == true) {
-        proto_specialization_filter->set_ranger_skirmishing(true);
-    }
-    if (attribute_value.ranger_wilderness_survival == true) {
-        proto_specialization_filter->set_ranger_wilderness_survival(true);
-    }
-    if (attribute_value.revenant_corruption == true) {
-        proto_specialization_filter->set_revenant_corruption(true);
-    }
-    if (attribute_value.revenant_devastation == true) {
-        proto_specialization_filter->set_revenant_devastation(true);
-    }
-    if (attribute_value.revenant_invocation == true) {
-        proto_specialization_filter->set_revenant_invocation(true);
-    }
-    if (attribute_value.revenant_retribution == true) {
-        proto_specialization_filter->set_revenant_retribution(true);
-    }
-    if (attribute_value.revenant_salvation == true) {
-        proto_specialization_filter->set_revenant_salvation(true);
-    }
-    if (attribute_value.thief_acrobatics == true) {
-        proto_specialization_filter->set_thief_acrobatics(true);
-    }
-    if (attribute_value.thief_critical_strikes == true) {
-        proto_specialization_filter->set_thief_critical_strikes(true);
-    }
-    if (attribute_value.thief_deadly_arts == true) {
-        proto_specialization_filter->set_thief_deadly_arts(true);
-    }
-    if (attribute_value.thief_shadow_arts == true) {
-        proto_specialization_filter->set_thief_shadow_arts(true);
-    }
-    if (attribute_value.thief_trickery == true) {
-        proto_specialization_filter->set_thief_trickery(true);
-    }
-    if (attribute_value.warrior_arms == true) {
-        proto_specialization_filter->set_warrior_arms(true);
-    }
-    if (attribute_value.warrior_defense == true) {
-        proto_specialization_filter->set_warrior_defense(true);
-    }
-    if (attribute_value.warrior_discipline == true) {
-        proto_specialization_filter->set_warrior_discipline(true);
-    }
-    if (attribute_value.warrior_strength == true) {
-        proto_specialization_filter->set_warrior_strength(true);
-    }
-    if (attribute_value.warrior_tactics == true) {
-        proto_specialization_filter->set_warrior_tactics(true);
-    }
+    proto_specialization_filter->set_elementalist_tempest(attribute_value.elementalist_tempest);
+    proto_specialization_filter->set_engineer_scrapper(attribute_value.engineer_scrapper);
+    proto_specialization_filter->set_guardian_dragonhunter(attribute_value.guardian_dragonhunter);
+    proto_specialization_filter->set_mesmer_chronomancer(attribute_value.mesmer_chronomancer);
+    proto_specialization_filter->set_necromancer_reaper(attribute_value.necromancer_reaper);
+    proto_specialization_filter->set_ranger_druid(attribute_value.ranger_druid);
+    proto_specialization_filter->set_revenant_herald(attribute_value.revenant_herald);
+    proto_specialization_filter->set_thief_daredevil(attribute_value.thief_daredevil);
+    proto_specialization_filter->set_warrior_berserker(attribute_value.warrior_berserker);
+    proto_specialization_filter->set_elementalist_weaver(attribute_value.elementalist_weaver);
+    proto_specialization_filter->set_engineer_holosmith(attribute_value.engineer_holosmith);
+    proto_specialization_filter->set_guardian_firebrand(attribute_value.guardian_firebrand);
+    proto_specialization_filter->set_mesmer_mirage(attribute_value.mesmer_mirage);
+    proto_specialization_filter->set_necromancer_scourge(attribute_value.necromancer_scourge);
+    proto_specialization_filter->set_ranger_soulbeast(attribute_value.ranger_soulbeast);
+    proto_specialization_filter->set_revenant_renegade(attribute_value.revenant_renegade);
+    proto_specialization_filter->set_thief_deadeye(attribute_value.thief_deadeye);
+    proto_specialization_filter->set_warrior_spellbreaker(attribute_value.warrior_spellbreaker);
+    proto_specialization_filter->set_elementalist_catalyst(attribute_value.elementalist_catalyst);
+    proto_specialization_filter->set_engineer_mechanist(attribute_value.engineer_mechanist);
+    proto_specialization_filter->set_guardian_willbender(attribute_value.guardian_willbender);
+    proto_specialization_filter->set_mesmer_virtuoso(attribute_value.mesmer_virtuoso);
+    proto_specialization_filter->set_necromancer_harbinger(attribute_value.necromancer_harbinger);
+    proto_specialization_filter->set_ranger_untamed(attribute_value.ranger_untamed);
+    proto_specialization_filter->set_revenant_vindicator(attribute_value.revenant_vindicator);
+    proto_specialization_filter->set_thief_specter(attribute_value.thief_specter);
+    proto_specialization_filter->set_warrior_bladesworn(attribute_value.warrior_bladesworn);
+    proto_specialization_filter->set_elementalist_air(attribute_value.elementalist_air);
+    proto_specialization_filter->set_elementalist_arcane(attribute_value.elementalist_arcane);
+    proto_specialization_filter->set_elementalist_earth(attribute_value.elementalist_earth);
+    proto_specialization_filter->set_elementalist_fire(attribute_value.elementalist_fire);
+    proto_specialization_filter->set_elementalist_water(attribute_value.elementalist_water);
+    proto_specialization_filter->set_engineer_alchemy(attribute_value.engineer_alchemy);
+    proto_specialization_filter->set_engineer_explosives(attribute_value.engineer_explosives);
+    proto_specialization_filter->set_engineer_firearms(attribute_value.engineer_firearms);
+    proto_specialization_filter->set_engineer_inventions(attribute_value.engineer_inventions);
+    proto_specialization_filter->set_engineer_tools(attribute_value.engineer_tools);
+    proto_specialization_filter->set_guardian_honor(attribute_value.guardian_honor);
+    proto_specialization_filter->set_guardian_radiance(attribute_value.guardian_radiance);
+    proto_specialization_filter->set_guardian_valor(attribute_value.guardian_valor);
+    proto_specialization_filter->set_guardian_virtues(attribute_value.guardian_virtues);
+    proto_specialization_filter->set_guardian_zeal(attribute_value.guardian_zeal);
+    proto_specialization_filter->set_mesmer_chaos(attribute_value.mesmer_chaos);
+    proto_specialization_filter->set_mesmer_domination(attribute_value.mesmer_domination);
+    proto_specialization_filter->set_mesmer_dueling(attribute_value.mesmer_dueling);
+    proto_specialization_filter->set_mesmer_illusions(attribute_value.mesmer_illusions);
+    proto_specialization_filter->set_mesmer_inspiration(attribute_value.mesmer_inspiration);
+    proto_specialization_filter->set_necromancer_blood_magic(attribute_value.necromancer_blood_magic);
+    proto_specialization_filter->set_necromancer_curses(attribute_value.necromancer_curses);
+    proto_specialization_filter->set_necromancer_death_magic(attribute_value.necromancer_death_magic);
+    proto_specialization_filter->set_necromancer_soul_reaping(attribute_value.necromancer_soul_reaping);
+    proto_specialization_filter->set_necromancer_spite(attribute_value.necromancer_spite);
+    proto_specialization_filter->set_ranger_beastmastery(attribute_value.ranger_beastmastery);
+    proto_specialization_filter->set_ranger_marksmanship(attribute_value.ranger_marksmanship);
+    proto_specialization_filter->set_ranger_nature_magic(attribute_value.ranger_nature_magic);
+    proto_specialization_filter->set_ranger_skirmishing(attribute_value.ranger_skirmishing);
+    proto_specialization_filter->set_ranger_wilderness_survival(attribute_value.ranger_wilderness_survival);
+    proto_specialization_filter->set_revenant_corruption(attribute_value.revenant_corruption);
+    proto_specialization_filter->set_revenant_devastation(attribute_value.revenant_devastation);
+    proto_specialization_filter->set_revenant_invocation(attribute_value.revenant_invocation);
+    proto_specialization_filter->set_revenant_retribution(attribute_value.revenant_retribution);
+    proto_specialization_filter->set_revenant_salvation(attribute_value.revenant_salvation);
+    proto_specialization_filter->set_thief_acrobatics(attribute_value.thief_acrobatics);
+    proto_specialization_filter->set_thief_critical_strikes(attribute_value.thief_critical_strikes);
+    proto_specialization_filter->set_thief_deadly_arts(attribute_value.thief_deadly_arts);
+    proto_specialization_filter->set_thief_shadow_arts(attribute_value.thief_shadow_arts);
+    proto_specialization_filter->set_thief_trickery(attribute_value.thief_trickery);
+    proto_specialization_filter->set_warrior_arms(attribute_value.warrior_arms);
+    proto_specialization_filter->set_warrior_defense(attribute_value.warrior_defense);
+    proto_specialization_filter->set_warrior_discipline(attribute_value.warrior_discipline);
+    proto_specialization_filter->set_warrior_strength(attribute_value.warrior_strength);
+    proto_specialization_filter->set_warrior_tactics(attribute_value.warrior_tactics);
     return proto_specialization_filter;
 }
 
 SpecializationFilter from_proto_specialization_filter(waypoint::SpecializationFilter proto_specialization_filter) {
     SpecializationFilter specialization_filter;
-    if (proto_specialization_filter.elementalist_tempest() == true) {
-        specialization_filter.elementalist_tempest = true;
-    }
-    if (proto_specialization_filter.engineer_scrapper() == true) {
-        specialization_filter.engineer_scrapper = true;
-    }
-    if (proto_specialization_filter.guardian_dragonhunter() == true) {
-        specialization_filter.guardian_dragonhunter = true;
-    }
-    if (proto_specialization_filter.mesmer_chronomancer() == true) {
-        specialization_filter.mesmer_chronomancer = true;
-    }
-    if (proto_specialization_filter.necromancer_reaper() == true) {
-        specialization_filter.necromancer_reaper = true;
-    }
-    if (proto_specialization_filter.ranger_druid() == true) {
-        specialization_filter.ranger_druid = true;
-    }
-    if (proto_specialization_filter.revenant_herald() == true) {
-        specialization_filter.revenant_herald = true;
-    }
-    if (proto_specialization_filter.thief_daredevil() == true) {
-        specialization_filter.thief_daredevil = true;
-    }
-    if (proto_specialization_filter.warrior_berserker() == true) {
-        specialization_filter.warrior_berserker = true;
-    }
-    if (proto_specialization_filter.elementalist_weaver() == true) {
-        specialization_filter.elementalist_weaver = true;
-    }
-    if (proto_specialization_filter.engineer_holosmith() == true) {
-        specialization_filter.engineer_holosmith = true;
-    }
-    if (proto_specialization_filter.guardian_firebrand() == true) {
-        specialization_filter.guardian_firebrand = true;
-    }
-    if (proto_specialization_filter.mesmer_mirage() == true) {
-        specialization_filter.mesmer_mirage = true;
-    }
-    if (proto_specialization_filter.necromancer_scourge() == true) {
-        specialization_filter.necromancer_scourge = true;
-    }
-    if (proto_specialization_filter.ranger_soulbeast() == true) {
-        specialization_filter.ranger_soulbeast = true;
-    }
-    if (proto_specialization_filter.revenant_renegade() == true) {
-        specialization_filter.revenant_renegade = true;
-    }
-    if (proto_specialization_filter.thief_deadeye() == true) {
-        specialization_filter.thief_deadeye = true;
-    }
-    if (proto_specialization_filter.warrior_spellbreaker() == true) {
-        specialization_filter.warrior_spellbreaker = true;
-    }
-    if (proto_specialization_filter.elementalist_catalyst() == true) {
-        specialization_filter.elementalist_catalyst = true;
-    }
-    if (proto_specialization_filter.engineer_mechanist() == true) {
-        specialization_filter.engineer_mechanist = true;
-    }
-    if (proto_specialization_filter.guardian_willbender() == true) {
-        specialization_filter.guardian_willbender = true;
-    }
-    if (proto_specialization_filter.mesmer_virtuoso() == true) {
-        specialization_filter.mesmer_virtuoso = true;
-    }
-    if (proto_specialization_filter.necromancer_harbinger() == true) {
-        specialization_filter.necromancer_harbinger = true;
-    }
-    if (proto_specialization_filter.ranger_untamed() == true) {
-        specialization_filter.ranger_untamed = true;
-    }
-    if (proto_specialization_filter.revenant_vindicator() == true) {
-        specialization_filter.revenant_vindicator = true;
-    }
-    if (proto_specialization_filter.thief_specter() == true) {
-        specialization_filter.thief_specter = true;
-    }
-    if (proto_specialization_filter.warrior_bladesworn() == true) {
-        specialization_filter.warrior_bladesworn = true;
-    }
-    if (proto_specialization_filter.elementalist_air() == true) {
-        specialization_filter.elementalist_air = true;
-    }
-    if (proto_specialization_filter.elementalist_arcane() == true) {
-        specialization_filter.elementalist_arcane = true;
-    }
-    if (proto_specialization_filter.elementalist_earth() == true) {
-        specialization_filter.elementalist_earth = true;
-    }
-    if (proto_specialization_filter.elementalist_fire() == true) {
-        specialization_filter.elementalist_fire = true;
-    }
-    if (proto_specialization_filter.elementalist_water() == true) {
-        specialization_filter.elementalist_water = true;
-    }
-    if (proto_specialization_filter.engineer_alchemy() == true) {
-        specialization_filter.engineer_alchemy = true;
-    }
-    if (proto_specialization_filter.engineer_explosives() == true) {
-        specialization_filter.engineer_explosives = true;
-    }
-    if (proto_specialization_filter.engineer_firearms() == true) {
-        specialization_filter.engineer_firearms = true;
-    }
-    if (proto_specialization_filter.engineer_inventions() == true) {
-        specialization_filter.engineer_inventions = true;
-    }
-    if (proto_specialization_filter.engineer_tools() == true) {
-        specialization_filter.engineer_tools = true;
-    }
-    if (proto_specialization_filter.guardian_honor() == true) {
-        specialization_filter.guardian_honor = true;
-    }
-    if (proto_specialization_filter.guardian_radiance() == true) {
-        specialization_filter.guardian_radiance = true;
-    }
-    if (proto_specialization_filter.guardian_valor() == true) {
-        specialization_filter.guardian_valor = true;
-    }
-    if (proto_specialization_filter.guardian_virtues() == true) {
-        specialization_filter.guardian_virtues = true;
-    }
-    if (proto_specialization_filter.guardian_zeal() == true) {
-        specialization_filter.guardian_zeal = true;
-    }
-    if (proto_specialization_filter.mesmer_chaos() == true) {
-        specialization_filter.mesmer_chaos = true;
-    }
-    if (proto_specialization_filter.mesmer_domination() == true) {
-        specialization_filter.mesmer_domination = true;
-    }
-    if (proto_specialization_filter.mesmer_dueling() == true) {
-        specialization_filter.mesmer_dueling = true;
-    }
-    if (proto_specialization_filter.mesmer_illusions() == true) {
-        specialization_filter.mesmer_illusions = true;
-    }
-    if (proto_specialization_filter.mesmer_inspiration() == true) {
-        specialization_filter.mesmer_inspiration = true;
-    }
-    if (proto_specialization_filter.necromancer_blood_magic() == true) {
-        specialization_filter.necromancer_blood_magic = true;
-    }
-    if (proto_specialization_filter.necromancer_curses() == true) {
-        specialization_filter.necromancer_curses = true;
-    }
-    if (proto_specialization_filter.necromancer_death_magic() == true) {
-        specialization_filter.necromancer_death_magic = true;
-    }
-    if (proto_specialization_filter.necromancer_soul_reaping() == true) {
-        specialization_filter.necromancer_soul_reaping = true;
-    }
-    if (proto_specialization_filter.necromancer_spite() == true) {
-        specialization_filter.necromancer_spite = true;
-    }
-    if (proto_specialization_filter.ranger_beastmastery() == true) {
-        specialization_filter.ranger_beastmastery = true;
-    }
-    if (proto_specialization_filter.ranger_marksmanship() == true) {
-        specialization_filter.ranger_marksmanship = true;
-    }
-    if (proto_specialization_filter.ranger_nature_magic() == true) {
-        specialization_filter.ranger_nature_magic = true;
-    }
-    if (proto_specialization_filter.ranger_skirmishing() == true) {
-        specialization_filter.ranger_skirmishing = true;
-    }
-    if (proto_specialization_filter.ranger_wilderness_survival() == true) {
-        specialization_filter.ranger_wilderness_survival = true;
-    }
-    if (proto_specialization_filter.revenant_corruption() == true) {
-        specialization_filter.revenant_corruption = true;
-    }
-    if (proto_specialization_filter.revenant_devastation() == true) {
-        specialization_filter.revenant_devastation = true;
-    }
-    if (proto_specialization_filter.revenant_invocation() == true) {
-        specialization_filter.revenant_invocation = true;
-    }
-    if (proto_specialization_filter.revenant_retribution() == true) {
-        specialization_filter.revenant_retribution = true;
-    }
-    if (proto_specialization_filter.revenant_salvation() == true) {
-        specialization_filter.revenant_salvation = true;
-    }
-    if (proto_specialization_filter.thief_acrobatics() == true) {
-        specialization_filter.thief_acrobatics = true;
-    }
-    if (proto_specialization_filter.thief_critical_strikes() == true) {
-        specialization_filter.thief_critical_strikes = true;
-    }
-    if (proto_specialization_filter.thief_deadly_arts() == true) {
-        specialization_filter.thief_deadly_arts = true;
-    }
-    if (proto_specialization_filter.thief_shadow_arts() == true) {
-        specialization_filter.thief_shadow_arts = true;
-    }
-    if (proto_specialization_filter.thief_trickery() == true) {
-        specialization_filter.thief_trickery = true;
-    }
-    if (proto_specialization_filter.warrior_arms() == true) {
-        specialization_filter.warrior_arms = true;
-    }
-    if (proto_specialization_filter.warrior_defense() == true) {
-        specialization_filter.warrior_defense = true;
-    }
-    if (proto_specialization_filter.warrior_discipline() == true) {
-        specialization_filter.warrior_discipline = true;
-    }
-    if (proto_specialization_filter.warrior_strength() == true) {
-        specialization_filter.warrior_strength = true;
-    }
-    if (proto_specialization_filter.warrior_tactics() == true) {
-        specialization_filter.warrior_tactics = true;
-    }
+    specialization_filter.elementalist_tempest = proto_specialization_filter.elementalist_tempest();
+    specialization_filter.engineer_scrapper = proto_specialization_filter.engineer_scrapper();
+    specialization_filter.guardian_dragonhunter = proto_specialization_filter.guardian_dragonhunter();
+    specialization_filter.mesmer_chronomancer = proto_specialization_filter.mesmer_chronomancer();
+    specialization_filter.necromancer_reaper = proto_specialization_filter.necromancer_reaper();
+    specialization_filter.ranger_druid = proto_specialization_filter.ranger_druid();
+    specialization_filter.revenant_herald = proto_specialization_filter.revenant_herald();
+    specialization_filter.thief_daredevil = proto_specialization_filter.thief_daredevil();
+    specialization_filter.warrior_berserker = proto_specialization_filter.warrior_berserker();
+    specialization_filter.elementalist_weaver = proto_specialization_filter.elementalist_weaver();
+    specialization_filter.engineer_holosmith = proto_specialization_filter.engineer_holosmith();
+    specialization_filter.guardian_firebrand = proto_specialization_filter.guardian_firebrand();
+    specialization_filter.mesmer_mirage = proto_specialization_filter.mesmer_mirage();
+    specialization_filter.necromancer_scourge = proto_specialization_filter.necromancer_scourge();
+    specialization_filter.ranger_soulbeast = proto_specialization_filter.ranger_soulbeast();
+    specialization_filter.revenant_renegade = proto_specialization_filter.revenant_renegade();
+    specialization_filter.thief_deadeye = proto_specialization_filter.thief_deadeye();
+    specialization_filter.warrior_spellbreaker = proto_specialization_filter.warrior_spellbreaker();
+    specialization_filter.elementalist_catalyst = proto_specialization_filter.elementalist_catalyst();
+    specialization_filter.engineer_mechanist = proto_specialization_filter.engineer_mechanist();
+    specialization_filter.guardian_willbender = proto_specialization_filter.guardian_willbender();
+    specialization_filter.mesmer_virtuoso = proto_specialization_filter.mesmer_virtuoso();
+    specialization_filter.necromancer_harbinger = proto_specialization_filter.necromancer_harbinger();
+    specialization_filter.ranger_untamed = proto_specialization_filter.ranger_untamed();
+    specialization_filter.revenant_vindicator = proto_specialization_filter.revenant_vindicator();
+    specialization_filter.thief_specter = proto_specialization_filter.thief_specter();
+    specialization_filter.warrior_bladesworn = proto_specialization_filter.warrior_bladesworn();
+    specialization_filter.elementalist_air = proto_specialization_filter.elementalist_air();
+    specialization_filter.elementalist_arcane = proto_specialization_filter.elementalist_arcane();
+    specialization_filter.elementalist_earth = proto_specialization_filter.elementalist_earth();
+    specialization_filter.elementalist_fire = proto_specialization_filter.elementalist_fire();
+    specialization_filter.elementalist_water = proto_specialization_filter.elementalist_water();
+    specialization_filter.engineer_alchemy = proto_specialization_filter.engineer_alchemy();
+    specialization_filter.engineer_explosives = proto_specialization_filter.engineer_explosives();
+    specialization_filter.engineer_firearms = proto_specialization_filter.engineer_firearms();
+    specialization_filter.engineer_inventions = proto_specialization_filter.engineer_inventions();
+    specialization_filter.engineer_tools = proto_specialization_filter.engineer_tools();
+    specialization_filter.guardian_honor = proto_specialization_filter.guardian_honor();
+    specialization_filter.guardian_radiance = proto_specialization_filter.guardian_radiance();
+    specialization_filter.guardian_valor = proto_specialization_filter.guardian_valor();
+    specialization_filter.guardian_virtues = proto_specialization_filter.guardian_virtues();
+    specialization_filter.guardian_zeal = proto_specialization_filter.guardian_zeal();
+    specialization_filter.mesmer_chaos = proto_specialization_filter.mesmer_chaos();
+    specialization_filter.mesmer_domination = proto_specialization_filter.mesmer_domination();
+    specialization_filter.mesmer_dueling = proto_specialization_filter.mesmer_dueling();
+    specialization_filter.mesmer_illusions = proto_specialization_filter.mesmer_illusions();
+    specialization_filter.mesmer_inspiration = proto_specialization_filter.mesmer_inspiration();
+    specialization_filter.necromancer_blood_magic = proto_specialization_filter.necromancer_blood_magic();
+    specialization_filter.necromancer_curses = proto_specialization_filter.necromancer_curses();
+    specialization_filter.necromancer_death_magic = proto_specialization_filter.necromancer_death_magic();
+    specialization_filter.necromancer_soul_reaping = proto_specialization_filter.necromancer_soul_reaping();
+    specialization_filter.necromancer_spite = proto_specialization_filter.necromancer_spite();
+    specialization_filter.ranger_beastmastery = proto_specialization_filter.ranger_beastmastery();
+    specialization_filter.ranger_marksmanship = proto_specialization_filter.ranger_marksmanship();
+    specialization_filter.ranger_nature_magic = proto_specialization_filter.ranger_nature_magic();
+    specialization_filter.ranger_skirmishing = proto_specialization_filter.ranger_skirmishing();
+    specialization_filter.ranger_wilderness_survival = proto_specialization_filter.ranger_wilderness_survival();
+    specialization_filter.revenant_corruption = proto_specialization_filter.revenant_corruption();
+    specialization_filter.revenant_devastation = proto_specialization_filter.revenant_devastation();
+    specialization_filter.revenant_invocation = proto_specialization_filter.revenant_invocation();
+    specialization_filter.revenant_retribution = proto_specialization_filter.revenant_retribution();
+    specialization_filter.revenant_salvation = proto_specialization_filter.revenant_salvation();
+    specialization_filter.thief_acrobatics = proto_specialization_filter.thief_acrobatics();
+    specialization_filter.thief_critical_strikes = proto_specialization_filter.thief_critical_strikes();
+    specialization_filter.thief_deadly_arts = proto_specialization_filter.thief_deadly_arts();
+    specialization_filter.thief_shadow_arts = proto_specialization_filter.thief_shadow_arts();
+    specialization_filter.thief_trickery = proto_specialization_filter.thief_trickery();
+    specialization_filter.warrior_arms = proto_specialization_filter.warrior_arms();
+    specialization_filter.warrior_defense = proto_specialization_filter.warrior_defense();
+    specialization_filter.warrior_discipline = proto_specialization_filter.warrior_discipline();
+    specialization_filter.warrior_strength = proto_specialization_filter.warrior_strength();
+    specialization_filter.warrior_tactics = proto_specialization_filter.warrior_tactics();
     return specialization_filter;
 }

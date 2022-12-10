@@ -10,7 +10,3 @@ class XMLError;
 std::string parse_string(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_string(std::string attribute_value);
-
-std::string to_proto_string(std::string attribute_value);
-
-std::string from_proto_string(std::string attribute_value);

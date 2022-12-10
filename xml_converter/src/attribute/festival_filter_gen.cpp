@@ -86,52 +86,24 @@ string stringify_festival_filter(FestivalFilter attribute_value) {
 
 waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {
     waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
-    if (attribute_value.dragonbash == true) {
-        proto_festival_filter->set_dragonbash(true);
-    }
-    if (attribute_value.festival_of_the_four_winds == true) {
-        proto_festival_filter->set_festival_of_the_four_winds(true);
-    }
-    if (attribute_value.halloween == true) {
-        proto_festival_filter->set_halloween(true);
-    }
-    if (attribute_value.lunar_new_year == true) {
-        proto_festival_filter->set_lunar_new_year(true);
-    }
-    if (attribute_value.super_adventure_festival == true) {
-        proto_festival_filter->set_super_adventure_festival(true);
-    }
-    if (attribute_value.wintersday == true) {
-        proto_festival_filter->set_wintersday(true);
-    }
-    if (attribute_value.none == true) {
-        proto_festival_filter->set_none(true);
-    }
+    proto_festival_filter->set_dragonbash(attribute_value.dragonbash);
+    proto_festival_filter->set_festival_of_the_four_winds(attribute_value.festival_of_the_four_winds);
+    proto_festival_filter->set_halloween(attribute_value.halloween);
+    proto_festival_filter->set_lunar_new_year(attribute_value.lunar_new_year);
+    proto_festival_filter->set_super_adventure_festival(attribute_value.super_adventure_festival);
+    proto_festival_filter->set_wintersday(attribute_value.wintersday);
+    proto_festival_filter->set_none(attribute_value.none);
     return proto_festival_filter;
 }
 
 FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter) {
     FestivalFilter festival_filter;
-    if (proto_festival_filter.dragonbash() == true) {
-        festival_filter.dragonbash = true;
-    }
-    if (proto_festival_filter.festival_of_the_four_winds() == true) {
-        festival_filter.festival_of_the_four_winds = true;
-    }
-    if (proto_festival_filter.halloween() == true) {
-        festival_filter.halloween = true;
-    }
-    if (proto_festival_filter.lunar_new_year() == true) {
-        festival_filter.lunar_new_year = true;
-    }
-    if (proto_festival_filter.super_adventure_festival() == true) {
-        festival_filter.super_adventure_festival = true;
-    }
-    if (proto_festival_filter.wintersday() == true) {
-        festival_filter.wintersday = true;
-    }
-    if (proto_festival_filter.none() == true) {
-        festival_filter.none = true;
-    }
+    festival_filter.dragonbash = proto_festival_filter.dragonbash();
+    festival_filter.festival_of_the_four_winds = proto_festival_filter.festival_of_the_four_winds();
+    festival_filter.halloween = proto_festival_filter.halloween();
+    festival_filter.lunar_new_year = proto_festival_filter.lunar_new_year();
+    festival_filter.super_adventure_festival = proto_festival_filter.super_adventure_festival();
+    festival_filter.wintersday = proto_festival_filter.wintersday();
+    festival_filter.none = proto_festival_filter.none();
     return festival_filter;
 }

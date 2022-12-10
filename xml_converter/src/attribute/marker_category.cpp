@@ -35,7 +35,7 @@ std::string stringify_marker_category(MarkerCategory attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value) {
     waypoint::Category* category = new waypoint::Category();
-    category->set_type(attribute_value.category);
+    category->set_name(attribute_value.category);
     return category;
 }
 
@@ -46,6 +46,6 @@ waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value) {
 ///////////////////////////////////////////////////////////////////////////////
 MarkerCategory from_proto_marker_category(waypoint::Category attribute_value) {
     MarkerCategory marker_category;
-    marker_category.category = attribute_value.type();
+    marker_category.category = attribute_value.name();
     return marker_category;
 }

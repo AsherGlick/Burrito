@@ -47,35 +47,27 @@ string stringify_cull_chirality(CullChirality attribute_value) {
 }
 
 waypoint::CullChirality to_proto_cull_chirality(CullChirality attribute_value) {
-    waypoint::CullChirality proto_cull_chirality;
-    if (attribute_value == CullChirality::none) {
-        proto_cull_chirality = waypoint::CullChirality::none;
+    switch (attribute_value) {
+        case CullChirality::none:
+            return waypoint::CullChirality::none;
+        case CullChirality::clockwise:
+            return waypoint::CullChirality::clockwise;
+        case CullChirality::counter_clockwise:
+            return waypoint::CullChirality::counter_clockwise;
+        default:
+            return waypoint::CullChirality::none;
     }
-    else if (attribute_value == CullChirality::clockwise) {
-        proto_cull_chirality = waypoint::CullChirality::clockwise;
-    }
-    else if (attribute_value == CullChirality::counter_clockwise) {
-        proto_cull_chirality = waypoint::CullChirality::counter_clockwise;
-    }
-    else {
-        proto_cull_chirality = waypoint::CullChirality::none;
-    }
-    return proto_cull_chirality;
 }
 
 CullChirality from_proto_cull_chirality(waypoint::CullChirality proto_cull_chirality) {
-    CullChirality cull_chirality;
-    if (proto_cull_chirality == waypoint::CullChirality::none) {
-        cull_chirality = CullChirality::none;
+    switch (proto_cull_chirality) {
+        case waypoint::CullChirality::none:
+            return CullChirality::none;
+        case waypoint::CullChirality::clockwise:
+            return CullChirality::clockwise;
+        case waypoint::CullChirality::counter_clockwise:
+            return CullChirality::counter_clockwise;
+        default:
+            return CullChirality::none;
     }
-    else if (proto_cull_chirality == waypoint::CullChirality::clockwise) {
-        cull_chirality = CullChirality::clockwise;
-    }
-    else if (proto_cull_chirality == waypoint::CullChirality::counter_clockwise) {
-        cull_chirality = CullChirality::counter_clockwise;
-    }
-    else {
-        cull_chirality = CullChirality::none;
-    }
-    return cull_chirality;
 }

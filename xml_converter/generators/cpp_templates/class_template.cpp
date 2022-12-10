@@ -132,12 +132,19 @@ waypoint::Waypoint {{cpp_class}}::as_protobuf() const {
         }
         trigger->set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
     }
-    {% else: %}
+    {% elif (attribute_variable.attribute_type == "Enum")%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
         trigger->set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+    }
+    {% else: %}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        if (trigger == nullptr) {
+            trigger = new waypoint::Trigger();
+        }
+        trigger->set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
     }
     {% endif %}
     {% else: %}

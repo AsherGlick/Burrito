@@ -476,25 +476,25 @@ waypoint::Waypoint Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_auto_trigger(to_proto_bool(this->auto_trigger));
+        trigger->set_auto_trigger(this->auto_trigger);
     }
     if (this->bounce_delay_is_set) {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_bounce_delay(to_proto_float(this->bounce_delay));
+        trigger->set_bounce_delay(this->bounce_delay);
     }
     if (this->bounce_duration_is_set) {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_bounce_duration(to_proto_float(this->bounce_duration));
+        trigger->set_bounce_duration(this->bounce_duration);
     }
     if (this->bounce_height_is_set) {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_bounce_height(to_proto_float(this->bounce_height));
+        trigger->set_bounce_height(this->bounce_height);
     }
     if (this->can_fade_is_set) {
         proto_icon.set_can_fade(this->can_fade);
@@ -509,13 +509,13 @@ waypoint::Waypoint Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_action_copy_clipboard(to_proto_string(this->copy_clipboard));
+        trigger->set_action_copy_clipboard(this->copy_clipboard);
     }
     if (this->copy_message_is_set) {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_action_copy_message(to_proto_string(this->copy_message));
+        trigger->set_action_copy_message(this->copy_message);
     }
     if (this->cull_chirality_is_set) {
         proto_icon.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
@@ -539,7 +539,7 @@ waypoint::Waypoint Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_has_countdown(to_proto_bool(this->has_countdown));
+        trigger->set_has_countdown(this->has_countdown);
     }
     if (this->heightoffset_is_set) {
         proto_icon.set_height_offset(this->heightoffset);
@@ -560,13 +560,13 @@ waypoint::Waypoint Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_action_info_message(to_proto_string(this->info_message));
+        trigger->set_action_info_message(this->info_message);
     }
     if (this->invert_visibility_is_set) {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_invert_display(to_proto_bool(this->invert_visibility));
+        trigger->set_invert_display(this->invert_visibility);
     }
     if (this->map_display_size_is_set) {
         proto_icon.set_map_display_size(this->map_display_size);
@@ -611,7 +611,7 @@ waypoint::Waypoint Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_reset_length(to_proto_float(this->reset_length));
+        trigger->set_reset_length(this->reset_length);
     }
     if (this->scale_on_map_with_zoom_is_set) {
         proto_icon.set_scale_on_map_with_zoom(this->scale_on_map_with_zoom);
@@ -650,7 +650,7 @@ waypoint::Waypoint Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_range(to_proto_float(this->trigger_range));
+        trigger->set_range(this->trigger_range);
     }
     if (trigger != nullptr) {
         proto_icon.set_allocated_trigger(trigger);

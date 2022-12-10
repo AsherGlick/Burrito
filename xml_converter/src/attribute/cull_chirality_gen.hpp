@@ -9,9 +9,9 @@
 class XMLError;
 
 enum CullChirality {
-        clockwise,
-        counter_clockwise,
-        none,
+    clockwise,
+    counter_clockwise,
+    none,
 };
 CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_cull_chirality(CullChirality attribute_value);

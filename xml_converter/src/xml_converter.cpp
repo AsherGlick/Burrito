@@ -1,4 +1,5 @@
 #include <dirent.h>
+
 #include <algorithm>
 #include <chrono>
 #include <cstring>
@@ -64,7 +65,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
     ofstream outfile;
     waypoint::Waypoint proto_message;
 
-    outfile.open(proto_filepath, ios::out | ios_base::binary);
+    outfile.open(proto_filepath, ios::out | ios::binary);
     for (const auto& category : *marker_categories) {
         waypoint::Waypoint proto_category = category.second.as_protobuf();
         proto_message.add_category()->CopyFrom(proto_category.category(0));
@@ -247,7 +248,7 @@ void read_protobuf_file(string proto_filepath, map<string, Category>* marker_cat
     fstream infile;
     waypoint::Waypoint proto_message;
 
-    infile.open(proto_filepath, ios::in | ios_base::binary);
+    infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
     for (int i = 0; i < proto_message.category_size(); i++) {
         parse_proto_marker_categories(proto_message.category(i), marker_categories);
@@ -264,8 +265,8 @@ vector<string> get_xml_files(string directory) {
     vector<string> files;
     vector<string> subfolders;
     string path;
-    DIR *dir = opendir(directory.c_str());
-    struct dirent *entry = readdir(dir);
+    DIR* dir = opendir(directory.c_str());
+    struct dirent* entry = readdir(dir);
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_DIR && has_suffix(directory, ".") == false) {
             path = directory + "/";
@@ -286,11 +287,11 @@ vector<string> get_xml_files(string directory) {
     std::sort(files.begin(), files.end(), filename_comp);
     std::sort(subfolders.begin(), subfolders.end(), filename_comp);
 
-    for (const std::string &subfolder : subfolders) {
-            if (has_suffix(subfolder, ".") == false && has_suffix(subfolder, "..") == false) {
-                vector<string> subfiles = get_xml_files(subfolder);
-                files.insert(files.end(), subfiles.begin(), subfiles.end());
-            }
+    for (const std::string& subfolder : subfolders) {
+        if (has_suffix(subfolder, ".") == false && has_suffix(subfolder, "..") == false) {
+            vector<string> subfiles = get_xml_files(subfolder);
+            files.insert(files.end(), subfiles.begin(), subfiles.end());
+        }
     }
     return files;
 }
@@ -325,8 +326,8 @@ int main() {
     test_proto();
 
     string directory = "./packs";
-    DIR *dir = opendir(directory.c_str());
-    struct dirent *entry = readdir(dir);
+    DIR* dir = opendir(directory.c_str());
+    struct dirent* entry = readdir(dir);
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_DIR) {
             string path = directory + "/";

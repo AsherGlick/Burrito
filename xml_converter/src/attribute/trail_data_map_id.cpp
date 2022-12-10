@@ -30,14 +30,3 @@ TrailDataMapId parse_trail_data_map_id(rapidxml::xml_attribute<>* input, vector<
 string stringify_trail_data_map_id(TrailDataMapId attribute_value) {
     return to_string(attribute_value.trail_data_map_id);
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// to_proto_trail_data
-//
-// Returns a TrailDataMapID so that it can be saved to proto.
-////////////////////////////////////////////////////////////////////////////////
-// waypoint::TrailDataMapID* to_proto_trail_data(TrailDataMapID attribute_value) {
-//     waypoint::TrailData* trail_data;
-//     trail_data->set_trail_data(attribute_value.trail_data);
-//     return trail_data;
-// }

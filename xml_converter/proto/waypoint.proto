@@ -15,7 +15,6 @@ message Category {
     string name = 4;
     string tip_description = 5;
     repeated Category children = 6;
-    string type = 7;
 }
 
 message Icon {
@@ -125,7 +124,7 @@ message Trigger {
 }
 
 message GUID {
-    string guid = 1;
+    bytes guid = 1;
 }
 
 message Color {
