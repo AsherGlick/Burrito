@@ -1,5 +1,6 @@
 #include "cull_chirality_gen.hpp"
 
+#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -7,6 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -41,5 +43,31 @@ string stringify_cull_chirality(CullChirality attribute_value) {
     }
     else {
         return "CullChirality::none";
+    }
+}
+
+waypoint::CullChirality to_proto_cull_chirality(CullChirality attribute_value) {
+    switch (attribute_value) {
+        case CullChirality::none:
+            return waypoint::CullChirality::none;
+        case CullChirality::clockwise:
+            return waypoint::CullChirality::clockwise;
+        case CullChirality::counter_clockwise:
+            return waypoint::CullChirality::counter_clockwise;
+        default:
+            return waypoint::CullChirality::none;
+    }
+}
+
+CullChirality from_proto_cull_chirality(waypoint::CullChirality proto_cull_chirality) {
+    switch (proto_cull_chirality) {
+        case waypoint::CullChirality::none:
+            return CullChirality::none;
+        case waypoint::CullChirality::clockwise:
+            return CullChirality::clockwise;
+        case waypoint::CullChirality::counter_clockwise:
+            return CullChirality::counter_clockwise;
+        default:
+            return CullChirality::none;
     }
 }

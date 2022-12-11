@@ -1,5 +1,6 @@
 #include "festival_filter_gen.hpp"
 
+#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -7,6 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -80,4 +82,28 @@ string stringify_festival_filter(FestivalFilter attribute_value) {
         output = output + "none";
     }
     return output;
+}
+
+waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {
+    waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
+    proto_festival_filter->set_dragonbash(attribute_value.dragonbash);
+    proto_festival_filter->set_festival_of_the_four_winds(attribute_value.festival_of_the_four_winds);
+    proto_festival_filter->set_halloween(attribute_value.halloween);
+    proto_festival_filter->set_lunar_new_year(attribute_value.lunar_new_year);
+    proto_festival_filter->set_super_adventure_festival(attribute_value.super_adventure_festival);
+    proto_festival_filter->set_wintersday(attribute_value.wintersday);
+    proto_festival_filter->set_none(attribute_value.none);
+    return proto_festival_filter;
+}
+
+FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter) {
+    FestivalFilter festival_filter;
+    festival_filter.dragonbash = proto_festival_filter.dragonbash();
+    festival_filter.festival_of_the_four_winds = proto_festival_filter.festival_of_the_four_winds();
+    festival_filter.halloween = proto_festival_filter.halloween();
+    festival_filter.lunar_new_year = proto_festival_filter.lunar_new_year();
+    festival_filter.super_adventure_festival = proto_festival_filter.super_adventure_festival();
+    festival_filter.wintersday = proto_festival_filter.wintersday();
+    festival_filter.none = proto_festival_filter.none();
+    return festival_filter;
 }

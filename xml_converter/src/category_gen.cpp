@@ -1,5 +1,6 @@
 #include "category_gen.hpp"
 
+#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <type_traits>
@@ -9,6 +10,7 @@
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -50,8 +52,8 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
         this->name_is_set = true;
     }
     else if (attributename == "tipdescription") {
-        this->tooltip_name = parse_string(attribute, errors);
-        this->tooltip_name_is_set = true;
+        this->tooltip_description = parse_string(attribute, errors);
+        this->tooltip_description_is_set = true;
     }
     else {
         return false;
@@ -73,8 +75,8 @@ vector<string> Category::as_xml() const {
     if (this->name_is_set) {
         xml_node_contents.push_back(" Name=\"" + stringify_string(this->name) + "\"");
     }
-    if (this->tooltip_name_is_set) {
-        xml_node_contents.push_back(" TipDescription=\"" + stringify_string(this->tooltip_name) + "\"");
+    if (this->tooltip_description_is_set) {
+        xml_node_contents.push_back(" TipDescription=\"" + stringify_string(this->tooltip_description) + "\"");
     }
     xml_node_contents.push_back(">\n");
 
@@ -89,4 +91,51 @@ vector<string> Category::as_xml() const {
 
     xml_node_contents.push_back("</MarkerCategory>\n");
     return xml_node_contents;
+}
+
+waypoint::Category Category::as_protobuf() const {
+    waypoint::Category proto_category;
+    if (this->default_visibility_is_set) {
+        proto_category.set_default_visibility(this->default_visibility);
+    }
+    if (this->display_name_is_set) {
+        proto_category.set_display_name(this->display_name);
+    }
+    if (this->is_separator_is_set) {
+        proto_category.set_is_separator(this->is_separator);
+    }
+    if (this->name_is_set) {
+        proto_category.set_name(this->name);
+    }
+    if (this->tooltip_description_is_set) {
+        proto_category.set_tip_description(this->tooltip_description);
+    }
+    for (const auto& [key, val] : this->children) {
+        waypoint::Category proto_category_child = val.as_protobuf();
+        proto_category.add_children()->CopyFrom(proto_category_child);
+    }
+    return proto_category;
+}
+
+void Category::parse_protobuf(waypoint::Category proto_category) {
+    if (proto_category.default_visibility() != 0) {
+        this->default_visibility = proto_category.default_visibility();
+        this->default_visibility_is_set = true;
+    }
+    if (proto_category.display_name() != "") {
+        this->display_name = proto_category.display_name();
+        this->display_name_is_set = true;
+    }
+    if (proto_category.is_separator() != 0) {
+        this->is_separator = proto_category.is_separator();
+        this->is_separator_is_set = true;
+    }
+    if (proto_category.name() != "") {
+        this->name = proto_category.name();
+        this->name_is_set = true;
+    }
+    if (proto_category.tip_description() != "") {
+        this->tooltip_description = proto_category.tip_description();
+        this->tooltip_description_is_set = true;
+    }
 }

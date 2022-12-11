@@ -1,5 +1,6 @@
 #include "species_filter_gen.hpp"
 
+#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -7,6 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -63,4 +65,24 @@ string stringify_species_filter(SpeciesFilter attribute_value) {
         output = output + "sylvari";
     }
     return output;
+}
+
+waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value) {
+    waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
+    proto_species_filter->set_asura(attribute_value.asura);
+    proto_species_filter->set_charr(attribute_value.charr);
+    proto_species_filter->set_human(attribute_value.human);
+    proto_species_filter->set_norn(attribute_value.norn);
+    proto_species_filter->set_sylvari(attribute_value.sylvari);
+    return proto_species_filter;
+}
+
+SpeciesFilter from_proto_species_filter(waypoint::SpeciesFilter proto_species_filter) {
+    SpeciesFilter species_filter;
+    species_filter.asura = proto_species_filter.asura();
+    species_filter.charr = proto_species_filter.charr();
+    species_filter.human = proto_species_filter.human();
+    species_filter.norn = proto_species_filter.norn();
+    species_filter.sylvari = proto_species_filter.sylvari();
+    return species_filter;
 }

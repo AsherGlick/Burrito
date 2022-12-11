@@ -7,6 +7,9 @@
 #include "../rapidxml-1.13/rapidxml.hpp"
 
 class XMLError;
+namespace waypoint {
+class GUID;
+}
 
 class UniqueId {
  public:
@@ -16,3 +19,7 @@ class UniqueId {
 UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_unique_id(UniqueId attribute_value);
+
+waypoint::GUID* to_proto_unique_id(UniqueId attribute_value);
+
+UniqueId from_proto_unique_id(waypoint::GUID attribute_value);

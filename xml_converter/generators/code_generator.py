@@ -284,9 +284,11 @@ class AttributeVariable:
     cpp_type: str
     class_name: str
     xml_fields: List[str]
+    protobuf_field: str
     default_xml_fields: List[str] = field(default_factory=list)
     xml_export: str = ""
     is_child: bool = False
+    is_trigger: bool = False
 
 
 ################################################################################
@@ -389,6 +391,7 @@ class Generator:
                     cpp_class=cpp_class,
                     attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                     cpp_includes=cpp_includes,
+                    cpp_class_header=lowercase(cpp_class),
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
                 ))
 
@@ -421,11 +424,14 @@ class Generator:
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
         xml_export: str = ""
+        protobuf_field: str = ""
+        is_trigger: bool = False
 
         cpp_includes.hpp_absolute_includes.add("string")
         cpp_includes.hpp_absolute_includes.add("vector")
         cpp_includes.hpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
         cpp_includes.hpp_relative_includes.add("parseable.hpp")
+        cpp_includes.hpp_relative_includes.add("waypoint.pb.h")
         cpp_includes.hpp_forward_declarations.add("XMLError")
 
         cpp_includes.cpp_absolute_includes.add("iosfwd")
@@ -433,6 +439,7 @@ class Generator:
         cpp_includes.cpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
         cpp_includes.cpp_relative_includes.add("string_helper.hpp")
         cpp_includes.cpp_relative_includes.add("rapid_helpers.hpp")
+        cpp_includes.cpp_relative_includes.add("waypoint.pb.h")
 
         if (doc_type == "Category"):
             cpp_includes.hpp_absolute_includes.add("map")
@@ -477,10 +484,10 @@ class Generator:
                     # Compound Values are unique in that the components have xml fields in addition to the compound variable
                 if fieldval['type'] == "CompoundValue":
                     xml_export = fieldval['xml_export']
-                    for i, component in enumerate(fieldval['components']):
+                    for component in fieldval['components']:
                         component_xml_fields = []
                         component_default_xml_fields = []
-                        for j, item in enumerate(component['xml_fields']):
+                        for item in component['xml_fields']:
                             if xml_export == "Children":
                                 component_default_xml_fields.append(item)
                             if xml_export == "Parent":
@@ -494,6 +501,7 @@ class Generator:
                             xml_fields=component_xml_fields,
                             default_xml_fields=component_default_xml_fields,
                             xml_export=xml_export,
+                            protobuf_field=component["protobuf_field"],
                             is_child=True,
                         )
                         attribute_variables.append(component_attribute_variable)
@@ -501,6 +509,13 @@ class Generator:
                 for x in fieldval['xml_fields']:
                     xml_fields.append(lowercase(x, delimiter=""))
                 default_xml_fields.append(fieldval['xml_fields'][0])
+
+                if fieldval["protobuf_field"].startswith("trigger"):
+                    is_trigger = True
+                    protobuf_field = fieldval["protobuf_field"].split('.')[1]
+                else:
+                    is_trigger = False
+                    protobuf_field = fieldval["protobuf_field"]
 
                 attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
@@ -510,6 +525,8 @@ class Generator:
                     xml_fields=xml_fields,
                     default_xml_fields=default_xml_fields,
                     xml_export=xml_export,
+                    protobuf_field=protobuf_field,
+                    is_trigger=is_trigger,
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -540,6 +557,7 @@ class Generator:
         attribute_variable: AttributeVariable
         metadata: Dict[str, SchemaType] = {}
         xml_fields: List[str] = []
+        is_trigger: bool = False
         template: Dict[str, Template] = {
             "MultiflagValue": env.get_template("multiflagvalue.cpp"),
             "CompoundValue": env.get_template("compoundvalue.cpp"),
@@ -555,6 +573,13 @@ class Generator:
             attribute_name = attribute_names[filepath]
             metadata[filepath] = self.data[filepath].metadata
 
+            if metadata[filepath]["protobuf_field"].startswith("trigger"):
+                is_trigger = True
+                protobuf_field = metadata[filepath]["protobuf_field"].split('.')[1]
+            else:
+                is_trigger = False
+                protobuf_field = metadata[filepath]["protobuf_field"]
+
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
                     xml_fields = []
@@ -567,6 +592,8 @@ class Generator:
                         cpp_type="bool",
                         class_name=attribute_name,
                         xml_fields=xml_fields,
+                        protobuf_field=protobuf_field,
+                        is_trigger=is_trigger,
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -586,6 +613,8 @@ class Generator:
                         class_name=attribute_name,
                         xml_fields=xml_fields,
                         xml_export=metadata[filepath]["xml_export"],
+                        protobuf_field=component["protobuf_field"],
+                        is_trigger=is_trigger,
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -599,7 +628,9 @@ class Generator:
                         attribute_type=metadata[filepath]['type'],
                         cpp_type="str",
                         class_name=attribute_name,
-                        xml_fields=xml_fields
+                        xml_fields=xml_fields,
+                        protobuf_field=protobuf_field,
+                        is_trigger=is_trigger,
                     )
                     attribute_variables.append(attribute_variable)
 

@@ -4,8 +4,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
-
 class XMLError;
+namespace waypoint {
+class MountFilter;
+}
 
 class MountFilter {
  public:
@@ -26,3 +28,5 @@ class MountFilter {
 };
 MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_mount_filter(MountFilter attribute_value);
+waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value);
+MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter);

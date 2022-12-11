@@ -1,5 +1,6 @@
 #include "reset_behavior_gen.hpp"
 
+#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -7,6 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -131,5 +133,55 @@ string stringify_reset_behavior(ResetBehavior attribute_value) {
     }
     else {
         return "ResetBehavior::0";
+    }
+}
+
+waypoint::ResetBehavior to_proto_reset_behavior(ResetBehavior attribute_value) {
+    switch (attribute_value) {
+        case ResetBehavior::always_visible:
+            return waypoint::ResetBehavior::always_visible;
+        case ResetBehavior::map_change:
+            return waypoint::ResetBehavior::map_change;
+        case ResetBehavior::daily_reset:
+            return waypoint::ResetBehavior::daily_reset;
+        case ResetBehavior::never:
+            return waypoint::ResetBehavior::never;
+        case ResetBehavior::timer:
+            return waypoint::ResetBehavior::timer;
+        case ResetBehavior::map_reset:
+            return waypoint::ResetBehavior::map_reset;
+        case ResetBehavior::instance_change:
+            return waypoint::ResetBehavior::instance_change;
+        case ResetBehavior::daily_reset_per_character:
+            return waypoint::ResetBehavior::daily_reset_per_character;
+        case ResetBehavior::weekly_reset:
+            return waypoint::ResetBehavior::weekly_reset;
+        default:
+            return waypoint::ResetBehavior::always_visible;
+    }
+}
+
+ResetBehavior from_proto_reset_behavior(waypoint::ResetBehavior proto_reset_behavior) {
+    switch (proto_reset_behavior) {
+        case waypoint::ResetBehavior::always_visible:
+            return ResetBehavior::always_visible;
+        case waypoint::ResetBehavior::map_change:
+            return ResetBehavior::map_change;
+        case waypoint::ResetBehavior::daily_reset:
+            return ResetBehavior::daily_reset;
+        case waypoint::ResetBehavior::never:
+            return ResetBehavior::never;
+        case waypoint::ResetBehavior::timer:
+            return ResetBehavior::timer;
+        case waypoint::ResetBehavior::map_reset:
+            return ResetBehavior::map_reset;
+        case waypoint::ResetBehavior::instance_change:
+            return ResetBehavior::instance_change;
+        case waypoint::ResetBehavior::daily_reset_per_character:
+            return ResetBehavior::daily_reset_per_character;
+        case waypoint::ResetBehavior::weekly_reset:
+            return ResetBehavior::weekly_reset;
+        default:
+            return ResetBehavior::always_visible;
     }
 }

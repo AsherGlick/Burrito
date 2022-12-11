@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "waypoint.pb.h"
 
 class XMLError;
 
@@ -20,3 +21,5 @@ enum ResetBehavior {
 };
 ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 std::string stringify_reset_behavior(ResetBehavior attribute_value);
+waypoint::ResetBehavior to_proto_reset_behavior(ResetBehavior attribute_value);
+ResetBehavior from_proto_reset_behavior(waypoint::ResetBehavior proto_reset_behavior);

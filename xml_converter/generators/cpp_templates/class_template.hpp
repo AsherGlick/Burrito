@@ -20,8 +20,7 @@ class {{cpp_class}} : public Parseable {
     {% for attribute_variable in attribute_variables: %}
     bool {{attribute_variable.attribute_name}}_is_set = false;
     {% endfor %}
-
-    {%- if cpp_class == "Category": %}
+    {% if cpp_class == "Category": %}
     std::map<std::string, Category> children;
     Icon default_icon;
     Trail default_trail;
@@ -31,6 +30,8 @@ class {{cpp_class}} : public Parseable {
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
+    waypoint::{{cpp_class}} as_protobuf() const;
+    void parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}});
     {% if attributes_of_type_marker_category %}
     bool validate_attributes_of_type_marker_category();
     {% endif %}

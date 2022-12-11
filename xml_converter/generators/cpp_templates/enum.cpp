@@ -1,5 +1,6 @@
 #include "{{attribute_name}}_gen.hpp"
 
+#include <algorithm>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -7,6 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -49,5 +51,27 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     {%  endfor %}
     else {
         return "{{class_name}}::{{attribute_variables[0].xml_fields[0]}}";
+    }
+}
+
+waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_value) {
+    switch (attribute_value) {
+    {% for attribute_variable in attribute_variables %}
+        case {{class_name}}::{{attribute_variable.attribute_name}}:
+            return waypoint::{{class_name}}::{{attribute_variable.attribute_name}};
+    {% endfor %}
+        default:
+            return waypoint::{{class_name}}::{{attribute_variables[0].attribute_name}};
+    }
+}
+
+{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}}) {
+    switch (proto_{{attribute_name}}) {
+    {% for attribute_variable in attribute_variables %}
+        case waypoint::{{class_name}}::{{attribute_variable.attribute_name}}:
+            return {{class_name}}::{{attribute_variable.attribute_name}};
+    {% endfor %}
+        default:
+            return {{class_name}}::{{attribute_variables[0].attribute_name}};
     }
 }

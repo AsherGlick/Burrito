@@ -1,5 +1,6 @@
 #include "{{cpp_class_header}}_gen.hpp"
 
+#include <algorithm>
 {% for absolute_include in cpp_includes.sorted_cpp_absolute_includes() %}
 #include <{{absolute_include}}>
 {% endfor %}
@@ -115,4 +116,121 @@ vector<string> {{cpp_class}}::as_xml() const {
     xml_node_contents.push_back("/>");
 {% endif %}
     return xml_node_contents;
+}
+
+waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
+    waypoint::{{cpp_class}} proto_{{cpp_class_header}};
+    {% if cpp_class == "Icon": %}
+    waypoint::Trigger* trigger = nullptr;
+    {% endif %}
+    {%for attribute_variable in attribute_variables%}
+    {% if (attribute_variable.is_trigger == true)%}
+    {% if (attribute_variable.attribute_type == "Custom")%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        if (trigger == nullptr) {
+            trigger = new waypoint::Trigger();
+        }
+        trigger->set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+    }
+    {% elif (attribute_variable.attribute_type == "Enum")%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        if (trigger == nullptr) {
+            trigger = new waypoint::Trigger();
+        }
+        trigger->set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+    }
+    {% else: %}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        if (trigger == nullptr) {
+            trigger = new waypoint::Trigger();
+        }
+        trigger->set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
+    }
+    {% endif %}
+    {% else: %}
+    {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
+//TODO: TrailDataMapID is currently not implemented
+    {% elif (attribute_variable.attribute_type == "Enum")%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+    }
+    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.is_child == false%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        proto_{{cpp_class_header}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+    }
+    {% elif attribute_variable.is_child == true%}
+    {% else: %}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
+    }
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% if cpp_class == "Icon": %}
+    if (trigger != nullptr) {
+        proto_{{cpp_class_header}}.set_allocated_trigger(trigger);
+    }
+    {% endif %}
+    {% if cpp_class == "Category": %}
+    for (const auto& [key, val] : this->children) {
+        waypoint::{{cpp_class}} proto_{{cpp_class_header}}_child = val.as_protobuf();
+        proto_{{cpp_class_header}}.add_children()->CopyFrom(proto_{{cpp_class_header}}_child);
+    }
+    {% endif %}
+    return proto_{{cpp_class_header}};
+}
+
+void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) {
+    {% if cpp_class == "Icon": %}
+    waypoint::Trigger trigger = proto_{{cpp_class_header}}.trigger();
+    {% endif %}
+    {%for attribute_variable in attribute_variables%}
+    {% if (attribute_variable.is_trigger == true)%}
+    {% if (attribute_variable.attribute_type == "Custom")%}
+    if (trigger.has_{{attribute_variable.protobuf_field}}()) {
+        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(trigger.{{attribute_variable.protobuf_field}}());
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% elif attribute_variable.class_name == "string" %}
+    if (trigger.{{attribute_variable.protobuf_field}}() != "") {
+        this->{{attribute_variable.attribute_name}} = trigger.{{attribute_variable.protobuf_field}}();
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% elif (attribute_variable.attribute_type ==  "Enum") %}
+    if (trigger.{{attribute_variable.protobuf_field}}() != 0) {
+        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(trigger.{{attribute_variable.protobuf_field}}());
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% else: %}
+    if (trigger.{{attribute_variable.protobuf_field}}() != 0) {
+        this->{{attribute_variable.attribute_name}} = trigger.{{attribute_variable.protobuf_field}}();
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% endif %}
+    {% else: %}
+    {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
+    {% elif (attribute_variable.attribute_type ==  "Enum") %}
+    if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != 0) {
+        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.is_child == false%}
+    if (proto_{{cpp_class_header}}.has_{{attribute_variable.protobuf_field}}()) {
+        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% elif attribute_variable.is_child == true%}
+    {% elif attribute_variable.class_name == "string" %}
+    if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != "") {
+        this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% else: %}
+    if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != 0) {
+        this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
+        this->{{attribute_variable.attribute_name}}_is_set = true;
+    }
+    {% endif %}
+    {% endif %}
+    {% endfor %}
 }

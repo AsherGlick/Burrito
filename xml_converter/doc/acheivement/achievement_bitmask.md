@@ -4,7 +4,7 @@ type: Fixed32
 applies_to: [Icon, Trail]
 compatability: [TacO, BlishHUD, Burrito]
 xml_fields: ["AchievementBit"]
-protobuf_field: achievement_bitmask
+protobuf_field: achievement_bit
 ---
 A portion of an achievement that, if completed, will hide this marker.
 

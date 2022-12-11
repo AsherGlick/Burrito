@@ -6,6 +6,7 @@
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -27,4 +28,26 @@ Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 ////////////////////////////////////////////////////////////////////////////////
 string stringify_image(Image attribute_value) {
     return attribute_value.path;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_image
+//
+// Converts an Image into a waypoint::Image pointer to save to proto.
+////////////////////////////////////////////////////////////////////////////////
+waypoint::Texture* to_proto_image(Image attribute_value) {
+    waypoint::Texture* texture = new waypoint::Texture();
+    texture->set_path(attribute_value.path);
+    return texture;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_image
+//
+// Parses a waypoint::Image from proto
+////////////////////////////////////////////////////////////////////////////////
+Image from_proto_image(waypoint::Texture attribute_value) {
+    Image image;
+    image.path = attribute_value.path();
+    return image;
 }

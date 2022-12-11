@@ -2,7 +2,7 @@
 name: Cull Chirality
 applies_to: [Icon, Trail]
 xml_fields: [Cull]
-protobuf_field: cull
+protobuf_field: cull_chirality
 type: Enum
 compatability: [TacO, BlishHUD, Burrito]
 values:
@@ -17,3 +17,4 @@ Notes
 =====
  https://blishhud.com/docs/markers/attributes/cull
 
+ 
