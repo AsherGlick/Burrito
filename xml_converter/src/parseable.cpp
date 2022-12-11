@@ -1,13 +1,11 @@
 #include "parseable.hpp"
 
-#include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
-#include "waypoint.pb.h"
 
 std::string Parseable::classname() {
     return "Parseable";
@@ -37,11 +35,5 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>*, std::vector<XMLEr
 std::vector<std::string> Parseable::as_xml() const {
     throw std::runtime_error("error: Parseable::as_xml() should not be called");
     std::vector<std::string> result;
-    return result;
-}
-
-waypoint::Waypoint Parseable::as_protobuf() const {
-    throw std::runtime_error("error: Parseable::as_protobuf() should not be called");
-    waypoint::Waypoint result;
     return result;
 }

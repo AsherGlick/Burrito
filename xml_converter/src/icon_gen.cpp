@@ -460,7 +460,7 @@ vector<string> Icon::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::Waypoint Icon::as_protobuf() const {
+waypoint::Icon Icon::as_protobuf() const {
     waypoint::Icon proto_icon;
     waypoint::Trigger* trigger = nullptr;
     if (this->achievement_bitmask_is_set) {
@@ -655,9 +655,7 @@ waypoint::Waypoint Icon::as_protobuf() const {
     if (trigger != nullptr) {
         proto_icon.set_allocated_trigger(trigger);
     }
-    waypoint::Waypoint output;
-    output.add_icon()->CopyFrom(proto_icon);
-    return output;
+    return proto_icon;
 }
 
 void Icon::parse_protobuf(waypoint::Icon proto_icon) {

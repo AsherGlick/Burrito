@@ -67,18 +67,20 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
 
     outfile.open(proto_filepath, ios::out | ios::binary);
     for (const auto& category : *marker_categories) {
-        waypoint::Waypoint proto_category = category.second.as_protobuf();
-        proto_message.add_category()->CopyFrom(proto_category.category(0));
+        waypoint::Category proto_category = category.second.as_protobuf();
+        proto_message.add_category()->CopyFrom(proto_category);
     }
 
     for (const auto& parsed_poi : *parsed_pois) {
         if (parsed_poi->classname() == "POI") {
-            waypoint::Waypoint poi = parsed_poi->as_protobuf();
-            proto_message.add_icon()->CopyFrom(poi.icon(0));
+            Icon* icon = dynamic_cast<Icon*>(parsed_poi);
+            waypoint::Icon poi = icon->as_protobuf();
+            proto_message.add_icon()->CopyFrom(poi);
         }
         if (parsed_poi->classname() == "Trail") {
-            waypoint::Waypoint poi = parsed_poi->as_protobuf();
-            proto_message.add_trail()->CopyFrom(poi.trail(0));
+            Trail* trail = dynamic_cast<Trail*>(parsed_poi);
+            waypoint::Trail poi = trail->as_protobuf();
+            proto_message.add_trail()->CopyFrom(poi);
         }
     }
     proto_message.SerializeToOstream(&outfile);

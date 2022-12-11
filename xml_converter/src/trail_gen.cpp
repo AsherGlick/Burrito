@@ -267,7 +267,7 @@ vector<string> Trail::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::Waypoint Trail::as_protobuf() const {
+waypoint::Trail Trail::as_protobuf() const {
     waypoint::Trail proto_trail;
     if (this->achievement_bitmask_is_set) {
         proto_trail.set_achievement_bit(this->achievement_bitmask);
@@ -353,9 +353,7 @@ waypoint::Waypoint Trail::as_protobuf() const {
     if (this->trail_scale_is_set) {
         proto_trail.set_scale(this->trail_scale);
     }
-    waypoint::Waypoint output;
-    output.add_trail()->CopyFrom(proto_trail);
-    return output;
+    return proto_trail;
 }
 
 void Trail::parse_protobuf(waypoint::Trail proto_trail) {

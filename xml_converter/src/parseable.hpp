@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "rapidxml-1.13/rapidxml.hpp"
-#include "waypoint.pb.h"
 class XMLError;
 
 class Parseable {
@@ -19,6 +18,4 @@ class Parseable {
     virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
 
     virtual std::vector<std::string> as_xml() const;
-
-    virtual waypoint::Waypoint as_protobuf() const;
 };

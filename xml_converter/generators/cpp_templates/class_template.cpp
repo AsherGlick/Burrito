@@ -118,7 +118,7 @@ vector<string> {{cpp_class}}::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::Waypoint {{cpp_class}}::as_protobuf() const {
+waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% if cpp_class == "Icon": %}
     waypoint::Trigger* trigger = nullptr;
@@ -173,14 +173,11 @@ waypoint::Waypoint {{cpp_class}}::as_protobuf() const {
     {% endif %}
     {% if cpp_class == "Category": %}
     for (const auto& [key, val] : this->children) {
-        waypoint::Waypoint proto_{{cpp_class_header}}_child = val.as_protobuf();
-
-        proto_{{cpp_class_header}}.add_children()->CopyFrom(proto_{{cpp_class_header}}_child.{{cpp_class_header}}(0));
+        waypoint::{{cpp_class}} proto_{{cpp_class_header}}_child = val.as_protobuf();
+        proto_{{cpp_class_header}}.add_children()->CopyFrom(proto_{{cpp_class_header}}_child);
     }
     {% endif %}
-    waypoint::Waypoint output;
-    output.add_{{cpp_class_header}}()->CopyFrom(proto_{{cpp_class_header}});
-    return output;
+    return proto_{{cpp_class_header}};
 }
 
 void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) {

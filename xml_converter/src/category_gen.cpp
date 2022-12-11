@@ -93,7 +93,7 @@ vector<string> Category::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::Waypoint Category::as_protobuf() const {
+waypoint::Category Category::as_protobuf() const {
     waypoint::Category proto_category;
     if (this->default_visibility_is_set) {
         proto_category.set_default_visibility(this->default_visibility);
@@ -111,13 +111,10 @@ waypoint::Waypoint Category::as_protobuf() const {
         proto_category.set_tip_description(this->tooltip_description);
     }
     for (const auto& [key, val] : this->children) {
-        waypoint::Waypoint proto_category_child = val.as_protobuf();
-
-        proto_category.add_children()->CopyFrom(proto_category_child.category(0));
+        waypoint::Category proto_category_child = val.as_protobuf();
+        proto_category.add_children()->CopyFrom(proto_category_child);
     }
-    waypoint::Waypoint output;
-    output.add_category()->CopyFrom(proto_category);
-    return output;
+    return proto_category;
 }
 
 void Category::parse_protobuf(waypoint::Category proto_category) {
