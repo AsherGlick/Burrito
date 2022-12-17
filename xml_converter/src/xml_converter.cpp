@@ -2,11 +2,13 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstddef>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <set>
 #include <string>
 #include <system_error>
 #include <utility>
@@ -61,14 +63,22 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     outfile.close();
 }
 
-void write_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    ofstream outfile;
-    waypoint::Waypoint proto_message;
+void create_proto_categories(waypoint::Category proto_category, map<string, waypoint::Category>* proto_categories){
+    proto_categories->insert({proto_category.name(), proto_category});
+    for (int i = 0; i < proto_category.children_size(); i++) {
+        create_proto_categories(proto_category.children(i), proto_categories);
+    }
+}
 
-    outfile.open(proto_filepath, ios::out | ios::binary);
+void write_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    waypoint::Waypoint proto_message;
+    std::set<int> map_ids;
+    map<string, waypoint::Category> proto_categories;
+    std::set<string> category_includes;
+
     for (const auto& category : *marker_categories) {
         waypoint::Category proto_category = category.second.as_protobuf();
-        proto_message.add_category()->CopyFrom(proto_category);
+        create_proto_categories(proto_category, &proto_categories);
     }
 
     for (const auto& parsed_poi : *parsed_pois) {
@@ -76,15 +86,56 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
             Icon* icon = dynamic_cast<Icon*>(parsed_poi);
             waypoint::Icon poi = icon->as_protobuf();
             proto_message.add_icon()->CopyFrom(poi);
+            map_ids.insert(icon->map_id);
         }
         if (parsed_poi->classname() == "Trail") {
             Trail* trail = dynamic_cast<Trail*>(parsed_poi);
             waypoint::Trail poi = trail->as_protobuf();
             proto_message.add_trail()->CopyFrom(poi);
+            map_ids.insert(trail->map_id);
         }
     }
-    proto_message.SerializeToOstream(&outfile);
-    outfile.close();
+
+    for (int map_id : map_ids) {
+        ofstream outfile;
+        string output_filepath = proto_filepath + "/" + to_string(map_id) + ".data";
+        outfile.open(output_filepath, ios::out | ios::binary); 
+        waypoint::Waypoint output_message;
+
+        for (int i = 0; i < proto_message.icon_size(); i++) {
+            if (proto_message.icon(i).map_id() == map_id) {
+                vector<string> split_categories = split(proto_message.icon(i).category().name(), ".");
+                auto category = proto_categories.find(split_categories[split_categories.size()-1]);
+                if (category == proto_categories.end()) {
+                    cout << "Unknown MarkerCategory " << proto_message.icon(i).category().name() << endl;
+                }
+                else {
+                    category_includes.insert(split_categories[0]);
+                }
+                output_message.add_icon()->CopyFrom(proto_message.icon(i));
+            }
+        }    
+        for (int i = 0; i < proto_message.trail_size(); i++) {
+            if (proto_message.trail(i).map_id() == map_id) {
+                vector<string> split_categories = split(proto_message.trail(i).category().name(), ".");
+                auto category = proto_categories.find(split_categories[split_categories.size()-1]);
+                if (category == proto_categories.end()) {
+                    cout << "Unknown MarkerCategory " << proto_message.trail(i).category().name() << endl;
+                }
+                else {
+                    category_includes.insert(split_categories[0]);
+                }
+                output_message.add_trail()->CopyFrom(proto_message.trail(i));
+            }
+        }
+
+        for (string category_include : category_includes){
+            output_message.add_category()->CopyFrom(proto_categories[category_include]);
+        }
+        //TODO: Change so that only the markercategories that have POIs are included and exclude all others. 
+        output_message.SerializeToOstream(&outfile);
+        outfile.close();
+    }
 }
 
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
@@ -344,15 +395,15 @@ int main() {
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The parse function took " << ms << " milliseconds to run" << endl;
 
-    begin = chrono::high_resolution_clock::now();
-    write_xml_file("./export_packs/export.xml", &marker_categories, &parsed_pois);
-    end = chrono::high_resolution_clock::now();
-    dur = end - begin;
-    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+    // begin = chrono::high_resolution_clock::now();
+    // write_xml_file("./export_packs/export.xml", &marker_categories, &parsed_pois);
+    // end = chrono::high_resolution_clock::now();
+    // dur = end - begin;
+    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    // cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_protobuf_file("./export_packs/export.data", &marker_categories, &parsed_pois);
+    write_protobuf_file("./protobins", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
@@ -366,14 +417,14 @@ int main() {
     marker_categories.clear();
 
     begin = chrono::high_resolution_clock::now();
-    read_protobuf_file("./export_packs/export.data", &marker_categories, &parsed_pois);
+    read_protobuf_file("./protobins/0.data", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("./export_packs/export2.xml", &marker_categories, &parsed_pois);
+    write_xml_file("./protobins/0.xml", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
