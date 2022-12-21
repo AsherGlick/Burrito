@@ -169,7 +169,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         // In order to reduce bloat, each map's protobin will only include categories mentioned by the POIs
         // To do this while maintaining hiercarchy, all categories are added to the message and then compared
         // to a set of names. If the name is not in the set, it is deleted. This pruning method is slow but retains
-        // the most data. Ideally this function will only happen when a new marker pack is added. 
+        // the most data. Ideally this function will only happen when a new marker pack is added.
         for (int i = 0; i < output_message.category_size(); i++) {
             remove_proto_child(output_message.mutable_category(i), category_includes, output_message.category(i).name());
             if (output_message.mutable_category(i)->children_size() == 0) {
