@@ -1,11 +1,11 @@
 #include <dirent.h>
 #include <errno.h>
-#include <ext/alloc_traits.h>   
 #include <sys/stat.h>
 
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -141,7 +141,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
                 else {
                     // This loop adds the name of the category and all of it's parents
                     string name;
-                    for (int j = 0; j < static_cast<int>(split_categories.size()); j++) {
+                    for (uint64_t j = 0; j < split_categories.size(); j++) {
                         category_includes.insert(name + split_categories[j]);
                         name += split_categories[j] + ".";
                     }
@@ -159,7 +159,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
                 else {
                     // This loop adds the name of the category and all of it's parents
                     string name;
-                    for (int j = 0; j < static_cast<int>(split_categories.size()); j++) {
+                    for (uint64_t j = 0; j < split_categories.size(); j++) {
                         category_includes.insert(name + split_categories[j]);
                         name += split_categories[j] + ".";
                     }
