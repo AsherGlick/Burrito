@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
-#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -141,9 +140,10 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
                 else {
                     // This loop adds the name of the category and all of it's parents
                     string name;
-                    for (uint64_t j = 0; j < split_categories.size(); j++) {
-                        category_includes.insert(name + split_categories[j]);
-                        name += split_categories[j] + ".";
+                    for (unsigned int j = 0; j < split_categories.size(); j++) {
+                        name += split_categories[j];
+                        category_includes.insert(name);
+                        name += ".";
                     }
                 }
                 output_message.add_icon()->CopyFrom(proto_pois.icon(i));
@@ -159,9 +159,10 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
                 else {
                     // This loop adds the name of the category and all of it's parents
                     string name;
-                    for (uint64_t j = 0; j < split_categories.size(); j++) {
-                        category_includes.insert(name + split_categories[j]);
-                        name += split_categories[j] + ".";
+                    for (unsigned int j = 0; j < split_categories.size(); j++) {
+                        name += split_categories[j];
+                        category_includes.insert(name);
+                        name += ".";
                     }
                 }
                 output_message.add_trail()->CopyFrom(proto_pois.trail(i));
