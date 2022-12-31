@@ -168,10 +168,12 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
                 output_message.add_trail()->CopyFrom(proto_pois.trail(i));
             }
         }
-        // In order to reduce bloat, each map's protobin will only include categories mentioned by the POIs
-        // To do this while maintaining hiercarchy, all categories are added to the message and then compared
-        // to a set of names. If the name is not in the set, it is deleted. This pruning method is slow but retains
-        // the most data. Ideally this function will only happen when a new marker pack is added.
+        // In XML, Marker_Categories has a tree hierarchy while POIS have a flat hierarchy.
+        // This is preserved in the protobuf for ease of translation. 
+        // We are doing a removal instead of an insertion because each parent category contains the data for all of its children.
+        // It would be impractical to include all of the data from each category except for the children and then re-add the children. 
+        // That would require coping every non-child attribute individually and iterating over all the children.
+        // This pruning method is slower but ensures that the all wanted information is kept.
         for (int i = 0; i < output_message.category_size(); i++) {
             remove_proto_child(output_message.mutable_category(i), category_includes, output_message.category(i).name());
             if (output_message.mutable_category(i)->children_size() == 0) {
