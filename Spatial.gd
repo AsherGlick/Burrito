@@ -287,25 +287,35 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
-var markerdata = {}
+var markerdata = waypoint.Waypoint.new()
 var marker_file_path = ""
-func load_taco_markers(marker_json_file):
-	self.marker_file_path = marker_json_file
+func load_taco_markers(marker_file):
+	self.marker_file_path = marker_file
 	
 	if is_xml_file(marker_json_file):
-		print("Loading XML file from path ", marker_json_file)
-		var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_json_file)
+		print("Loading XML file from path ", marker_file)
+		var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_file)
 		var json_payload = parsed_taco_tuple[0]
 		var error_message = parsed_taco_tuple[1]
 		if error_message != "":
 			print("XML parsing failed with error message: ", error_message)
 		self.markerdata = JSON.parse(json_payload).result
-	else:
-		print("Loading Json file from path ", marker_json_file)
+	# else:
+	# 	print("Loading Json file from path ", marker_json_file)
+	# 	var file = File.new()
+	# 	file.open(marker_json_file, file.READ)
+	# 	var text = file.get_as_text()
+	# 	self.markerdata = JSON.parse(text).result
+	else: #$$$COVERT TO PROTO$$$
+		print("Loading protobuf file from path ", marker_file)
 		var file = File.new()
-		file.open(marker_json_file, file.READ)
-		var text = file.get_as_text()
-		self.markerdata = JSON.parse(text).result
+		file.open(marker_file, file.READ)
+		var data = file.get_buffer()
+		self.markerdata.from_bytes(data)
+		if result_code == waypoint.PB_ERR.NO_ERRORS:
+			print("OK")
+		else:
+			return
 	
 	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
 
@@ -315,14 +325,17 @@ func is_xml_file(input_file):
 	return input_file.split(".")[-1] == "xml"
 
 func relative_textures_to_absolute_textures(marker_file_dir):
-	for map in markerdata:
-		for icon in markerdata[map]["icons"]:
-			if !icon["texture"].is_abs_path():
-				icon["texture"] = marker_file_dir + "/" + icon["texture"]
-			#print("ABS", icon["texture"])
-		for path in markerdata[map]["paths"]:
-			if !path["texture"].is_abs_path():
-				path["texture"] = marker_file_dir + "/" + path["texture"]
+	var icons = markerdata.get_icon()
+	for icon in icons:
+		var texture = icon.get_texture()
+		if !texture.get_path().is_abs_path():
+			icon.set_path() = marker_file_dir + "/" + icon.get_path()
+		#print("ABS", icon["texture"])
+	var paths = markerdata.get_trail()
+	for path in paths:
+		var texture = path.get_texture()
+		if !texture.get_path().is_abs_path():
+			path.set_path() = marker_file_dir + "/" + path.get_path()
 
 
 var route_scene = load("res://Route.tscn")
@@ -416,15 +429,15 @@ func gen_map_markers():
 	for icon in icons.get_children():
 		icon.queue_free()
 
-	# Load the data from the markers
-	if str(map_id) in markerdata:
-		var map_markerdata = markerdata[str(map_id)]
-		for path in map_markerdata["paths"]:
-			gen_new_path(path["points"], path["texture"])
-
-		for icon in map_markerdata["icons"]:
-			var position = Vector3(icon["position"][0], icon["position"][1], icon["position"][2])
-			gen_new_icon(position, icon["texture"])
+	# Load the data from the markers $$$COVERT TO PROTO$$$
+	var paths = markerdata.get_trail()
+	for path in paths:
+		gen_new_path(path["points"], path["texture"])
+	var icons = markerdata.get_icon()
+	for icon in icons:
+		var position = icon.get_position()
+		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
+		gen_new_icon(position_vector, icon.get_path())
 
 func gen_new_path(points: Array, texture_path: String):
 	var points_2d: PoolVector2Array = [] 
@@ -492,7 +505,7 @@ func gen_new_path(points: Array, texture_path: String):
 ################################################################################
 #
 ################################################################################
-func gen_new_icon(position: Vector3, texture_path: String):
+func gen_new_icon(position: Vector3, texture_path: String): #$$$COVERT TO PROTO$$$
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position

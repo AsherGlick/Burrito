@@ -554,7 +554,7 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_texture(to_proto_image(this->icon));
     }
     if (this->icon_size_is_set) {
-        proto_icon.set___tentative__scale(this->icon_size);
+        proto_icon.set_tentative__scale(this->icon_size);
     }
     if (this->info_message_is_set) {
         if (trigger == nullptr) {
@@ -593,13 +593,13 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
     }
     if (this->render_ingame_is_set) {
-        proto_icon.set___tentative__render_ingame(this->render_ingame);
+        proto_icon.set_tentative__render_ingame(this->render_ingame);
     }
     if (this->render_on_map_is_set) {
-        proto_icon.set___tentative__render_on_map(this->render_on_map);
+        proto_icon.set_tentative__render_on_map(this->render_on_map);
     }
     if (this->render_on_minimap_is_set) {
-        proto_icon.set___tentative__render_on_minimap(this->render_on_minimap);
+        proto_icon.set_tentative__render_on_minimap(this->render_on_minimap);
     }
     if (this->reset_behavior_is_set) {
         if (trigger == nullptr) {
@@ -748,8 +748,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->icon = from_proto_image(proto_icon.texture());
         this->icon_is_set = true;
     }
-    if (proto_icon.__tentative__scale() != 0) {
-        this->icon_size = proto_icon.__tentative__scale();
+    if (proto_icon.tentative__scale() != 0) {
+        this->icon_size = proto_icon.tentative__scale();
         this->icon_size_is_set = true;
     }
     if (trigger.action_info_message() != "") {
@@ -792,16 +792,16 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->profession_filter = from_proto_profession_filter(proto_icon.profession_filter());
         this->profession_filter_is_set = true;
     }
-    if (proto_icon.__tentative__render_ingame() != 0) {
-        this->render_ingame = proto_icon.__tentative__render_ingame();
+    if (proto_icon.tentative__render_ingame() != 0) {
+        this->render_ingame = proto_icon.tentative__render_ingame();
         this->render_ingame_is_set = true;
     }
-    if (proto_icon.__tentative__render_on_map() != 0) {
-        this->render_on_map = proto_icon.__tentative__render_on_map();
+    if (proto_icon.tentative__render_on_map() != 0) {
+        this->render_on_map = proto_icon.tentative__render_on_map();
         this->render_on_map_is_set = true;
     }
-    if (proto_icon.__tentative__render_on_minimap() != 0) {
-        this->render_on_minimap = proto_icon.__tentative__render_on_minimap();
+    if (proto_icon.tentative__render_on_minimap() != 0) {
+        this->render_on_minimap = proto_icon.tentative__render_on_minimap();
         this->render_on_minimap_is_set = true;
     }
     if (trigger.reset_behavior() != 0) {

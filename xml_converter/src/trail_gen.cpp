@@ -324,13 +324,13 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
     }
     if (this->render_ingame_is_set) {
-        proto_trail.set___tentative__render_ingame(this->render_ingame);
+        proto_trail.set_tentative__render_ingame(this->render_ingame);
     }
     if (this->render_on_map_is_set) {
-        proto_trail.set___tentative__render_on_map(this->render_on_map);
+        proto_trail.set_tentative__render_on_map(this->render_on_map);
     }
     if (this->render_on_minimap_is_set) {
-        proto_trail.set___tentative__render_on_minimap(this->render_on_minimap);
+        proto_trail.set_tentative__render_on_minimap(this->render_on_minimap);
     }
     if (this->schedule_is_set) {
         proto_trail.set_bhdraft__schedule(this->schedule);
@@ -429,16 +429,16 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->profession_filter = from_proto_profession_filter(proto_trail.profession_filter());
         this->profession_filter_is_set = true;
     }
-    if (proto_trail.__tentative__render_ingame() != 0) {
-        this->render_ingame = proto_trail.__tentative__render_ingame();
+    if (proto_trail.tentative__render_ingame() != 0) {
+        this->render_ingame = proto_trail.tentative__render_ingame();
         this->render_ingame_is_set = true;
     }
-    if (proto_trail.__tentative__render_on_map() != 0) {
-        this->render_on_map = proto_trail.__tentative__render_on_map();
+    if (proto_trail.tentative__render_on_map() != 0) {
+        this->render_on_map = proto_trail.tentative__render_on_map();
         this->render_on_map_is_set = true;
     }
-    if (proto_trail.__tentative__render_on_minimap() != 0) {
-        this->render_on_minimap = proto_trail.__tentative__render_on_minimap();
+    if (proto_trail.tentative__render_on_minimap() != 0) {
+        this->render_on_minimap = proto_trail.tentative__render_on_minimap();
         this->render_on_minimap_is_set = true;
     }
     if (proto_trail.bhdraft__schedule() != "") {

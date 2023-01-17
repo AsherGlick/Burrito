@@ -48,10 +48,10 @@ message Icon {
     SpeciesFilter species_filter = 32;
     CullChirality cull_chirality = 33;
 
-    float __tentative__scale = 2048;
-    bool __tentative__render_ingame = 2049;
-    bool __tentative__render_on_map = 2050;
-    bool __tentative__render_on_minimap = 2051;
+    float tentative__scale = 2048;
+    bool tentative__render_ingame = 2049;
+    bool tentative__render_on_map = 2050;
+    bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
 }
@@ -82,9 +82,9 @@ message Trail {
     int32 map_display_size = 29;
     CullChirality cull_chirality = 30;
 
-    bool __tentative__render_ingame = 2049;
-    bool __tentative__render_on_map = 2050;
-    bool __tentative__render_on_minimap = 2051;
+    bool tentative__render_ingame = 2049;
+    bool tentative__render_on_map = 2050;
+    bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
 }

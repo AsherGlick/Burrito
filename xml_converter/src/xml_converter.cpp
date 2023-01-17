@@ -5,6 +5,10 @@
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -91,6 +95,43 @@ void remove_proto_child(waypoint::Category* proto_category, set<string> category
     proto_category->mutable_children()->DeleteSubrange(keep, proto_category->children_size() - keep);
 }
 
+void read_trail_data_file(waypoint::Trail* trail){
+    ifstream trail_data_file;
+    string trail_path = "./" + trail->trail_data().trail_data();
+    trail_data_file.open(trail_path, ios::in | ios::binary);
+
+    char version[4];
+    trail_data_file.read(version, 4);
+
+    char map_id[4];
+
+    trail_data_file.read(map_id, 4);
+    uint32_t map_num = *(uint32_t *)map_id;
+    trail->set_map_id(map_num);
+
+    vector<float> points_x; 
+    vector<float> points_y; 
+    vector<float> points_z; 
+
+    while (trail_data_file.tellg() > 0) { 
+        char point_x[4];
+        trail_data_file.read(point_x, 4);
+        points_x.push_back(*(float *)point_x);
+        char point_y[4];
+        trail_data_file.read(point_y, 4);
+        points_y.push_back(*(float *)point_y);
+        char point_z[4];
+        trail_data_file.read(point_z, 4);
+        points_z.push_back(*(float *)point_z);
+    }
+
+    *trail->mutable_trail_data()->mutable_points_x() = {points_x.begin(), points_x.end()};
+    *trail->mutable_trail_data()->mutable_points_y() = {points_y.begin(), points_y.end()};
+    *trail->mutable_trail_data()->mutable_points_z() = {points_z.begin(), points_z.end()};
+
+    trail_data_file.close();
+}
+
 void write_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     if (mkdir(proto_filepath.c_str(), 0700) == -1 && errno != EEXIST) {
         cout << "Error making ./protobins" << endl;
@@ -104,21 +145,30 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         all_categories.add_category()->CopyFrom(proto_category);
         create_proto_categories(proto_category, &proto_categories);
     }
+
     // Converts vector<Parseable*> to Waypoint::Icon and Waypoint::Trail
     waypoint::Waypoint proto_pois;
     std::set<int> map_ids;
+    ofstream trail_data_file;
     for (const auto& parsed_poi : *parsed_pois) {
         if (parsed_poi->classname() == "POI") {
             Icon* icon = dynamic_cast<Icon*>(parsed_poi);
+            if (icon->map_id_is_set){
+                map_ids.insert(icon->map_id);
+            }
             waypoint::Icon poi = icon->as_protobuf();
             proto_pois.add_icon()->CopyFrom(poi);
             map_ids.insert(icon->map_id);
         }
         else if (parsed_poi->classname() == "Trail") {
             Trail* trail = dynamic_cast<Trail*>(parsed_poi);
+            if (trail->map_id_is_set){
+                map_ids.insert(trail->map_id);
+            }
             waypoint::Trail poi = trail->as_protobuf();
+            read_trail_data_file(&poi);
             proto_pois.add_trail()->CopyFrom(poi);
-            map_ids.insert(trail->map_id);
+           
         }
     }
 
@@ -174,12 +224,21 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         // It would be impractical to include all of the data from each category except for the children and then re-add the children.
         // That would require coping every non-child attribute individually and iterating over all the children.
         // This pruning method is slower but ensures that the all wanted information is kept.
+        int keep = 0;
         for (int i = 0; i < output_message.category_size(); i++) {
             remove_proto_child(output_message.mutable_category(i), category_includes, output_message.category(i).name());
+
             if (output_message.mutable_category(i)->children_size() == 0) {
                 output_message.mutable_category(i)->Clear();
+                }
+            else {
+                if (keep < i) {
+                    output_message.mutable_category()->SwapElements(i, keep);
+                }
+                ++keep;
             }
         }
+        output_message.mutable_category()->DeleteSubrange(keep, output_message.category_size() - keep);
         output_message.SerializeToOstream(&outfile);
         outfile.close();
         output_message.Clear();
@@ -399,8 +458,10 @@ vector<string> get_xml_files(string directory) {
 }
 
 void convert_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    string data = "rsync -a " + directory + "/Data ./";
+    system(data.c_str());
+    cout << directory << endl;
     vector<string> xml_files = get_xml_files(directory);
-
     for (const string& path : xml_files) {
         parse_xml_file(path, marker_categories, parsed_pois);
     }
@@ -427,13 +488,19 @@ int main() {
     map<string, Category> marker_categories;
     test_proto();
 
+    if (mkdir("./Data", 0700) == -1 && errno != EEXIST) {
+        cout << "Error making ./Data" << endl;
+        throw std::error_code();
+    }
+
     string directory = "./packs";
     DIR* dir = opendir(directory.c_str());
     struct dirent* entry = readdir(dir);
     while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_DIR) {
+        if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".")) {
             string path = directory + "/";
             path += entry->d_name;
+            cout << path << endl;
             convert_taco_directory(path, &marker_categories, &parsed_pois);
         }
     }
@@ -458,26 +525,26 @@ int main() {
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 
-    ////////////////////////////////////////////////////////////////////////////////////////
-    /// This section tests that the protobuf file can be parsed back to xml
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
+    // / This section tests that the protobuf file can be parsed back to xml
+    // //////////////////////////////////////////////////////////////////////////////////////
 
-    // parsed_pois.clear();
-    // marker_categories.clear();
+    parsed_pois.clear();
+    marker_categories.clear();
 
-    // begin = chrono::high_resolution_clock::now();
-    // read_protobuf_file("./protobins/1037.data", &marker_categories, &parsed_pois);
-    // end = chrono::high_resolution_clock::now();
-    // dur = end - begin;
-    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    // cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
+    begin = chrono::high_resolution_clock::now();
+    read_protobuf_file("./protobins/15.data", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
-    // begin = chrono::high_resolution_clock::now();
-    // write_xml_file("./protobins/1037.xml", &marker_categories, &parsed_pois);
-    // end = chrono::high_resolution_clock::now();
-    // dur = end - begin;
-    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    // cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+    begin = chrono::high_resolution_clock::now();
+    write_xml_file("./protobins/15.xml", &marker_categories, &parsed_pois);
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     return 0;
-}
+    }
