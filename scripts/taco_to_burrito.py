@@ -6,6 +6,7 @@ import shutil
 from typing import *
 import json
 import sys
+from enum import Enum
 
 output_dir = ""
 
@@ -32,25 +33,30 @@ def main():
             convert_markers(full_path, target_path)
 
 ################################################################################
-# Quick error printing logic that only prints the title of a section if there
-# are any errors in it. Could be handled better by returning errors from the
-# function but that is more work to implement then this is.
+# Quick error printing logic
 ################################################################################
-eprint_title: str = ""
-eprint_trigger: bool = False
-def set_eprint_title(title: str):
-    global eprint_title
-    global eprint_trigger
-    eprint_title = title
-    eprint_trigger = False
-def eprint(*args, **kwargs):
-    global eprint_trigger
-    if not eprint_trigger:
-        eprint_trigger = True
-        print(eprint_title)
-    print("   ", *args, **kwargs)
-
-
+error_location = ""
+class ErrorType(Enum):
+    INFO = 0
+    WARNING = 1
+    ERROR = 2
+    
+def eprint(*args):
+    error_level = ErrorType.WARNING
+    for arg in list(args):
+        if(type(arg) == ErrorType):
+            error_level = arg
+            
+    print(error_level.name + " in file \"" + error_location + "\": ")
+    for arg in list(args):
+        if(type(arg) != ErrorType):
+            print("    " + str(arg))
+    print()
+    
+    if(error_level == ErrorType.ERROR):
+        print("Fatal error, exiting.")
+        exit()
+            
 ################################################################################
 #
 ################################################################################
@@ -77,7 +83,6 @@ def parse_marker_category(marker_category_node, base=""):
         "trailScale", # Ignored
         "scaleOnMapWithZoom", # Ignored
     ])
-
 
     metadata_tree = {}
 
@@ -125,11 +130,17 @@ def parse_marker_category(marker_category_node, base=""):
 # 
 ################################################################################
 def convert_markers(xml_path: str, output_dir: str):
-    set_eprint_title(xml_path)
-    # print(xml_path)
-    tree = ET.parse(xml_path)
-    root = tree.getroot()
-
+    global error_location
+    error_location = str(xml_path)
+    try:
+        tree = ET.parse(xml_path)
+    except Exception as e:
+        eprint(ErrorType.ERROR, "Error trying to parse XML, likely incorrectly formatted:", str(e))
+        
+    else:
+        root = tree.getroot()
+    
+    # warnings
     if root.tag != "OverlayData":
         eprint("Root not OverlayData", root.tag)
 
@@ -145,36 +156,17 @@ def convert_markers(xml_path: str, output_dir: str):
     else:
         marker_metadata = parse_marker_category(root[0])
 
-    # print(marker_metadata)
-
     if root[1].tag != "POIs":
         eprint("Second element of root is {} not POIs".format(root[1].tag))
     else:
         burrito_marker_data = parse_icons_and_paths(root[1], marker_metadata, os.path.dirname(xml_path))
 
-
     with open(os.path.join(output_dir, os.path.basename(xml_path)[:-4] + ".json"), 'w') as f:
         json.dump(burrito_marker_data, f)
 
-    # return burrito_marker_data
-    # print(marker_metadata)
-
-
-
-
-# class icon():
-
-
-# class path():
-
-# @dataclass
-# class mapdata():
-#     icons: List[icon]
-#     paths: List[path]
 
 def aprox_zero(a:float):
     return abs(a) <= 1e-09
-
 
 def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
 
@@ -320,8 +312,6 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
 
     return burrito_marker_data
 
-
-
 image_names = {}
 
 def copyimage(image_path):
@@ -351,7 +341,6 @@ def copyimage(image_path):
 
     return new_name
 
-
 def open_trail_format(trl_path: str) -> Tuple[int, List[float]]:
     with open(trl_path, 'rb') as f:
         file_bytes = f.read()
@@ -368,7 +357,6 @@ def open_trail_format(trl_path: str) -> Tuple[int, List[float]]:
         points.append([pointx, pointy, pointz])
 
     return map_id, points
-
 
 if __name__ == "__main__":
     main()
