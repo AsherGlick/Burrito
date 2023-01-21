@@ -7,6 +7,7 @@ from typing import *
 import json
 import sys
 from enum import Enum
+from tabulate import tabulate
 
 output_dir = ""
 
@@ -17,7 +18,10 @@ def main():
     if len(sys.argv) != 3:
         print(f"USAGE: {sys.argv[0]} SRC_DIR DEST_DIR")
         sys.exit(1)
-
+        
+    global error_in_new_file
+    global files_with_errors
+    global error_total
     global source_path
     global target_path
 
@@ -30,33 +34,51 @@ def main():
     for file in os.scandir(source_path):
         if(file.name.endswith(".xml")):
             full_path: str = os.path.join(source_path, file.name)
+            error_in_new_file = True
             convert_markers(full_path, target_path)
+            
+    print_error_stats()
 
 ################################################################################
 # Quick error printing logic
 ################################################################################
 error_location = ""
+error_in_new_file: bool = True
+error_total = 0
+files_with_errors = list()
+
 class ErrorType(Enum):
     INFO = 0
     WARNING = 1
     ERROR = 2
     
-def eprint(*args):
-    error_level = ErrorType.WARNING
-    for arg in list(args):
-        if(type(arg) == ErrorType):
-            error_level = arg
-            
-    print(error_level.name + " in file \"" + error_location + "\": ")
+def eprint(*args, error_level = ErrorType.WARNING):
+    global error_in_new_file
+    global error_total
+    error_total += 1
+    
+    if error_in_new_file:
+        print(error_level.name + " in file \"" + error_location + "\": ")
+        files_with_errors.append(error_location)
+        error_in_new_file = False
+
     for arg in list(args):
         if(type(arg) != ErrorType):
             print("    " + str(arg))
-    print()
+    print("    Skipping file...", end="\n\n")
     
     if(error_level == ErrorType.ERROR):
         print("Fatal error, exiting.")
         exit()
-            
+
+def print_error_stats():
+    global error_total
+    global files_with_errors
+    print("Conversion finished, found " + str(error_total) + " errors in " + str(len(files_with_errors)) + " files:\n    ")
+    for file in files_with_errors:
+        print(str(file))
+    
+        
 ################################################################################
 #
 ################################################################################
@@ -114,7 +136,6 @@ def parse_marker_category(marker_category_node, base=""):
     if "texture" in attribs:
         limited_attribs["texture"] = attribs["texture"]
 
-
     name = attribs["name"]
 
     metadata_tree[base + name] = limited_attribs
@@ -131,12 +152,13 @@ def parse_marker_category(marker_category_node, base=""):
 ################################################################################
 def convert_markers(xml_path: str, output_dir: str):
     global error_location
+    
     error_location = str(xml_path)
+    
     try:
         tree = ET.parse(xml_path)
     except Exception as e:
-        eprint(ErrorType.ERROR, "Error trying to parse XML, likely incorrectly formatted:", str(e))
-        
+        eprint("Error trying to parse XML, likely incorrectly formatted:", str(e), error_level=ErrorType.ERROR)
     else:
         root = tree.getroot()
     
@@ -151,7 +173,7 @@ def convert_markers(xml_path: str, output_dir: str):
         eprint("Root has {} children instead of the expected 2".format(len(root)))
         return
 
-    if root[0].tag != "MarkerCategory":
+    if root[0].tag != "MarkerCatego6ry":
         eprint("First element of root is {} not MarkerCategory".format(root[0].tag))
     else:
         marker_metadata = parse_marker_category(root[0])
