@@ -65,28 +65,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// create_proto_categories
-//
-// Fills a set of the names of categories for validation purposes
-// eg.
-// {
-//     "mypath",
-//     "easypath",
-//     "trail",
-//     "hardpath",
-// }
-////////////////////////////////////////////////////////////////////////////////
-void create_proto_categories(waypoint::Category proto_category, set<string>* proto_categories) {
-    proto_categories->insert(lowercase(proto_category.name()));
-    for (int i = 0; i < proto_category.children_size(); i++) {
-        create_proto_categories(proto_category.children(i), proto_categories);
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// remove_proto_child
-//
-// Compares the relative name of the category against a set of the names of POIS
+// Adds the name of a category and all of its children to a setgit 
 // eg.
 // {
 //     "mypath",
@@ -95,6 +74,37 @@ void create_proto_categories(waypoint::Category proto_category, set<string>* pro
 //     "mypath.hardpath",
 //     "mypath.hardpath.trail",
 // }
+////////////////////////////////////////////////////////////////////////////////
+void add_children_names(waypoint::Category proto_category, set<string>* proto_categories, string parent_name) {
+    string name = parent_name + "." + lowercase(proto_category.name());
+    proto_categories->insert(name);
+    for (int i = 0; i < proto_category.children_size(); i++) {
+        add_children_names(proto_category.children(i), proto_categories, name);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Adds the name of a category and all of it's parents to a set
+////////////////////////////////////////////////////////////////////////////////
+void add_parent_names(string category_name, set<string> proto_categories, set<string>* category_includes) {
+    auto category = proto_categories.find(category_name);
+    if (category == proto_categories.end()) {
+        cout << "Unknown MarkerCategory " << category_name << endl;
+    }
+    else {
+        string name;
+        vector<string> split_categories = split(category_name, ".");
+        for (unsigned int j = 0; j < split_categories.size(); j++) {
+            name += split_categories[j];
+            category_includes->insert(name);
+            name += ".";
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Iterates through all children of a Category and removes those that do not
+// have POIs with corresponding names
 ////////////////////////////////////////////////////////////////////////////////
 void remove_proto_child(waypoint::Category* proto_category, set<string> category_includes, string parent_name) {
     int keep = 0;
@@ -121,15 +131,15 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         cout << "Error making ./protobins" << endl;
         throw std::error_code();
     }
-    // Converts map<string, Category> to a Waypoint::Category
+    // Collects a set of category names and their children
     waypoint::Waypoint all_categories;
     std::set<string> proto_categories;
     for (const auto& category : *marker_categories) {
         waypoint::Category proto_category = category.second.as_protobuf();
         all_categories.add_category()->CopyFrom(proto_category);
-        create_proto_categories(proto_category, &proto_categories);
+        add_children_names(proto_category, &proto_categories, proto_category.name());
     }
-    // Collects a set of map ids from vector<Parseable*>
+    // Collects a set of map ids from Icon and Trail data
     std::set<int> map_ids;
     for (const auto& parsed_poi : *parsed_pois) {
         if (parsed_poi->classname() == "POI") {
@@ -147,58 +157,29 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         ofstream outfile;
         string output_filepath = proto_filepath + "/" + to_string(map_id) + ".data";
         outfile.open(output_filepath, ios::out | ios::binary);
-        output_message.CopyFrom(all_categories);
+        output_message.MergeFrom(all_categories);
 
         for (const auto& parsed_poi : *parsed_pois) {
             if (parsed_poi->classname() == "POI") {
                 Icon* icon = dynamic_cast<Icon*>(parsed_poi);
                 if (icon->map_id == map_id) {
-                    waypoint::Icon proto_icon = icon->as_protobuf();
-                    vector<string> split_categories = split(proto_icon.category().name(), ".");
-                    auto category = proto_categories.find(lowercase(split_categories[split_categories.size() - 1]));
-                    if (category == proto_categories.end()) {
-                        cout << "Unknown MarkerCategory " << proto_icon.category().name() << endl;
-                    }
-                    else {
-                        // This loop adds the name of the category and all of it's parents
-                        string name;
-                        for (unsigned int j = 0; j < split_categories.size(); j++) {
-                            name += split_categories[j];
-                            category_includes.insert(name);
-                            name += ".";
-                        }
-                    }
-                    output_message.add_icon()->CopyFrom(proto_icon);
+                    add_parent_names(icon->category.category, proto_categories, &category_includes);
+                    output_message.add_icon()->MergeFrom(icon->as_protobuf());
                 }
             }
             else if (parsed_poi->classname() == "Trail") {
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
                 if (trail->map_id == map_id) {
-                    waypoint::Trail proto_trail = trail->as_protobuf();
-                    vector<string> split_categories = split(proto_trail.category().name(), ".");
-                    auto category = proto_categories.find(lowercase(split_categories[split_categories.size() - 1]));
-                    if (category == proto_categories.end()) {
-                        cout << "Unknown MarkerCategory " << proto_trail.category().name() << endl;
-                    }
-                    else {
-                        // This loop adds the name of the category and all of it's parents
-                        string name;
-                        for (unsigned int j = 0; j < split_categories.size(); j++) {
-                            name += split_categories[j];
-                            category_includes.insert(name);
-                            name += ".";
-                        }
-                    }
-                    output_message.add_trail()->CopyFrom(proto_trail);
+                    add_parent_names(trail->category.category, proto_categories, &category_includes);
+                    output_message.add_trail()->MergeFrom(trail->as_protobuf());
                 }
             }
         }
-        // In the XML, Marker_Categories is a tree hierarchy while
-        // POIS have a flat hierarchy.
-        // This is preserved in the protobuf for ease of translation.
-        // We are doing a removal instead of an insertion because each parent
-        // category contains the data for all of its children.
-        // It would be impractical to include all of the data from each category
+        // In the XML, MarkerCategories have a tree hierarchy while POIS have a
+        // flat hierarchy. This is preserved in the protobuf for ease of
+        // translation. We are doing a removal instead of an insertion because
+        // each parent category contains the data for all of its children. It
+        // would be impractical to include all of the data from each category
         // except for the children and then iterating over all the children.
         // This pruning method is slower but ensures that information is kept.
         for (int i = 0; i < output_message.category_size(); i++) {
