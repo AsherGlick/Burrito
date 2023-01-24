@@ -65,7 +65,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Adds the name of a category and all of its children to a setgit 
+// Adds the name of a category and all of its children to a set
 // eg.
 // {
 //     "mypath",
