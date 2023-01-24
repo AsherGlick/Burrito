@@ -15,6 +15,7 @@
 #include <utility>
 #include <vector>
 
+#include "attribute/marker_category.hpp" 
 #include "category_gen.hpp"
 #include "icon_gen.hpp"
 #include "parseable.hpp"
