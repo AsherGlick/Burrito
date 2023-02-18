@@ -31,9 +31,9 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->achievement_id_is_set = true;
     }
     else if (attributename == "alpha") {
-        this->alpha = parse_float(attribute, errors);
+        this->color.alpha = parse_float(attribute, errors);
         this->alpha_is_set = true;
-    }
+    }    
     else if (attributename == "animspeed") {
         this->animation_speed = parse_float(attribute, errors);
         this->animation_speed_is_set = true;
@@ -186,7 +186,7 @@ vector<string> Trail::as_xml() const {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
     }
     if (this->alpha_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->alpha) + "\"");
+        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
     }
     if (this->animation_speed_is_set) {
         xml_node_contents.push_back(" AnimSpeed=\"" + stringify_float(this->animation_speed) + "\"");
@@ -275,9 +275,6 @@ waypoint::Trail Trail::as_protobuf() const {
     if (this->achievement_id_is_set) {
         proto_trail.set_achievement_id(this->achievement_id);
     }
-    if (this->alpha_is_set) {
-        proto_trail.set_alpha(this->alpha);
-    }
     if (this->animation_speed_is_set) {
         proto_trail.set_animation_speed(this->animation_speed);
     }
@@ -288,7 +285,12 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_category(to_proto_marker_category(this->category));
     }
     if (this->color_is_set) {
-        proto_trail.set_allocated_color(to_proto_color(this->color));
+        if (this->alpha_is_set){
+            proto_trail.set_allocated_rgba(to_proto_color(this->color, this->color.alpha));
+        }
+        else{
+            proto_trail.set_allocated_rgba(to_proto_color(this->color, 1.0));
+        }
     }
     if (this->cull_chirality_is_set) {
         proto_trail.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
@@ -365,10 +367,6 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->achievement_id = proto_trail.achievement_id();
         this->achievement_id_is_set = true;
     }
-    if (proto_trail.alpha() != 0) {
-        this->alpha = proto_trail.alpha();
-        this->alpha_is_set = true;
-    }
     if (proto_trail.animation_speed() != 0) {
         this->animation_speed = proto_trail.animation_speed();
         this->animation_speed_is_set = true;
@@ -381,9 +379,10 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->category = from_proto_marker_category(proto_trail.category());
         this->category_is_set = true;
     }
-    if (proto_trail.has_color()) {
-        this->color = from_proto_color(proto_trail.color());
+    if (proto_trail.has_rgba()) {
+        this->color = from_proto_color(proto_trail.rgba());
         this->color_is_set = true;
+        this->alpha_is_set = true;
     }
     if (proto_trail.cull_chirality() != 0) {
         this->cull_chirality = from_proto_cull_chirality(proto_trail.cull_chirality());

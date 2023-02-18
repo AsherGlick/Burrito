@@ -19,7 +19,7 @@ message Category {
 
 message Icon {
     Category category = 1;
-    Texture texture = 2;
+    TexturePath texture = 2;
     GUID guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
@@ -31,7 +31,6 @@ message Icon {
 
     fixed32 achievement_bit = 16;
     int32 achievement_id = 17;
-    float alpha = 18;
     bool can_fade = 19;
     int32 minimum_size_on_screen = 20;
     int32 map_display_size = 21;
@@ -39,7 +38,7 @@ message Icon {
     bool scale_on_map_with_zoom = 23;
     string tip_description = 24;
     string tip_name = 25;
-    Color color = 26;    
+    RGBA rgba = 26;    
     FestivalFilter festival_filter = 27;
     MapTypeFilter map_type_filter = 28;
     MountFilter mount_filter = 29;
@@ -58,7 +57,7 @@ message Icon {
 
 message Trail {
     Category category = 1;
-    Texture texture = 2;
+    TexturePath texture = 2;
     GUID guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
@@ -68,11 +67,10 @@ message Trail {
 
     fixed32 achievement_bit = 16;
     int32 achievement_id = 17;
-    float alpha = 18;
     bool can_fade = 19; 
     bool is_wall = 20;
     float scale = 21;
-    Color color = 22;
+    RGBA rgba = 22;
     FestivalFilter festival_filter = 23;
     MapTypeFilter map_type_filter = 24;
     MountFilter mount_filter = 25;
@@ -89,7 +87,7 @@ message Trail {
     float bhdraft__schedule_duration = 2053;
 }
     
-message Texture {
+message TexturePath {
     string path = 1;
 }
     
@@ -127,8 +125,8 @@ message GUID {
     bytes guid = 1;
 }
 
-message Color {
-    string hex = 1;
+message RGBA {
+    int32 rgba = 1;
 }
 
 enum CullChirality {
@@ -300,5 +298,8 @@ message SpeciesFilter {
 
 message TrailData {
     string trail_data = 1;
+    repeated float points_x = 2;
+    repeated float points_y = 3;
+    repeated float points_z = 4;
 }
 

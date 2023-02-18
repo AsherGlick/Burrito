@@ -5,7 +5,7 @@ var peers = []
 
 var map_id:int = 0
 
-
+var Waypoint = preload("res://waypoint.gd")
 var map_is_open: bool
 var compass_is_top_right: bool
 
@@ -226,18 +226,18 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var old_map_id = self.map_id
 	self.map_id  = spb.get_32()
 
-	var x11_window_id_gw2 = spb.get_32()
-	if !is_transient:
-		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
+	#var x11_window_id_gw2 = spb.get_32()
+	#if !is_transient:
+	#	is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
 
-	var size = Vector2(800, 600)
+	var size = Vector2(1920, 1800)
 	if Settings.override_size_enabled:
 		size.x = Settings.override_size_width
 		size.y = Settings.override_size_height
-	else:
-		var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
-		size.x = size_tuple[0]
-		size.y = size_tuple[1]
+	#else:
+		#var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
+	#	size.x = size_tuple[0]
+	#	size.y = size_tuple[1]
 	OS.window_size = size
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
@@ -255,9 +255,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
-		
+		load_waypoint_markers(self.map_id)
 		print("Saving Old Map")
-		self.markerdata[str(old_map_id)] = data_from_renderview()
+		#self.markerdata[str(old_map_id)] = data_from_renderview()
 		print("Loading New Map")
 		gen_map_markers()
 
@@ -287,35 +287,35 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
-var markerdata = waypoint.Waypoint.new()
+var markerdata = Waypoint.Waypoint.new()
 var marker_file_path = ""
 func load_taco_markers(marker_file):
 	self.marker_file_path = marker_file
 	
-	if is_xml_file(marker_json_file):
-		print("Loading XML file from path ", marker_file)
-		var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_file)
-		var json_payload = parsed_taco_tuple[0]
-		var error_message = parsed_taco_tuple[1]
-		if error_message != "":
-			print("XML parsing failed with error message: ", error_message)
-		self.markerdata = JSON.parse(json_payload).result
+	#if is_xml_file(marker_file):
+		#print("Loading XML file from path ", marker_file)
+		#var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_file)
+		#var json_payload = parsed_taco_tuple[0]
+		#var error_message = parsed_taco_tuple[1]
+		#if error_message != "":
+		#	print("XML parsing failed with error message: ", error_message)
+		#self.markerdata = JSON.parse(json_payload).result
 	# else:
 	# 	print("Loading Json file from path ", marker_json_file)
 	# 	var file = File.new()
 	# 	file.open(marker_json_file, file.READ)
 	# 	var text = file.get_as_text()
 	# 	self.markerdata = JSON.parse(text).result
-	else: #$$$COVERT TO PROTO$$$
-		print("Loading protobuf file from path ", marker_file)
-		var file = File.new()
-		file.open(marker_file, file.READ)
-		var data = file.get_buffer()
-		self.markerdata.from_bytes(data)
-		if result_code == waypoint.PB_ERR.NO_ERRORS:
-			print("OK")
-		else:
-			return
+	#else: #$$$COVERT TO PROTO$$$
+	print("Loading protobuf file from path ", marker_file)
+	var file = File.new()
+	file.open(marker_file, file.READ)
+	var data = file.get_buffer(file.get_len())
+	self.markerdata.from_bytes(data)
+	if !Waypoint.PB_ERR.NO_ERRORS:
+		print("OK")
+	else:
+		print(Waypoint.PB_ERR)
 	
 	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
 
@@ -325,17 +325,14 @@ func is_xml_file(input_file):
 	return input_file.split(".")[-1] == "xml"
 
 func relative_textures_to_absolute_textures(marker_file_dir):
-	var icons = markerdata.get_icon()
-	for icon in icons:
+	for icon in self.markerdata.get_icon():
 		var texture = icon.get_texture()
 		if !texture.get_path().is_abs_path():
-			icon.set_path() = marker_file_dir + "/" + icon.get_path()
-		#print("ABS", icon["texture"])
-	var paths = markerdata.get_trail()
-	for path in paths:
+			texture.set_path(marker_file_dir + "/" + texture.get_path())
+	for path in self.markerdata.get_trail():
 		var texture = path.get_texture()
 		if !texture.get_path().is_abs_path():
-			path.set_path() = marker_file_dir + "/" + path.get_path()
+			texture.set_path(marker_file_dir + "/" + texture.get_path())
 
 
 var route_scene = load("res://Route.tscn")
@@ -430,14 +427,21 @@ func gen_map_markers():
 		icon.queue_free()
 
 	# Load the data from the markers $$$COVERT TO PROTO$$$
-	var paths = markerdata.get_trail()
-	for path in paths:
-		gen_new_path(path["points"], path["texture"])
-	var icons = markerdata.get_icon()
-	for icon in icons:
+	for path in self.markerdata.get_trail():
+		var path_points := PoolVector3Array()
+		var trail_data = path.get_trail_data()
+		if trail_data.get_points_x().size() > 0:
+			print("trail data contains ", trail_data.get_points_x().size())
+			for index in range(0, trail_data.get_points_x().size()):
+				path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
+		gen_new_path(path_points, path.get_texture().get_path())
+	for icon in self.markerdata.get_icon():
 		var position = icon.get_position()
+		if position == null:
+			#print("Warning: Position Not Found")
+			continue
 		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
-		gen_new_icon(position_vector, icon.get_path())
+		gen_new_icon(position_vector, icon.get_texture().get_path())
 
 func gen_new_path(points: Array, texture_path: String):
 	var points_2d: PoolVector2Array = [] 
@@ -771,7 +775,7 @@ func _on_SnapSelectedToPlayer_pressed():
 	self.currently_selected_node.translation.x = self.player_position.x
 	self.currently_selected_node.translation.z = -self.player_position.z
 	self.currently_selected_node.translation.y = self.player_position.y
-
+	print(self.player_position.x, " ", -self.player_position.z, " ",self.player_position.y)
 
 func _on_SetActivePath_pressed():
 	if self.currently_selected_node.point_type == "icon":

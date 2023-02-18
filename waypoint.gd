@@ -922,11 +922,6 @@ class Icon:
 		service.field = _achievement_id
 		data[_achievement_id.tag] = service
 		
-		_alpha = PBField.new("alpha", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 18, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _alpha
-		data[_alpha.tag] = service
-		
 		_can_fade = PBField.new("can_fade", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
 		service.field = _can_fade
@@ -962,11 +957,11 @@ class Icon:
 		service.field = _tip_name
 		data[_tip_name.tag] = service
 		
-		_color = PBField.new("color", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 26, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_rgba = PBField.new("rgba", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 26, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
-		service.field = _color
-		service.func_ref = funcref(self, "new_color")
-		data[_color.tag] = service
+		service.field = _rgba
+		service.func_ref = funcref(self, "new_rgba")
+		data[_rgba.tag] = service
 		
 		_festival_filter = PBField.new("festival_filter", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 27, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -1052,13 +1047,13 @@ class Icon:
 		return _category.value
 	
 	var _texture: PBField
-	func get_texture() -> Texture:
+	func get_texture() -> TexturePath:
 		return _texture.value
 	func clear_texture() -> void:
 		data[2].state = PB_SERVICE_STATE.UNFILLED
 		_texture.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_texture() -> Texture:
-		_texture.value = Texture.new()
+	func new_texture() -> TexturePath:
+		_texture.value = TexturePath.new()
 		return _texture.value
 	
 	var _guid: PBField
@@ -1155,15 +1150,6 @@ class Icon:
 	func set_achievement_id(value : int) -> void:
 		_achievement_id.value = value
 	
-	var _alpha: PBField
-	func get_alpha() -> float:
-		return _alpha.value
-	func clear_alpha() -> void:
-		data[18].state = PB_SERVICE_STATE.UNFILLED
-		_alpha.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_alpha(value : float) -> void:
-		_alpha.value = value
-	
 	var _can_fade: PBField
 	func get_can_fade() -> bool:
 		return _can_fade.value
@@ -1227,15 +1213,15 @@ class Icon:
 	func set_tip_name(value : String) -> void:
 		_tip_name.value = value
 	
-	var _color: PBField
-	func get_color() -> Color:
-		return _color.value
-	func clear_color() -> void:
+	var _rgba: PBField
+	func get_rgba() -> RGBA:
+		return _rgba.value
+	func clear_rgba() -> void:
 		data[26].state = PB_SERVICE_STATE.UNFILLED
-		_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_color() -> Color:
-		_color.value = Color.new()
-		return _color.value
+		_rgba.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_rgba() -> RGBA:
+		_rgba.value = RGBA.new()
+		return _rgba.value
 	
 	var _festival_filter: PBField
 	func get_festival_filter() -> FestivalFilter:
@@ -1439,11 +1425,6 @@ class Trail:
 		service.field = _achievement_id
 		data[_achievement_id.tag] = service
 		
-		_alpha = PBField.new("alpha", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 18, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _alpha
-		data[_alpha.tag] = service
-		
 		_can_fade = PBField.new("can_fade", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
 		service.field = _can_fade
@@ -1459,11 +1440,11 @@ class Trail:
 		service.field = _scale
 		data[_scale.tag] = service
 		
-		_color = PBField.new("color", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_rgba = PBField.new("rgba", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
-		service.field = _color
-		service.func_ref = funcref(self, "new_color")
-		data[_color.tag] = service
+		service.field = _rgba
+		service.func_ref = funcref(self, "new_rgba")
+		data[_rgba.tag] = service
 		
 		_festival_filter = PBField.new("festival_filter", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 23, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -1549,13 +1530,13 @@ class Trail:
 		return _category.value
 	
 	var _texture: PBField
-	func get_texture() -> Texture:
+	func get_texture() -> TexturePath:
 		return _texture.value
 	func clear_texture() -> void:
 		data[2].state = PB_SERVICE_STATE.UNFILLED
 		_texture.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_texture() -> Texture:
-		_texture.value = Texture.new()
+	func new_texture() -> TexturePath:
+		_texture.value = TexturePath.new()
 		return _texture.value
 	
 	var _guid: PBField
@@ -1632,15 +1613,6 @@ class Trail:
 	func set_achievement_id(value : int) -> void:
 		_achievement_id.value = value
 	
-	var _alpha: PBField
-	func get_alpha() -> float:
-		return _alpha.value
-	func clear_alpha() -> void:
-		data[18].state = PB_SERVICE_STATE.UNFILLED
-		_alpha.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_alpha(value : float) -> void:
-		_alpha.value = value
-	
 	var _can_fade: PBField
 	func get_can_fade() -> bool:
 		return _can_fade.value
@@ -1668,15 +1640,15 @@ class Trail:
 	func set_scale(value : float) -> void:
 		_scale.value = value
 	
-	var _color: PBField
-	func get_color() -> Color:
-		return _color.value
-	func clear_color() -> void:
+	var _rgba: PBField
+	func get_rgba() -> RGBA:
+		return _rgba.value
+	func clear_rgba() -> void:
 		data[22].state = PB_SERVICE_STATE.UNFILLED
-		_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_color() -> Color:
-		_color.value = Color.new()
-		return _color.value
+		_rgba.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_rgba() -> RGBA:
+		_rgba.value = RGBA.new()
+		return _rgba.value
 	
 	var _festival_filter: PBField
 	func get_festival_filter() -> FestivalFilter:
@@ -1822,7 +1794,7 @@ class Trail:
 			return PB_ERR.PARSE_INCOMPLETE
 		return result
 	
-class Texture:
+class TexturePath:
 	func _init():
 		var service
 		
@@ -2285,25 +2257,25 @@ class GUID:
 			return PB_ERR.PARSE_INCOMPLETE
 		return result
 	
-class Color:
+class RGBA:
 	func _init():
 		var service
 		
-		_hex = PBField.new("hex", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
+		_rgba = PBField.new("rgba", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
 		service = PBServiceField.new()
-		service.field = _hex
-		data[_hex.tag] = service
+		service.field = _rgba
+		data[_rgba.tag] = service
 		
 	var data = {}
 	
-	var _hex: PBField
-	func get_hex() -> String:
-		return _hex.value
-	func clear_hex() -> void:
+	var _rgba: PBField
+	func get_rgba() -> int:
+		return _rgba.value
+	func clear_rgba() -> void:
 		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_hex.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
-	func set_hex(value : String) -> void:
-		_hex.value = value
+		_rgba.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+	func set_rgba(value : int) -> void:
+		_rgba.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -4293,6 +4265,21 @@ class TrailData:
 		service.field = _trail_data
 		data[_trail_data.tag] = service
 		
+		_points_x = PBField.new("points_x", PB_DATA_TYPE.FLOAT, PB_RULE.REPEATED, 2, true, [])
+		service = PBServiceField.new()
+		service.field = _points_x
+		data[_points_x.tag] = service
+		
+		_points_y = PBField.new("points_y", PB_DATA_TYPE.FLOAT, PB_RULE.REPEATED, 3, true, [])
+		service = PBServiceField.new()
+		service.field = _points_y
+		data[_points_y.tag] = service
+		
+		_points_z = PBField.new("points_z", PB_DATA_TYPE.FLOAT, PB_RULE.REPEATED, 4, true, [])
+		service = PBServiceField.new()
+		service.field = _points_z
+		data[_points_z.tag] = service
+		
 	var data = {}
 	
 	var _trail_data: PBField
@@ -4303,6 +4290,33 @@ class TrailData:
 		_trail_data.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
 	func set_trail_data(value : String) -> void:
 		_trail_data.value = value
+	
+	var _points_x: PBField
+	func get_points_x() -> Array:
+		return _points_x.value
+	func clear_points_x() -> void:
+		data[2].state = PB_SERVICE_STATE.UNFILLED
+		_points_x.value = []
+	func add_points_x(value : float) -> void:
+		_points_x.value.append(value)
+	
+	var _points_y: PBField
+	func get_points_y() -> Array:
+		return _points_y.value
+	func clear_points_y() -> void:
+		data[3].state = PB_SERVICE_STATE.UNFILLED
+		_points_y.value = []
+	func add_points_y(value : float) -> void:
+		_points_y.value.append(value)
+	
+	var _points_z: PBField
+	func get_points_z() -> Array:
+		return _points_z.value
+	func clear_points_z() -> void:
+		data[4].state = PB_SERVICE_STATE.UNFILLED
+		_points_z.value = []
+	func add_points_z(value : float) -> void:
+		_points_z.value.append(value)
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)

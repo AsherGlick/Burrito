@@ -31,9 +31,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->achievement_id_is_set = true;
     }
     else if (attributename == "alpha") {
-        this->alpha = parse_float(attribute, errors);
+        this->color.alpha = parse_float(attribute, errors);
         this->alpha_is_set = true;
-    }
+    }    
     else if (attributename == "autotrigger") {
         this->auto_trigger = parse_bool(attribute, errors);
         this->auto_trigger_is_set = true;
@@ -255,40 +255,40 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->trigger_range_is_set = true;
     }
     else if (attributename == "xpos") {
-        this->x_position = parse_float(attribute, errors);
-        this->x_position_is_set = true;
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "positionx") {
-        this->x_position = parse_float(attribute, errors);
-        this->x_position_is_set = true;
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "rotatex") {
-        this->x_rotation = parse_float(attribute, errors);
-        this->x_rotation_is_set = true;
+        this->euler_rotation.x_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
     }
     else if (attributename == "ypos") {
-        this->y_position = parse_float(attribute, errors);
-        this->y_position_is_set = true;
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "positiony") {
-        this->y_position = parse_float(attribute, errors);
-        this->y_position_is_set = true;
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "rotatey") {
-        this->y_rotation = parse_float(attribute, errors);
-        this->y_rotation_is_set = true;
+        this->euler_rotation.y_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
     }
     else if (attributename == "zpos") {
-        this->z_position = parse_float(attribute, errors);
-        this->z_position_is_set = true;
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "positionz") {
-        this->z_position = parse_float(attribute, errors);
-        this->z_position_is_set = true;
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "rotatez") {
-        this->z_rotation = parse_float(attribute, errors);
-        this->z_rotation_is_set = true;
+        this->euler_rotation.z_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
     }
     else {
         return false;
@@ -313,7 +313,7 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
     }
     if (this->alpha_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->alpha) + "\"");
+        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
     }
     if (this->auto_trigger_is_set) {
         xml_node_contents.push_back(" AutoTrigger=\"" + stringify_bool(this->auto_trigger) + "\"");
@@ -447,14 +447,14 @@ vector<string> Icon::as_xml() const {
     if (this->trigger_range_is_set) {
         xml_node_contents.push_back(" TriggerRange=\"" + stringify_float(this->trigger_range) + "\"");
     }
-    if (this->x_position_is_set) {
-        xml_node_contents.push_back(" XPos=\"" + to_string(this->x_position) + "\"");
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" XPos=\"" + to_string(this->position.x_position) + "\"");
     }
-    if (this->y_position_is_set) {
-        xml_node_contents.push_back(" YPos=\"" + to_string(this->y_position) + "\"");
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" YPos=\"" + to_string(this->position.y_position) + "\"");
     }
-    if (this->z_position_is_set) {
-        xml_node_contents.push_back(" ZPos=\"" + to_string(this->z_position) + "\"");
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" ZPos=\"" + to_string(this->position.z_position) + "\"");
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;
@@ -468,9 +468,6 @@ waypoint::Icon Icon::as_protobuf() const {
     }
     if (this->achievement_id_is_set) {
         proto_icon.set_achievement_id(this->achievement_id);
-    }
-    if (this->alpha_is_set) {
-        proto_icon.set_alpha(this->alpha);
     }
     if (this->auto_trigger_is_set) {
         if (trigger == nullptr) {
@@ -503,7 +500,12 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_category(to_proto_marker_category(this->category));
     }
     if (this->color_is_set) {
-        proto_icon.set_allocated_color(to_proto_color(this->color));
+        if (this->alpha_is_set){
+            proto_icon.set_allocated_rgba(to_proto_color(this->color, this->color.alpha));
+        }
+        else{
+            proto_icon.set_allocated_rgba(to_proto_color(this->color, 1.0));
+        }
     }
     if (this->copy_clipboard_is_set) {
         if (trigger == nullptr) {
@@ -668,10 +670,6 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->achievement_id = proto_icon.achievement_id();
         this->achievement_id_is_set = true;
     }
-    if (proto_icon.alpha() != 0) {
-        this->alpha = proto_icon.alpha();
-        this->alpha_is_set = true;
-    }
     if (trigger.auto_trigger() != 0) {
         this->auto_trigger = trigger.auto_trigger();
         this->auto_trigger_is_set = true;
@@ -696,9 +694,10 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->category = from_proto_marker_category(proto_icon.category());
         this->category_is_set = true;
     }
-    if (proto_icon.has_color()) {
-        this->color = from_proto_color(proto_icon.color());
+    if (proto_icon.has_rgba()) {
+        this->color = from_proto_color(proto_icon.rgba());
         this->color_is_set = true;
+        this->alpha_is_set = true;
     }
     if (trigger.action_copy_clipboard() != "") {
         this->copy_clipboard = trigger.action_copy_clipboard();

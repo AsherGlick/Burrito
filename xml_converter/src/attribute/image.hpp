@@ -7,7 +7,7 @@
 
 class XMLError;
 namespace waypoint {
-class Texture;
+class TexturePath;
 }
 
 class Image {
@@ -19,6 +19,6 @@ Image parse_image(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* erro
 
 std::string stringify_image(Image attribute_value);
 
-waypoint::Texture* to_proto_image(Image attribute_value);
+waypoint::TexturePath* to_proto_image(Image attribute_value);
 
-Image from_proto_image(waypoint::Texture attribute_value);
+Image from_proto_image(waypoint::TexturePath attribute_value);

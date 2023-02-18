@@ -2,7 +2,7 @@ from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
 import yaml
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple, Set
+from typing import Any, Dict, List, Tuple, Set, Optional
 import os
 import markdown
 from dataclasses import dataclass, field
@@ -287,7 +287,7 @@ class AttributeVariable:
     protobuf_field: str
     default_xml_fields: List[str] = field(default_factory=list)
     xml_export: str = ""
-    is_child: bool = False
+    compound_name: Optional[str] = None
     is_trigger: bool = False
 
 
@@ -502,7 +502,7 @@ class Generator:
                             default_xml_fields=component_default_xml_fields,
                             xml_export=xml_export,
                             protobuf_field=component["protobuf_field"],
-                            is_child=True,
+                            compound_name=lowercase(fieldval['name'], delimiter="_"),
                         )
                         attribute_variables.append(component_attribute_variable)
 

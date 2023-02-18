@@ -458,7 +458,7 @@ vector<string> get_xml_files(string directory) {
 }
 
 void convert_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    string data = "rsync -a " + directory + "/Data ./";
+    string data = "rsync -a " + directory + "/Data ./protobins";
     system(data.c_str());
     cout << directory << endl;
     vector<string> xml_files = get_xml_files(directory);
@@ -488,8 +488,8 @@ int main() {
     map<string, Category> marker_categories;
     test_proto();
 
-    if (mkdir("./Data", 0700) == -1 && errno != EEXIST) {
-        cout << "Error making ./Data" << endl;
+    if (mkdir("./protobins/Data", 0700) == -1 && errno != EEXIST) {
+        cout << "Error making ./protobins/Data" << endl;
         throw std::error_code();
     }
 
@@ -533,14 +533,14 @@ int main() {
     marker_categories.clear();
 
     begin = chrono::high_resolution_clock::now();
-    read_protobuf_file("./protobins/15.data", &marker_categories, &parsed_pois);
+    read_protobuf_file("./protobins/50.data", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("./protobins/15.xml", &marker_categories, &parsed_pois);
+    write_xml_file("./protobins/50.xml", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();

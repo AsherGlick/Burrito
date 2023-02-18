@@ -73,12 +73,6 @@ class Icon : public Parseable {
     std::string tooltip_description;
     std::string tooltip_name;
     float trigger_range;
-    float x_position;
-    float x_rotation;
-    float y_position;
-    float y_rotation;
-    float z_position;
-    float z_rotation;
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
     bool alpha_is_set = false;
@@ -127,12 +121,6 @@ class Icon : public Parseable {
     bool tooltip_description_is_set = false;
     bool tooltip_name_is_set = false;
     bool trigger_range_is_set = false;
-    bool x_position_is_set = false;
-    bool x_rotation_is_set = false;
-    bool y_position_is_set = false;
-    bool y_rotation_is_set = false;
-    bool z_position_is_set = false;
-    bool z_rotation_is_set = false;
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);

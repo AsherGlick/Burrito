@@ -44,10 +44,15 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
         this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
-    {% elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.is_child == true) %}
+    {% elif (attribute_variable.attribute_name == "alpha") %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
+        this->color.{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
         this->{{attribute_variable.attribute_name}}_is_set = true;
+    }    
+    {% elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.compound_name != None) %}
+    else if (attributename == "{{value}}") {
+        this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
+        this->{{attribute_variable.compound_name}}_is_set = true;
     }
     {% else: %}
     else if (attributename == "{{value}}") {
@@ -78,11 +83,11 @@ vector<string> {{cpp_class}}::as_xml() const {
     xml_node_contents.push_back("<{{xml_class_name}} ");
     {% for attribute_variable in attribute_variables %}
     {% if (attribute_variable.attribute_type == "CompoundValue") %}
-    {% if (attribute_variable.xml_export == "Children" and attribute_variable.is_child == true) %}
-    if (this->{{attribute_variable.attribute_name}}_is_set) {
-        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + to_string(this->{{attribute_variable.attribute_name}}) + "\"");
+    {% if (attribute_variable.xml_export == "Children" and attribute_variable.compound_name != None) %}
+    if (this->{{attribute_variable.compound_name}}_is_set) {
+        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + to_string(this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}}) + "\"");
     }
-    {% elif (attribute_variable.xml_export == "Parent" and attribute_variable.is_child == false)%}
+    {% elif (attribute_variable.xml_export == "Parent" and attribute_variable.compound_name == None)%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
     }
@@ -94,9 +99,15 @@ vector<string> {{cpp_class}}::as_xml() const {
     }
     {% endif %}
     {% else: %}
+    {% if (attribute_variable.attribute_name == "alpha")%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->color.{{attribute_variable.attribute_name}}) + "\"");
+    }
+    {% else: %}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
     }
+    {% endif %}
     {% endif %}
 {% endfor %}
 {% if cpp_class == "Category": %}
@@ -154,11 +165,23 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
     }
-    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.is_child == false%}
+    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.compound_name == None%}
+    {% if (attribute_variable.class_name == "color")%}
+    if (this->{{attribute_variable.attribute_name}}_is_set) {
+        if (this->alpha_is_set){
+            proto_{{cpp_class_header}}.set_allocated_rgba(to_proto_color(this->color, this->color.alpha));
+        }
+        else{
+            proto_{{cpp_class_header}}.set_allocated_rgba(to_proto_color(this->color, 1.0));
+        }
+    }
+    {% else: %}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
     }
-    {% elif attribute_variable.is_child == true%}
+    {% endif %}
+    {% elif (attribute_variable.compound_name != None)%}
+    {% elif (attribute_variable.attribute_name == "alpha")%}
     {% else: %}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
@@ -214,17 +237,26 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
         this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
-    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.is_child == false%}
+    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.compound_name == None%}
+    {% if (attribute_variable.protobuf_field == "rgba")%}
+    if (proto_{{cpp_class_header}}.has_{{attribute_variable.protobuf_field}}()) {
+        this->color = from_proto_color(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
+        this->color_is_set = true;
+        this->alpha_is_set = true;
+    }
+    {% else: %}
     if (proto_{{cpp_class_header}}.has_{{attribute_variable.protobuf_field}}()) {
         this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
-    {% elif attribute_variable.is_child == true%}
-    {% elif attribute_variable.class_name == "string" %}
+    {% endif %}
+    {% elif (attribute_variable.compound_name != None) %}
+    {% elif (attribute_variable.class_name == "string") %}
     if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != "") {
         this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
+    {% elif (attribute_variable.attribute_name == "alpha")%}
     {% else: %}
     if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != 0) {
         this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
