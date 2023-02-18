@@ -255,10 +255,12 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
-		load_waypoint_markers(self.map_id)
+		
 		print("Saving Old Map")
 		#self.markerdata[str(old_map_id)] = data_from_renderview()
 		print("Loading New Map")
+		
+		load_waypoint_markers(self.map_id)
 		gen_map_markers()
 
 	# TODO move this to reset_minimap_masks
@@ -289,24 +291,29 @@ func reset_minimap_masks():
 
 var markerdata = Waypoint.Waypoint.new()
 var marker_file_path = ""
+
+func load_waypoint_markers(map_id):
+	self.marker_file_path = "res://xml_converter/protobins/" + String(map_id) + ".data"
+	print("Loading protobuf file from path ", self.marker_file_path)
+	#self.markerdata.clear_category()
+	#self.markerdata.clear_icon()
+	#self.markerdata.clear_trail()
+	self.markerdata.data = {}
+	var file = File.new()
+	file.open(self.marker_file_path, file.READ)
+	var data = file.get_buffer(file.get_len())
+	self.markerdata.from_bytes(data)
+	if !Waypoint.PB_ERR.NO_ERRORS:
+		print("OK")
+	else:
+		print(Waypoint.PB_ERR)
+	
+	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
+
+	gen_map_markers()
+
 func load_taco_markers(marker_file):
 	self.marker_file_path = marker_file
-	
-	#if is_xml_file(marker_file):
-		#print("Loading XML file from path ", marker_file)
-		#var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_file)
-		#var json_payload = parsed_taco_tuple[0]
-		#var error_message = parsed_taco_tuple[1]
-		#if error_message != "":
-		#	print("XML parsing failed with error message: ", error_message)
-		#self.markerdata = JSON.parse(json_payload).result
-	# else:
-	# 	print("Loading Json file from path ", marker_json_file)
-	# 	var file = File.new()
-	# 	file.open(marker_json_file, file.READ)
-	# 	var text = file.get_as_text()
-	# 	self.markerdata = JSON.parse(text).result
-	#else: #$$$COVERT TO PROTO$$$
 	print("Loading protobuf file from path ", marker_file)
 	var file = File.new()
 	file.open(marker_file, file.READ)
@@ -431,14 +438,12 @@ func gen_map_markers():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
 		if trail_data.get_points_x().size() > 0:
-			print("trail data contains ", trail_data.get_points_x().size())
 			for index in range(0, trail_data.get_points_x().size()):
 				path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
 		gen_new_path(path_points, path.get_texture().get_path())
 	for icon in self.markerdata.get_icon():
 		var position = icon.get_position()
 		if position == null:
-			#print("Warning: Position Not Found")
 			continue
 		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
 		gen_new_icon(position_vector, icon.get_texture().get_path())

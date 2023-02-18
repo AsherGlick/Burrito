@@ -21,6 +21,7 @@ using namespace std;
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
 // TODO(#98): Color should be saved in a better format then the raw hex string.
+// TODO: Every node that has a Hex needs an alpha but not every alpha needs Hex
 ////////////////////////////////////////////////////////////////////////////////
 Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     Color color;
@@ -47,6 +48,7 @@ string stringify_color(Color attribute_value) {
 // to_proto_color
 //
 // Converts a Color into a proto message
+// TODO: Find a way to transfer alpha when color hex is not set
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::RGBA* to_proto_color(Color attribute_value, float alpha) {
     waypoint::RGBA* rgba = new waypoint::RGBA();
