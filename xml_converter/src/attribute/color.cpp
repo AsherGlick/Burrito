@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-#include <cmath>
 #include <iosfwd>
 #include <sstream>
 #include <string>
