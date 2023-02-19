@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include <cmath>
 #include <iosfwd>
 #include <sstream>
 #include <string>
@@ -59,7 +60,7 @@ waypoint::RGBA* to_proto_color(Color attribute_value, float alpha) {
         a = 255;
     }
     else {
-        a = std::floor(alpha * 256);
+        a = (int)(alpha * 256);
     }
 
     uint32_t rgba_int = ((r & 0xff) << 24) + ((g & 0xff) << 16) + ((b & 0xff) << 8) + (a & 0xff);
