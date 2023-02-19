@@ -48,7 +48,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     else if (attributename == "{{value}}") {
         this->color.{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
         this->{{attribute_variable.attribute_name}}_is_set = true;
-    }    
+    }
     {% elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.compound_name != None) %}
     else if (attributename == "{{value}}") {
         this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
@@ -168,10 +168,10 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.compound_name == None%}
     {% if (attribute_variable.class_name == "color")%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
-        if (this->alpha_is_set){
+        if (this->alpha_is_set) {
             proto_{{cpp_class_header}}.set_allocated_rgba(to_proto_color(this->color, this->color.alpha));
         }
-        else{
+        else {
             proto_{{cpp_class_header}}.set_allocated_rgba(to_proto_color(this->color, 1.0));
         }
     }

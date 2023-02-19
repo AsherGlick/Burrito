@@ -226,18 +226,18 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	var old_map_id = self.map_id
 	self.map_id  = spb.get_32()
 
-	#var x11_window_id_gw2 = spb.get_32()
-	#if !is_transient:
-	#	is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
+	var x11_window_id_gw2 = spb.get_32()
+	if !is_transient:
+		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
 
-	var size = Vector2(1920, 1800)
+	var size = Vector2(800, 600)
 	if Settings.override_size_enabled:
 		size.x = Settings.override_size_width
 		size.y = Settings.override_size_height
-	#else:
-		#var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
-	#	size.x = size_tuple[0]
-	#	size.y = size_tuple[1]
+	else:
+		var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
+		size.x = size_tuple[0]
+		size.y = size_tuple[1]
 	OS.window_size = size
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
@@ -295,10 +295,9 @@ var marker_file_path = ""
 func load_waypoint_markers(map_id):
 	self.marker_file_path = "res://xml_converter/protobins/" + String(map_id) + ".data"
 	print("Loading protobuf file from path ", self.marker_file_path)
-	#self.markerdata.clear_category()
-	#self.markerdata.clear_icon()
-	#self.markerdata.clear_trail()
-	self.markerdata.data = {}
+	self.markerdata.clear_category()
+	self.markerdata.clear_icon()
+	self.markerdata.clear_trail()
 	var file = File.new()
 	file.open(self.marker_file_path, file.READ)
 	var data = file.get_buffer(file.get_len())

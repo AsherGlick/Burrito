@@ -33,7 +33,7 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     else if (attributename == "alpha") {
         this->color.alpha = parse_float(attribute, errors);
         this->alpha_is_set = true;
-    }    
+    }
     else if (attributename == "animspeed") {
         this->animation_speed = parse_float(attribute, errors);
         this->animation_speed_is_set = true;
@@ -285,10 +285,10 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_category(to_proto_marker_category(this->category));
     }
     if (this->color_is_set) {
-        if (this->alpha_is_set){
+        if (this->alpha_is_set) {
             proto_trail.set_allocated_rgba(to_proto_color(this->color, this->color.alpha));
         }
-        else{
+        else {
             proto_trail.set_allocated_rgba(to_proto_color(this->color, 1.0));
         }
     }

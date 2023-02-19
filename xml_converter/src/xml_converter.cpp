@@ -95,7 +95,7 @@ void remove_proto_child(waypoint::Category* proto_category, set<string> category
     proto_category->mutable_children()->DeleteSubrange(keep, proto_category->children_size() - keep);
 }
 
-void read_trail_data_file(waypoint::Trail* trail){
+void read_trail_data_file(waypoint::Trail* trail) {
     ifstream trail_data_file;
     string trail_path = "./" + trail->trail_data().trail_data();
     trail_data_file.open(trail_path, ios::in | ios::binary);
@@ -106,23 +106,23 @@ void read_trail_data_file(waypoint::Trail* trail){
     char map_id[4];
 
     trail_data_file.read(map_id, 4);
-    uint32_t map_num = *(uint32_t *)map_id;
+    uint32_t map_num = *reinterpret_cast<uint32_t*>(map_id);
     trail->set_map_id(map_num);
 
-    vector<float> points_x; 
-    vector<float> points_y; 
-    vector<float> points_z; 
+    vector<float> points_x;
+    vector<float> points_y;
+    vector<float> points_z;
 
-    while (trail_data_file.tellg() > 0) { 
+    while (trail_data_file.tellg() > 0) {
         char point_x[4];
         trail_data_file.read(point_x, 4);
-        points_x.push_back(*(float *)point_x);
+        points_x.push_back(*reinterpret_cast<float*>(point_x));
         char point_y[4];
         trail_data_file.read(point_y, 4);
-        points_y.push_back(*(float *)point_y);
+        points_y.push_back(*reinterpret_cast<float*>(point_y));
         char point_z[4];
         trail_data_file.read(point_z, 4);
-        points_z.push_back(*(float *)point_z);
+        points_z.push_back(*reinterpret_cast<float*>(point_z));
     }
 
     *trail->mutable_trail_data()->mutable_points_x() = {points_x.begin(), points_x.end()};
@@ -153,7 +153,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
     for (const auto& parsed_poi : *parsed_pois) {
         if (parsed_poi->classname() == "POI") {
             Icon* icon = dynamic_cast<Icon*>(parsed_poi);
-            if (icon->map_id_is_set){
+            if (icon->map_id_is_set) {
                 map_ids.insert(icon->map_id);
             }
             waypoint::Icon poi = icon->as_protobuf();
@@ -162,13 +162,12 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         }
         else if (parsed_poi->classname() == "Trail") {
             Trail* trail = dynamic_cast<Trail*>(parsed_poi);
-            if (trail->map_id_is_set){
+            if (trail->map_id_is_set) {
                 map_ids.insert(trail->map_id);
             }
             waypoint::Trail poi = trail->as_protobuf();
             read_trail_data_file(&poi);
             proto_pois.add_trail()->CopyFrom(poi);
-           
         }
     }
 
@@ -230,7 +229,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
 
             if (output_message.mutable_category(i)->children_size() == 0) {
                 output_message.mutable_category(i)->Clear();
-                }
+            }
             else {
                 if (keep < i) {
                     output_message.mutable_category()->SwapElements(i, keep);
@@ -460,7 +459,6 @@ vector<string> get_xml_files(string directory) {
 void convert_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     string data = "rsync -a " + directory + "/Data ./protobins";
     system(data.c_str());
-    cout << directory << endl;
     vector<string> xml_files = get_xml_files(directory);
     for (const string& path : xml_files) {
         parse_xml_file(path, marker_categories, parsed_pois);
@@ -547,4 +545,4 @@ int main() {
     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     return 0;
-    }
+}
