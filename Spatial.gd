@@ -273,7 +273,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	reset_minimap_masks()
 
-
 func reset_minimap_masks():
 	var viewport_size = get_viewport().size
 	compass_corner1 = Vector2(0, 0)
@@ -339,7 +338,6 @@ func relative_textures_to_absolute_textures(marker_file_dir):
 		var texture = path.get_texture()
 		if !texture.get_path().is_abs_path():
 			texture.set_path(marker_file_dir + "/" + texture.get_path())
-
 
 var route_scene = load("res://Route.tscn")
 var icon_scene = load("res://Icon.tscn")
@@ -449,8 +447,6 @@ func gen_map_markers():
 
 func gen_new_path(points: Array, texture_path: String):
 	var points_2d: PoolVector2Array = [] 
-
-
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
@@ -468,8 +464,6 @@ func gen_new_path(points: Array, texture_path: String):
 	var texture = ImageTexture.new()
 	texture.storage = ImageTexture.STORAGE_COMPRESS_LOSSLESS
 	texture.create_from_image(image, 22)
-
-
 
 	# Create a new 3D route
 	var new_route = route_scene.instance()
@@ -490,15 +484,8 @@ func gen_new_path(points: Array, texture_path: String):
 	new_route.set_texture(texture)
 	paths.add_child(new_route)
 	
-	
-	
-	
-	
-	
-	
 	for point in points:
 		points_2d.append(Vector2(point[0], -point[2]))
-	
 	
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
@@ -508,7 +495,6 @@ func gen_new_path(points: Array, texture_path: String):
 	
 	self.currently_active_path = new_route
 	self.currently_active_path_2d = new_2d_path
-
 
 ################################################################################
 #
