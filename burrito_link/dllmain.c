@@ -266,6 +266,48 @@ void WINAPI BurritoLinkThread() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// start_burrito_link_thread
+//
+// Creates a new burrito link thread if there is no existing burrito link
+// thread running.
+////////////////////////////////////////////////////////////////////////////////
+HANDLE burrito_link_thread_handle = nullptr;
+void start_burrito_link_thread() {
+    if (burrito_link_thread_handle != nullptr) {
+        return;
+    }
+
+    burrito_link_thread_handle = CreateThread(
+        NULL,
+        0,
+        (LPTHREAD_START_ROUTINE)BurritoLinkThread,
+        NULL,
+        0,
+        NULL
+    );
+
+    if (burrito_link_thread_handle == nullptr) {
+        // Failed to create the thread.
+        printf("Failed to create burrito link thread");
+    }
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// stop_burrito_link_thread
+//
+// Kills a burrito link thread if there is a burrito link thread running. This
+// is nessasry to avoid an error message on exit.
+////////////////////////////////////////////////////////////////////////////////
+void stop_burrito_link_thread() {
+    if (burrito_link_thread_handle != nullptr) {
+        TerminateThread(burrito_link_thread_handle, 0);
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // DllMain
 //
 // DllMain is the entry point called when this dll is loaded. We use this
@@ -294,9 +336,7 @@ BOOL WINAPI DllMain(
         case DLL_PROCESS_ATTACH:
             // TODO: Here is where we want to create a new process.
             printf("DLL_PROCESS_ATTACH\n");
-
-            CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BurritoLinkThread, NULL, 0, NULL);
-
+            start_burrito_link_thread();
             break;
 
         // Do thread-specific initialization.
@@ -313,11 +353,12 @@ BOOL WINAPI DllMain(
         case DLL_PROCESS_DETACH:
             // Skip cleanup if process termination scenario
             if (lpvReserved != nullptr) {
-                printf("DLL_THREAD_DETACH no cleanup\n");
+                printf("DLL_PROCESS_DETACH no cleanup\n");
                 break;
             }
-            printf("DLL_THREAD_DETACH\n");
-            
+            printf("DLL_PROCESS_DETACH\n");
+            stop_burrito_link_thread();
+
             // Cleanup process
             FreeD3D11Module();
             break;
