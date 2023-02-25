@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <d3d11.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #ifndef true
 #define true TRUE
@@ -15,23 +16,7 @@
 #define nullptr 0
 #endif
 
-
-// #define CEXTERN extern "C"
 #define CEXTERN extern
-
-BOOL should_launch = true;
-
-void writelog() {
-    if (should_launch) {
-        printf("Launching2\n");
-        fflush(stdout);
-        should_launch = false;
-    }
-    else {
-        printf("Already Launched2\n");
-        fflush(stdout);
-    }
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +58,6 @@ void FreeD3D11Module() {
 
     }
 }
-
 
 
 
@@ -329,7 +313,7 @@ BOOL WINAPI DllMain(
     DWORD  fdwReason, // reason for calling DllMain
     LPVOID lpvReserved // Reserved
 ) {
-    printf("FUNCTION: 2 C DllMain ");
+    // printf("FUNCTION: 2 C DllMain ");
     // Perform actions based on the reason for calling.
     switch(fdwReason) {
         // Do process initialization. Return false if initialization fails.
@@ -341,12 +325,12 @@ BOOL WINAPI DllMain(
 
         // Do thread-specific initialization.
         case DLL_THREAD_ATTACH:
-            printf("DLL_THREAD_ATTACH\n");
+            // printf("DLL_THREAD_ATTACH\n");
             break;
 
         // Do thread-specific cleanup.
         case DLL_THREAD_DETACH:
-            printf("DLL_THREAD_DETACH\n");
+            // printf("DLL_THREAD_DETACH\n");
             break;
 
         // Do process cleanup
@@ -366,4 +350,56 @@ BOOL WINAPI DllMain(
     fflush(stdout);
 
     return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// arcdps
+//
+// get_init_addr
+// get_release_addr
+//
+// These functions are present to allow arcdps to recognize this dll as a
+// plugin for arcdps and run it alongside arcdps. These two functions are the
+// only functions that are required for arcdps' api and all others are optional.
+////////////////////////////////////////////////////////////////////////////////
+#ifndef ImGuiContext
+#define ImGuiContext void
+#endif
+typedef struct arcdps_exports {
+    uintptr_t size;
+    uint32_t sig;
+    uint32_t imguivers;
+    const char* out_name;
+    const char* out_build;
+    void* wnd_nofilter;
+    void* combat;
+    void* imgui;
+    void* options_end;
+    void* combat_local;
+    void* wnd_filter;
+    void* options_windows;
+} arcdps_exports;
+
+arcdps_exports arc_exports;
+arcdps_exports* mod_init() {
+    memset(&arc_exports, 0, sizeof(arcdps_exports));
+    arc_exports.sig = 0xFFFA;
+    arc_exports.size = sizeof(arcdps_exports);
+    arc_exports.out_name = "BurritoLink";
+    arc_exports.out_build = "1.0";
+    return &arc_exports;
+}
+
+extern __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiContext* imguictx, void* id3dptr, HANDLE arcdll, void* mallocfn, void* freefn, uint32_t d3dversion) {
+    return mod_init;
+}
+
+uintptr_t mod_release() {
+    FreeConsole();
+    return 0;
+}
+
+extern __declspec(dllexport) void* get_release_addr() {
+    return mod_release;
 }
