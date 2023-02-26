@@ -3,6 +3,8 @@
 #include <d3d11.h>
 #include <stdio.h>
 #include <stdint.h>
+// Forward declare the run_link() function defined in burrito_link.c
+void run_link();
 
 #ifndef true
 #define true TRUE
@@ -15,9 +17,6 @@
 #ifndef nullptr
 #define nullptr 0
 #endif
-
-#define CEXTERN extern
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // GetOriginalD3D11Module
@@ -60,7 +59,6 @@ void FreeD3D11Module() {
 }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // D3D11CreateDeviceAndSwapChainOriginal
 //
@@ -88,7 +86,7 @@ D3D11CreateDeviceAndSwapChainFunc D3D11CreateDeviceAndSwapChainOriginal = nullpt
 // A proxy function that calls the original d3d11.dll's
 // D3D11CreateDeviceAndSwapChain function, then returns the result.
 ////////////////////////////////////////////////////////////////////////////////
-CEXTERN HRESULT WINAPI D3D11CreateDeviceAndSwapChain(
+extern HRESULT WINAPI D3D11CreateDeviceAndSwapChain(
     IDXGIAdapter* pAdapter,
     D3D_DRIVER_TYPE DriverType,
     HMODULE Software,
@@ -152,7 +150,7 @@ D3D11CreateDeviceFunc D3D11CreateDeviceOriginal = nullptr;
 // A proxy function that call the original d3d11.dll's D3D11CreateDevice
 // function, then returns the result.
 ////////////////////////////////////////////////////////////////////////////////
-CEXTERN HRESULT WINAPI D3D11CreateDevice(
+extern HRESULT WINAPI D3D11CreateDevice(
     IDXGIAdapter* pAdapter,
     D3D_DRIVER_TYPE DriverType,
     HMODULE Software,
@@ -208,7 +206,7 @@ D3D11CoreCreateDeviceFunc D3D11CoreCreateDeviceOriginal = nullptr;
 // A proxy function that call the original d3d11.dll's D3D11CoreCreateDevice
 // function, then returns the result.
 ////////////////////////////////////////////////////////////////////////////////
-CEXTERN HRESULT WINAPI D3D11CoreCreateDevice(
+extern HRESULT WINAPI D3D11CoreCreateDevice(
     IDXGIFactory * pFactory,
     IDXGIAdapter * pAdapter,
     UINT Flags,
@@ -235,14 +233,13 @@ CEXTERN HRESULT WINAPI D3D11CoreCreateDevice(
 }
 
 
-// Forward declare the run_link() function defined in burrito_link.c
-void run_link();
-
-// Call the burrito link function from the thread.
-// TODO: There is something odd here that causes a crash as gw2 is exiting.
-// Because gw2 is exiting the crash does not really matter. I am guessing it
-// has something to do with how we handle the infinite wait loop inside
-// burrito_link and that we dont clean it up ever.
+////////////////////////////////////////////////////////////////////////////////
+// BurritoLinkThread
+//
+// A helper function that calls the burrito link run_link() function. It exists
+// so that it can be passed into the Windows API CreateThread and can be run
+// within a the new thread instead of the DLL's main thread.
+////////////////////////////////////////////////////////////////////////////////
 void WINAPI BurritoLinkThread() {
     run_link();
     return;
@@ -282,7 +279,7 @@ void start_burrito_link_thread() {
 // stop_burrito_link_thread
 //
 // Kills a burrito link thread if there is a burrito link thread running. This
-// is nessasry to avoid an error message on exit.
+// is necessary to avoid an error message on exit.
 ////////////////////////////////////////////////////////////////////////////////
 void stop_burrito_link_thread() {
     if (burrito_link_thread_handle != nullptr) {
@@ -313,24 +310,20 @@ BOOL WINAPI DllMain(
     DWORD  fdwReason, // reason for calling DllMain
     LPVOID lpvReserved // Reserved
 ) {
-    // printf("FUNCTION: 2 C DllMain ");
     // Perform actions based on the reason for calling.
     switch(fdwReason) {
         // Do process initialization. Return false if initialization fails.
         case DLL_PROCESS_ATTACH:
-            // TODO: Here is where we want to create a new process.
             printf("DLL_PROCESS_ATTACH\n");
             start_burrito_link_thread();
             break;
 
         // Do thread-specific initialization.
         case DLL_THREAD_ATTACH:
-            // printf("DLL_THREAD_ATTACH\n");
             break;
 
         // Do thread-specific cleanup.
         case DLL_THREAD_DETACH:
-            // printf("DLL_THREAD_DETACH\n");
             break;
 
         // Do process cleanup
