@@ -91,9 +91,13 @@ jobs:
 
       - name: Build Burrito Link
         run: |
-          cd burrito_link
+          mkdir output/burrito_link
+          mkdir burrito_link/build
+          cd burrito_link/build
+          cmake ..
           make
-          mv burrito_link.exe ../output
+          mv burrito_link.exe ../../output/burrito_link
+          mv d3d11.dll ../../output/burrito_link
 
 
       - name: Build Burrito
