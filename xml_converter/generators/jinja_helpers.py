@@ -31,7 +31,7 @@ class IndentStackElem():
     startline: str
     lines: List[str]
 
-    def apply_indent(self):
+    def apply_indent(self) -> List[str]:
 
         indented_lines = [self.indentation + self.startline]
 
@@ -44,46 +44,45 @@ class IndentStackElem():
         return indented_lines
 
 
+tag_regex = re.compile(r".*\{\%-?(.*)\-?%\}.*")
+indentation_regex = re.compile(r"^(?P<indent>[ \t]*)(?P<line>.*)")
+
+
 ################################################################################
 # unindent_blocks
 #
-# Attempts to read a jinja format string and 
+# Attempts to read a jinja format string and remove extra indentation used only
+# in the jinja templates due to things like {% for %} or {% if %} blocks.
 ################################################################################
-tag_regex = re.compile(r".*\{\%-?(.*)\-?%\}.*")
-
-indentation_regex = re.compile(r"^(?P<indent>[ \t]*)(?P<line>.*)")
-
 class UnindentBlocks(Extension):
-    def preprocess(self, source, name, filename=None) -> str:
+    def preprocess(self, source: str, name: Optional[str], filename: Optional[str] = None) -> str:
+
         indentation_stack: List[IndentStackElem] = [IndentStackElem("", "", "", [])]
 
         output_lines: List[str] = []
 
         for line in source.split("\n"):
 
-
             indentation_match = re.match(indentation_regex, line)
-            if indentation_match == None:
+            if indentation_match is None:
                 raise ValueError("Cannot Identify Indentation")
 
             whitespace = indentation_match.groupdict()["indent"]
             unindented_line = indentation_match.groupdict()["line"]
-
 
             flow = self.indent_flow(unindented_line)
 
             if flow[0] == IndentFlow.push:
                 indentation_stack.append(IndentStackElem(whitespace, flow[1], unindented_line, []))
 
-
             elif flow[0] == IndentFlow.keep:
                 # if we are not in a block just do the normal thing
                 if len(indentation_stack) == 0:
                     output_lines.append(whitespace + unindented_line)
                 else:
-                   # TODO check flow[1]
+                    # TODO check flow[1]
                     indentation_stack[-1].lines.append(line)
-            
+
             elif flow[0] == IndentFlow.poppush:
                 chunk = indentation_stack.pop()
                 indentation_stack[-1].lines += chunk.apply_indent()
@@ -120,7 +119,7 @@ class UnindentBlocks(Extension):
     def indent_flow(self, line: str) -> Tuple[IndentFlow, str]:
         tag_match = re.match(tag_regex, line)
 
-        if tag_match == None:
+        if tag_match is None:
             return IndentFlow.keep, ""
 
         parsed_tag_line = tag_match.groups()[0].strip()
@@ -189,7 +188,7 @@ def unindent_block(block: List[str]) -> List[str]:
                 searching = False
                 break
 
-            if next_indent == None:
+            if next_indent is None:
                 next_indent = line[index]
 
                 # Stop searching when you get to non-whitespace
@@ -204,10 +203,10 @@ def unindent_block(block: List[str]) -> List[str]:
 
         # A sanity check for if we never triggered anything in the for loop
         # EG: all empty lines
-        if next_indent == None:
+        if next_indent is None:
             break
 
         common_indent += next_indent
         next_indent = None
-        
+
     return [line[index:] for line in block]
