@@ -369,7 +369,7 @@ class Generator:
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(
             loader=file_loader,
-            extensions=["jinja_helpers.UnindentBlocks"],
+            extensions=[UnindentBlocks],
             keep_trailing_newline=True,
             trim_blocks=True,
             lstrip_blocks=True
@@ -560,7 +560,7 @@ class Generator:
         file_loader = FileSystemLoader('cpp_templates')
         env = Environment(
             loader=file_loader,
-            extensions=["jinja_helpers.UnindentBlocks"],
+            extensions=[UnindentBlocks],
             keep_trailing_newline=True,
             trim_blocks=True,
             lstrip_blocks=True
