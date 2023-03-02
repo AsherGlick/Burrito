@@ -66,7 +66,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Adds the name of a category and all of its children to a set
+// Adds the name of a category and all of it's parents to a set
 // eg.
 // {
 //     "mypath",
@@ -76,48 +76,31 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 //     "mypath.hardpath.trail",
 // }
 ////////////////////////////////////////////////////////////////////////////////
-void add_children_names(waypoint::Category proto_category, set<string>* proto_categories, string parent_name) {
-    string name = parent_name + "." + lowercase(proto_category.name());
-    proto_categories->insert(name);
-    for (int i = 0; i < proto_category.children_size(); i++) {
-        add_children_names(proto_category.children(i), proto_categories, name);
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Adds the name of a category and all of it's parents to a set
-////////////////////////////////////////////////////////////////////////////////
-void add_parent_names(string category_name, set<string> proto_categories, set<string>* category_includes) {
-    auto category = proto_categories.find(category_name);
-    if (category == proto_categories.end()) {
-        cout << "Unknown MarkerCategory " << category_name << endl;
-    }
-    else {
-        string name;
-        vector<string> split_categories = split(category_name, ".");
-        for (unsigned int j = 0; j < split_categories.size(); j++) {
-            name += split_categories[j];
-            category_includes->insert(name);
-            name += ".";
-        }
+void populate_categories_to_retain (string category_name, set<string>* categories_to_retain) {
+    string name;
+    vector<string> split_categories = split(category_name, ".");
+    for (unsigned int j = 0; j < split_categories.size(); j++) {
+        name += split_categories[j];
+        categories_to_retain->insert(name);
+        name += ".";
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Iterates through all children of a Category and removes those that do not
-// have POIs with corresponding names
+// have a nodes that belongs to it.
 ////////////////////////////////////////////////////////////////////////////////
-void remove_proto_child(waypoint::Category* proto_category, set<string> category_includes, string parent_name) {
+void remove_proto_child(waypoint::Category* proto_category, set<string> categories_to_retain, string parent_name) {
     int keep = 0;
     for (int i = 0; i < proto_category->children_size(); i++) {
         string name = parent_name + "." + proto_category->children(i).name();
-        auto pos = category_includes.find(lowercase(name));
-        if (pos != category_includes.end()) {
+        auto pos = categories_to_retain.find(lowercase(name));
+        if (pos != categories_to_retain.end()) {
             if (keep < i) {
                 proto_category->mutable_children()->SwapElements(i, keep);
                 if (proto_category->children(i).children_size() >= 0) {
                     for (int j = 0; j < proto_category->children_size(); j++) {
-                        remove_proto_child(proto_category->mutable_children(j), category_includes, name);
+                        remove_proto_child(proto_category->mutable_children(j), categories_to_retain, name);
                     }
                 }
             }
@@ -132,13 +115,11 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         cout << "Error making ./protobins" << endl;
         throw std::error_code();
     }
-    // Collects a set of category names and their children
+    // Creates a Waypoint message that contains all categories
     waypoint::Waypoint all_categories;
-    std::set<string> proto_categories;
     for (const auto& category : *marker_categories) {
         waypoint::Category proto_category = category.second.as_protobuf();
         all_categories.add_category()->CopyFrom(proto_category);
-        add_children_names(proto_category, &proto_categories, proto_category.name());
     }
     // Collects a set of map ids from Icon and Trail data
     std::set<int> map_ids;
@@ -153,7 +134,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         }
     }
     waypoint::Waypoint output_message;
-    std::set<string> category_includes;
+    std::set<string> categories_to_retain;
     for (int map_id : map_ids) {
         ofstream outfile;
         string output_filepath = proto_filepath + "/" + to_string(map_id) + ".data";
@@ -164,14 +145,14 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
             if (parsed_poi->classname() == "POI") {
                 Icon* icon = dynamic_cast<Icon*>(parsed_poi);
                 if (icon->map_id == map_id) {
-                    add_parent_names(icon->category.category, proto_categories, &category_includes);
+                    populate_categories_to_retain(icon->category.category, &categories_to_retain);
                     output_message.add_icon()->MergeFrom(icon->as_protobuf());
                 }
             }
             else if (parsed_poi->classname() == "Trail") {
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
                 if (trail->map_id == map_id) {
-                    add_parent_names(trail->category.category, proto_categories, &category_includes);
+                    populate_categories_to_retain(trail->category.category, &categories_to_retain);
                     output_message.add_trail()->MergeFrom(trail->as_protobuf());
                 }
             }
@@ -184,7 +165,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         // except for the children and then iterating over all the children.
         // This pruning method is slower but ensures that information is kept.
         for (int i = 0; i < output_message.category_size(); i++) {
-            remove_proto_child(output_message.mutable_category(i), category_includes, output_message.category(i).name());
+            remove_proto_child(output_message.mutable_category(i), categories_to_retain, output_message.category(i).name());
             if (output_message.mutable_category(i)->children_size() == 0) {
                 output_message.mutable_category(i)->Clear();
             }
@@ -192,7 +173,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
         output_message.SerializeToOstream(&outfile);
         outfile.close();
         output_message.Clear();
-        category_includes.clear();
+        categories_to_retain.clear();
     }
 }
 
