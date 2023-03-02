@@ -76,7 +76,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 //     "mypath.hardpath.trail",
 // }
 ////////////////////////////////////////////////////////////////////////////////
-void populate_categories_to_retain (string category_name, set<string>* categories_to_retain) {
+void populate_categories_to_retain(string category_name, set<string>* categories_to_retain) {
     string name;
     vector<string> split_categories = split(category_name, ".");
     for (unsigned int j = 0; j < split_categories.size(); j++) {
