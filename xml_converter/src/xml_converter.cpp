@@ -18,6 +18,7 @@
 #include <utility>
 #include <vector>
 
+#include "attribute/trail_data.hpp"
 #include "category_gen.hpp"
 #include "icon_gen.hpp"
 #include "parseable.hpp"
@@ -29,15 +30,6 @@
 #include "waypoint.pb.h"
 
 using namespace std;
-
-bool has_suffix(std::string const& fullString, std::string const& ending) {
-    if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-    }
-    else {
-        return false;
-    }
-}
 
 void write_xml_file(string xml_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     ofstream outfile;
@@ -94,9 +86,9 @@ void remove_proto_child(waypoint::Category* proto_category, set<string> category
     proto_category->mutable_children()->DeleteSubrange(keep, proto_category->children_size() - keep);
 }
 
-void read_trail_data_file(waypoint::Trail* trail) {
+void read_trail_data_file(string base_dir, waypoint::Trail* trail) {
     ifstream trail_data_file;
-    string trail_path = "./" + trail->trail_data().trail_data();
+    string trail_path = base_dir + "/" + trail->trail_data().trail_data();
     trail_data_file.open(trail_path, ios::in | ios::binary);
 
     char version[4];
@@ -124,6 +116,10 @@ void read_trail_data_file(waypoint::Trail* trail) {
         points_z.push_back(*reinterpret_cast<float*>(point_z));
     }
 
+    if (points_x.size() != points_z.size()) {
+        cout << "Unexpected number of bits in trail file " << trail_path << endl;
+    }
+
     *trail->mutable_trail_data()->mutable_points_x() = {points_x.begin(), points_x.end()};
     *trail->mutable_trail_data()->mutable_points_y() = {points_y.begin(), points_y.end()};
     *trail->mutable_trail_data()->mutable_points_z() = {points_z.begin(), points_z.end()};
@@ -131,11 +127,7 @@ void read_trail_data_file(waypoint::Trail* trail) {
     trail_data_file.close();
 }
 
-void write_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    if (mkdir(proto_filepath.c_str(), 0700) == -1 && errno != EEXIST) {
-        cout << "Error making ./protobins" << endl;
-        throw std::error_code();
-    }
+void write_protobuf_file(string proto_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // Converts map<string, Category> to Waypoint::Categories
     waypoint::Waypoint all_categories;
     std::set<string> proto_categories;
@@ -165,7 +157,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
                 map_ids.insert(trail->map_id);
             }
             waypoint::Trail poi = trail->as_protobuf();
-            read_trail_data_file(&poi);
+            read_trail_data_file(trail->trail_data.base_dir, &poi);
             proto_pois.add_trail()->CopyFrom(poi);
         }
     }
@@ -174,7 +166,7 @@ void write_protobuf_file(string proto_filepath, map<string, Category>* marker_ca
     std::set<string> category_includes;
     for (int map_id : map_ids) {
         ofstream outfile;
-        string output_filepath = proto_filepath + "/" + to_string(map_id) + ".data";
+        string output_filepath = proto_directory + "/" + to_string(map_id) + ".data";
         outfile.open(output_filepath, ios::out | ios::binary);
         output_message.CopyFrom(all_categories);
 
@@ -287,7 +279,7 @@ Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker
 //
 // Parse the <POIs> xml block into an in-memory array of Markers.
 ////////////////////////////////////////////////////////////////////////////////
-vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
+vector<Parseable*> parse_pois(string base_dir, rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
     vector<Parseable*> markers;
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
@@ -313,6 +305,9 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
             }
 
             trail->init_from_xml(node, errors);
+            if (trail->trail_data_is_set) {
+                trail->trail_data.base_dir = base_dir;
+            }
             markers.push_back(trail);
         }
         else {
@@ -368,7 +363,6 @@ void parse_proto_marker_categories(::waypoint::Category proto_category, map<stri
 ////////////////////////////////////////////////////////////////////////////////
 void parse_xml_file(string xml_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     vector<XMLError*> errors;
-
     rapidxml::xml_document<> doc;
     rapidxml::xml_node<>* root_node;
 
@@ -376,6 +370,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), xml_filepath.c_str());
 
     root_node = doc.first_node();
+    string base_dir = get_base_dir(xml_filepath);
 
     // Validate the Root Node
     if (get_node_name(root_node) != "OverlayData") {
@@ -390,7 +385,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
             parse_marker_categories(node, marker_categories, &errors);
         }
         else if (get_node_name(node) == "POIs") {
-            vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors);
+            vector<Parseable*> temp_vector = parse_pois(base_dir, node, marker_categories, &errors);
             move(temp_vector.begin(), temp_vector.end(), back_inserter(*parsed_pois));
         }
         else {
@@ -420,45 +415,46 @@ bool filename_comp(string a, string b) {
     return lowercase(a) < lowercase(b);
 }
 
-vector<string> get_xml_files(string directory) {
+vector<string> get_xml_files(string directory, string data_directory) {
     vector<string> files;
-    vector<string> subfolders;
-    string path;
     DIR* dir = opendir(directory.c_str());
-    struct dirent* entry = readdir(dir);
+    struct dirent* entry;
     while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_DIR && has_suffix(directory, ".") == false) {
-            path = directory + "/";
-            path += entry->d_name;
-            subfolders.push_back(path);
-        }
-        else if (has_suffix(entry->d_name, ".xml")) {
-            path = directory + "/";
-            path += entry->d_name;
-            files.push_back(path);
-        }
-        else {
-            continue;
+        string filename = entry->d_name;
+        if (filename != "." && filename != "..") {
+            string path = directory + "/" + filename;
+            if (entry->d_type == DT_DIR) {
+                string new_folder = data_directory + "/" + filename;
+                if (mkdir(new_folder.c_str(), 0700) == -1 && errno != EEXIST) {
+                    cout << "Error making " << new_folder << endl;
+                    continue;
+                }
+                vector<string> subfiles = get_xml_files(path, new_folder);
+                for (string subfile : subfiles) {
+                    cout << subfile << endl;
+                    files.push_back(subfile);
+                }
+            }
+            else if (entry->d_type == DT_REG) {
+                if (has_suffix(filename, ".xml")) {
+                    files.push_back(path);
+                }
+                else if (has_suffix(filename, ".trl") == false) {
+                    string new_path = data_directory + "/" + filename;
+                    ifstream infile(path, ios::binary);
+                    ofstream outfile(new_path, ios::binary);
+                    outfile << infile.rdbuf();
+                }
+            }
         }
     }
     closedir(dir);
-
     std::sort(files.begin(), files.end(), filename_comp);
-    std::sort(subfolders.begin(), subfolders.end(), filename_comp);
-
-    for (const std::string& subfolder : subfolders) {
-        if (has_suffix(subfolder, ".") == false && has_suffix(subfolder, "..") == false) {
-            vector<string> subfiles = get_xml_files(subfolder);
-            files.insert(files.end(), subfiles.begin(), subfiles.end());
-        }
-    }
     return files;
 }
 
-void convert_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    string data = "rsync -a " + directory + "/Data ./protobins";
-    system(data.c_str());
-    vector<string> xml_files = get_xml_files(directory);
+void convert_taco_directory(string directory, string data_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    vector<string> xml_files = get_xml_files(directory, data_directory);
     for (const string& path : xml_files) {
         parse_xml_file(path, marker_categories, parsed_pois);
     }
@@ -485,20 +481,25 @@ int main() {
     map<string, Category> marker_categories;
     test_proto();
 
-    if (mkdir("./protobins/Data", 0700) == -1 && errno != EEXIST) {
-        cout << "Error making ./protobins/Data" << endl;
+    string output_directory = "./protobins";
+
+    if (mkdir(output_directory.c_str(), 0700) == -1 && errno != EEXIST) {
+        cout << "Error making ./protobins/" << endl;
         throw std::error_code();
     }
 
-    string directory = "./packs";
-    DIR* dir = opendir(directory.c_str());
+    string input_directory = "./packs";
+    vector<string> marker_packs;
+
+    DIR* dir = opendir(input_directory.c_str());
     struct dirent* entry = readdir(dir);
     while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".")) {
-            string path = directory + "/";
-            path += entry->d_name;
+        string filename = entry->d_name;
+        if (entry->d_type == DT_DIR && filename != "." && filename != "..") {
+            string path = input_directory + "/" + filename;
+            marker_packs.push_back(path);
             cout << path << endl;
-            convert_taco_directory(path, &marker_categories, &parsed_pois);
+            convert_taco_directory(path, output_directory, &marker_categories, &parsed_pois);
         }
     }
     closedir(dir);
@@ -516,15 +517,15 @@ int main() {
     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_protobuf_file("./protobins", &marker_categories, &parsed_pois);
+    write_protobuf_file(output_directory, &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 
-    // //////////////////////////////////////////////////////////////////////////////////////
-    // / This section tests that the protobuf file can be parsed back to xml
-    // //////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // This section tests that the protobuf file can be parsed back to xml
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     parsed_pois.clear();
     marker_categories.clear();
