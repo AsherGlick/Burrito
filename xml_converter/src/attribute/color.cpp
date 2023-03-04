@@ -1,10 +1,6 @@
 #include "color.hpp"
-#include <google/protobuf/stubs/port.h>
-#include <google/protobuf/stubs/strutil.h>
+#include <stdint.h>
 
-#include <algorithm>
-#include <cmath>
-#include <cstdio>
 #include <iosfwd>
 #include <sstream>
 #include <string>
@@ -63,11 +59,11 @@ waypoint::RGBAColor* to_proto_color(Color attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 Color from_proto_color(waypoint::RGBAColor attribute_value) {
     Color color;
-    std::stringstream stream; 
+    std::stringstream stream;
     stream << std::hex << attribute_value.rgba_color();
     std::string rgba = stream.str();
 
-    color.hex = rgba.substr(0,6);
+    color.hex = rgba.substr(0, 6);
     // Adding default values until TODO #98
     color.alpha = 1.0;
     return color;
