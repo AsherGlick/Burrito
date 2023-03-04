@@ -30,10 +30,6 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->achievement_id = parse_int(attribute, errors);
         this->achievement_id_is_set = true;
     }
-    else if (attributename == "alpha") {
-        this->color.alpha = parse_float(attribute, errors);
-        this->alpha_is_set = true;
-    }
     else if (attributename == "animspeed") {
         this->animation_speed = parse_float(attribute, errors);
         this->animation_speed_is_set = true;
@@ -55,6 +51,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->category_is_set = true;
     }
     else if (attributename == "color") {
+        this->color = parse_color(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "bhcolor") {
         this->color = parse_color(attribute, errors);
         this->color_is_set = true;
     }
@@ -185,9 +185,6 @@ vector<string> Trail::as_xml() const {
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
     }
-    if (this->alpha_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
-    }
     if (this->animation_speed_is_set) {
         xml_node_contents.push_back(" AnimSpeed=\"" + stringify_float(this->animation_speed) + "\"");
     }
@@ -269,52 +266,20 @@ vector<string> Trail::as_xml() const {
 
 waypoint::Trail Trail::as_protobuf() const {
     waypoint::Trail proto_trail;
-    if (this->achievement_bitmask_is_set) {
-        proto_trail.set_achievement_bit(this->achievement_bitmask);
-    }
-    if (this->achievement_id_is_set) {
-        proto_trail.set_achievement_id(this->achievement_id);
-    }
-    if (this->animation_speed_is_set) {
-        proto_trail.set_animation_speed(this->animation_speed);
-    }
-    if (this->can_fade_is_set) {
-        proto_trail.set_can_fade(this->can_fade);
-    }
     if (this->category_is_set) {
         proto_trail.set_allocated_category(to_proto_marker_category(this->category));
     }
     if (this->color_is_set) {
-        if (this->alpha_is_set) {
-            proto_trail.set_allocated_rgba(to_proto_color(this->color, this->color.alpha));
-        }
-        else {
-            proto_trail.set_allocated_rgba(to_proto_color(this->color, 1.0));
-        }
+        proto_trail.set_allocated_rgba_color(to_proto_color(this->color));
     }
     if (this->cull_chirality_is_set) {
         proto_trail.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
-    }
-    if (this->distance_fade_end_is_set) {
-        proto_trail.set_distance_fade_end(this->distance_fade_end);
-    }
-    if (this->distance_fade_start_is_set) {
-        proto_trail.set_distance_fade_start(this->distance_fade_start);
     }
     if (this->festival_filter_is_set) {
         proto_trail.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
     }
     if (this->guid_is_set) {
         proto_trail.set_allocated_guid(to_proto_unique_id(this->guid));
-    }
-    if (this->is_wall_is_set) {
-        proto_trail.set_is_wall(this->is_wall);
-    }
-    if (this->map_display_size_is_set) {
-        proto_trail.set_map_display_size(this->map_display_size);
-    }
-    if (this->map_id_is_set) {
-        proto_trail.set_map_id(this->map_id);
     }
     if (this->map_type_filter_is_set) {
         proto_trail.set_allocated_map_type_filter(to_proto_map_type_filter(this->map_type_filter));
@@ -325,21 +290,6 @@ waypoint::Trail Trail::as_protobuf() const {
     if (this->profession_filter_is_set) {
         proto_trail.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
     }
-    if (this->render_ingame_is_set) {
-        proto_trail.set_tentative__render_ingame(this->render_ingame);
-    }
-    if (this->render_on_map_is_set) {
-        proto_trail.set_tentative__render_on_map(this->render_on_map);
-    }
-    if (this->render_on_minimap_is_set) {
-        proto_trail.set_tentative__render_on_minimap(this->render_on_minimap);
-    }
-    if (this->schedule_is_set) {
-        proto_trail.set_bhdraft__schedule(this->schedule);
-    }
-    if (this->schedule_duration_is_set) {
-        proto_trail.set_bhdraft__schedule_duration(this->schedule_duration);
-    }
     if (this->specialization_filter_is_set) {
         proto_trail.set_allocated_specialization_filter(to_proto_specialization_filter(this->specialization_filter));
     }
@@ -347,13 +297,10 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_species_filter(to_proto_species_filter(this->species_filter));
     }
     if (this->texture_is_set) {
-        proto_trail.set_allocated_texture(to_proto_image(this->texture));
+        proto_trail.set_allocated_texture_path(to_proto_image(this->texture));
     }
     if (this->trail_data_is_set) {
         proto_trail.set_allocated_trail_data(to_proto_trail_data(this->trail_data));
-    }
-    if (this->trail_scale_is_set) {
-        proto_trail.set_scale(this->trail_scale);
     }
     return proto_trail;
 }
@@ -379,10 +326,9 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->category = from_proto_marker_category(proto_trail.category());
         this->category_is_set = true;
     }
-    if (proto_trail.has_rgba()) {
-        this->color = from_proto_color(proto_trail.rgba());
+    if (proto_trail.has_rgba_color()) {
+        this->color = from_proto_color(proto_trail.rgba_color());
         this->color_is_set = true;
-        this->alpha_is_set = true;
     }
     if (proto_trail.cull_chirality() != 0) {
         this->cull_chirality = from_proto_cull_chirality(proto_trail.cull_chirality());
@@ -456,8 +402,8 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->species_filter = from_proto_species_filter(proto_trail.species_filter());
         this->species_filter_is_set = true;
     }
-    if (proto_trail.has_texture()) {
-        this->texture = from_proto_image(proto_trail.texture());
+    if (proto_trail.has_texture_path()) {
+        this->texture = from_proto_image(proto_trail.texture_path());
         this->texture_is_set = true;
     }
     if (proto_trail.has_trail_data()) {

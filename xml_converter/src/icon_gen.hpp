@@ -27,7 +27,6 @@ class Icon : public Parseable {
  public:
     int achievement_bitmask;
     int achievement_id;
-    float alpha;
     bool auto_trigger;
     float bounce_delay;
     float bounce_duration;
@@ -75,7 +74,6 @@ class Icon : public Parseable {
     float trigger_range;
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
-    bool alpha_is_set = false;
     bool auto_trigger_is_set = false;
     bool bounce_delay_is_set = false;
     bool bounce_duration_is_set = false;

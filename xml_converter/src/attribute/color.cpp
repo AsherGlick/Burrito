@@ -1,7 +1,10 @@
 #include "color.hpp"
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/strutil.h>
 
-#include <stdint.h>
-
+#include <algorithm>
+#include <cmath>
+#include <cstdio>
 #include <iosfwd>
 #include <sstream>
 #include <string>
@@ -18,17 +21,11 @@ using namespace std;
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
 // TODO(#98): Color should be saved in a better format then the raw hex string.
-// TODO: Every node that has a Hex needs an alpha but not every alpha needs Hex
+// TODO(#129): Compound Value XML Export
 ////////////////////////////////////////////////////////////////////////////////
 Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     Color color;
-    std::string hex = get_attribute_value(input);
-    if (hex.length() == 6 || 7) {
-        if (hex.compare(0, 1, "#")) {
-            hex = hex.erase(0, 1);
-        }
-        color.hex = hex;
-    }
+    color.hex = get_attribute_value(input);
     return color;
 }
 
@@ -38,34 +35,25 @@ Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 // Converts a Color into a stringy value so it can be saved to xml.
 ////////////////////////////////////////////////////////////////////////////////
 string stringify_color(Color attribute_value) {
-    return "#" + attribute_value.hex;
+    return attribute_value.hex;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // to_proto_color
 //
 // Converts a Color into a proto message
-// TODO: Find a way to transfer alpha when color hex is not set
 ////////////////////////////////////////////////////////////////////////////////
-waypoint::RGBA* to_proto_color(Color attribute_value, float alpha) {
-    waypoint::RGBA* rgba = new waypoint::RGBA();
+waypoint::RGBAColor* to_proto_color(Color attribute_value) {
     string hex = attribute_value.hex;
-    int r = stoi(hex.substr(0, 2), 0, 16);
-    int g = stoi(hex.substr(2, 2), 0, 16);
-    int b = stoi(hex.substr(4, 2), 0, 16);
-
-    int a;
-    if (alpha == 1.0) {
-        a = 255;
-    }
-    else {
-        a = static_cast<int>(alpha * 256);
-    }
-
-    uint32_t rgba_int = ((r & 0xff) << 24) + ((g & 0xff) << 16) + ((b & 0xff) << 8) + (a & 0xff);
-
-    rgba->set_rgba(rgba_int);
-    return rgba;
+    waypoint::RGBAColor* color = new waypoint::RGBAColor;
+    // Adding default values until TODO #98
+    int r = 255;
+    int g = 255;
+    int b = 255;
+    int a = 255;
+    uint32_t rgba = ((r & 0xff) << 24) + ((g & 0xff) << 16) + ((b & 0xff) << 8) + (a & 0xff);
+    color->set_rgba_color(rgba);
+    return color;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,13 +61,14 @@ waypoint::RGBA* to_proto_color(Color attribute_value, float alpha) {
 //
 // Converts a proto message into a Color
 ////////////////////////////////////////////////////////////////////////////////
-Color from_proto_color(waypoint::RGBA attribute_value) {
+Color from_proto_color(waypoint::RGBAColor attribute_value) {
     Color color;
-    std::stringstream stream;
-    stream << std::hex << attribute_value.rgba();
+    std::stringstream stream; 
+    stream << std::hex << attribute_value.rgba_color();
     std::string rgba = stream.str();
 
-    color.hex = rgba.substr(0, 6);
-    color.alpha = std::stof(rgba.substr(6, 2));
+    color.hex = rgba.substr(0,6);
+    // Adding default values until TODO #98
+    color.alpha = 1.0;
     return color;
 }

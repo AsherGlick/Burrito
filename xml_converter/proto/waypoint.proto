@@ -19,7 +19,7 @@ message Category {
 
 message Icon {
     Category category = 1;
-    TexturePath texture = 2;
+    TexturePath texture_path = 2;
     GUID guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
@@ -38,7 +38,7 @@ message Icon {
     bool scale_on_map_with_zoom = 23;
     string tip_description = 24;
     string tip_name = 25;
-    RGBA rgba = 26;    
+    RGBAColor rgba_color = 26;    
     FestivalFilter festival_filter = 27;
     MapTypeFilter map_type_filter = 28;
     MountFilter mount_filter = 29;
@@ -57,7 +57,7 @@ message Icon {
 
 message Trail {
     Category category = 1;
-    TexturePath texture = 2;
+    TexturePath texture_path = 2;
     GUID guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
@@ -70,7 +70,7 @@ message Trail {
     bool can_fade = 19; 
     bool is_wall = 20;
     float scale = 21;
-    RGBA rgba = 22;
+    RGBAColor rgba_color = 22;
     FestivalFilter festival_filter = 23;
     MapTypeFilter map_type_filter = 24;
     MountFilter mount_filter = 25;
@@ -89,6 +89,10 @@ message Trail {
     
 message TexturePath {
     string path = 1;
+}
+
+message RGBAColor{
+    int32 rgba_color = 1;
 }
     
 message Position {
@@ -123,10 +127,6 @@ message Trigger {
 
 message GUID {
     bytes guid = 1;
-}
-
-message RGBA {
-    int32 rgba = 1;
 }
 
 enum CullChirality {

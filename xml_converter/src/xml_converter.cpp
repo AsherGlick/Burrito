@@ -105,9 +105,9 @@ void remove_proto_child(waypoint::Category* proto_category, set<string> categori
     proto_category->mutable_children()->DeleteSubrange(keep, proto_category->children_size() - keep);
 }
 
-void read_trail_data_file(string base_dir, waypoint::Trail* trail) {
+int get_trail_map_id(Trail* trail) {
     ifstream trail_data_file;
-    string trail_path = base_dir + "/" + trail->trail_data().trail_data();
+    string trail_path = trail->trail_data.base_dir + "/" + trail->trail_data.trail_data;
     trail_data_file.open(trail_path, ios::in | ios::binary);
 
     char version[4];
@@ -117,7 +117,23 @@ void read_trail_data_file(string base_dir, waypoint::Trail* trail) {
 
     trail_data_file.read(map_id, 4);
     uint32_t map_num = *reinterpret_cast<uint32_t*>(map_id);
-    trail->set_map_id(map_num);
+    trail_data_file.close();
+    return map_num;
+}
+
+void read_trail_data_file(Trail* trail, waypoint::Trail* proto_trail) {
+    ifstream trail_data_file;
+    string trail_path = trail->trail_data.base_dir + "/" + trail->trail_data.trail_data;
+    trail_data_file.open(trail_path, ios::in | ios::binary);
+
+    char version[4];
+    trail_data_file.read(version, 4);
+
+    char map_id[4];
+
+    trail_data_file.read(map_id, 4);
+    uint32_t map_num = *reinterpret_cast<uint32_t*>(map_id);
+    proto_trail->set_map_id(map_num);
 
     vector<float> points_x;
     vector<float> points_y;
@@ -139,9 +155,9 @@ void read_trail_data_file(string base_dir, waypoint::Trail* trail) {
         cout << "Unexpected number of bits in trail file " << trail_path << endl;
     }
 
-    *trail->mutable_trail_data()->mutable_points_x() = {points_x.begin(), points_x.end()};
-    *trail->mutable_trail_data()->mutable_points_y() = {points_y.begin(), points_y.end()};
-    *trail->mutable_trail_data()->mutable_points_z() = {points_z.begin(), points_z.end()};
+    *proto_trail->mutable_trail_data()->mutable_points_x() = {points_x.begin(), points_x.end()};
+    *proto_trail->mutable_trail_data()->mutable_points_y() = {points_y.begin(), points_y.end()};
+    *proto_trail->mutable_trail_data()->mutable_points_z() = {points_z.begin(), points_z.end()};
 
     trail_data_file.close();
 }
@@ -188,7 +204,9 @@ void write_protobuf_file(string proto_directory, map<string, Category>* marker_c
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
                 if (trail->map_id == map_id) {
                     populate_categories_to_retain(trail->category.category, &categories_to_retain);
-                    output_message.add_trail()->MergeFrom(trail->as_protobuf());
+                    waypoint::Trail proto_trail = trail->as_protobuf();
+                    read_trail_data_file(trail, &proto_trail);
+                    output_message.add_trail()->MergeFrom(proto_trail);
                 }
             }
         }
@@ -283,6 +301,7 @@ vector<Parseable*> parse_pois(string base_dir, rapidxml::xml_node<>* root_node, 
             trail->init_from_xml(node, errors);
             if (trail->trail_data_is_set) {
                 trail->trail_data.base_dir = base_dir;
+                trail->map_id = get_trail_map_id(trail);
             }
             markers.push_back(trail);
         }

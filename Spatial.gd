@@ -254,12 +254,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
-		print("New Map")
-		
-		print("Saving Old Map")
-		#self.markerdata[str(old_map_id)] = data_from_renderview()
 		print("Loading New Map")
-		
 		load_waypoint_markers(self.map_id)
 		gen_map_markers()
 
@@ -289,10 +284,11 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
 var markerdata = Waypoint.Waypoint.new()
+var marker_file_dir = "res://xml_converter/protobins/"
 var marker_file_path = ""
 
 func load_waypoint_markers(map_id):
-	self.marker_file_path = "res://xml_converter/protobins/" + String(map_id) + ".data"
+	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
 	print("Loading protobuf file from path ", self.marker_file_path)
 	self.markerdata.clear_category()
 	self.markerdata.clear_icon()
@@ -305,39 +301,7 @@ func load_waypoint_markers(map_id):
 		print("OK")
 	else:
 		print(Waypoint.PB_ERR)
-	
-	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
 
-	gen_map_markers()
-
-func load_taco_markers(marker_file):
-	self.marker_file_path = marker_file
-	print("Loading protobuf file from path ", marker_file)
-	var file = File.new()
-	file.open(marker_file, file.READ)
-	var data = file.get_buffer(file.get_len())
-	self.markerdata.from_bytes(data)
-	if !Waypoint.PB_ERR.NO_ERRORS:
-		print("OK")
-	else:
-		print(Waypoint.PB_ERR)
-	
-	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
-
-	gen_map_markers()
-
-func is_xml_file(input_file):
-	return input_file.split(".")[-1] == "xml"
-
-func relative_textures_to_absolute_textures(marker_file_dir):
-	for icon in self.markerdata.get_icon():
-		var texture = icon.get_texture()
-		if !texture.get_path().is_abs_path():
-			texture.set_path(marker_file_dir + "/" + texture.get_path())
-	for path in self.markerdata.get_trail():
-		var texture = path.get_texture()
-		if !texture.get_path().is_abs_path():
-			texture.set_path(marker_file_dir + "/" + texture.get_path())
 
 var route_scene = load("res://Route.tscn")
 var icon_scene = load("res://Icon.tscn")
@@ -430,20 +394,27 @@ func gen_map_markers():
 	for icon in icons.get_children():
 		icon.queue_free()
 
-	# Load the data from the markers $$$COVERT TO PROTO$$$
+	# Load the data from the markers
 	for path in self.markerdata.get_trail():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
-		if trail_data.get_points_x().size() > 0:
-			for index in range(0, trail_data.get_points_x().size()):
-				path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
-		gen_new_path(path_points, path.get_texture().get_path())
+		for index in range(0, trail_data.get_points_x().size()):
+			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
+		var texture_path = path.get_texture_path()
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		gen_new_path(path_points, full_texture_path)
 	for icon in self.markerdata.get_icon():
 		var position = icon.get_position()
 		if position == null:
+			print("Warning: No position found for icon ", icon.get_category().name())
 			continue
 		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
-		gen_new_icon(position_vector, icon.get_texture().get_path())
+		var texture_path = icon.get_texture_path()
+		if texture_path == null:
+			print("Warning: No texture found for icon")
+			continue
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		gen_new_icon(position_vector, full_texture_path)
 
 func gen_new_path(points: Array, texture_path: String):
 	var points_2d: PoolVector2Array = [] 
@@ -499,7 +470,7 @@ func gen_new_path(points: Array, texture_path: String):
 ################################################################################
 #
 ################################################################################
-func gen_new_icon(position: Vector3, texture_path: String): #$$$COVERT TO PROTO$$$
+func gen_new_icon(position: Vector3, texture_path: String): 
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position
@@ -539,7 +510,8 @@ func _on_main_menu_toggle_pressed():
 	set_maximal_mouse_block()
 
 func _on_FileDialog_file_selected(path):
-	load_taco_markers(path)
+	#Godot required 
+	print(path)
 
 
 ################################################################################
@@ -765,7 +737,6 @@ func _on_SnapSelectedToPlayer_pressed():
 	self.currently_selected_node.translation.x = self.player_position.x
 	self.currently_selected_node.translation.z = -self.player_position.z
 	self.currently_selected_node.translation.y = self.player_position.y
-	print(self.player_position.x, " ", -self.player_position.z, " ",self.player_position.y)
 
 func _on_SetActivePath_pressed():
 	if self.currently_selected_node.point_type == "icon":

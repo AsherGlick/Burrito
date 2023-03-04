@@ -25,7 +25,6 @@ class Trail : public Parseable {
  public:
     int achievement_bitmask;
     int achievement_id;
-    float alpha;
     float animation_speed;
     bool can_fade;
     MarkerCategory category;
@@ -53,7 +52,6 @@ class Trail : public Parseable {
     float trail_scale;
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
-    bool alpha_is_set = false;
     bool animation_speed_is_set = false;
     bool can_fade_is_set = false;
     bool category_is_set = false;

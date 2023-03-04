@@ -13,6 +13,7 @@ class TrailData;
 class TrailData {
  public:
     std::string trail_data;
+    std::string base_dir;
 };
 
 TrailData parse_trail_data(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);

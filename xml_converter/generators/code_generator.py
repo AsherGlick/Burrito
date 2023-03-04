@@ -204,7 +204,7 @@ allOf:
                 type: array
                 items:
                     type: string
-                    pattern: "^[A-Za-z]+$"
+                    pattern: "^[A-Za-z-]+$"
             protobuf_field:
                 type: string
                 pattern: "^[a-z_.]+$"

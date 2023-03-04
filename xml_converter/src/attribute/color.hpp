@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "waypoint.pb.h"
 
 class XMLError;
 namespace waypoint {
@@ -20,6 +21,6 @@ Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* erro
 
 std::string stringify_color(Color attribute_value);
 
-waypoint::RGBA* to_proto_color(Color attribute_value, float alpha);
+waypoint::RGBAColor* to_proto_color(Color attribute_value);
 
-Color from_proto_color(waypoint::RGBA attribute_value);
+Color from_proto_color(waypoint::RGBAColor attribute_value);

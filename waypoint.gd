@@ -862,11 +862,11 @@ class Icon:
 		service.func_ref = funcref(self, "new_category")
 		data[_category.tag] = service
 		
-		_texture = PBField.new("texture", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_texture_path = PBField.new("texture_path", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
-		service.field = _texture
-		service.func_ref = funcref(self, "new_texture")
-		data[_texture.tag] = service
+		service.field = _texture_path
+		service.func_ref = funcref(self, "new_texture_path")
+		data[_texture_path.tag] = service
 		
 		_guid = PBField.new("guid", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -957,11 +957,11 @@ class Icon:
 		service.field = _tip_name
 		data[_tip_name.tag] = service
 		
-		_rgba = PBField.new("rgba", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 26, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 26, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
-		service.field = _rgba
-		service.func_ref = funcref(self, "new_rgba")
-		data[_rgba.tag] = service
+		service.field = _rgba_color
+		service.func_ref = funcref(self, "new_rgba_color")
+		data[_rgba_color.tag] = service
 		
 		_festival_filter = PBField.new("festival_filter", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 27, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -1046,15 +1046,15 @@ class Icon:
 		_category.value = Category.new()
 		return _category.value
 	
-	var _texture: PBField
-	func get_texture() -> TexturePath:
-		return _texture.value
-	func clear_texture() -> void:
+	var _texture_path: PBField
+	func get_texture_path() -> TexturePath:
+		return _texture_path.value
+	func clear_texture_path() -> void:
 		data[2].state = PB_SERVICE_STATE.UNFILLED
-		_texture.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_texture() -> TexturePath:
-		_texture.value = TexturePath.new()
-		return _texture.value
+		_texture_path.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_texture_path() -> TexturePath:
+		_texture_path.value = TexturePath.new()
+		return _texture_path.value
 	
 	var _guid: PBField
 	func get_guid() -> GUID:
@@ -1213,15 +1213,15 @@ class Icon:
 	func set_tip_name(value : String) -> void:
 		_tip_name.value = value
 	
-	var _rgba: PBField
-	func get_rgba() -> RGBA:
-		return _rgba.value
-	func clear_rgba() -> void:
+	var _rgba_color: PBField
+	func get_rgba_color() -> RGBAColor:
+		return _rgba_color.value
+	func clear_rgba_color() -> void:
 		data[26].state = PB_SERVICE_STATE.UNFILLED
-		_rgba.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_rgba() -> RGBA:
-		_rgba.value = RGBA.new()
-		return _rgba.value
+		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_rgba_color() -> RGBAColor:
+		_rgba_color.value = RGBAColor.new()
+		return _rgba_color.value
 	
 	var _festival_filter: PBField
 	func get_festival_filter() -> FestivalFilter:
@@ -1377,11 +1377,11 @@ class Trail:
 		service.func_ref = funcref(self, "new_category")
 		data[_category.tag] = service
 		
-		_texture = PBField.new("texture", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_texture_path = PBField.new("texture_path", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
-		service.field = _texture
-		service.func_ref = funcref(self, "new_texture")
-		data[_texture.tag] = service
+		service.field = _texture_path
+		service.func_ref = funcref(self, "new_texture_path")
+		data[_texture_path.tag] = service
 		
 		_guid = PBField.new("guid", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -1440,11 +1440,11 @@ class Trail:
 		service.field = _scale
 		data[_scale.tag] = service
 		
-		_rgba = PBField.new("rgba", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
-		service.field = _rgba
-		service.func_ref = funcref(self, "new_rgba")
-		data[_rgba.tag] = service
+		service.field = _rgba_color
+		service.func_ref = funcref(self, "new_rgba_color")
+		data[_rgba_color.tag] = service
 		
 		_festival_filter = PBField.new("festival_filter", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 23, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -1529,15 +1529,15 @@ class Trail:
 		_category.value = Category.new()
 		return _category.value
 	
-	var _texture: PBField
-	func get_texture() -> TexturePath:
-		return _texture.value
-	func clear_texture() -> void:
+	var _texture_path: PBField
+	func get_texture_path() -> TexturePath:
+		return _texture_path.value
+	func clear_texture_path() -> void:
 		data[2].state = PB_SERVICE_STATE.UNFILLED
-		_texture.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_texture() -> TexturePath:
-		_texture.value = TexturePath.new()
-		return _texture.value
+		_texture_path.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_texture_path() -> TexturePath:
+		_texture_path.value = TexturePath.new()
+		return _texture_path.value
 	
 	var _guid: PBField
 	func get_guid() -> GUID:
@@ -1640,15 +1640,15 @@ class Trail:
 	func set_scale(value : float) -> void:
 		_scale.value = value
 	
-	var _rgba: PBField
-	func get_rgba() -> RGBA:
-		return _rgba.value
-	func clear_rgba() -> void:
+	var _rgba_color: PBField
+	func get_rgba_color() -> RGBAColor:
+		return _rgba_color.value
+	func clear_rgba_color() -> void:
 		data[22].state = PB_SERVICE_STATE.UNFILLED
-		_rgba.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_rgba() -> RGBA:
-		_rgba.value = RGBA.new()
-		return _rgba.value
+		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_rgba_color() -> RGBAColor:
+		_rgba_color.value = RGBAColor.new()
+		return _rgba_color.value
 	
 	var _festival_filter: PBField
 	func get_festival_filter() -> FestivalFilter:
@@ -1813,6 +1813,47 @@ class TexturePath:
 		_path.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
 	func set_path(value : String) -> void:
 		_path.value = value
+	
+	func to_string() -> String:
+		return PBPacker.message_to_string(data)
+		
+	func to_bytes() -> PoolByteArray:
+		return PBPacker.pack_message(data)
+		
+	func from_bytes(bytes : PoolByteArray, offset : int = 0, limit : int = -1) -> int:
+		var cur_limit = bytes.size()
+		if limit != -1:
+			cur_limit = limit
+		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
+		if result == cur_limit:
+			if PBPacker.check_required(data):
+				if limit == -1:
+					return PB_ERR.NO_ERRORS
+			else:
+				return PB_ERR.REQUIRED_FIELDS
+		elif limit == -1 && result > 0:
+			return PB_ERR.PARSE_INCOMPLETE
+		return result
+	
+class RGBAColor:
+	func _init():
+		var service
+		
+		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		service = PBServiceField.new()
+		service.field = _rgba_color
+		data[_rgba_color.tag] = service
+		
+	var data = {}
+	
+	var _rgba_color: PBField
+	func get_rgba_color() -> int:
+		return _rgba_color.value
+	func clear_rgba_color() -> void:
+		data[1].state = PB_SERVICE_STATE.UNFILLED
+		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+	func set_rgba_color(value : int) -> void:
+		_rgba_color.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -2235,47 +2276,6 @@ class GUID:
 		_guid.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES]
 	func set_guid(value : PoolByteArray) -> void:
 		_guid.value = value
-	
-	func to_string() -> String:
-		return PBPacker.message_to_string(data)
-		
-	func to_bytes() -> PoolByteArray:
-		return PBPacker.pack_message(data)
-		
-	func from_bytes(bytes : PoolByteArray, offset : int = 0, limit : int = -1) -> int:
-		var cur_limit = bytes.size()
-		if limit != -1:
-			cur_limit = limit
-		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
-		if result == cur_limit:
-			if PBPacker.check_required(data):
-				if limit == -1:
-					return PB_ERR.NO_ERRORS
-			else:
-				return PB_ERR.REQUIRED_FIELDS
-		elif limit == -1 && result > 0:
-			return PB_ERR.PARSE_INCOMPLETE
-		return result
-	
-class RGBA:
-	func _init():
-		var service
-		
-		_rgba = PBField.new("rgba", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = _rgba
-		data[_rgba.tag] = service
-		
-	var data = {}
-	
-	var _rgba: PBField
-	func get_rgba() -> int:
-		return _rgba.value
-	func clear_rgba() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_rgba.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_rgba(value : int) -> void:
-		_rgba.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
