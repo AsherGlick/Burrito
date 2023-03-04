@@ -16,8 +16,8 @@
 #include <utility>
 #include <vector>
 
-#include "attribute/trail_data.hpp"
 #include "attribute/marker_category.hpp"
+#include "attribute/trail_data.hpp"
 #include "category_gen.hpp"
 #include "icon_gen.hpp"
 #include "parseable.hpp"
