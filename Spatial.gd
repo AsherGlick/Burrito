@@ -510,8 +510,8 @@ func _on_main_menu_toggle_pressed():
 	set_maximal_mouse_block()
 
 func _on_FileDialog_file_selected(path):
-	#Godot required 
-	print(path)
+	#Godot required something be included in this function
+	print(path, " This button currently does nothing")
 
 
 ################################################################################

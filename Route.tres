@@ -1,4 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type spatial;
@@ -42,3 +44,8 @@ void fragment() {
 [resource]
 resource_local_to_scene = true
 shader = SubResource( 1 )
+shader_param/map_size = Vector2( 0, 0 )
+shader_param/map_flipped = null
+shader_param/map_bottom_offset = 36.0
+shader_param/interval = 1.0
+shader_param/texture_albedo = ExtResource( 1 )

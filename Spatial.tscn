@@ -74,6 +74,9 @@ scale = Vector2( 2, 2 )
 margin_left = 287.348
 margin_right = 314.348
 margin_bottom = 32.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
@@ -82,11 +85,17 @@ margin_top = 3.18198
 margin_right = 26.591
 margin_bottom = 28.182
 texture = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
 margin_right = 27.0
 margin_bottom = 32.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="EditorQuckPanel" type="PanelContainer" parent="Control/GlobalMenuButton"]
 visible = false
@@ -176,9 +185,9 @@ margin_bottom = 672.0
 window_title = "Open a File"
 mode = 0
 access = 2
-current_dir = "/home/steph/Code/Projects/Burrito"
+current_dir = "."
 current_file = "."
-current_path = "/home/steph/Code/Projects/Burrito/."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -474,9 +483,9 @@ window_title = "Open a File"
 mode = 0
 access = 2
 filters = PoolStringArray( "*.png" )
-current_dir = "/home/steph/Code/Projects/Burrito"
+current_dir = "."
 current_file = "."
-current_path = "/home/steph/Code/Projects/Burrito/."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -489,9 +498,9 @@ margin_bottom = 624.833
 window_title = "Save Path"
 resizable = true
 access = 2
-current_dir = "/home/steph/Code/Projects/Burrito"
+current_dir = "."
 current_file = "."
-current_path = "/home/steph/Code/Projects/Burrito/."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -784,7 +793,6 @@ margin_top = -6.0
 color = Color( 0, 0, 0, 1 )
 
 [node name="Paths" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.999999, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="Icons" type="Spatial" parent="."]
 
