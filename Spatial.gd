@@ -891,7 +891,7 @@ func _on_NewNodeAfter_pressed():
 			midpoint = ((start-end)/2) + end
 
 		path.add_point(midpoint, index+1)
-		#ath2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
+		#path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
 
 		clear_adjustment_nodes()
 		gen_adjustment_nodes()
@@ -942,6 +942,11 @@ func _on_MarkerPacks_cell_selected():
 			self.currently_active_path = path
 		else:
 			path.is_editable = false
+	for icon in self.icons.get_children():
+		if icon.category_name == find_pedigree_name(category_item, category_item.get_metadata(0).get_name()):
+			icon.is_editable = true
+		else:
+			icon.is_editable = false
 
 
 func _on_MarkerPacks_item_edited():
