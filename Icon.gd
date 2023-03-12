@@ -1,6 +1,9 @@
 extends Sprite3D
 
 var texture_path
+var category_name = ""
+var is_editable = false
+
 func set_icon_image(texture_path: String):
 	self.texture_path = texture_path
 	
