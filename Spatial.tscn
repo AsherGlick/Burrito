@@ -186,9 +186,9 @@ margin_bottom = 672.0
 window_title = "Open a File"
 mode = 0
 access = 2
-current_dir = "/home/steph/Code/Projects/Burrito"
+current_dir = "."
 current_file = "."
-current_path = "/home/steph/Code/Projects/Burrito/."
+current_path = "."
 __meta__ = {
 "_edit_use_anchors_": false
 }
