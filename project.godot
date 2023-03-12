@@ -35,6 +35,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Settings="*res://Settings.gd"
+LocalData="*res://LocalData.gd"
 
 [display]
 
