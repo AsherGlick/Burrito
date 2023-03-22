@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <ostream>
-#include <iosfwd>
 #include <regex>
 #include <string>
 #include <vector>
