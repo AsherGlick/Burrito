@@ -1,6 +1,7 @@
 #include "color.hpp"
 
 #include <stdint.h>
+#include <iosfwd>
 #include <ostream>
 #include <regex>
 #include <string>
