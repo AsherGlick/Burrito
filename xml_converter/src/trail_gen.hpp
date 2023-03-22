@@ -26,6 +26,7 @@ class Trail : public Parseable {
     int achievement_bitmask;
     int achievement_id;
     float animation_speed;
+    float blue;
     bool can_fade;
     MarkerCategory category;
     Color color;
@@ -33,6 +34,7 @@ class Trail : public Parseable {
     float distance_fade_end;
     float distance_fade_start;
     FestivalFilter festival_filter;
+    float green;
     UniqueId guid;
     bool is_wall;
     int map_display_size;
@@ -40,6 +42,7 @@ class Trail : public Parseable {
     MapTypeFilter map_type_filter;
     MountFilter mount_filter;
     ProfessionFilter profession_filter;
+    float red;
     bool render_ingame;
     bool render_on_map;
     bool render_on_minimap;
@@ -53,6 +56,7 @@ class Trail : public Parseable {
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
     bool animation_speed_is_set = false;
+    bool blue_is_set = false;
     bool can_fade_is_set = false;
     bool category_is_set = false;
     bool color_is_set = false;
@@ -60,6 +64,7 @@ class Trail : public Parseable {
     bool distance_fade_end_is_set = false;
     bool distance_fade_start_is_set = false;
     bool festival_filter_is_set = false;
+    bool green_is_set = false;
     bool guid_is_set = false;
     bool is_wall_is_set = false;
     bool map_display_size_is_set = false;
@@ -67,6 +72,7 @@ class Trail : public Parseable {
     bool map_type_filter_is_set = false;
     bool mount_filter_is_set = false;
     bool profession_filter_is_set = false;
+    bool red_is_set = false;
     bool render_ingame_is_set = false;
     bool render_on_map_is_set = false;
     bool render_on_minimap_is_set = false;

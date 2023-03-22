@@ -5,8 +5,10 @@ applies_to: ["Icon"]
 xml_fields: ["Position"]
 compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: position
+xml_parent_export: ""
+xml_child_export: ["X Position", "Y Position", "Z Position"]
 components:
-    
+  
     - name: X Position
       type: Float32
       xml_fields: [XPos, PositionX]
@@ -26,8 +28,6 @@ components:
       xml_fields: [ZPos, PositionZ]
       protobuf_field: "z"
       compatability: [TacO, Burrito, BlishHUD]
-      
-xml_export: "Children"
 ---
 An XYZ location of a point in the game world.
 

@@ -12,8 +12,14 @@ class RGBAColor;
 
 class Color {
  public:
-    std::string hex;
+    float red;
+    float green;
+    float blue;
     float alpha;
+    int r;
+    int g;
+    int b;
+    int a;
 };
 
 Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);

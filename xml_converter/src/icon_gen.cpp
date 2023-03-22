@@ -30,9 +30,17 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->achievement_id = parse_int(attribute, errors);
         this->achievement_id_is_set = true;
     }
+    else if (attributename == "alpha") {
+        this->color.alpha = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "autotrigger") {
         this->auto_trigger = parse_bool(attribute, errors);
         this->auto_trigger_is_set = true;
+    }
+    else if (attributename == "blue") {
+        this->color.blue = parse_float(attribute, errors);
+        this->color_is_set = true;
     }
     else if (attributename == "bouncedelay") {
         this->bounce_delay = parse_float(attribute, errors);
@@ -106,6 +114,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->festival_filter = parse_festival_filter(attribute, errors);
         this->festival_filter_is_set = true;
     }
+    else if (attributename == "green") {
+        this->color.green = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "guid") {
         this->guid = parse_unique_id(attribute, errors);
         this->guid_is_set = true;
@@ -174,6 +186,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->profession_filter = parse_profession_filter(attribute, errors);
         this->profession_filter_is_set = true;
     }
+    else if (attributename == "red") {
+        this->color.red = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "ingamevisibility") {
         this->render_ingame = parse_bool(attribute, errors);
         this->render_ingame_is_set = true;
@@ -202,9 +218,13 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->reset_behavior = parse_reset_behavior(attribute, errors);
         this->reset_behavior_is_set = true;
     }
-    else if (attributename == "resetlength") {
+    else if (attributename == "resetoffset") {
         this->reset_length = parse_float(attribute, errors);
         this->reset_length_is_set = true;
+    }
+    else if (attributename == "resetlength") {
+        this->reset_offset = parse_float(attribute, errors);
+        this->reset_offset_is_set = true;
     }
     else if (attributename == "scaleonmapwithzoom") {
         this->scale_on_map_with_zoom = parse_bool(attribute, errors);
@@ -316,6 +336,9 @@ vector<string> Icon::as_xml() const {
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
     }
+    if (this->color_is_set) {
+        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
+    }
     if (this->auto_trigger_is_set) {
         xml_node_contents.push_back(" AutoTrigger=\"" + stringify_bool(this->auto_trigger) + "\"");
     }
@@ -351,9 +374,6 @@ vector<string> Icon::as_xml() const {
     }
     if (this->distance_fade_start_is_set) {
         xml_node_contents.push_back(" FadeNear=\"" + stringify_float(this->distance_fade_start) + "\"");
-    }
-    if (this->euler_rotation_is_set) {
-        xml_node_contents.push_back(" Rotate=\"" + stringify_euler_rotation(this->euler_rotation) + "\"");
     }
     if (this->festival_filter_is_set) {
         xml_node_contents.push_back(" Festival=\"" + stringify_festival_filter(this->festival_filter) + "\"");
@@ -416,7 +436,10 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" Behavior=\"" + stringify_reset_behavior(this->reset_behavior) + "\"");
     }
     if (this->reset_length_is_set) {
-        xml_node_contents.push_back(" ResetLength=\"" + stringify_float(this->reset_length) + "\"");
+        xml_node_contents.push_back(" ResetOffset=\"" + stringify_float(this->reset_length) + "\"");
+    }
+    if (this->reset_offset_is_set) {
+        xml_node_contents.push_back(" ResetLength=\"" + stringify_float(this->reset_offset) + "\"");
     }
     if (this->scale_on_map_with_zoom_is_set) {
         xml_node_contents.push_back(" ScaleOnMapWithZoom=\"" + stringify_bool(this->scale_on_map_with_zoom) + "\"");
@@ -609,7 +632,13 @@ waypoint::Icon Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_reset_length(this->reset_length);
+        trigger->set_reset_offset(this->reset_length);
+    }
+    if (this->reset_offset_is_set) {
+        if (trigger == nullptr) {
+            trigger = new waypoint::Trigger();
+        }
+        trigger->set_reset_length(this->reset_offset);
     }
     if (this->scale_on_map_with_zoom_is_set) {
         proto_icon.set_scale_on_map_with_zoom(this->scale_on_map_with_zoom);
@@ -802,9 +831,13 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->reset_behavior = from_proto_reset_behavior(trigger.reset_behavior());
         this->reset_behavior_is_set = true;
     }
-    if (trigger.reset_length() != 0) {
-        this->reset_length = trigger.reset_length();
+    if (trigger.reset_offset() != 0) {
+        this->reset_length = trigger.reset_offset();
         this->reset_length_is_set = true;
+    }
+    if (trigger.reset_length() != 0) {
+        this->reset_offset = trigger.reset_length();
+        this->reset_offset_is_set = true;
     }
     if (proto_icon.scale_on_map_with_zoom() != 0) {
         this->scale_on_map_with_zoom = proto_icon.scale_on_map_with_zoom();
