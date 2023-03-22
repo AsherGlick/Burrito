@@ -2,8 +2,8 @@
 name: Reset Length
 type: Float32
 applies_to: [Icon]
-xml_fields: [ResetOffset]
-protobuf_field: trigger.reset_offset
+xml_fields: [ResetLength]
+protobuf_field: trigger.reset_length
 compatability: [TacO, BlishHUD, Burrito]
 ---
 When using behavior 4 (reappear after timer) this value defines, in seconds, the duration until the marker is reset after being activated.

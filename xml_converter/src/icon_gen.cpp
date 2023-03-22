@@ -218,7 +218,7 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->reset_behavior = parse_reset_behavior(attribute, errors);
         this->reset_behavior_is_set = true;
     }
-    else if (attributename == "resetoffset") {
+    else if (attributename == "resetlength") {
         this->reset_length = parse_float(attribute, errors);
         this->reset_length_is_set = true;
     }
@@ -436,7 +436,7 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" Behavior=\"" + stringify_reset_behavior(this->reset_behavior) + "\"");
     }
     if (this->reset_length_is_set) {
-        xml_node_contents.push_back(" ResetOffset=\"" + stringify_float(this->reset_length) + "\"");
+        xml_node_contents.push_back(" ResetLength=\"" + stringify_float(this->reset_length) + "\"");
     }
     if (this->reset_offset_is_set) {
         xml_node_contents.push_back(" ResetLength=\"" + stringify_float(this->reset_offset) + "\"");
@@ -632,7 +632,7 @@ waypoint::Icon Icon::as_protobuf() const {
         if (trigger == nullptr) {
             trigger = new waypoint::Trigger();
         }
-        trigger->set_reset_offset(this->reset_length);
+        trigger->set_reset_length(this->reset_length);
     }
     if (this->reset_offset_is_set) {
         if (trigger == nullptr) {
@@ -831,8 +831,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->reset_behavior = from_proto_reset_behavior(trigger.reset_behavior());
         this->reset_behavior_is_set = true;
     }
-    if (trigger.reset_offset() != 0) {
-        this->reset_length = trigger.reset_offset();
+    if (trigger.reset_length() != 0) {
+        this->reset_length = trigger.reset_length();
         this->reset_length_is_set = true;
     }
     if (trigger.reset_length() != 0) {

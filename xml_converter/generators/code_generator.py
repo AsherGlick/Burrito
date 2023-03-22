@@ -452,7 +452,7 @@ class Generator:
         side_effects: List[str] = []
         args: List[str] = []
         xml_child_export: List[str] = []
-        xml_parent_export: List[str] = []
+        xml_parent_export: str = ""
         protobuf_field: str = ""
         is_xml_export: bool = True
         is_trigger: bool = False
@@ -488,6 +488,7 @@ class Generator:
                 side_effects = []
                 xml_export = ""
                 args = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy(
+
 
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
