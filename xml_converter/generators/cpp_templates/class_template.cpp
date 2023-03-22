@@ -80,7 +80,7 @@ vector<string> {{cpp_class}}::as_xml() const {
     {% if attribute_variable.is_xml_export == true %}
     {% if (attribute_variable.attribute_type in ["CompoundValue", "CompoundCustomClass"] and attribute_variable.compound_name != None) %}
     if (this->{{attribute_variable.compound_name}}_is_set) {
-        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
+        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}}) + "\"");
     }
     {% else %}
     if (this->{{attribute_variable.attribute_name}}_is_set) {

@@ -329,7 +329,7 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
     }
     if (this->color_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->alpha) + "\"");
+        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
     }
     if (this->auto_trigger_is_set) {
         xml_node_contents.push_back(" AutoTrigger=\"" + stringify_bool(this->auto_trigger) + "\"");
@@ -464,13 +464,13 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" TriggerRange=\"" + stringify_float(this->trigger_range) + "\"");
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" XPos=\"" + stringify_float(this->x_position) + "\"");
+        xml_node_contents.push_back(" XPos=\"" + stringify_float(this->position.x_position) + "\"");
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" YPos=\"" + stringify_float(this->y_position) + "\"");
+        xml_node_contents.push_back(" YPos=\"" + stringify_float(this->position.y_position) + "\"");
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" ZPos=\"" + stringify_float(this->z_position) + "\"");
+        xml_node_contents.push_back(" ZPos=\"" + stringify_float(this->position.z_position) + "\"");
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;

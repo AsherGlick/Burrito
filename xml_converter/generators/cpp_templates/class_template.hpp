@@ -15,10 +15,14 @@ class {{forward_declaration}};
 class {{cpp_class}} : public Parseable {
  public:
     {% for attribute_variable in attribute_variables: %}
+    {% if attribute_variable.compound_name == None: %}
     {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
+    {% endif %}
     {% endfor %}
     {% for attribute_variable in attribute_variables: %}
+    {% if attribute_variable.compound_name == None: %}
     bool {{attribute_variable.attribute_name}}_is_set = false;
+    {% endif %}
     {% endfor %}
     {% if cpp_class == "Category": %}
     std::map<std::string, Category> children;
