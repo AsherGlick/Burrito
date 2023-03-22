@@ -224,7 +224,7 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
     vector<Parseable*> markers;
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
-        if (get_node_name(node) == "POI") {
+        if (normalize(get_node_name(node)) == "poi") {
             Category* default_category = get_category(node, marker_categories, errors);
 
             Icon* icon = new Icon();
@@ -236,7 +236,7 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
             icon->init_from_xml(node, errors);
             markers.push_back(icon);
         }
-        else if (get_node_name(node) == "Trail") {
+        else if (normalize(get_node_name(node)) == "trail") {
             Category* default_category = get_category(node, marker_categories, errors);
 
             Trail* trail = new Trail();
@@ -456,14 +456,14 @@ int main() {
     marker_categories.clear();
 
     begin = chrono::high_resolution_clock::now();
-    read_protobuf_file("./protobins/15.data", &marker_categories, &parsed_pois);
+    read_protobuf_file("./protobins/50.data", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("./protobins/15.xml", &marker_categories, &parsed_pois);
+    write_xml_file("./protobins/50.xml", &marker_categories, &parsed_pois);
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();

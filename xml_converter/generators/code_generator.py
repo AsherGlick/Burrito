@@ -2,7 +2,7 @@ from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
 import yaml
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple, Set
+from typing import Any, Dict, List, Tuple, Set, Optional
 import os
 import markdown
 from dataclasses import dataclass, field
@@ -14,7 +14,7 @@ type: object
 properties:
     type:
         type: string
-        enum: [Int32, Fixed32, Float32, String, Boolean, MultiflagValue, Enum, CompoundValue, Custom]
+        enum: [Int32, Fixed32, Float32, String, Boolean, MultiflagValue, Enum, CompoundValue, Custom, CompoundCustomClass]
 allOf:
     #############################
     # Int32 Type
@@ -130,15 +130,16 @@ allOf:
                 const: CompoundValue
       then:
         additionalProperties: false
-        required: [{shared_fields}, xml_export, components]
+        required: [{shared_fields}, components]
         properties:
             {shared_field_properties}
-            xml_export:
+            xml_parent_export:
                 type: string
-                enum:
-                    - Parent
-                    - Parent and Children
-                    - Children
+            xml_child_export:
+                type: array
+                items:
+                    type: string
+                    pattern: "^[A-Za-z' ]+$"
             components:
                 type: array
                 items:
@@ -155,7 +156,7 @@ allOf:
                             type: array
                             items:
                                 type: string
-                                pattern: "^[A-Za-z]+$"
+                                pattern: "^[A-Za-z ]+$"
                         protobuf_field:
                             type: string
                             pattern: "^[a-z_.]+$"
@@ -184,6 +185,13 @@ allOf:
                 type: array
                 items:
                     type: string
+            xml_parent_export:
+                type: string
+            xml_child_export:
+                type: array
+                items:
+                    type: string
+                    pattern: "^[A-Za-z' ]+$"
 
 """.format(
     shared_field_properties="""type:
@@ -286,8 +294,10 @@ class AttributeVariable:
     xml_fields: List[str]
     protobuf_field: str
     default_xml_fields: List[str] = field(default_factory=list)
-    xml_export: str = ""
-    is_child: bool = False
+    xml_child_export: str = ""
+    xml_parent_export: str = ""
+    compound_name: Optional[str] = None
+    is_xml_export: bool = True
     is_trigger: bool = False
 
 
@@ -423,8 +433,10 @@ class Generator:
         attribute_variables: List[AttributeVariable] = []
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
-        xml_export: str = ""
+        xml_child_export: List[str] = []
+        xml_parent_export: List[str] = []
         protobuf_field: str = ""
+        is_xml_export: bool = True
         is_trigger: bool = False
 
         cpp_includes.hpp_absolute_includes.add("string")
@@ -455,14 +467,50 @@ class Generator:
             if doc_type in fieldval['applies_to']:
                 xml_fields = []
                 default_xml_fields = []
-                xml_export = ""
+                xml_child_export = []
+                xml_parent_export = []
+                is_xml_export = True
+
+                    # Compound Values are unique in that the components have xml fields in addition to the compound variable
+                if fieldval['type'] in ["CompoundValue", "CompoundCustomClass"] :
+                    xml_child_export = fieldval['xml_child_export']
+                    xml_parent_export = fieldval['xml_parent_export']
+                    for component in fieldval['components']:
+                        component_xml_fields = []
+                        component_default_xml_fields = []
+                        if component['name'] in fieldval['xml_child_export']:
+                            component_default_xml_fields.append(component['xml_fields'][0])
+                            class_name = documentation_type_data[component['type']]["class_name"]
+                            is_xml_export = True
+                        if component['name'] in fieldval['xml_parent_export']:
+                            component_default_xml_fields.append(fieldval['xml_fields'][0])
+                            class_name = attribute_name
+                            is_xml_export = False
+                        for item in component['xml_fields']:
+                            component_xml_fields.append(lowercase(item, delimiter=""))
+                        component_attribute_variable = AttributeVariable(
+                            attribute_name=lowercase(component['name'], delimiter="_"),
+                            attribute_type="CompoundValue",
+                            cpp_type=doc_type_to_cpp_type[component['type']],
+                            class_name=class_name,
+                            xml_fields=component_xml_fields,
+                            default_xml_fields=component_default_xml_fields,
+                            xml_child_export=xml_child_export,
+                            xml_parent_export=xml_parent_export,
+                            protobuf_field=component["protobuf_field"],
+                            compound_name=lowercase(fieldval['name'], delimiter="_"),
+                            is_xml_export=is_xml_export,
+                        )
+                        attribute_variables.append(component_attribute_variable)
+                    if xml_parent_export == "":
+                        is_xml_export = False
 
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
                     class_name = documentation_type_data[fieldval['type']]["class_name"]
                     cpp_includes.cpp_relative_includes.add("attribute/{}.hpp".format(class_name))
 
-                elif fieldval['type'] == "Custom":
+                elif fieldval['type'] in ["Custom", "CompoundCustomClass"]:
                     if fieldval['class'] == "TrailDataMapId":
                         continue
                     cpp_type = fieldval['class']
@@ -480,31 +528,6 @@ class Generator:
                         field_type=fieldval['type'],
                         attribute_name=attribute_name,
                     ))
-
-                    # Compound Values are unique in that the components have xml fields in addition to the compound variable
-                if fieldval['type'] == "CompoundValue":
-                    xml_export = fieldval['xml_export']
-                    for component in fieldval['components']:
-                        component_xml_fields = []
-                        component_default_xml_fields = []
-                        for item in component['xml_fields']:
-                            if xml_export == "Children":
-                                component_default_xml_fields.append(item)
-                            if xml_export == "Parent":
-                                component_default_xml_fields.append(fieldval["xml_fields"][0])
-                            component_xml_fields.append(lowercase(item, delimiter=""))
-                        component_attribute_variable = AttributeVariable(
-                            attribute_name=lowercase(component['name'], delimiter="_"),
-                            attribute_type="CompoundValue",
-                            cpp_type=doc_type_to_cpp_type[component['type']],
-                            class_name=class_name,
-                            xml_fields=component_xml_fields,
-                            default_xml_fields=component_default_xml_fields,
-                            xml_export=xml_export,
-                            protobuf_field=component["protobuf_field"],
-                            is_child=True,
-                        )
-                        attribute_variables.append(component_attribute_variable)
 
                 for x in fieldval['xml_fields']:
                     xml_fields.append(lowercase(x, delimiter=""))
@@ -524,9 +547,11 @@ class Generator:
                     class_name=class_name,
                     xml_fields=xml_fields,
                     default_xml_fields=default_xml_fields,
-                    xml_export=xml_export,
+                    xml_child_export=xml_child_export,
+                    xml_parent_export=xml_parent_export,
                     protobuf_field=protobuf_field,
                     is_trigger=is_trigger,
+                    is_xml_export=is_xml_export,
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -612,7 +637,8 @@ class Generator:
                         cpp_type=doc_type_to_cpp_type[component['type']],
                         class_name=attribute_name,
                         xml_fields=xml_fields,
-                        xml_export=metadata[filepath]["xml_export"],
+                        xml_child_export=metadata[filepath]["xml_child_export"],
+                        xml_parent_export=metadata[filepath]["xml_parent_export"],
                         protobuf_field=component["protobuf_field"],
                         is_trigger=is_trigger,
                     )
