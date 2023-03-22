@@ -294,7 +294,7 @@ class AttributeVariable:
     xml_fields: List[str]
     protobuf_field: str
     default_xml_fields: List[str] = field(default_factory=list)
-    xml_child_export: str = ""
+    xml_child_export: List[str] = field(default_factory=list)
     xml_parent_export: str = ""
     compound_name: Optional[str] = None
     is_xml_export: bool = True
@@ -434,7 +434,7 @@ class Generator:
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
         xml_child_export: List[str] = []
-        xml_parent_export: List[str] = []
+        xml_parent_export: str = ""
         protobuf_field: str = ""
         is_xml_export: bool = True
         is_trigger: bool = False
@@ -468,11 +468,11 @@ class Generator:
                 xml_fields = []
                 default_xml_fields = []
                 xml_child_export = []
-                xml_parent_export = []
+                xml_parent_export = ""
                 is_xml_export = True
 
-                    # Compound Values are unique in that the components have xml fields in addition to the compound variable
-                if fieldval['type'] in ["CompoundValue", "CompoundCustomClass"] :
+                # Compound Values are unique in that the components have xml fields in addition to the compound variable
+                if fieldval['type'] in ["CompoundValue", "CompoundCustomClass"]:
                     xml_child_export = fieldval['xml_child_export']
                     xml_parent_export = fieldval['xml_parent_export']
                     for component in fieldval['components']:
