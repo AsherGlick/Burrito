@@ -472,13 +472,13 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" TriggerRange=\"" + stringify_float(this->trigger_range) + "\"");
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" XPos=\"" + to_string(this->position.x_position) + "\"");
+        xml_node_contents.push_back(" XPos=\"" + stringify_float(this->position.x_position) + "\"");
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" YPos=\"" + to_string(this->position.y_position) + "\"");
+        xml_node_contents.push_back(" YPos=\"" + stringify_float(this->position.y_position) + "\"");
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" ZPos=\"" + to_string(this->position.z_position) + "\"");
+        xml_node_contents.push_back(" ZPos=\"" + stringify_float(this->position.z_position) + "\"");
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;

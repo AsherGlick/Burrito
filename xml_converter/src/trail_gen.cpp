@@ -199,6 +199,9 @@ vector<string> Trail::as_xml() const {
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
     }
+    if (this->color_is_set) {
+        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
+    }
     if (this->animation_speed_is_set) {
         xml_node_contents.push_back(" AnimSpeed=\"" + stringify_float(this->animation_speed) + "\"");
     }

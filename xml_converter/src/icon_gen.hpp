@@ -28,7 +28,6 @@ class Icon : public Parseable {
     int achievement_bitmask;
     int achievement_id;
     bool auto_trigger;
-    float blue;
     float bounce_delay;
     float bounce_duration;
     float bounce_height;
@@ -42,7 +41,6 @@ class Icon : public Parseable {
     float distance_fade_start;
     EulerRotation euler_rotation;
     FestivalFilter festival_filter;
-    float green;
     UniqueId guid;
     bool has_countdown;
     float height_offset;
@@ -59,7 +57,6 @@ class Icon : public Parseable {
     MountFilter mount_filter;
     Position position;
     ProfessionFilter profession_filter;
-    float red;
     bool render_ingame;
     bool render_on_map;
     bool render_on_minimap;
@@ -79,7 +76,6 @@ class Icon : public Parseable {
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
     bool auto_trigger_is_set = false;
-    bool blue_is_set = false;
     bool bounce_delay_is_set = false;
     bool bounce_duration_is_set = false;
     bool bounce_height_is_set = false;
@@ -93,7 +89,6 @@ class Icon : public Parseable {
     bool distance_fade_start_is_set = false;
     bool euler_rotation_is_set = false;
     bool festival_filter_is_set = false;
-    bool green_is_set = false;
     bool guid_is_set = false;
     bool has_countdown_is_set = false;
     bool height_offset_is_set = false;
@@ -110,7 +105,6 @@ class Icon : public Parseable {
     bool mount_filter_is_set = false;
     bool position_is_set = false;
     bool profession_filter_is_set = false;
-    bool red_is_set = false;
     bool render_ingame_is_set = false;
     bool render_on_map_is_set = false;
     bool render_on_minimap_is_set = false;
