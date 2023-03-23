@@ -14,7 +14,7 @@ func refresh_mesh():
 	var tmpMesh = Mesh.new()
 	var i = 0
 	var last_uv: float = 0.0
-	for point_index in range(len(point_list)-1):	
+	for point_index in range(len(point_list)-1):
 		var point:Vector3 = point_list[point_index]
 		var next_point:Vector3 = point_list[point_index+1]
 
@@ -52,7 +52,7 @@ func refresh_mesh():
 		var st = SurfaceTool.new()
 		st.begin(Mesh.PRIMITIVE_TRIANGLE_FAN)
 
-		for v in vertices.size(): 
+		for v in vertices.size():
 			st.add_color(color)
 			st.add_uv(UVs[v])
 			st.add_vertex(vertices[v])

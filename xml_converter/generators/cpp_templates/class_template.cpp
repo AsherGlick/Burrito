@@ -2,15 +2,15 @@
 
 #include <algorithm>
 {% for absolute_include in cpp_includes.sorted_cpp_absolute_includes() %}
-#include <{{absolute_include}}>
+    #include <{{absolute_include}}>
 {% endfor %}
 
 {% for relative_include in cpp_includes.sorted_cpp_relative_includes() %}
-#include "{{relative_include}}"
+    #include "{{relative_include}}"
 {% endfor %}
 
 {% for forward_declaration in cpp_includes.sorted_cpp_forward_declarations() %}
-class {{forward_declaration}};
+    class {{forward_declaration}};
 {% endfor %}
 using namespace std;
 
@@ -18,26 +18,27 @@ string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
 {% if cpp_class == "Category": %}
-void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors) {
-    for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
-        bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors);
-        bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors);
+    void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors) {
+        for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
+            bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors);
+            bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors);
 
-        if (init_xml_attribute(attribute, errors)) {
-        }
-        else if (is_icon_value || is_trail_value) {
-        }
-        else {
-            errors->push_back(new XMLAttributeNameError("Unknown " + this->classname() + " attribute ", attribute));
+            if (init_xml_attribute(attribute, errors)) {
+            }
+            else if (is_icon_value || is_trail_value) {
+            }
+            else {
+                errors->push_back(new XMLAttributeNameError("Unknown " + this->classname() + " attribute ", attribute));
+            }
         }
     }
-}
 {% endif %}
 
 bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
+
     {% for i, value in enumerate(attribute_variable.xml_fields) %}
     {% if i == 0 and n == 0: %}
     if (attributename == "{{value}}") {
@@ -56,6 +57,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     }
     {% endif %}
     {% endfor %}
+
     {% endfor %}
     else {
         return false;
@@ -65,12 +67,12 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
 
 {%- if attributes_of_type_marker_category %}
 
-bool {{cpp_class}}::validate_attributes_of_type_marker_category() {
-    {% for attribute in attributes_of_type_marker_category %}
-    // TODO: validate "{{attribute}}"
-    {% endfor %}
-    return true;
-}
+    bool {{cpp_class}}::validate_attributes_of_type_marker_category() {
+        {% for attribute in attributes_of_type_marker_category %}
+        // TODO: validate "{{attribute}}"
+        {% endfor %}
+        return true;
+    }
 {% endif %}
 
 vector<string> {{cpp_class}}::as_xml() const {
@@ -92,26 +94,26 @@ vector<string> {{cpp_class}}::as_xml() const {
 {% if cpp_class == "Category": %}
     xml_node_contents.push_back(">\n");
 
-    for (const auto& [key, val] : this->children) {
-        string text;
-        for (const auto& s : val.as_xml()) {
-            text += s;
+        for (const auto& [key, val] : this->children) {
+            string text;
+            for (const auto& s : val.as_xml()) {
+                text += s;
+            }
+
+            xml_node_contents.push_back("\t" + text);
         }
 
-        xml_node_contents.push_back("\t" + text);
-    }
-
-    xml_node_contents.push_back("</MarkerCategory>\n");
-{% else: %}
-    xml_node_contents.push_back("/>");
-{% endif %}
+        xml_node_contents.push_back("</MarkerCategory>\n");
+    {% else: %}
+        xml_node_contents.push_back("/>");
+    {% endif %}
     return xml_node_contents;
 }
 
 waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% if cpp_class == "Icon": %}
-    waypoint::Trigger* trigger = nullptr;
+        waypoint::Trigger* trigger = nullptr;
     {% endif %}
     {%for attribute_variable in attribute_variables%}
     {% if (attribute_variable.is_trigger == true)%}
@@ -154,24 +156,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
         proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
     }
     {% endif %}
-    {% endif %}
-    {% endfor %}
-    {% if cpp_class == "Icon": %}
-    if (trigger != nullptr) {
-        proto_{{cpp_class_header}}.set_allocated_trigger(trigger);
-    }
-    {% endif %}
-    {% if cpp_class == "Category": %}
-    for (const auto& [key, val] : this->children) {
-        waypoint::{{cpp_class}} proto_{{cpp_class_header}}_child = val.as_protobuf();
-        proto_{{cpp_class_header}}.add_children()->CopyFrom(proto_{{cpp_class_header}}_child);
-    }
-    {% endif %}
-    return proto_{{cpp_class_header}};
-}
 
-void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) {
-    {% if cpp_class == "Icon": %}
     waypoint::Trigger trigger = proto_{{cpp_class_header}}.trigger();
     {% endif %}
     {%for attribute_variable in attribute_variables%}
@@ -221,6 +206,3 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
     {% endif %}
-    {% endif %}
-    {% endfor %}
-}
