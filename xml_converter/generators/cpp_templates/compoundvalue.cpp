@@ -27,7 +27,6 @@ using namespace std;
     }
     return {{attribute_name}};
 }
-<<<<<<< HEAD
 
 {% if attribute_variables[0].xml_parent_export != "" %}
 string stringify_{{attribute_name}}({{class_name}} attribute_value) {
@@ -42,20 +41,6 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     return output;
 }
 
-=======
-{% if attribute_variables[0].xml_export == "Parent" %}
-    string stringify_{{attribute_name}}({{class_name}} attribute_value) {
-        string output;
-        {% for n, attribute_variable in enumerate(attribute_variables) %}
-            {% if n == 0: %}
-                output = to_string(attribute_value.{{attribute_variables[n].attribute_name}});
-            {% else %}
-                output = output + "," + to_string(attribute_value.{{attribute_variables[n].attribute_name}});
-            {% endif %}
-        {% endfor %}
-        return output;
-    }
->>>>>>> 4d460a2bde6e55938b376bc7736ed93414a18cad
 {% endif %}
 
 waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {

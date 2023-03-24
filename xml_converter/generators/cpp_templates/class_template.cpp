@@ -68,7 +68,6 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
 }
 
 {%- if attributes_of_type_marker_category %}
-
     bool {{cpp_class}}::validate_attributes_of_type_marker_category() {
         {% for attribute in attributes_of_type_marker_category %}
         // TODO: validate "{{attribute}}"
@@ -81,30 +80,27 @@ vector<string> {{cpp_class}}::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<{{xml_class_name}} ");
     {% for attribute_variable in attribute_variables %}
-<<<<<<< HEAD
-    {% if attribute_variable.is_xml_export == true %}
-    {% if (attribute_variable.attribute_type in ["CompoundValue", "CompoundCustomClass"] and attribute_variable.compound_name != None) %}
-    if (this->{{attribute_variable.compound_name}}_is_set) {
-        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}}) + "\"");
-    }
-    {% else %}
-    if (this->{{attribute_variable.attribute_name}}_is_set) {
-        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
-    }
-    {% endif %}
-    {% endif %}
-{% endfor %}
-{% if cpp_class == "Category": %}
-    xml_node_contents.push_back(">\n");
+        {% if attribute_variable.is_xml_export == true %}
+            {% if (attribute_variable.attribute_type in ["CompoundValue", "CompoundCustomClass"] and attribute_variable.compound_name != None) %}
+            if (this->{{attribute_variable.compound_name}}_is_set) {
+                xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}}) + "\"");
+            }
+            {% else %}
+            if (this->{{attribute_variable.attribute_name}}_is_set) {
+                xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
+            }
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% if cpp_class == "Category": %}
+        xml_node_contents.push_back(">\n");
         for (const auto& [key, val] : this->children) {
             string text;
             for (const auto& s : val.as_xml()) {
                 text += s;
             }
-
             xml_node_contents.push_back("\t" + text);
         }
-
         xml_node_contents.push_back("</MarkerCategory>\n");
     {% else: %}
         xml_node_contents.push_back("/>");
@@ -118,7 +114,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
         waypoint::Trigger* trigger = nullptr;
     {% endif %}
     {% for attribute_variable in attribute_variables %}
-        {% if (attribute_variable.is_trigger == true)%}
+        {% if (attribute_variable.is_trigger == true) %}
             {% if (attribute_variable.attribute_type == "Custom")%}
                 if (this->{{attribute_variable.attribute_name}}_is_set) {
                     if (trigger == nullptr) {
@@ -183,7 +179,7 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
                     this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(trigger.{{attribute_variable.protobuf_field}}());
                     this->{{attribute_variable.attribute_name}}_is_set = true;
                 }
-            {% elif attribute_variable.class_name == "string" %}
+            {% elif (attribute_variable.class_name == "string") %}
                 if (trigger.{{attribute_variable.protobuf_field}}() != "") {
                     this->{{attribute_variable.attribute_name}} = trigger.{{attribute_variable.protobuf_field}}();
                     this->{{attribute_variable.attribute_name}}_is_set = true;
@@ -205,7 +201,7 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
                     this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
                     this->{{attribute_variable.attribute_name}}_is_set = true;
                 }
-            {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.compound_name == None%}
+            {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) and (attribute_variable.compound_name == None) %}
                 if (proto_{{cpp_class_header}}.has_{{attribute_variable.protobuf_field}}()) {
                     this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
                     this->{{attribute_variable.attribute_name}}_is_set = true;
