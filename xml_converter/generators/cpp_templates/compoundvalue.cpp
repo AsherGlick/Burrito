@@ -40,8 +40,8 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     {% endfor %}
     return output;
 }
-{% endif %}
 
+{% endif %}
 waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
     waypoint::{{class_name}}* proto_{{attribute_name}} = new waypoint::{{class_name}}();
     {% for attribute_variable in attribute_variables %}

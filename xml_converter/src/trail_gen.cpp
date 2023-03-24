@@ -38,6 +38,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->animation_speed = parse_float(attribute, errors);
         this->animation_speed_is_set = true;
     }
+    else if (attributename == "blue") {
+        this->color.blue = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "canfade") {
         this->can_fade = parse_bool(attribute, errors);
         this->can_fade_is_set = true;
@@ -94,6 +98,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->festival_filter = parse_festival_filter(attribute, errors);
         this->festival_filter_is_set = true;
     }
+    else if (attributename == "green") {
+        this->color.green = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "guid") {
         this->guid = parse_unique_id(attribute, errors);
         this->guid_is_set = true;
@@ -121,6 +129,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     else if (attributename == "profession") {
         this->profession_filter = parse_profession_filter(attribute, errors);
         this->profession_filter_is_set = true;
+    }
+    else if (attributename == "red") {
+        this->color.red = parse_float(attribute, errors);
+        this->color_is_set = true;
     }
     else if (attributename == "ingamevisibility") {
         this->render_ingame = parse_bool(attribute, errors);

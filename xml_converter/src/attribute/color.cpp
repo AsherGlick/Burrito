@@ -6,8 +6,6 @@
 #include <ostream>
 #include <regex>
 
-#include <iosfwd>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -49,8 +47,6 @@ int float_to_int(float input) {
 // parse_color
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
-// TODO(#98): Color should be saved in a better format then the raw hex string.
-// TODO(#129): Compound Value XML Export
 ////////////////////////////////////////////////////////////////////////////////
 Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     Color color;

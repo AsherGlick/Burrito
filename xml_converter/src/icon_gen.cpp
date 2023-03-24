@@ -34,6 +34,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->auto_trigger = parse_bool(attribute, errors);
         this->auto_trigger_is_set = true;
     }
+    else if (attributename == "blue") {
+        this->color.blue = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "bouncedelay") {
         this->bounce_delay = parse_float(attribute, errors);
         this->bounce_delay_is_set = true;
@@ -130,6 +134,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->festival_filter = parse_festival_filter(attribute, errors);
         this->festival_filter_is_set = true;
     }
+    else if (attributename == "green") {
+        this->color.green = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "guid") {
         this->guid = parse_unique_id(attribute, errors);
         this->guid_is_set = true;
@@ -222,6 +230,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->profession_filter = parse_profession_filter(attribute, errors);
         this->profession_filter_is_set = true;
     }
+    else if (attributename == "red") {
+        this->color.red = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "ingamevisibility") {
         this->render_ingame = parse_bool(attribute, errors);
         this->render_ingame_is_set = true;
@@ -309,6 +321,42 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "inforange") {
         this->trigger_range = parse_float(attribute, errors);
         this->trigger_range_is_set = true;
+    }
+    else if (attributename == "xpos") {
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "positionx") {
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "rotatex") {
+        this->euler_rotation.x_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
+    }
+    else if (attributename == "ypos") {
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "positiony") {
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "rotatey") {
+        this->euler_rotation.y_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
+    }
+    else if (attributename == "zpos") {
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "positionz") {
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "rotatez") {
+        this->euler_rotation.z_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
     }
     else {
         return false;
