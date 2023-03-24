@@ -8,7 +8,6 @@ protobuf_field: rgba_color
 compatability: [TacO, BlishHUD, Burrito]
 xml_parent_export: ['Red', 'Green', 'Blue']
 xml_child_export: ['Alpha']
-
 components:
     
     - name: Red # fake, to make thing "square"

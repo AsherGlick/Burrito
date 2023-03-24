@@ -61,6 +61,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
         return true;
     }
 {% endif %}
+
 vector<string> {{cpp_class}}::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<{{xml_class_name}} ");
@@ -69,20 +70,18 @@ vector<string> {{cpp_class}}::as_xml() const {
             if (this->{{attribute_variable.set_flag_name}}_is_set) {
                 xml_node_contents.push_back(" {{attribute_variable.default_xml_field}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
             }
+            {% endif %}
         {% endif %}
     {% endfor %}
     {% if cpp_class == "Category": %}
         xml_node_contents.push_back(">\n");
-
         for (const auto& [key, val] : this->children) {
             string text;
             for (const auto& s : val.as_xml()) {
                 text += s;
             }
-
             xml_node_contents.push_back("\t" + text);
         }
-
         xml_node_contents.push_back("</MarkerCategory>\n");
     {% else: %}
         xml_node_contents.push_back("/>");
@@ -149,7 +148,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
         }
     {% endif %}
     return proto_{{cpp_class_header}};
-}
+    }
 
 void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) {
     {% if cpp_class == "Icon": %}

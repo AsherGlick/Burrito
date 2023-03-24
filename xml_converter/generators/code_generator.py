@@ -160,7 +160,7 @@ allOf:
                             type: array
                             items:
                                 type: string
-                                pattern: "^[A-Za-z]+$"
+                                pattern: "^[A-Za-z ]+$"
                         protobuf_field:
                             type: string
                             pattern: "^[a-z_.]+$"
@@ -577,6 +577,7 @@ class Generator:
                     side_effects=side_effects,
                     write_to_xml=write_to_xml,
                     set_flag_name=attribute_name,
+
                 )
                 attribute_variables.append(attribute_variable)
 
