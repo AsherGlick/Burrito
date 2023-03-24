@@ -60,6 +60,7 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
     }
     return true;
 }
+
 vector<string> Category::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<MarkerCategory ");

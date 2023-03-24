@@ -40,7 +40,6 @@ string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     {% endfor %}
     return output;
 }
-
 {% endif %}
 
 waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {

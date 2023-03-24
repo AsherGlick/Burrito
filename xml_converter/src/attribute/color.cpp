@@ -1,15 +1,13 @@
 #include "color.hpp"
 
 #include <stdint.h>
-<<<<<<< HEAD
+
 #include <iosfwd>
 #include <ostream>
 #include <regex>
-=======
 
 #include <iosfwd>
 #include <sstream>
->>>>>>> 4d460a2bde6e55938b376bc7736ed93414a18cad
 #include <string>
 #include <vector>
 

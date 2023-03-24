@@ -185,11 +185,11 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     }
     return true;
 }
+
 bool Trail::validate_attributes_of_type_marker_category() {
     // TODO: validate "category"
     return true;
 }
-
 vector<string> Trail::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<Trail ");

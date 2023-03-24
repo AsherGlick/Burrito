@@ -70,7 +70,7 @@ message Trail {
     bool can_fade = 19; 
     bool is_wall = 20;
     float scale = 21;
-    RGBAColor rgba_color = 22;
+    RGBAColor rgba_color = 22
     FestivalFilter festival_filter = 23;
     MapTypeFilter map_type_filter = 24;
     MountFilter mount_filter = 25;

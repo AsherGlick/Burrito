@@ -67,7 +67,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     return true;
 }
 
-{%- if attributes_of_type_marker_category %}
+{% if attributes_of_type_marker_category %}
     bool {{cpp_class}}::validate_attributes_of_type_marker_category() {
         {% for attribute in attributes_of_type_marker_category %}
         // TODO: validate "{{attribute}}"
@@ -75,7 +75,6 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
         return true;
     }
 {% endif %}
-
 vector<string> {{cpp_class}}::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<{{xml_class_name}} ");
@@ -94,13 +93,16 @@ vector<string> {{cpp_class}}::as_xml() const {
     {% endfor %}
     {% if cpp_class == "Category": %}
         xml_node_contents.push_back(">\n");
+
         for (const auto& [key, val] : this->children) {
             string text;
             for (const auto& s : val.as_xml()) {
                 text += s;
             }
+
             xml_node_contents.push_back("\t" + text);
         }
+
         xml_node_contents.push_back("</MarkerCategory>\n");
     {% else: %}
         xml_node_contents.push_back("/>");

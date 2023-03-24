@@ -315,6 +315,7 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     }
     return true;
 }
+
 bool Icon::validate_attributes_of_type_marker_category() {
     // TODO: validate "category"
     // TODO: validate "hide_category"
@@ -322,7 +323,6 @@ bool Icon::validate_attributes_of_type_marker_category() {
     // TODO: validate "toggle_category"
     return true;
 }
-
 vector<string> Icon::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<POI ");
