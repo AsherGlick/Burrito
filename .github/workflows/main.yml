@@ -119,4 +119,4 @@ jobs:
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error 
           # Duration after which artifact will expire in days. 0 means using default retention. 
-          retention-days: 7
+          retention-days: 0
