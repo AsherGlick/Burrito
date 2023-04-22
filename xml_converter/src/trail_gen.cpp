@@ -161,6 +161,8 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     else if (attributename == "traildata") {
         this->trail_data = parse_trail_data(base_dir, attribute, errors);
         this->trail_data_is_set = true;
+        this->map_id = this->trail_data.map_id;
+        this->map_id_is_set = true;
     }
     else if (attributename == "trailscale") {
         this->trail_scale = parse_float(attribute, errors);

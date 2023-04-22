@@ -289,6 +289,7 @@ class AttributeVariable:
     protobuf_field: str
     default_xml_fields: List[str] = field(default_factory=list)
     xml_export: str = ""
+    side_effects: List[str] = field(default_factory=list)
     compound_name: Optional[str] = None
     is_trigger: bool = False
     uses_file_path: bool = False
@@ -426,6 +427,7 @@ class Generator:
         attribute_variables: List[AttributeVariable] = []
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
+        side_effects: List[str] = []
         xml_export: str = ""
         protobuf_field: str = ""
         is_trigger: bool = False
@@ -459,6 +461,7 @@ class Generator:
             if doc_type in fieldval['applies_to']:
                 xml_fields = []
                 default_xml_fields = []
+                side_effects = []
                 xml_export = ""
 
                 if fieldval['type'] in documentation_type_data:
@@ -527,6 +530,10 @@ class Generator:
                 else:
                     uses_file_path = False
 
+                if "side_effects" in fieldval:
+                    for side_effect in fieldval['side_effects']:
+                        side_effects.append(lowercase(side_effect, "_"))
+
                 attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
                     attribute_type=fieldval["type"],
@@ -538,6 +545,7 @@ class Generator:
                     protobuf_field=protobuf_field,
                     is_trigger=is_trigger,
                     uses_file_path=uses_file_path,
+                    side_effects=side_effects,
                 )
                 attribute_variables.append(attribute_variable)
 

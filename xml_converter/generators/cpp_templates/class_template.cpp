@@ -53,6 +53,10 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     else if (attributename == "{{value}}") {
         this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(base_dir, attribute, errors);
         this->{{attribute_variable.attribute_name}}_is_set = true;
+        {% for side_effect in attribute_variable.side_effects %}
+        this->{{side_effect}} = this->{{attribute_variable.class_name}}.{{side_effect}};
+        this->{{side_effect}}_is_set = true;
+        {% endfor %}
     }
     {% else: %}
     else if (attributename == "{{value}}") {
