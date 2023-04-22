@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-#include <fstream>
-#include <iosfwd>
+#include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
 

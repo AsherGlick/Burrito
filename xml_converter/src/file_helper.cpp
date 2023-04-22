@@ -1,7 +1,6 @@
 #include "file_helper.hpp"
 
 #include <fstream>
-#include <iostream>
 #include <string>
 
 using namespace std;
