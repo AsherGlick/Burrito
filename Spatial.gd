@@ -284,7 +284,7 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
 var markerdata = Waypoint.Waypoint.new()
-var marker_file_dir = "res://xml_converter/protobins/"
+var marker_file_dir = "user://protobins/"
 var marker_file_path = ""
 
 func load_waypoint_markers(map_id):
@@ -398,7 +398,9 @@ func gen_map_markers():
 	for path in self.markerdata.get_trail():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
-		for index in range(0, trail_data.get_points_x().size()):
+		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size()
+			print("Warning: Trail ", trail.get_category.get_name(), " does not have equal number of X, Y, and Z coordinates.")
+		for index in range(0, trail_data.get_points_z().size()):
 			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
 		var texture_path = path.get_texture_path()
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
@@ -510,8 +512,7 @@ func _on_main_menu_toggle_pressed():
 	set_maximal_mouse_block()
 
 func _on_FileDialog_file_selected(path):
-	#Godot required something be included in this function
-	print(path, " This button currently does nothing")
+	pass
 
 
 ################################################################################

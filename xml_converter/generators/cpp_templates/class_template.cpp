@@ -18,12 +18,12 @@ string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
 {% if cpp_class == "Category": %}
-void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors) {
+void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, string* base_dir) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
         bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors);
         bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors);
 
-        if (init_xml_attribute(attribute, errors)) {
+        if (init_xml_attribute(attribute, errors, base_dir)) {
         }
         else if (is_icon_value || is_trail_value) {
         }
@@ -34,7 +34,7 @@ void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>*
 }
 {% endif %}
 
-bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string* base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
@@ -48,6 +48,11 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     else if (attributename == "{{value}}") {
         this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
         this->{{attribute_variable.compound_name}}_is_set = true;
+    }
+    {% elif (attribute_variable.uses_file_path)%}
+    else if (attributename == "{{value}}") {
+        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(base_dir, attribute, errors);
+        this->{{attribute_variable.attribute_name}}_is_set = true;
     }
     {% else: %}
     else if (attributename == "{{value}}") {
@@ -148,9 +153,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     }
     {% endif %}
     {% else: %}
-    {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
-//TODO: TrailDataMapID is currently not implemented
-    {% elif (attribute_variable.attribute_type == "Enum")%}
+    {% if (attribute_variable.attribute_type == "Enum")%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
     }
@@ -208,8 +211,7 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
     }
     {% endif %}
     {% else: %}
-    {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
-    {% elif (attribute_variable.attribute_type ==  "Enum") %}
+    {% if (attribute_variable.attribute_type ==  "Enum") %}
     if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != 0) {
         this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
         this->{{attribute_variable.attribute_name}}_is_set = true;

@@ -19,7 +19,7 @@ string Trail::classname() {
     return "Trail";
 }
 
-bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string* base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
@@ -159,7 +159,7 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->texture_is_set = true;
     }
     else if (attributename == "traildata") {
-        this->trail_data = parse_trail_data(attribute, errors);
+        this->trail_data = parse_trail_data(base_dir, attribute, errors);
         this->trail_data_is_set = true;
     }
     else if (attributename == "trailscale") {

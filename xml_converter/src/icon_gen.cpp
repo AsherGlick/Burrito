@@ -19,7 +19,7 @@ string Icon::classname() {
     return "POI";
 }
 
-bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string* base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
@@ -118,7 +118,7 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->heightoffset = parse_float(attribute, errors);
         this->heightoffset_is_set = true;
     }
-    else if (attributename == "bh-heightoffset") {
+    else if (attributename == "bhheightoffset") {
         this->heightoffset = parse_float(attribute, errors);
         this->heightoffset_is_set = true;
     }

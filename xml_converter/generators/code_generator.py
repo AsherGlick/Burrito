@@ -184,6 +184,8 @@ allOf:
                 type: array
                 items:
                     type: string
+            uses_file_path:
+                type: boolean
 
 """.format(
     shared_field_properties="""type:
@@ -204,7 +206,7 @@ allOf:
                 type: array
                 items:
                     type: string
-                    pattern: "^[A-Za-z-]+$"
+                    pattern: "^[A-Za-z]+$"
             protobuf_field:
                 type: string
                 pattern: "^[a-z_.]+$"
@@ -289,6 +291,7 @@ class AttributeVariable:
     xml_export: str = ""
     compound_name: Optional[str] = None
     is_trigger: bool = False
+    uses_file_path: bool = False
 
 
 ################################################################################
@@ -380,7 +383,7 @@ class Generator:
             attributes_of_type_marker_category = []
 
             attribute_variables: List[AttributeVariable]
-            attribute_variables, cpp_includes = self.generate_cpp_variable_data(cpp_class)
+            attribute_variables, cpp_includes, file_path_used = self.generate_cpp_variable_data(cpp_class)
 
             for attribute_variable in attribute_variables:
                 if attribute_variable.class_name == "marker_category":
@@ -393,6 +396,7 @@ class Generator:
                     cpp_includes=cpp_includes,
                     cpp_class_header=lowercase(cpp_class),
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
+                    file_path_used=file_path_used,
                 ))
 
             with open(os.path.join(output_directory, lowercase(cpp_class) + "_gen.cpp"), 'w') as f:
@@ -404,6 +408,7 @@ class Generator:
                     attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                     enumerate=enumerate,
                     attributes_of_type_marker_category=attributes_of_type_marker_category,
+                    file_path_used=file_path_used,
                 ))
 
     ############################################################################
@@ -416,7 +421,7 @@ class Generator:
     def generate_cpp_variable_data(
         self,
         doc_type: str,
-    ) -> Tuple[List[AttributeVariable], CPPInclude]:
+    ) -> Tuple[List[AttributeVariable], CPPInclude, bool]:
 
         cpp_includes: CPPInclude = CPPInclude()
         attribute_name: str = ""
@@ -426,6 +431,8 @@ class Generator:
         xml_export: str = ""
         protobuf_field: str = ""
         is_trigger: bool = False
+        uses_file_path: bool = False
+        file_path_used: bool = False
 
         cpp_includes.hpp_absolute_includes.add("string")
         cpp_includes.hpp_absolute_includes.add("vector")
@@ -463,8 +470,6 @@ class Generator:
                     cpp_includes.cpp_relative_includes.add("attribute/{}.hpp".format(class_name))
 
                 elif fieldval['type'] == "Custom":
-                    if fieldval['class'] == "TrailDataMapId":
-                        continue
                     cpp_type = fieldval['class']
                     class_name = insert_delimiter(fieldval['class'], delimiter="_")
                     cpp_includes.hpp_relative_includes.add("attribute/{}.hpp".format(class_name))
@@ -517,6 +522,15 @@ class Generator:
                     is_trigger = False
                     protobuf_field = fieldval["protobuf_field"]
 
+                if "uses_file_path" in fieldval:
+                    if fieldval["uses_file_path"]:
+                        uses_file_path = True
+                        file_path_used = True
+                    else:
+                        uses_file_path = False
+                else:
+                    uses_file_path = False
+
                 attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
                     attribute_type=fieldval["type"],
@@ -527,10 +541,11 @@ class Generator:
                     xml_export=xml_export,
                     protobuf_field=protobuf_field,
                     is_trigger=is_trigger,
+                    uses_file_path=uses_file_path,
                 )
                 attribute_variables.append(attribute_variable)
 
-        return attribute_variables, cpp_includes
+        return attribute_variables, cpp_includes, file_path_used
 
     ############################################################################
     # variable_name_from_markdown_path

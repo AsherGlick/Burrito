@@ -12,11 +12,14 @@ class TrailData;
 
 class TrailData {
  public:
-    std::string trail_data;
-    std::string base_dir;
+    std::string trail_data_relative_path;
+    int map_id;
+    std::vector<float> points_x;
+    std::vector<float> points_y;
+    std::vector<float> points_z;
 };
 
-TrailData parse_trail_data(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+TrailData parse_trail_data(std::string* base_dir, rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
 std::string stringify_trail_data(TrailData attribute_value);
 
