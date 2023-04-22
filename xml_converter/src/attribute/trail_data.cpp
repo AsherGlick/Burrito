@@ -52,8 +52,8 @@ TrailData parse_trail_data(string* base_dir, rapidxml::xml_attribute<>* input, v
         trail_data.points_z.push_back(*reinterpret_cast<float*>(point_z));
     }
 
-    if (trail_data.points_x.size() != trail_data.points_z.size()) {
-        cout << "Unexpected number of bits in trail file " << trail_path << endl;
+    if (trail_data.points_x.size() != trail_data.points_y.size() || trail_data.points_x.size() != trail_data.points_z.size()) {
+        cout << "Unexpected number of bits in trail file " << trail_path << ". Does not have equal number of X, Y, and Z coordinates." << endl;
     }
 
     trail_data_file.close();
