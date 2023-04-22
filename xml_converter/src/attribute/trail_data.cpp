@@ -4,7 +4,12 @@
 #include <sys/types.h>
 
 #include <algorithm>
-#include <fstream>
+// IWYU is incorrectly removing fstream here
+#include <fstream>  // IWYU pragma: keep
+// iostream is typedef'ing  ifstream as basic_ifstream<char>
+// basic_ifstream<char> is definied in fstream
+// This might be a bug in std or the linter.
+// https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.2/group__s27__2__iosfwd.html
 #include <iostream>
 #include <string>
 #include <vector>
