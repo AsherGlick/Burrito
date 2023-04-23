@@ -1,5 +1,6 @@
 #include <dirent.h>
 #include <errno.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 
 #include <algorithm>
@@ -25,7 +26,6 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
-#include "trail_gen.hpp"
 #include "waypoint.pb.h"
 
 using namespace std;
@@ -391,7 +391,7 @@ void move_supplementary_files(string input_directory, string output_directory) {
                 continue;
             }
             else {
-                // TODO: Only include files that are referenced by the 
+                // TODO: Only include files that are referenced by the
                 // individual markers in order to avoid any unnessecary files
                 string new_path = output_directory + "/" + filename;
                 // This function is a workaround that simulates the copy
@@ -409,7 +409,7 @@ void read_taco_directory(string directory, map<string, Category>* marker_categor
     }
 }
 
-void write_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois){
+void write_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     string xml_filepath = directory + "xml_file.xml";
     write_xml_file(xml_filepath, marker_categories, parsed_pois);
@@ -434,7 +434,7 @@ void test_proto() {
     }
 }
 
-void convert_all_markerpacks(string input_directory, string output_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois){
+void convert_all_markerpacks(string input_directory, string output_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     vector<string> marker_packs;
 
     DIR* dir = opendir(input_directory.c_str());
@@ -464,7 +464,6 @@ string create_burrito_data_folder() {
     string data_directory = "/.local/share/godot/app_userdata/Burrito/protobins";
     // Construct the folder path
     string folder_path = string(home_dir) + data_directory;
-
     // Create the folder with permissions 0700 (read/write/execute for owner only)
     int result = mkdir(folder_path.c_str(), S_IRWXU);
     if (result != 0 && errno != EEXIST) {

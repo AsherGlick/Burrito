@@ -1,16 +1,9 @@
 #include "trail_data.hpp"
 
 #include <stdint.h>
-#include <sys/types.h>
 
 #include <algorithm>
-// IWYU is incorrectly removing fstream here because it thinks ifstream is
-// defined in iostream, not fstream. But iostream is typedef'ing ifstream as a
-// basic_ifstream<char> which is forward declared from fstream, according to:
-// https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.2/group__s27__2__iosfwd.html
-// This might be a bug in std library or iwyu so it is being ignored here.
-#include <fstream> // IWYU pragma: keep
-#include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -28,13 +21,13 @@ using namespace std;
 TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors, string base_dir) {
     TrailData trail_data;
     trail_data.trail_data_relative_path = get_attribute_value(input);
-    if (base_dir == "" || trail_data.trail_data_relative_path == ""){
+    if (base_dir == "" || trail_data.trail_data_relative_path == "") {
         errors->push_back(new XMLAttributeValueError("", input));
     }
     ifstream trail_data_file;
     string trail_path = base_dir + "/" + trail_data.trail_data_relative_path;
     trail_data_file.open(trail_path, ios::in | ios::binary);
-    if (trail_data_file.good()){
+    if (trail_data_file.good()) {
         char version[4];
         trail_data_file.read(version, 4);
 
@@ -61,7 +54,7 @@ TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* 
 
         trail_data_file.close();
     }
-    else 
+    else
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
     return trail_data;
 }
