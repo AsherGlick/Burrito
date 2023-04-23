@@ -287,6 +287,7 @@ class AttributeVariable:
     class_name: str
     xml_fields: List[str]
     protobuf_field: str
+    args: List[str] = field(default_factory=list)
     default_xml_fields: List[str] = field(default_factory=list)
     xml_export: str = ""
     side_effects: List[str] = field(default_factory=list)
@@ -428,10 +429,10 @@ class Generator:
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
         side_effects: List[str] = []
+        default_args: List[str] = ["attribute", "errors"]
         xml_export: str = ""
         protobuf_field: str = ""
         is_trigger: bool = False
-        uses_file_path: bool = False
 
         cpp_includes.hpp_absolute_includes.add("string")
         cpp_includes.hpp_absolute_includes.add("vector")
@@ -455,14 +456,18 @@ class Generator:
             cpp_includes.cpp_absolute_includes.add("type_traits")
 
         for filepath, document in sorted(self.data.items()):
-            attribute_name = self.variable_name_from_markdown_path(filepath)
             fieldval = document.metadata
+            attribute_name = lowercase(fieldval['name'], "_")
 
             if doc_type in fieldval['applies_to']:
                 xml_fields = []
                 default_xml_fields = []
                 side_effects = []
                 xml_export = ""
+                args = []
+                
+                for arg in default_args:
+                    args.append(arg)
 
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
@@ -508,6 +513,7 @@ class Generator:
                             xml_export=xml_export,
                             protobuf_field=component["protobuf_field"],
                             compound_name=lowercase(fieldval['name'], delimiter="_"),
+                            args=args,
                         )
                         attribute_variables.append(component_attribute_variable)
 
@@ -522,13 +528,8 @@ class Generator:
                     is_trigger = False
                     protobuf_field = fieldval["protobuf_field"]
 
-                if "uses_file_path" in fieldval:
-                    if fieldval["uses_file_path"]:
-                        uses_file_path = True
-                    else:
-                        uses_file_path = False
-                else:
-                    uses_file_path = False
+                if fieldval.get("uses_file_path", False):
+                    args.append("base_dir")
 
                 if "side_effects" in fieldval:
                     for side_effect in fieldval['side_effects']:
@@ -544,7 +545,7 @@ class Generator:
                     xml_export=xml_export,
                     protobuf_field=protobuf_field,
                     is_trigger=is_trigger,
-                    uses_file_path=uses_file_path,
+                    args=args,
                     side_effects=side_effects,
                 )
                 attribute_variables.append(attribute_variable)

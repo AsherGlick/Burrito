@@ -43,7 +43,7 @@ class Icon : public Parseable {
     FestivalFilter festival_filter;
     UniqueId guid;
     bool has_countdown;
-    float heightoffset;
+    float height_offset;
     MarkerCategory hide_category;
     Image icon;
     float icon_size;
@@ -90,7 +90,7 @@ class Icon : public Parseable {
     bool festival_filter_is_set = false;
     bool guid_is_set = false;
     bool has_countdown_is_set = false;
-    bool heightoffset_is_set = false;
+    bool height_offset_is_set = false;
     bool hide_category_is_set = false;
     bool icon_is_set = false;
     bool icon_size_is_set = false;
@@ -121,7 +121,7 @@ class Icon : public Parseable {
     bool trigger_range_is_set = false;
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
-    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string* base_dir = nullptr);
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string base_dir = "");
     waypoint::Icon as_protobuf() const;
     void parse_protobuf(waypoint::Icon proto_icon);
     bool validate_attributes_of_type_marker_category();

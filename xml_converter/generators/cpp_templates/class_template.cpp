@@ -18,7 +18,7 @@ string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
 {% if cpp_class == "Category": %}
-void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, string* base_dir) {
+void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, string base_dir) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
         bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors);
         bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors);
@@ -34,34 +34,29 @@ void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>*
 }
 {% endif %}
 
-bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string* base_dir) {
+bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
     {% for i, value in enumerate(attribute_variable.xml_fields) %}
     {% if i == 0 and n == 0: %}
     if (attributename == "{{value}}") {
-        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
+        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
     {% elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.compound_name != None) %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
+        this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float({{", ".join(attribute_variable.args)}});
         this->{{attribute_variable.compound_name}}_is_set = true;
-    }
-    {% elif (attribute_variable.uses_file_path)%}
-    else if (attributename == "{{value}}") {
-        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(base_dir, attribute, errors);
-        this->{{attribute_variable.attribute_name}}_is_set = true;
-        {% for side_effect in attribute_variable.side_effects %}
-        this->{{side_effect}} = this->{{attribute_variable.class_name}}.{{side_effect}};
-        this->{{side_effect}}_is_set = true;
-        {% endfor %}
     }
     {% else: %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
+        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
         this->{{attribute_variable.attribute_name}}_is_set = true;
+        {% for side_effect in attribute_variable.side_effects %}
+        this->{{side_effect}} = this->{{attribute_variable.class_name}}.side_effect_{{side_effect}};
+        this->{{side_effect}}_is_set = true;
+        {% endfor %}
     }
     {% endif %}
     {% endfor %}

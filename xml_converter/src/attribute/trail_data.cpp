@@ -4,12 +4,12 @@
 #include <sys/types.h>
 
 #include <algorithm>
-// IWYU is incorrectly removing fstream here
-#include <fstream>  // IWYU pragma: keep
-// iostream is typedef'ing  ifstream as basic_ifstream<char>
-// basic_ifstream<char> is definied in fstream
-// This might be a bug in std or the linter.
+// IWYU is incorrectly removing fstream here because it thinks ifstream is
+// defined in iostream, not fstream. But iostream is typedef'ing ifstream as a
+// basic_ifstream<char> which is forward declared from fstream, according to:
 // https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.2/group__s27__2__iosfwd.html
+// This might be a bug in std library or iwyu so it is being ignored here.
+#include <fstream> // IWYU pragma: keep
 #include <iostream>
 #include <string>
 #include <vector>
@@ -25,38 +25,44 @@ using namespace std;
 //
 // Parses a TrailData from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-TrailData parse_trail_data(string* base_dir, rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors, string base_dir) {
     TrailData trail_data;
     trail_data.trail_data_relative_path = get_attribute_value(input);
+    if (base_dir == "" || trail_data.trail_data_relative_path == ""){
+        errors->push_back(new XMLAttributeValueError("", input));
+    }
     ifstream trail_data_file;
-    string trail_path = *base_dir + "/" + trail_data.trail_data_relative_path;
+    string trail_path = base_dir + "/" + trail_data.trail_data_relative_path;
     trail_data_file.open(trail_path, ios::in | ios::binary);
+    if (trail_data_file.good()){
+        char version[4];
+        trail_data_file.read(version, 4);
 
-    char version[4];
-    trail_data_file.read(version, 4);
+        char map_id_char[4];
 
-    char map_id_char[4];
+        trail_data_file.read(map_id_char, 4);
+        trail_data.side_effect_map_id = *reinterpret_cast<uint32_t*>(map_id_char);
 
-    trail_data_file.read(map_id_char, 4);
-    trail_data.map_id = *reinterpret_cast<uint32_t*>(map_id_char);
+        while (trail_data_file.tellg() > 0) {
+            char point_x[4];
+            trail_data_file.read(point_x, 4);
+            trail_data.points_x.push_back(*reinterpret_cast<float*>(point_x));
+            char point_y[4];
+            trail_data_file.read(point_y, 4);
+            trail_data.points_y.push_back(*reinterpret_cast<float*>(point_y));
+            char point_z[4];
+            trail_data_file.read(point_z, 4);
+            trail_data.points_z.push_back(*reinterpret_cast<float*>(point_z));
+        }
 
-    while (trail_data_file.tellg() > 0) {
-        char point_x[4];
-        trail_data_file.read(point_x, 4);
-        trail_data.points_x.push_back(*reinterpret_cast<float*>(point_x));
-        char point_y[4];
-        trail_data_file.read(point_y, 4);
-        trail_data.points_y.push_back(*reinterpret_cast<float*>(point_y));
-        char point_z[4];
-        trail_data_file.read(point_z, 4);
-        trail_data.points_z.push_back(*reinterpret_cast<float*>(point_z));
+        if (trail_data.points_x.size() != trail_data.points_y.size() || trail_data.points_x.size() != trail_data.points_z.size()) {
+            errors->push_back(new XMLAttributeValueError("Unexpected number of bits in trail file. Does not have equal number of X, Y, and Z coordinates." + trail_path, input));
+        }
+
+        trail_data_file.close();
     }
-
-    if (trail_data.points_x.size() != trail_data.points_y.size() || trail_data.points_x.size() != trail_data.points_z.size()) {
-        cout << "Unexpected number of bits in trail file " << trail_path << ". Does not have equal number of X, Y, and Z coordinates." << endl;
-    }
-
-    trail_data_file.close();
+    else 
+        errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
     return trail_data;
 }
 
@@ -78,11 +84,9 @@ string stringify_trail_data(TrailData attribute_value) {
 waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
     waypoint::TrailData* trail_data = new waypoint::TrailData();
     trail_data->set_trail_data_relative_path(attribute_value.trail_data_relative_path);
-    for (u_int i = 0; i < attribute_value.points_x.size(); i++) {
-        trail_data->add_points_x(attribute_value.points_x[i]);
-        trail_data->add_points_y(attribute_value.points_y[i]);
-        trail_data->add_points_z(attribute_value.points_z[i]);
-    }
+    trail_data->mutable_points_x()->Add(attribute_value.points_x.begin(), attribute_value.points_x.end());
+    trail_data->mutable_points_y()->Add(attribute_value.points_y.begin(), attribute_value.points_y.end());
+    trail_data->mutable_points_z()->Add(attribute_value.points_z.begin(), attribute_value.points_z.end());
     return trail_data;
 }
 
@@ -94,10 +98,8 @@ waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
 TrailData from_proto_trail_data(waypoint::TrailData attribute_value) {
     TrailData trail_data;
     trail_data.trail_data_relative_path = attribute_value.trail_data_relative_path();
-    for (int i = 0; i < attribute_value.points_x_size(); i++) {
-        trail_data.points_x.push_back(attribute_value.points_x(i));
-        trail_data.points_y.push_back(attribute_value.points_y(i));
-        trail_data.points_z.push_back(attribute_value.points_z(i));
-    }
+    trail_data.points_x = {attribute_value.points_x().begin(), attribute_value.points_x().end()};
+    trail_data.points_y = {attribute_value.points_y().begin(), attribute_value.points_y().end()};
+    trail_data.points_z = {attribute_value.points_z().begin(), attribute_value.points_z().end()};
     return trail_data;
 }

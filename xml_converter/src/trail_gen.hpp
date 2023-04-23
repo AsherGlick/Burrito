@@ -79,7 +79,7 @@ class Trail : public Parseable {
     bool trail_scale_is_set = false;
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
-    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string* base_dir = nullptr);
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string base_dir = "");
     waypoint::Trail as_protobuf() const;
     void parse_protobuf(waypoint::Trail proto_trail);
     bool validate_attributes_of_type_marker_category();

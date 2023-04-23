@@ -19,7 +19,7 @@ string Icon::classname() {
     return "POI";
 }
 
-bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string* base_dir) {
+bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
@@ -115,12 +115,12 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->has_countdown_is_set = true;
     }
     else if (attributename == "heightoffset") {
-        this->heightoffset = parse_float(attribute, errors);
-        this->heightoffset_is_set = true;
+        this->height_offset = parse_float(attribute, errors);
+        this->height_offset_is_set = true;
     }
     else if (attributename == "bhheightoffset") {
-        this->heightoffset = parse_float(attribute, errors);
-        this->heightoffset_is_set = true;
+        this->height_offset = parse_float(attribute, errors);
+        this->height_offset_is_set = true;
     }
     else if (attributename == "hide") {
         this->hide_category = parse_marker_category(attribute, errors);
@@ -150,7 +150,7 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->map_id = parse_int(attribute, errors);
         this->map_id_is_set = true;
     }
-    else if (attributename == "mapid") {
+    else if (attributename == "maptype") {
         this->map_type_filter = parse_map_type_filter(attribute, errors);
         this->map_type_filter_is_set = true;
     }
@@ -364,8 +364,8 @@ vector<string> Icon::as_xml() const {
     if (this->has_countdown_is_set) {
         xml_node_contents.push_back(" HasCountdown=\"" + stringify_bool(this->has_countdown) + "\"");
     }
-    if (this->heightoffset_is_set) {
-        xml_node_contents.push_back(" HeightOffset=\"" + stringify_float(this->heightoffset) + "\"");
+    if (this->height_offset_is_set) {
+        xml_node_contents.push_back(" HeightOffset=\"" + stringify_float(this->height_offset) + "\"");
     }
     if (this->hide_category_is_set) {
         xml_node_contents.push_back(" Hide=\"" + stringify_marker_category(this->hide_category) + "\"");
@@ -389,7 +389,7 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" MapID=\"" + stringify_int(this->map_id) + "\"");
     }
     if (this->map_type_filter_is_set) {
-        xml_node_contents.push_back(" MapID=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
+        xml_node_contents.push_back(" MapType=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
     }
     if (this->maximum_size_on_screen_is_set) {
         xml_node_contents.push_back(" MaxSize=\"" + stringify_int(this->maximum_size_on_screen) + "\"");
@@ -539,8 +539,8 @@ waypoint::Icon Icon::as_protobuf() const {
         }
         trigger->set_has_countdown(this->has_countdown);
     }
-    if (this->heightoffset_is_set) {
-        proto_icon.set_height_offset(this->heightoffset);
+    if (this->height_offset_is_set) {
+        proto_icon.set_height_offset(this->height_offset);
     }
     if (this->hide_category_is_set) {
         if (trigger == nullptr) {
@@ -731,8 +731,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->has_countdown_is_set = true;
     }
     if (proto_icon.height_offset() != 0) {
-        this->heightoffset = proto_icon.height_offset();
-        this->heightoffset_is_set = true;
+        this->height_offset = proto_icon.height_offset();
+        this->height_offset_is_set = true;
     }
     if (trigger.has_action_hide_category()) {
         this->hide_category = from_proto_marker_category(trigger.action_hide_category());
