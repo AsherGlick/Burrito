@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "attribute/marker_category.hpp"
-#include "attribute/trail_data.hpp"
 #include "category_gen.hpp"
 #include "file_helper.hpp"
 #include "icon_gen.hpp"
@@ -26,6 +25,7 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
+#include "trail_gen.hpp"
 #include "waypoint.pb.h"
 
 using namespace std;
@@ -452,7 +452,7 @@ void convert_all_markerpacks(string input_directory, string output_directory, ma
 }
 
 string create_burrito_data_folder() {
-        // Get the home directory path
+    // Get the home directory path
     const char* home_dir = getenv("HOME");
     if (home_dir == nullptr) {
         std::cerr << "Error: HOME environment variable is not set." << std::endl;

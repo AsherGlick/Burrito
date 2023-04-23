@@ -465,7 +465,7 @@ class Generator:
                 side_effects = []
                 xml_export = ""
                 args = []
-                
+
                 for arg in default_args:
                     args.append(arg)
 

@@ -77,9 +77,9 @@ string stringify_trail_data(TrailData attribute_value) {
 waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
     waypoint::TrailData* trail_data = new waypoint::TrailData();
     trail_data->set_trail_data_relative_path(attribute_value.trail_data_relative_path);
-    trail_data->mutable_points_x()->Add(attribute_value.points_x.begin(), attribute_value.points_x.end());
-    trail_data->mutable_points_y()->Add(attribute_value.points_y.begin(), attribute_value.points_y.end());
-    trail_data->mutable_points_z()->Add(attribute_value.points_z.begin(), attribute_value.points_z.end());
+    *trail_data->mutable_points_x() = {attribute_value.points_x.begin(), attribute_value.points_x.end()};
+    *trail_data->mutable_points_y() = {attribute_value.points_y.begin(), attribute_value.points_y.end()};
+    *trail_data->mutable_points_z() = {attribute_value.points_z.begin(), attribute_value.points_z.end()};
     return trail_data;
 }
 
