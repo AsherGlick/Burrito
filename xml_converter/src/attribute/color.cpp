@@ -18,6 +18,34 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
+// int_to_float // float_to_int
+//
+// Helper functions to convert the value of colors from one type to another.
+// Also serves to make sure the values stay within the bounds.
+////////////////////////////////////////////////////////////////////////////////
+float int_to_float(int input) {
+    if (input > 255) {
+        input = 255;
+    }
+    if (input < 0) {
+        input = 0;
+    }
+    float output = static_cast<float>(input) / 255.0f;
+    return output;
+}
+
+int float_to_int(float input) {
+    if (input > 1.0) {
+        input = 1.0;
+    }
+    if (input < 0) {
+        input = 0;
+    }
+    int output = static_cast<int>(input * 255);
+    return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // parse_color
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
@@ -41,14 +69,14 @@ Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     if (std::regex_match(hex_string, hex_pattern)) {
         // Extract the R, G, B, and A values from the Hex string
         if (hex_string.size() == 6 || hex_string.size() == 8) {
-            color.r = std::stoi(hex_string.substr(0, 2), nullptr, 16);
-            color.g = std::stoi(hex_string.substr(2, 2), nullptr, 16);
-            color.b = std::stoi(hex_string.substr(4, 2), nullptr, 16);
+            color.red = int_to_float(std::stoi(hex_string.substr(0, 2), nullptr, 16));
+            color.green = int_to_float(std::stoi(hex_string.substr(2, 2), nullptr, 16));
+            color.blue = int_to_float(std::stoi(hex_string.substr(4, 2), nullptr, 16));
             if (hex_string.size() == 8) {
-                color.a = std::stoi(hex_string.substr(6, 2), nullptr, 16);
+                color.alpha = int_to_float(std::stoi(hex_string.substr(6, 2), nullptr, 16));
             }
             else {
-                color.a = 255;
+                color.alpha = 1.0;
             }
         }
     }
@@ -64,13 +92,13 @@ string stringify_color(Color attribute_value) {
     std::stringstream stream;
     std::string hex_string = "#";
 
-    stream << std::hex << attribute_value.r;
+    stream << std::hex << float_to_int(attribute_value.red);
     hex_string += stream.str();
 
-    stream << std::hex << attribute_value.g;
+    stream << std::hex << float_to_int(attribute_value.green);
     hex_string += stream.str();
 
-    stream << std::hex << attribute_value.b;
+    stream << std::hex << float_to_int(attribute_value.blue);
     hex_string += stream.str();
 
     std::string rgb = hex_string;
@@ -85,25 +113,13 @@ string stringify_color(Color attribute_value) {
 waypoint::RGBAColor* to_proto_color(Color attribute_value) {
     waypoint::RGBAColor* color = new waypoint::RGBAColor();
     // The default RGB in burrito will be 000000 (i.e. black)
-
-    // If alpha (float) is not the default value, convert to int
+    // Default value of alpha in Burrito is 1.0 (i.e. 255)
+    int int_alpha = 255;
     if (attribute_value.alpha != 0) {
-        int alpha_int = static_cast<int>(attribute_value.alpha * 255);
-        // Check that it doesnt exceed the bounds of {0,255}
-        if (alpha_int > 255) {
-            alpha_int = 255;
-        }
-        if (alpha_int < 0) {
-            alpha_int = 0;
-        }
-        attribute_value.a = alpha_int;
-    }
-    else {
-        // Default value of alpha in Burrito
-        attribute_value.a = 255;
+        int_alpha = float_to_int(attribute_value.alpha);
     }
 
-    uint32_t rgba = ((attribute_value.r & 0xff) << 24) + ((attribute_value.g & 0xff) << 16) + ((attribute_value.b & 0xff) << 8) + (attribute_value.a & 0xff);
+    uint32_t rgba = ((float_to_int(attribute_value.red) & 0xff) << 24) + ((float_to_int(attribute_value.green) & 0xff) << 16) + ((float_to_int(attribute_value.blue) & 0xff) << 8) + (int_alpha & 0xff);
     color->set_rgba_color(rgba);
     return color;
 }
@@ -119,15 +135,15 @@ Color from_proto_color(waypoint::RGBAColor attribute_value) {
     stream << std::hex << attribute_value.rgba_color();
     std::string hex_string = stream.str();
 
-    color.r = std::stoi(hex_string.substr(0, 2), nullptr, 16);
-    color.g = std::stoi(hex_string.substr(2, 2), nullptr, 16);
-    color.b = std::stoi(hex_string.substr(4, 2), nullptr, 16);
-    color.a = std::stoi(hex_string.substr(6, 2), nullptr, 16);
+    int int_red = std::stoi(hex_string.substr(0, 2), nullptr, 16);
+    int int_green = std::stoi(hex_string.substr(2, 2), nullptr, 16);
+    int int_blue = std::stoi(hex_string.substr(4, 2), nullptr, 16);
+    int int_alpha = std::stoi(hex_string.substr(6, 2), nullptr, 16);
 
-    color.red = static_cast<float>(color.r) / 255.0f;
-    color.green = static_cast<float>(color.g) / 255.0f;
-    color.blue = static_cast<float>(color.b) / 255.0f;
-    color.alpha = static_cast<float>(color.a) / 255.0f;
+    color.red = int_to_float(int_red);
+    color.green = int_to_float(int_green);
+    color.blue = int_to_float(int_blue);
+    color.alpha = int_to_float(int_alpha);
 
     return color;
 }

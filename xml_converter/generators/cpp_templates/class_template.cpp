@@ -40,25 +40,11 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_fields) %}
             {% if i == 0 and n == 0: %}
-                if (attributename == "{{value}}") {
-                    this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
-                    this->{{attribute_variable.attribute_name}}_is_set = true;
-                }
-            {% elif (attribute_variable.attribute_type in ["CompoundValue", "CompoundCustomClass"] and attribute_variable.compound_name != None) %}
-                else if (attributename == "{{value}}") {
-                    this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
-                    this->{{attribute_variable.compound_name}}_is_set = true;
-                }
-            {% else: %}
-                else if (attributename == "{{value}}") {
-                    this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
-                    this->{{attribute_variable.attribute_name}}_is_set = true;
-                    {% for side_effect in attribute_variable.side_effects %}
-                        this->{{side_effect}} = this->{{attribute_variable.class_name}}.side_effect_{{side_effect}};
-                        this->{{side_effect}}_is_set = true;
-                    {% endfor %}
-                }
-            {% endif %}
+            if {% else: %}
+            else if {% endif %}(attributename == "{{value}}") {
+                this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
+                this->{{attribute_variable.set_flag_name}}_is_set = true;
+            }
         {% endfor %}
     {% endfor %}
     else {
@@ -79,16 +65,10 @@ vector<string> {{cpp_class}}::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<{{xml_class_name}} ");
     {% for attribute_variable in attribute_variables %}
-        {% if attribute_variable.is_xml_export == true %}
-            {% if (attribute_variable.attribute_type in ["CompoundValue", "CompoundCustomClass"] and attribute_variable.compound_name != None) %}
-            if (this->{{attribute_variable.compound_name}}_is_set) {
-                xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}}) + "\"");
+        {% if attribute_variable.write_to_xml == true %}
+            if (this->{{attribute_variable.set_flag_name}}_is_set) {
+                xml_node_contents.push_back(" {{attribute_variable.default_xml_field}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
             }
-            {% else %}
-            if (this->{{attribute_variable.attribute_name}}_is_set) {
-                xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
-            }
-            {% endif %}
         {% endif %}
     {% endfor %}
     {% if cpp_class == "Category": %}
@@ -116,6 +96,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
         waypoint::Trigger* trigger = nullptr;
     {% endif %}
     {% for attribute_variable in attribute_variables %}
+        {% if attribute_variable.is_component == false %}
         {% if (attribute_variable.is_trigger == true) %}
             {% if (attribute_variable.attribute_type == "Custom")%}
                 if (this->{{attribute_variable.attribute_name}}_is_set) {
@@ -144,16 +125,16 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
                 if (this->{{attribute_variable.attribute_name}}_is_set) {
                     proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
                 }
-            {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) and attribute_variable.compound_name == None%}
+            {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"])%}
                 if (this->{{attribute_variable.attribute_name}}_is_set) {
                     proto_{{cpp_class_header}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
                 }
-            {% elif (attribute_variable.compound_name != None)%}
             {% else: %}
                 if (this->{{attribute_variable.attribute_name}}_is_set) {
                     proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
                 }
             {% endif %}
+        {% endif %}
         {% endif %}
     {% endfor %}
     {% if cpp_class == "Icon": %}
@@ -174,9 +155,10 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
     {% if cpp_class == "Icon": %}
         waypoint::Trigger trigger = proto_{{cpp_class_header}}.trigger();
     {% endif %}
-    {% for attribute_variable in attribute_variables %}
-        {% if (attribute_variable.is_trigger == true) %}
-            {% if (attribute_variable.attribute_type == "Custom") %}
+    {%for attribute_variable in attribute_variables%}
+        {% if attribute_variable.is_component == false %}
+        {% if (attribute_variable.is_trigger == true)%}
+            {% if (attribute_variable.attribute_type == "Custom")%}
                 if (trigger.has_{{attribute_variable.protobuf_field}}()) {
                     this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(trigger.{{attribute_variable.protobuf_field}}());
                     this->{{attribute_variable.attribute_name}}_is_set = true;
@@ -203,12 +185,11 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
                     this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
                     this->{{attribute_variable.attribute_name}}_is_set = true;
                 }
-            {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) and (attribute_variable.compound_name == None) %}
+            {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) %}
                 if (proto_{{cpp_class_header}}.has_{{attribute_variable.protobuf_field}}()) {
                     this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
                     this->{{attribute_variable.attribute_name}}_is_set = true;
                 }
-            {% elif (attribute_variable.compound_name != None) %}
             {% elif (attribute_variable.class_name == "string") %}
                 if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != "") {
                     this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
@@ -220,6 +201,7 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
                     this->{{attribute_variable.attribute_name}}_is_set = true;
                 }
             {% endif %}
+        {% endif %}
         {% endif %}
     {% endfor %}
 }

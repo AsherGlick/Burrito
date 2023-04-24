@@ -6,8 +6,8 @@ applies_to: [Icon, Trail]
 xml_fields: [Color, BHColor]
 protobuf_field: rgba_color
 compatability: [TacO, BlishHUD, Burrito]
-xml_parent_export: "{Red},{Green},{Blue}"
-xml_child_export: ["Alpha"]
+xml_parent_export: ['Red', 'Green', 'Blue']
+xml_child_export: ['Alpha']
 
 components:
     

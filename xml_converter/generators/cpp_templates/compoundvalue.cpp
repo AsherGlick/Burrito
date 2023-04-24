@@ -28,7 +28,7 @@ using namespace std;
     return {{attribute_name}};
 }
 
-{% if attribute_variables[0].xml_parent_export != "" %}
+{% if attribute_variables[0].xml_parent_export != [] %}
 string stringify_{{attribute_name}}({{class_name}} attribute_value) {
     string output;
     {% for n, attribute_variable in enumerate(attribute_variables) %}
