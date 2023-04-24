@@ -69,7 +69,6 @@ vector<string> {{cpp_class}}::as_xml() const {
             if (this->{{attribute_variable.set_flag_name}}_is_set) {
                 xml_node_contents.push_back(" {{attribute_variable.default_xml_field}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
             }
-            {% endif %}
         {% endif %}
     {% endfor %}
     {% if cpp_class == "Category": %}

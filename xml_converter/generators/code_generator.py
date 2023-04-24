@@ -160,7 +160,7 @@ allOf:
                             type: array
                             items:
                                 type: string
-                                pattern: "^[A-Za-z ]+$"
+                                pattern: "^[A-Za-z]+$"
                         protobuf_field:
                             type: string
                             pattern: "^[a-z_.]+$"
@@ -491,6 +491,7 @@ class Generator:
                 side_effects = []
                 args = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
 
+
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
                     class_name = documentation_type_data[fieldval['type']]["class_name"]
@@ -660,8 +661,6 @@ class Generator:
                         cpp_type=doc_type_to_cpp_type[component['type']],
                         class_name=attribute_name,
                         xml_fields=xml_fields,
-                        xml_child_export=metadata[filepath]["xml_child_export"],
-                        xml_parent_export=metadata[filepath]["xml_parent_export"],
                         protobuf_field=component["protobuf_field"],
                         is_trigger=is_trigger,
                     )
