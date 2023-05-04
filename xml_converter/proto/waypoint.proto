@@ -297,7 +297,6 @@ message SpeciesFilter {
 }
 
 message TrailData {
-    string trail_data_relative_path = 1;
     repeated float points_x = 2;
     repeated float points_y = 3;
     repeated float points_z = 4;

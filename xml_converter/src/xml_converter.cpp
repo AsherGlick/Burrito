@@ -213,7 +213,7 @@ Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker
 //
 // Parse the <POIs> xml block into an in-memory array of Markers.
 ////////////////////////////////////////////////////////////////////////////////
-vector<Parseable*> parse_pois(string base_dir, rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
+vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors, string base_dir) {
     vector<Parseable*> markers;
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
@@ -229,7 +229,7 @@ vector<Parseable*> parse_pois(string base_dir, rapidxml::xml_node<>* root_node, 
             icon->init_from_xml(node, errors);
             markers.push_back(icon);
         }
-        else if (normalize(get_node_name(node)) == "trail") {
+        else if (get_node_name(node) == "Trail") {
             Category* default_category = get_category(node, marker_categories, errors);
 
             Trail* trail = new Trail();
@@ -316,7 +316,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
             parse_marker_categories(node, marker_categories, &errors);
         }
         else if (get_node_name(node) == "POIs") {
-            vector<Parseable*> temp_vector = parse_pois(base_dir, node, marker_categories, &errors);
+            vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors, base_dir);
             move(temp_vector.begin(), temp_vector.end(), back_inserter(*parsed_pois));
         }
         else {
@@ -394,8 +394,6 @@ void move_supplementary_files(string input_directory, string output_directory) {
                 // TODO: Only include files that are referenced by the
                 // individual markers in order to avoid any unnessecary files
                 string new_path = output_directory + "/" + filename;
-                // This function is a workaround that simulates the copy
-                // function in filesystem in C++17. Can be changed in future
                 copy_file(path, new_path);
             }
         }
@@ -456,14 +454,14 @@ string create_burrito_data_folder() {
     const char* home_dir = getenv("HOME");
     if (home_dir == nullptr) {
         std::cerr << "Error: HOME environment variable is not set." << std::endl;
-        return "";
+        exit(0);
     }
     // For Linux, the deafult for "user://"" in Godot is
     // ~/.local/share/godot/app_userdata/[project_name]
-    // Output_directory can be thought of as "user://Burrito/protobins"
-    string data_directory = "/.local/share/godot/app_userdata/Burrito/protobins";
+    // Variable folder_path can be thought of as "user://Burrito/protobins"
+    string data_directory = ".local/share/godot/app_userdata/Burrito/protobins";
     // Construct the folder path
-    string folder_path = string(home_dir) + data_directory;
+    string folder_path = string(home_dir) + "/" + data_directory;
     // Create the folder with permissions 0700 (read/write/execute for owner only)
     int result = mkdir(folder_path.c_str(), S_IRWXU);
     if (result != 0 && errno != EEXIST) {

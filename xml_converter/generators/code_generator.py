@@ -2,7 +2,7 @@ from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
 import yaml
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple, Set, Optional
+from typing import Any, Dict, List, Tuple, Set, Optional, Final
 import os
 import markdown
 from dataclasses import dataclass, field
@@ -296,6 +296,9 @@ class AttributeVariable:
     uses_file_path: bool = False
 
 
+DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
+
+
 ################################################################################
 # CPPInclude
 #
@@ -429,8 +432,8 @@ class Generator:
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
         side_effects: List[str] = []
-        default_args: List[str] = ["attribute", "errors"]
         xml_export: str = ""
+        args: List[str] = []
         protobuf_field: str = ""
         is_trigger: bool = False
 
@@ -457,17 +460,14 @@ class Generator:
 
         for filepath, document in sorted(self.data.items()):
             fieldval = document.metadata
-            attribute_name = lowercase(fieldval['name'], "_")
+            attribute_name = attribute_name_from_markdown_data(fieldval['name'])
 
             if doc_type in fieldval['applies_to']:
                 xml_fields = []
                 default_xml_fields = []
                 side_effects = []
                 xml_export = ""
-                args = []
-
-                for arg in default_args:
-                    args.append(arg)
+                args = DEFAULT_ARGUMENTS.copy()
 
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
@@ -491,7 +491,25 @@ class Generator:
                         attribute_name=attribute_name,
                     ))
 
-                    # Compound Values are unique in that the components have xml fields in addition to the compound variable
+                for x in fieldval['xml_fields']:
+                    xml_fields.append(lowercase(x, delimiter=""))
+                default_xml_fields.append(fieldval['xml_fields'][0])
+
+                if fieldval["protobuf_field"].startswith("trigger"):
+                    is_trigger = True
+                    protobuf_field = fieldval["protobuf_field"].split('.')[1]
+                else:
+                    is_trigger = False
+                    protobuf_field = fieldval["protobuf_field"]
+
+                if fieldval.get("uses_file_path", False):
+                    args.append("base_dir")
+
+                if "side_effects" in fieldval:
+                    for side_effect in fieldval['side_effects']:
+                        side_effects.append(attribute_name_from_markdown_data(side_effect))
+
+                # Compound Values are unique in that the components have xml fields in addition to the compound variable
                 if fieldval['type'] == "CompoundValue":
                     xml_export = fieldval['xml_export']
                     for component in fieldval['components']:
@@ -517,24 +535,6 @@ class Generator:
                         )
                         attribute_variables.append(component_attribute_variable)
 
-                for x in fieldval['xml_fields']:
-                    xml_fields.append(lowercase(x, delimiter=""))
-                default_xml_fields.append(fieldval['xml_fields'][0])
-
-                if fieldval["protobuf_field"].startswith("trigger"):
-                    is_trigger = True
-                    protobuf_field = fieldval["protobuf_field"].split('.')[1]
-                else:
-                    is_trigger = False
-                    protobuf_field = fieldval["protobuf_field"]
-
-                if fieldval.get("uses_file_path", False):
-                    args.append("base_dir")
-
-                if "side_effects" in fieldval:
-                    for side_effect in fieldval['side_effects']:
-                        side_effects.append(lowercase(side_effect, "_"))
-
                 attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
                     attribute_type=fieldval["type"],
@@ -551,15 +551,6 @@ class Generator:
                 attribute_variables.append(attribute_variable)
 
         return attribute_variables, cpp_includes
-
-    ############################################################################
-    # variable_name_from_markdown_path
-    #
-    # Takes the name of a markdown file and returns the variable name that
-    # should be used internally to store that value.
-    ############################################################################
-    def variable_name_from_markdown_path(self, filepath: str) -> str:
-        return os.path.splitext(os.path.basename(filepath))[0]
 
     ############################################################################
     # write_attributes
@@ -871,6 +862,16 @@ class Generator:
                     ))
 
         return template.render(field_rows=field_rows), field_rows
+
+
+############################################################################
+# attribute_name_from_markdown_data
+#
+# Takes the name of an attribute from the markdown file and returns the name
+# that should be used internally to store that value.
+############################################################################
+def attribute_name_from_markdown_data(attribute_name: str) -> str:
+    return lowercase(attribute_name, "_")
 
 
 ################################################################################

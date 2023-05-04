@@ -21,41 +21,52 @@ using namespace std;
 TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors, string base_dir) {
     TrailData trail_data;
     trail_data.trail_data_relative_path = get_attribute_value(input);
-    if (base_dir == "" || trail_data.trail_data_relative_path == "") {
-        errors->push_back(new XMLAttributeValueError("", input));
+    if (base_dir == "") {
+        errors->push_back(new XMLAttributeValueError("Marker pack file name is empty", input));
     }
+    if (trail_data.trail_data_relative_path == "") {
+        errors->push_back(new XMLAttributeValueError("Path to trail file is empty", input));
+        return trail_data;
+    }
+
     ifstream trail_data_file;
     string trail_path = base_dir + "/" + trail_data.trail_data_relative_path;
     trail_data_file.open(trail_path, ios::in | ios::binary);
-    if (trail_data_file.good()) {
-        char version[4];
-        trail_data_file.read(version, 4);
-
-        char map_id_char[4];
-
-        trail_data_file.read(map_id_char, 4);
-        trail_data.side_effect_map_id = *reinterpret_cast<uint32_t*>(map_id_char);
-
-        while (trail_data_file.tellg() > 0) {
-            char point_x[4];
-            trail_data_file.read(point_x, 4);
-            trail_data.points_x.push_back(*reinterpret_cast<float*>(point_x));
-            char point_y[4];
-            trail_data_file.read(point_y, 4);
-            trail_data.points_y.push_back(*reinterpret_cast<float*>(point_y));
-            char point_z[4];
-            trail_data_file.read(point_z, 4);
-            trail_data.points_z.push_back(*reinterpret_cast<float*>(point_z));
-        }
-
-        if (trail_data.points_x.size() != trail_data.points_y.size() || trail_data.points_x.size() != trail_data.points_z.size()) {
-            errors->push_back(new XMLAttributeValueError("Unexpected number of bits in trail file. Does not have equal number of X, Y, and Z coordinates." + trail_path, input));
-        }
-
-        trail_data_file.close();
-    }
-    else
+    if (!trail_data_file.good()) {
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
+        return trail_data;
+    }
+    char version[4];
+    trail_data_file.read(version, 4);
+    // Validate the version number. Currently supports versions [0]
+    if (!(*reinterpret_cast<uint32_t*>(version) == 0)) {
+        errors->push_back(new XMLAttributeValueError("Unsupported version for trail data at " + trail_path, input));
+        return trail_data;
+    }
+
+    char map_id_char[4];
+
+    trail_data_file.read(map_id_char, 4);
+    trail_data.side_effect_map_id = *reinterpret_cast<uint32_t*>(map_id_char);
+
+    while (trail_data_file.tellg() > 0) {
+        char point_x[4];
+        trail_data_file.read(point_x, 4);
+        trail_data.points_x.push_back(*reinterpret_cast<float*>(point_x));
+        char point_y[4];
+        trail_data_file.read(point_y, 4);
+        trail_data.points_y.push_back(*reinterpret_cast<float*>(point_y));
+        char point_z[4];
+        trail_data_file.read(point_z, 4);
+        trail_data.points_z.push_back(*reinterpret_cast<float*>(point_z));
+    }
+
+    if (trail_data.points_x.size() != trail_data.points_y.size() || trail_data.points_x.size() != trail_data.points_z.size()) {
+        errors->push_back(new XMLAttributeValueError("Unexpected number of bits in trail file. Does not have equal number of X, Y, and Z coordinates." + trail_path, input));
+    }
+
+    trail_data_file.close();
+
     return trail_data;
 }
 
@@ -76,7 +87,6 @@ string stringify_trail_data(TrailData attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
     waypoint::TrailData* trail_data = new waypoint::TrailData();
-    trail_data->set_trail_data_relative_path(attribute_value.trail_data_relative_path);
     *trail_data->mutable_points_x() = {attribute_value.points_x.begin(), attribute_value.points_x.end()};
     *trail_data->mutable_points_y() = {attribute_value.points_y.begin(), attribute_value.points_y.end()};
     *trail_data->mutable_points_z() = {attribute_value.points_z.begin(), attribute_value.points_z.end()};
@@ -90,7 +100,6 @@ waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 TrailData from_proto_trail_data(waypoint::TrailData attribute_value) {
     TrailData trail_data;
-    trail_data.trail_data_relative_path = attribute_value.trail_data_relative_path();
     trail_data.points_x = {attribute_value.points_x().begin(), attribute_value.points_x().end()};
     trail_data.points_y = {attribute_value.points_y().begin(), attribute_value.points_y().end()};
     trail_data.points_z = {attribute_value.points_z().begin(), attribute_value.points_z().end()};

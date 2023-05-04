@@ -46,7 +46,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     }
     {% elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.compound_name != None) %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float({{", ".join(attribute_variable.args)}});
+        this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
         this->{{attribute_variable.compound_name}}_is_set = true;
     }
     {% else: %}
