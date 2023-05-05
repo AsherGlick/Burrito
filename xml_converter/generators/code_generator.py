@@ -7,6 +7,7 @@ import os
 import markdown
 from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
+from jinja_helpers import UnindentBlocks
 
 SchemaType = Dict[str, Any]
 schema = """
@@ -374,7 +375,13 @@ class Generator:
     def write_cpp_classes(self, output_directory: str) -> None:
         print("Writing XML Node Cpp Classes")
         file_loader = FileSystemLoader('cpp_templates')
-        env = Environment(loader=file_loader, keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True)
+        env = Environment(
+            loader=file_loader,
+            extensions=[UnindentBlocks],
+            keep_trailing_newline=True,
+            trim_blocks=True,
+            lstrip_blocks=True
+        )
         header_template: Template = env.get_template("class_template.hpp")
         code_template: Template = env.get_template("class_template.cpp")
         attributes_of_type_marker_category: List[str] = []
@@ -562,7 +569,13 @@ class Generator:
         os.makedirs(output_directory, exist_ok=True)
 
         file_loader = FileSystemLoader('cpp_templates')
-        env = Environment(loader=file_loader, keep_trailing_newline=True, trim_blocks=True, lstrip_blocks=True)
+        env = Environment(
+            loader=file_loader,
+            extensions=[UnindentBlocks],
+            keep_trailing_newline=True,
+            trim_blocks=True,
+            lstrip_blocks=True
+        )
         attribute_names: Dict[str, str] = {}
         attribute_variables: List[AttributeVariable] = []
         attribute_variable: AttributeVariable
