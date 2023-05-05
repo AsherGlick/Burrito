@@ -3,7 +3,7 @@ name: Color
 type: CompoundCustomClass
 class: Color
 applies_to: [Icon, Trail]
-xml_fields: [Color]
+xml_fields: [Color, BHColor]
 protobuf_field: rgba_color
 compatability: [TacO, BlishHUD, Burrito]
 xml_parent_export: "{Red},{Green},{Blue}"
@@ -45,3 +45,4 @@ https://blishhud.com/docs/markers/attributes/texture
 https://blishhud.com/docs/markers/attributes/iconfile
 https://blishhud.com/docs/markers/attributes/color
 https://blishhud.com/docs/markers/attributes/animspeed
+

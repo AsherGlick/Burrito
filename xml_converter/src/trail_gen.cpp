@@ -19,7 +19,7 @@ string Trail::classname() {
     return "Trail";
 }
 
-bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
@@ -29,10 +29,6 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     else if (attributename == "achievementid") {
         this->achievement_id = parse_int(attribute, errors);
         this->achievement_id_is_set = true;
-    }
-    else if (attributename == "alpha") {
-        this->color.alpha = parse_float(attribute, errors);
-        this->color_is_set = true;
     }
     else if (attributename == "animspeed") {
         this->animation_speed = parse_float(attribute, errors);
@@ -59,6 +55,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->category_is_set = true;
     }
     else if (attributename == "color") {
+        this->color = parse_color(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "bhcolor") {
         this->color = parse_color(attribute, errors);
         this->color_is_set = true;
     }
@@ -106,7 +106,7 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->map_id = parse_int(attribute, errors);
         this->map_id_is_set = true;
     }
-    else if (attributename == "mapid") {
+    else if (attributename == "maptype") {
         this->map_type_filter = parse_map_type_filter(attribute, errors);
         this->map_type_filter_is_set = true;
     }
@@ -171,8 +171,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->texture_is_set = true;
     }
     else if (attributename == "traildata") {
-        this->trail_data = parse_trail_data(attribute, errors);
+        this->trail_data = parse_trail_data(attribute, errors, base_dir);
         this->trail_data_is_set = true;
+        this->map_id = this->trail_data.side_effect_map_id;
+        this->map_id_is_set = true;
     }
     else if (attributename == "trailscale") {
         this->trail_scale = parse_float(attribute, errors);
@@ -196,9 +198,6 @@ vector<string> Trail::as_xml() const {
     }
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
-    }
-    if (this->color_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
     }
     if (this->animation_speed_is_set) {
         xml_node_contents.push_back(" AnimSpeed=\"" + stringify_float(this->animation_speed) + "\"");
@@ -237,7 +236,7 @@ vector<string> Trail::as_xml() const {
         xml_node_contents.push_back(" MapID=\"" + stringify_int(this->map_id) + "\"");
     }
     if (this->map_type_filter_is_set) {
-        xml_node_contents.push_back(" MapID=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
+        xml_node_contents.push_back(" MapType=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
     }
     if (this->mount_filter_is_set) {
         xml_node_contents.push_back(" Mount=\"" + stringify_mount_filter(this->mount_filter) + "\"");

@@ -2,7 +2,7 @@
 name: Map Type Filter
 type: MultiflagValue
 applies_to: [Icon, Trail]
-xml_fields: [MapID]
+xml_fields: [MapType]
 protobuf_field: map_type_filter
 compatability: [TacO, BlishHUD, Burrito]
 flags:

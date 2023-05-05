@@ -1,9 +1,15 @@
 #include "color.hpp"
 
 #include <stdint.h>
+<<<<<<< HEAD
 #include <iosfwd>
 #include <ostream>
 #include <regex>
+=======
+
+#include <iosfwd>
+#include <sstream>
+>>>>>>> 4d460a2bde6e55938b376bc7736ed93414a18cad
 #include <string>
 #include <vector>
 
@@ -17,6 +23,8 @@ using namespace std;
 // parse_color
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
+// TODO(#98): Color should be saved in a better format then the raw hex string.
+// TODO(#129): Compound Value XML Export
 ////////////////////////////////////////////////////////////////////////////////
 Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
     Color color;

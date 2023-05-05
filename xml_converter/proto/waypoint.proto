@@ -90,6 +90,10 @@ message Trail {
 message TexturePath {
     string path = 1;
 }
+
+message RGBAColor{
+    int32 rgba_color = 1;
+}
     
 message Position {
     float x = 1;
@@ -298,6 +302,8 @@ message SpeciesFilter {
 }
 
 message TrailData {
-    string trail_data = 1;
+    repeated float points_x = 2;
+    repeated float points_y = 3;
+    repeated float points_z = 4;
 }
 

@@ -2,7 +2,7 @@
 name: Height Offset
 type: Float32
 applies_to: ["Icon"]
-xml_fields: ["HeightOffset"]
+xml_fields: ["HeightOffset", "BHHeightOffset"]
 compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: height_offset
 ---

@@ -47,6 +47,10 @@ window/vsync/use_vsync=false
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
 
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/protobuf/plugin.cfg" )
+
 [global]
 
 logg=true

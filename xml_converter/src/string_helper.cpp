@@ -254,3 +254,17 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
 
     return ret;
 }
+
+string get_base_dir(string filepath) {
+    size_t s = filepath.find_last_of("/");
+    return filepath.substr(0, s);
+}
+
+bool has_suffix(std::string const& fullString, std::string const& ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    }
+    else {
+        return false;
+    }
+}

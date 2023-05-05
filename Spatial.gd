@@ -5,7 +5,7 @@ var peers = []
 
 var map_id:int = 0
 
-
+var Waypoint = preload("res://waypoint.gd")
 var map_is_open: bool
 var compass_is_top_right: bool
 
@@ -319,11 +319,8 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
-		print("New Map")
-
-		print("Saving Old Map")
-		self.markerdata[str(old_map_id)] = data_from_renderview()
 		print("Loading New Map")
+		load_waypoint_markers(self.map_id)
 		gen_map_markers()
 
 	# TODO move this to reset_minimap_masks
@@ -336,13 +333,11 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	reset_minimap_masks()
 
-
 func decode_timeout_packet(spb: StreamPeerBuffer):
 	if Settings.burrito_link_auto_launch_enabled:
 		print("Link Timeout Reached, should restart link if started by burrito automatically")
 		close_burrito_link()
 		launch_burrito_link()
-
 
 func reset_minimap_masks():
 	var viewport_size = get_viewport().size
@@ -359,42 +354,24 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
-var markerdata = {}
+var markerdata = Waypoint.Waypoint.new()
+var marker_file_dir = "user://protobins/"
 var marker_file_path = ""
-func load_taco_markers(marker_json_file):
-	self.marker_file_path = marker_json_file
 
-	if is_xml_file(marker_json_file):
-		print("Loading XML file from path ", marker_json_file)
-		var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_json_file)
-		var json_payload = parsed_taco_tuple[0]
-		var error_message = parsed_taco_tuple[1]
-		if error_message != "":
-			print("XML parsing failed with error message: ", error_message)
-		self.markerdata = JSON.parse(json_payload).result
+func load_waypoint_markers(map_id):
+	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
+	print("Loading protobuf file from path ", self.marker_file_path)
+	self.markerdata.clear_category()
+	self.markerdata.clear_icon()
+	self.markerdata.clear_trail()
+	var file = File.new()
+	file.open(self.marker_file_path, file.READ)
+	var data = file.get_buffer(file.get_len())
+	self.markerdata.from_bytes(data)
+	if !Waypoint.PB_ERR.NO_ERRORS:
+		print("OK")
 	else:
-		print("Loading Json file from path ", marker_json_file)
-		var file = File.new()
-		file.open(marker_json_file, file.READ)
-		var text = file.get_as_text()
-		self.markerdata = JSON.parse(text).result
-
-	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
-
-	gen_map_markers()
-
-func is_xml_file(input_file):
-	return input_file.split(".")[-1] == "xml"
-
-func relative_textures_to_absolute_textures(marker_file_dir):
-	for map in markerdata:
-		for icon in markerdata[map]["icons"]:
-			if !icon["texture"].is_abs_path():
-				icon["texture"] = marker_file_dir + "/" + icon["texture"]
-			#print("ABS", icon["texture"])
-		for path in markerdata[map]["paths"]:
-			if !path["texture"].is_abs_path():
-				path["texture"] = marker_file_dir + "/" + path["texture"]
+		print(Waypoint.PB_ERR)
 
 
 var route_scene = load("res://Route.tscn")
@@ -489,19 +466,31 @@ func gen_map_markers():
 		icon.queue_free()
 
 	# Load the data from the markers
-	if str(map_id) in markerdata:
-		var map_markerdata = markerdata[str(map_id)]
-		for path in map_markerdata["paths"]:
-			gen_new_path(path["points"], path["texture"])
-
-		for icon in map_markerdata["icons"]:
-			var position = Vector3(icon["position"][0], icon["position"][1], icon["position"][2])
-			gen_new_icon(position, icon["texture"])
+	for path in self.markerdata.get_trail():
+		var path_points := PoolVector3Array()
+		var trail_data = path.get_trail_data()
+		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size()
+			print("Warning: Trail ", trail.get_category.get_name(), " does not have equal number of X, Y, and Z coordinates.")
+		for index in range(0, trail_data.get_points_z().size()):
+			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
+		var texture_path = path.get_texture_path()
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		gen_new_path(path_points, full_texture_path)
+	for icon in self.markerdata.get_icon():
+		var position = icon.get_position()
+		if position == null:
+			print("Warning: No position found for icon ", icon.get_category().name())
+			continue
+		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
+		var texture_path = icon.get_texture_path()
+		if texture_path == null:
+			print("Warning: No texture found for icon")
+			continue
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		gen_new_icon(position_vector, full_texture_path)
 
 func gen_new_path(points: Array, texture_path: String):
-	var points_2d: PoolVector2Array = []
-
-
+	var points_2d: PoolVector2Array = [] 
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
@@ -519,8 +508,6 @@ func gen_new_path(points: Array, texture_path: String):
 	var texture = ImageTexture.new()
 	texture.storage = ImageTexture.STORAGE_COMPRESS_LOSSLESS
 	texture.create_from_image(image, 22)
-
-
 
 	# Create a new 3D route
 	var new_route = route_scene.instance()
@@ -540,17 +527,9 @@ func gen_new_path(points: Array, texture_path: String):
 	new_route.create_mesh(points_3d)
 	new_route.set_texture(texture)
 	paths.add_child(new_route)
-
-
-
-
-
-
-
 	for point in points:
 		points_2d.append(Vector2(point[0], -point[2]))
-
-
+	
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
 	new_2d_path.points = points_2d
@@ -560,11 +539,10 @@ func gen_new_path(points: Array, texture_path: String):
 	self.currently_active_path = new_route
 	self.currently_active_path_2d = new_2d_path
 
-
 ################################################################################
 #
 ################################################################################
-func gen_new_icon(position: Vector3, texture_path: String):
+func gen_new_icon(position: Vector3, texture_path: String): 
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position
@@ -604,7 +582,7 @@ func _on_main_menu_toggle_pressed():
 	set_maximal_mouse_block()
 
 func _on_FileDialog_file_selected(path):
-	load_taco_markers(path)
+	pass
 
 
 ################################################################################
@@ -830,7 +808,6 @@ func _on_SnapSelectedToPlayer_pressed():
 	self.currently_selected_node.translation.x = self.player_position.x
 	self.currently_selected_node.translation.z = -self.player_position.z
 	self.currently_selected_node.translation.y = self.player_position.y
-
 
 func _on_SetActivePath_pressed():
 	if self.currently_selected_node.point_type == "icon":

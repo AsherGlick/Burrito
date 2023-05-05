@@ -2,7 +2,7 @@ from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
 import yaml
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple, Set, Optional
+from typing import Any, Dict, List, Tuple, Set, Optional, Final
 import os
 import markdown
 from dataclasses import dataclass, field
@@ -186,13 +186,8 @@ allOf:
                 type: array
                 items:
                     type: string
-            xml_parent_export:
-                type: string
-            xml_child_export:
-                type: array
-                items:
-                    type: string
-                    pattern: "^[A-Za-z' ]+$"
+            uses_file_path:
+                type: boolean
 
 """.format(
     shared_field_properties="""type:
@@ -294,12 +289,17 @@ class AttributeVariable:
     class_name: str
     xml_fields: List[str]
     protobuf_field: str
+    args: List[str] = field(default_factory=list)
     default_xml_fields: List[str] = field(default_factory=list)
     xml_child_export: List[str] = field(default_factory=list)
     xml_parent_export: str = ""
     compound_name: Optional[str] = None
     is_xml_export: bool = True
     is_trigger: bool = False
+    uses_file_path: bool = False
+
+
+XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
 
 
 ################################################################################
@@ -440,8 +440,9 @@ class Generator:
         attribute_variables: List[AttributeVariable] = []
         xml_fields: List[str] = []
         default_xml_fields: List[str] = []
-        xml_child_export: List[str] = []
-        xml_parent_export: str = ""
+        side_effects: List[str] = []
+        xml_export: str = ""
+        args: List[str] = []
         protobuf_field: str = ""
         is_xml_export: bool = True
         is_trigger: bool = False
@@ -468,49 +469,15 @@ class Generator:
             cpp_includes.cpp_absolute_includes.add("type_traits")
 
         for filepath, document in sorted(self.data.items()):
-            attribute_name = self.variable_name_from_markdown_path(filepath)
             fieldval = document.metadata
+            attribute_name = attribute_name_from_markdown_data(fieldval['name'])
 
             if doc_type in fieldval['applies_to']:
                 xml_fields = []
                 default_xml_fields = []
-                xml_child_export = []
-                xml_parent_export = ""
-                is_xml_export = True
-
-                # Compound Values are unique in that the components have xml fields in addition to the compound variable
-                if fieldval['type'] in ["CompoundValue", "CompoundCustomClass"]:
-                    xml_child_export = fieldval['xml_child_export']
-                    xml_parent_export = fieldval['xml_parent_export']
-                    for component in fieldval['components']:
-                        component_xml_fields = []
-                        component_default_xml_fields = []
-                        if component['name'] in fieldval['xml_child_export']:
-                            component_default_xml_fields.append(component['xml_fields'][0])
-                            class_name = documentation_type_data[component['type']]["class_name"]
-                            is_xml_export = True
-                        if component['name'] in fieldval['xml_parent_export']:
-                            component_default_xml_fields.append(fieldval['xml_fields'][0])
-                            class_name = attribute_name
-                            is_xml_export = False
-                        for item in component['xml_fields']:
-                            component_xml_fields.append(lowercase(item, delimiter=""))
-                        component_attribute_variable = AttributeVariable(
-                            attribute_name=lowercase(component['name'], delimiter="_"),
-                            attribute_type="CompoundValue",
-                            cpp_type=doc_type_to_cpp_type[component['type']],
-                            class_name=class_name,
-                            xml_fields=component_xml_fields,
-                            default_xml_fields=component_default_xml_fields,
-                            xml_child_export=xml_child_export,
-                            xml_parent_export=xml_parent_export,
-                            protobuf_field=component["protobuf_field"],
-                            compound_name=lowercase(fieldval['name'], delimiter="_"),
-                            is_xml_export=is_xml_export,
-                        )
-                        attribute_variables.append(component_attribute_variable)
-                    if xml_parent_export == "":
-                        is_xml_export = False
+                side_effects = []
+                xml_export = ""
+                args = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
 
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
@@ -547,6 +514,39 @@ class Generator:
                     is_trigger = False
                     protobuf_field = fieldval["protobuf_field"]
 
+                if fieldval.get("uses_file_path", False):
+                    args.append("base_dir")
+
+                if "side_effects" in fieldval:
+                    for side_effect in fieldval['side_effects']:
+                        side_effects.append(attribute_name_from_markdown_data(side_effect))
+
+                # Compound Values are unique in that the components have xml fields in addition to the compound variable
+                if fieldval['type'] == "CompoundValue":
+                    xml_export = fieldval['xml_export']
+                    for component in fieldval['components']:
+                        component_xml_fields = []
+                        component_default_xml_fields = []
+                        for item in component['xml_fields']:
+                            if xml_export == "Children":
+                                component_default_xml_fields.append(item)
+                            if xml_export == "Parent":
+                                component_default_xml_fields.append(fieldval["xml_fields"][0])
+                            component_xml_fields.append(lowercase(item, delimiter=""))
+                        component_attribute_variable = AttributeVariable(
+                            attribute_name=lowercase(component['name'], delimiter="_"),
+                            attribute_type="CompoundValue",
+                            cpp_type=doc_type_to_cpp_type[component['type']],
+                            class_name=class_name,
+                            xml_fields=component_xml_fields,
+                            default_xml_fields=component_default_xml_fields,
+                            xml_export=xml_export,
+                            protobuf_field=component["protobuf_field"],
+                            compound_name=lowercase(fieldval['name'], delimiter="_"),
+                            args=args,
+                        )
+                        attribute_variables.append(component_attribute_variable)
+
                 attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
                     attribute_type=fieldval["type"],
@@ -558,20 +558,12 @@ class Generator:
                     xml_parent_export=xml_parent_export,
                     protobuf_field=protobuf_field,
                     is_trigger=is_trigger,
-                    is_xml_export=is_xml_export,
+                    args=args,
+                    side_effects=side_effects,
                 )
                 attribute_variables.append(attribute_variable)
 
         return attribute_variables, cpp_includes
-
-    ############################################################################
-    # variable_name_from_markdown_path
-    #
-    # Takes the name of a markdown file and returns the variable name that
-    # should be used internally to store that value.
-    ############################################################################
-    def variable_name_from_markdown_path(self, filepath: str) -> str:
-        return os.path.splitext(os.path.basename(filepath))[0]
 
     ############################################################################
     # write_attributes
@@ -890,6 +882,16 @@ class Generator:
                     ))
 
         return template.render(field_rows=field_rows), field_rows
+
+
+############################################################################
+# attribute_name_from_markdown_data
+#
+# Takes the name of an attribute from the markdown file and returns the name
+# that should be used internally to store that value.
+############################################################################
+def attribute_name_from_markdown_data(attribute_name: str) -> str:
+    return lowercase(attribute_name, "_")
 
 
 ################################################################################

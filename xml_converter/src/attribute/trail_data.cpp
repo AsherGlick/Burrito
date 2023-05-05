@@ -1,6 +1,9 @@
 #include "trail_data.hpp"
 
-#include <iosfwd>
+#include <stdint.h>
+
+#include <algorithm>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -15,19 +18,66 @@ using namespace std;
 //
 // Parses a TrailData from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors, string base_dir) {
     TrailData trail_data;
-    trail_data.trail_data = get_attribute_value(input);
+    string trail_data_relative_path = get_attribute_value(input);
+    if (base_dir == "") {
+        throw "Error: Marker pack base directory is an empty string";
+    }
+    if (trail_data_relative_path == "") {
+        errors->push_back(new XMLAttributeValueError("Path to trail file is empty", input));
+        return trail_data;
+    }
+
+    ifstream trail_data_file;
+    string trail_path = base_dir + "/" + trail_data_relative_path;
+    trail_data_file.open(trail_path, ios::in | ios::binary);
+    if (!trail_data_file.good()) {
+        errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
+        return trail_data;
+    }
+    char version[4];
+    trail_data_file.read(version, 4);
+    // Validate the version number. Currently supports versions [0]
+    if (!(*reinterpret_cast<uint32_t*>(version) == 0)) {
+        errors->push_back(new XMLAttributeValueError("Unsupported version for trail data at " + trail_path, input));
+        return trail_data;
+    }
+
+    char map_id_char[4];
+
+    trail_data_file.read(map_id_char, 4);
+    trail_data.side_effect_map_id = *reinterpret_cast<uint32_t*>(map_id_char);
+
+    while (trail_data_file.tellg() > 0) {
+        char point_x[4];
+        trail_data_file.read(point_x, 4);
+        trail_data.points_x.push_back(*reinterpret_cast<float*>(point_x));
+        char point_y[4];
+        trail_data_file.read(point_y, 4);
+        trail_data.points_y.push_back(*reinterpret_cast<float*>(point_y));
+        char point_z[4];
+        trail_data_file.read(point_z, 4);
+        trail_data.points_z.push_back(*reinterpret_cast<float*>(point_z));
+    }
+
+    if (trail_data.points_x.size() != trail_data.points_y.size() || trail_data.points_x.size() != trail_data.points_z.size()) {
+        errors->push_back(new XMLAttributeValueError("Unexpected number of bits in trail file. Does not have equal number of X, Y, and Z coordinates." + trail_path, input));
+    }
+
+    trail_data_file.close();
+
     return trail_data;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // stringify_trail_data
 //
-// Converts a TrailData into a stringy value so that it can be saved to xml
+// Returns the relative path of the trail_data to the xml files
+// TODO: Write ".trl" files from data
 ////////////////////////////////////////////////////////////////////////////////
 string stringify_trail_data(TrailData attribute_value) {
-    return attribute_value.trail_data;
+    return "temp_name_of_trail.trl";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +87,9 @@ string stringify_trail_data(TrailData attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
     waypoint::TrailData* trail_data = new waypoint::TrailData();
-    trail_data->set_trail_data(attribute_value.trail_data);
+    *trail_data->mutable_points_x() = {attribute_value.points_x.begin(), attribute_value.points_x.end()};
+    *trail_data->mutable_points_y() = {attribute_value.points_y.begin(), attribute_value.points_y.end()};
+    *trail_data->mutable_points_z() = {attribute_value.points_z.begin(), attribute_value.points_z.end()};
     return trail_data;
 }
 
@@ -48,6 +100,8 @@ waypoint::TrailData* to_proto_trail_data(TrailData attribute_value) {
 ////////////////////////////////////////////////////////////////////////////////
 TrailData from_proto_trail_data(waypoint::TrailData attribute_value) {
     TrailData trail_data;
-    trail_data.trail_data = attribute_value.trail_data();
+    trail_data.points_x = {attribute_value.points_x().begin(), attribute_value.points_x().end()};
+    trail_data.points_y = {attribute_value.points_y().begin(), attribute_value.points_y().end()};
+    trail_data.points_z = {attribute_value.points_z().begin(), attribute_value.points_z().end()};
     return trail_data;
 }
