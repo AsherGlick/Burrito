@@ -30,7 +30,6 @@ class {{cpp_class}} : public Parseable {
         Trail default_trail;
 
         void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, std::string base_dir = "");
-        void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors);
     {% endif %}
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
