@@ -12,7 +12,6 @@ class TrailData;
 
 class TrailData {
  public:
-    std::string trail_data_relative_path;
     int side_effect_map_id;
     std::vector<float> points_x;
     std::vector<float> points_y;

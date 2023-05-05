@@ -296,7 +296,7 @@ class AttributeVariable:
     uses_file_path: bool = False
 
 
-DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
+XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
 
 
 ################################################################################
@@ -467,7 +467,7 @@ class Generator:
                 default_xml_fields = []
                 side_effects = []
                 xml_export = ""
-                args = DEFAULT_ARGUMENTS.copy()
+                args = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
 
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]

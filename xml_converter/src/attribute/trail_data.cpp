@@ -20,17 +20,17 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors, string base_dir) {
     TrailData trail_data;
-    trail_data.trail_data_relative_path = get_attribute_value(input);
+    string trail_data_relative_path = get_attribute_value(input);
     if (base_dir == "") {
-        errors->push_back(new XMLAttributeValueError("Marker pack file name is empty", input));
+        throw "Error: Marker pack base directory is an empty string";
     }
-    if (trail_data.trail_data_relative_path == "") {
+    if (trail_data_relative_path == "") {
         errors->push_back(new XMLAttributeValueError("Path to trail file is empty", input));
         return trail_data;
     }
 
     ifstream trail_data_file;
-    string trail_path = base_dir + "/" + trail_data.trail_data_relative_path;
+    string trail_path = base_dir + "/" + trail_data_relative_path;
     trail_data_file.open(trail_path, ios::in | ios::binary);
     if (!trail_data_file.good()) {
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
@@ -77,7 +77,7 @@ TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* 
 // TODO: Write ".trl" files from data
 ////////////////////////////////////////////////////////////////////////////////
 string stringify_trail_data(TrailData attribute_value) {
-    return attribute_value.trail_data_relative_path;
+    return "temp_name_of_trail.trl";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

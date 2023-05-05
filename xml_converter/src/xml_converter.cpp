@@ -302,7 +302,6 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 
     root_node = doc.first_node();
     string base_dir = get_base_dir(xml_filepath);
-
     // Validate the Root Node
     if (get_node_name(root_node) != "OverlayData") {
         errors.push_back(new XMLNodeNameError("Root node should be of type OverlayData", root_node));
@@ -453,14 +452,14 @@ string create_burrito_data_folder() {
     // Get the home directory path
     const char* home_dir = getenv("HOME");
     if (home_dir == nullptr) {
-        std::cerr << "Error: HOME environment variable is not set." << std::endl;
-        exit(0);
+        throw "Error: HOME environment variable is not set.";
     }
+
+    string data_directory = ".local/share/godot/app_userdata/Burrito/protobins";
+    // Construct the folder path
     // For Linux, the deafult for "user://"" in Godot is
     // ~/.local/share/godot/app_userdata/[project_name]
     // Variable folder_path can be thought of as "user://Burrito/protobins"
-    string data_directory = ".local/share/godot/app_userdata/Burrito/protobins";
-    // Construct the folder path
     string folder_path = string(home_dir) + "/" + data_directory;
     // Create the folder with permissions 0700 (read/write/execute for owner only)
     int result = mkdir(folder_path.c_str(), S_IRWXU);
@@ -476,12 +475,17 @@ int main() {
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
     test_proto();
+    string output_directory;
 
-    string output_directory = create_burrito_data_folder();
-    // Input will be supplied via FileDialog in Godot
-    string input_directory = "./packs";
-    convert_all_markerpacks(input_directory, output_directory, &marker_categories, &parsed_pois);
-
+    try {
+        output_directory = create_burrito_data_folder();
+        // Input will be supplied via FileDialog in Godot
+        string input_directory = "./packs";
+        convert_all_markerpacks(input_directory, output_directory, &marker_categories, &parsed_pois);
+    }
+    catch (const char* msg) {
+        cout << msg << endl;
+    }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
