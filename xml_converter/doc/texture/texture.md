@@ -4,7 +4,8 @@ type: Custom
 class: Image
 applies_to: [Trail]
 xml_fields: [Texture]
-protobuf_field: texture
+uses_file_path: false
+protobuf_field: texture_path
 compatability: [TacO, BlishHUD, Burrito]
 ---
 The path to an image which contains the texture that will be present on a trail.

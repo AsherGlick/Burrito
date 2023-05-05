@@ -19,7 +19,7 @@ string Trail::classname() {
     return "Trail";
 }
 
-bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
@@ -29,10 +29,6 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     else if (attributename == "achievementid") {
         this->achievement_id = parse_int(attribute, errors);
         this->achievement_id_is_set = true;
-    }
-    else if (attributename == "alpha") {
-        this->alpha = parse_float(attribute, errors);
-        this->alpha_is_set = true;
     }
     else if (attributename == "animspeed") {
         this->animation_speed = parse_float(attribute, errors);
@@ -55,6 +51,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->category_is_set = true;
     }
     else if (attributename == "color") {
+        this->color = parse_color(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "bhcolor") {
         this->color = parse_color(attribute, errors);
         this->color_is_set = true;
     }
@@ -98,7 +98,7 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->map_id = parse_int(attribute, errors);
         this->map_id_is_set = true;
     }
-    else if (attributename == "mapid") {
+    else if (attributename == "maptype") {
         this->map_type_filter = parse_map_type_filter(attribute, errors);
         this->map_type_filter_is_set = true;
     }
@@ -159,8 +159,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->texture_is_set = true;
     }
     else if (attributename == "traildata") {
-        this->trail_data = parse_trail_data(attribute, errors);
+        this->trail_data = parse_trail_data(attribute, errors, base_dir);
         this->trail_data_is_set = true;
+        this->map_id = this->trail_data.side_effect_map_id;
+        this->map_id_is_set = true;
     }
     else if (attributename == "trailscale") {
         this->trail_scale = parse_float(attribute, errors);
@@ -184,9 +186,6 @@ vector<string> Trail::as_xml() const {
     }
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
-    }
-    if (this->alpha_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->alpha) + "\"");
     }
     if (this->animation_speed_is_set) {
         xml_node_contents.push_back(" AnimSpeed=\"" + stringify_float(this->animation_speed) + "\"");
@@ -225,7 +224,7 @@ vector<string> Trail::as_xml() const {
         xml_node_contents.push_back(" MapID=\"" + stringify_int(this->map_id) + "\"");
     }
     if (this->map_type_filter_is_set) {
-        xml_node_contents.push_back(" MapID=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
+        xml_node_contents.push_back(" MapType=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
     }
     if (this->mount_filter_is_set) {
         xml_node_contents.push_back(" Mount=\"" + stringify_mount_filter(this->mount_filter) + "\"");
@@ -275,9 +274,6 @@ waypoint::Trail Trail::as_protobuf() const {
     if (this->achievement_id_is_set) {
         proto_trail.set_achievement_id(this->achievement_id);
     }
-    if (this->alpha_is_set) {
-        proto_trail.set_alpha(this->alpha);
-    }
     if (this->animation_speed_is_set) {
         proto_trail.set_animation_speed(this->animation_speed);
     }
@@ -288,7 +284,7 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_category(to_proto_marker_category(this->category));
     }
     if (this->color_is_set) {
-        proto_trail.set_allocated_color(to_proto_color(this->color));
+        proto_trail.set_allocated_rgba_color(to_proto_color(this->color));
     }
     if (this->cull_chirality_is_set) {
         proto_trail.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
@@ -324,13 +320,13 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
     }
     if (this->render_ingame_is_set) {
-        proto_trail.set___tentative__render_ingame(this->render_ingame);
+        proto_trail.set_tentative__render_ingame(this->render_ingame);
     }
     if (this->render_on_map_is_set) {
-        proto_trail.set___tentative__render_on_map(this->render_on_map);
+        proto_trail.set_tentative__render_on_map(this->render_on_map);
     }
     if (this->render_on_minimap_is_set) {
-        proto_trail.set___tentative__render_on_minimap(this->render_on_minimap);
+        proto_trail.set_tentative__render_on_minimap(this->render_on_minimap);
     }
     if (this->schedule_is_set) {
         proto_trail.set_bhdraft__schedule(this->schedule);
@@ -345,7 +341,7 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_species_filter(to_proto_species_filter(this->species_filter));
     }
     if (this->texture_is_set) {
-        proto_trail.set_allocated_texture(to_proto_image(this->texture));
+        proto_trail.set_allocated_texture_path(to_proto_image(this->texture));
     }
     if (this->trail_data_is_set) {
         proto_trail.set_allocated_trail_data(to_proto_trail_data(this->trail_data));
@@ -365,10 +361,6 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->achievement_id = proto_trail.achievement_id();
         this->achievement_id_is_set = true;
     }
-    if (proto_trail.alpha() != 0) {
-        this->alpha = proto_trail.alpha();
-        this->alpha_is_set = true;
-    }
     if (proto_trail.animation_speed() != 0) {
         this->animation_speed = proto_trail.animation_speed();
         this->animation_speed_is_set = true;
@@ -381,8 +373,8 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->category = from_proto_marker_category(proto_trail.category());
         this->category_is_set = true;
     }
-    if (proto_trail.has_color()) {
-        this->color = from_proto_color(proto_trail.color());
+    if (proto_trail.has_rgba_color()) {
+        this->color = from_proto_color(proto_trail.rgba_color());
         this->color_is_set = true;
     }
     if (proto_trail.cull_chirality() != 0) {
@@ -429,16 +421,16 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->profession_filter = from_proto_profession_filter(proto_trail.profession_filter());
         this->profession_filter_is_set = true;
     }
-    if (proto_trail.__tentative__render_ingame() != 0) {
-        this->render_ingame = proto_trail.__tentative__render_ingame();
+    if (proto_trail.tentative__render_ingame() != 0) {
+        this->render_ingame = proto_trail.tentative__render_ingame();
         this->render_ingame_is_set = true;
     }
-    if (proto_trail.__tentative__render_on_map() != 0) {
-        this->render_on_map = proto_trail.__tentative__render_on_map();
+    if (proto_trail.tentative__render_on_map() != 0) {
+        this->render_on_map = proto_trail.tentative__render_on_map();
         this->render_on_map_is_set = true;
     }
-    if (proto_trail.__tentative__render_on_minimap() != 0) {
-        this->render_on_minimap = proto_trail.__tentative__render_on_minimap();
+    if (proto_trail.tentative__render_on_minimap() != 0) {
+        this->render_on_minimap = proto_trail.tentative__render_on_minimap();
         this->render_on_minimap_is_set = true;
     }
     if (proto_trail.bhdraft__schedule() != "") {
@@ -457,8 +449,8 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->species_filter = from_proto_species_filter(proto_trail.species_filter());
         this->species_filter_is_set = true;
     }
-    if (proto_trail.has_texture()) {
-        this->texture = from_proto_image(proto_trail.texture());
+    if (proto_trail.has_texture_path()) {
+        this->texture = from_proto_image(proto_trail.texture_path());
         this->texture_is_set = true;
     }
     if (proto_trail.has_trail_data()) {

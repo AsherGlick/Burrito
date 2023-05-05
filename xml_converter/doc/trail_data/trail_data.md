@@ -3,6 +3,7 @@ name: Trail Data
 type: Custom
 class: TrailData
 xml_fields: ["TrailData"]
+uses_file_path: true
 protobuf_field: trail_data
 side_effects: [Map ID]
 applies_to: [Trail]

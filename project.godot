@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "",
+"base": "Node",
 "class": "TacoParser",
 "language": "NativeScript",
 "path": "res://tacoparser.gdns"
@@ -46,6 +46,10 @@ window/size/always_on_top=true
 window/vsync/use_vsync=false
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/protobuf/plugin.cfg" )
 
 [global]
 

@@ -27,7 +27,6 @@ class Icon : public Parseable {
  public:
     int achievement_bitmask;
     int achievement_id;
-    float alpha;
     bool auto_trigger;
     float bounce_delay;
     float bounce_duration;
@@ -44,7 +43,7 @@ class Icon : public Parseable {
     FestivalFilter festival_filter;
     UniqueId guid;
     bool has_countdown;
-    float heightoffset;
+    float height_offset;
     MarkerCategory hide_category;
     Image icon;
     float icon_size;
@@ -73,15 +72,8 @@ class Icon : public Parseable {
     std::string tooltip_description;
     std::string tooltip_name;
     float trigger_range;
-    float x_position;
-    float x_rotation;
-    float y_position;
-    float y_rotation;
-    float z_position;
-    float z_rotation;
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
-    bool alpha_is_set = false;
     bool auto_trigger_is_set = false;
     bool bounce_delay_is_set = false;
     bool bounce_duration_is_set = false;
@@ -98,7 +90,7 @@ class Icon : public Parseable {
     bool festival_filter_is_set = false;
     bool guid_is_set = false;
     bool has_countdown_is_set = false;
-    bool heightoffset_is_set = false;
+    bool height_offset_is_set = false;
     bool hide_category_is_set = false;
     bool icon_is_set = false;
     bool icon_size_is_set = false;
@@ -127,15 +119,9 @@ class Icon : public Parseable {
     bool tooltip_description_is_set = false;
     bool tooltip_name_is_set = false;
     bool trigger_range_is_set = false;
-    bool x_position_is_set = false;
-    bool x_rotation_is_set = false;
-    bool y_position_is_set = false;
-    bool y_rotation_is_set = false;
-    bool z_position_is_set = false;
-    bool z_rotation_is_set = false;
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
-    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string base_dir = "");
     waypoint::Icon as_protobuf() const;
     void parse_protobuf(waypoint::Icon proto_icon);
     bool validate_attributes_of_type_marker_category();

@@ -19,7 +19,7 @@ string Icon::classname() {
     return "POI";
 }
 
-bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
@@ -29,10 +29,6 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "achievementid") {
         this->achievement_id = parse_int(attribute, errors);
         this->achievement_id_is_set = true;
-    }
-    else if (attributename == "alpha") {
-        this->alpha = parse_float(attribute, errors);
-        this->alpha_is_set = true;
     }
     else if (attributename == "autotrigger") {
         this->auto_trigger = parse_bool(attribute, errors);
@@ -63,6 +59,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->category_is_set = true;
     }
     else if (attributename == "color") {
+        this->color = parse_color(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "bhcolor") {
         this->color = parse_color(attribute, errors);
         this->color_is_set = true;
     }
@@ -115,8 +115,12 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->has_countdown_is_set = true;
     }
     else if (attributename == "heightoffset") {
-        this->heightoffset = parse_float(attribute, errors);
-        this->heightoffset_is_set = true;
+        this->height_offset = parse_float(attribute, errors);
+        this->height_offset_is_set = true;
+    }
+    else if (attributename == "bhheightoffset") {
+        this->height_offset = parse_float(attribute, errors);
+        this->height_offset_is_set = true;
     }
     else if (attributename == "hide") {
         this->hide_category = parse_marker_category(attribute, errors);
@@ -146,7 +150,7 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->map_id = parse_int(attribute, errors);
         this->map_id_is_set = true;
     }
-    else if (attributename == "mapid") {
+    else if (attributename == "maptype") {
         this->map_type_filter = parse_map_type_filter(attribute, errors);
         this->map_type_filter_is_set = true;
     }
@@ -255,40 +259,40 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->trigger_range_is_set = true;
     }
     else if (attributename == "xpos") {
-        this->x_position = parse_float(attribute, errors);
-        this->x_position_is_set = true;
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "positionx") {
-        this->x_position = parse_float(attribute, errors);
-        this->x_position_is_set = true;
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "rotatex") {
-        this->x_rotation = parse_float(attribute, errors);
-        this->x_rotation_is_set = true;
+        this->euler_rotation.x_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
     }
     else if (attributename == "ypos") {
-        this->y_position = parse_float(attribute, errors);
-        this->y_position_is_set = true;
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "positiony") {
-        this->y_position = parse_float(attribute, errors);
-        this->y_position_is_set = true;
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "rotatey") {
-        this->y_rotation = parse_float(attribute, errors);
-        this->y_rotation_is_set = true;
+        this->euler_rotation.y_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
     }
     else if (attributename == "zpos") {
-        this->z_position = parse_float(attribute, errors);
-        this->z_position_is_set = true;
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "positionz") {
-        this->z_position = parse_float(attribute, errors);
-        this->z_position_is_set = true;
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
     }
     else if (attributename == "rotatez") {
-        this->z_rotation = parse_float(attribute, errors);
-        this->z_rotation_is_set = true;
+        this->euler_rotation.z_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
     }
     else {
         return false;
@@ -311,9 +315,6 @@ vector<string> Icon::as_xml() const {
     }
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
-    }
-    if (this->alpha_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->alpha) + "\"");
     }
     if (this->auto_trigger_is_set) {
         xml_node_contents.push_back(" AutoTrigger=\"" + stringify_bool(this->auto_trigger) + "\"");
@@ -363,8 +364,8 @@ vector<string> Icon::as_xml() const {
     if (this->has_countdown_is_set) {
         xml_node_contents.push_back(" HasCountdown=\"" + stringify_bool(this->has_countdown) + "\"");
     }
-    if (this->heightoffset_is_set) {
-        xml_node_contents.push_back(" HeightOffset=\"" + stringify_float(this->heightoffset) + "\"");
+    if (this->height_offset_is_set) {
+        xml_node_contents.push_back(" HeightOffset=\"" + stringify_float(this->height_offset) + "\"");
     }
     if (this->hide_category_is_set) {
         xml_node_contents.push_back(" Hide=\"" + stringify_marker_category(this->hide_category) + "\"");
@@ -388,7 +389,7 @@ vector<string> Icon::as_xml() const {
         xml_node_contents.push_back(" MapID=\"" + stringify_int(this->map_id) + "\"");
     }
     if (this->map_type_filter_is_set) {
-        xml_node_contents.push_back(" MapID=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
+        xml_node_contents.push_back(" MapType=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
     }
     if (this->maximum_size_on_screen_is_set) {
         xml_node_contents.push_back(" MaxSize=\"" + stringify_int(this->maximum_size_on_screen) + "\"");
@@ -447,14 +448,14 @@ vector<string> Icon::as_xml() const {
     if (this->trigger_range_is_set) {
         xml_node_contents.push_back(" TriggerRange=\"" + stringify_float(this->trigger_range) + "\"");
     }
-    if (this->x_position_is_set) {
-        xml_node_contents.push_back(" XPos=\"" + to_string(this->x_position) + "\"");
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" XPos=\"" + to_string(this->position.x_position) + "\"");
     }
-    if (this->y_position_is_set) {
-        xml_node_contents.push_back(" YPos=\"" + to_string(this->y_position) + "\"");
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" YPos=\"" + to_string(this->position.y_position) + "\"");
     }
-    if (this->z_position_is_set) {
-        xml_node_contents.push_back(" ZPos=\"" + to_string(this->z_position) + "\"");
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" ZPos=\"" + to_string(this->position.z_position) + "\"");
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;
@@ -468,9 +469,6 @@ waypoint::Icon Icon::as_protobuf() const {
     }
     if (this->achievement_id_is_set) {
         proto_icon.set_achievement_id(this->achievement_id);
-    }
-    if (this->alpha_is_set) {
-        proto_icon.set_alpha(this->alpha);
     }
     if (this->auto_trigger_is_set) {
         if (trigger == nullptr) {
@@ -503,7 +501,7 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_category(to_proto_marker_category(this->category));
     }
     if (this->color_is_set) {
-        proto_icon.set_allocated_color(to_proto_color(this->color));
+        proto_icon.set_allocated_rgba_color(to_proto_color(this->color));
     }
     if (this->copy_clipboard_is_set) {
         if (trigger == nullptr) {
@@ -541,8 +539,8 @@ waypoint::Icon Icon::as_protobuf() const {
         }
         trigger->set_has_countdown(this->has_countdown);
     }
-    if (this->heightoffset_is_set) {
-        proto_icon.set_height_offset(this->heightoffset);
+    if (this->height_offset_is_set) {
+        proto_icon.set_height_offset(this->height_offset);
     }
     if (this->hide_category_is_set) {
         if (trigger == nullptr) {
@@ -551,10 +549,10 @@ waypoint::Icon Icon::as_protobuf() const {
         trigger->set_allocated_action_hide_category(to_proto_marker_category(this->hide_category));
     }
     if (this->icon_is_set) {
-        proto_icon.set_allocated_texture(to_proto_image(this->icon));
+        proto_icon.set_allocated_texture_path(to_proto_image(this->icon));
     }
     if (this->icon_size_is_set) {
-        proto_icon.set___tentative__scale(this->icon_size);
+        proto_icon.set_tentative__scale(this->icon_size);
     }
     if (this->info_message_is_set) {
         if (trigger == nullptr) {
@@ -593,13 +591,13 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
     }
     if (this->render_ingame_is_set) {
-        proto_icon.set___tentative__render_ingame(this->render_ingame);
+        proto_icon.set_tentative__render_ingame(this->render_ingame);
     }
     if (this->render_on_map_is_set) {
-        proto_icon.set___tentative__render_on_map(this->render_on_map);
+        proto_icon.set_tentative__render_on_map(this->render_on_map);
     }
     if (this->render_on_minimap_is_set) {
-        proto_icon.set___tentative__render_on_minimap(this->render_on_minimap);
+        proto_icon.set_tentative__render_on_minimap(this->render_on_minimap);
     }
     if (this->reset_behavior_is_set) {
         if (trigger == nullptr) {
@@ -668,10 +666,6 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->achievement_id = proto_icon.achievement_id();
         this->achievement_id_is_set = true;
     }
-    if (proto_icon.alpha() != 0) {
-        this->alpha = proto_icon.alpha();
-        this->alpha_is_set = true;
-    }
     if (trigger.auto_trigger() != 0) {
         this->auto_trigger = trigger.auto_trigger();
         this->auto_trigger_is_set = true;
@@ -696,8 +690,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->category = from_proto_marker_category(proto_icon.category());
         this->category_is_set = true;
     }
-    if (proto_icon.has_color()) {
-        this->color = from_proto_color(proto_icon.color());
+    if (proto_icon.has_rgba_color()) {
+        this->color = from_proto_color(proto_icon.rgba_color());
         this->color_is_set = true;
     }
     if (trigger.action_copy_clipboard() != "") {
@@ -737,19 +731,19 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->has_countdown_is_set = true;
     }
     if (proto_icon.height_offset() != 0) {
-        this->heightoffset = proto_icon.height_offset();
-        this->heightoffset_is_set = true;
+        this->height_offset = proto_icon.height_offset();
+        this->height_offset_is_set = true;
     }
     if (trigger.has_action_hide_category()) {
         this->hide_category = from_proto_marker_category(trigger.action_hide_category());
         this->hide_category_is_set = true;
     }
-    if (proto_icon.has_texture()) {
-        this->icon = from_proto_image(proto_icon.texture());
+    if (proto_icon.has_texture_path()) {
+        this->icon = from_proto_image(proto_icon.texture_path());
         this->icon_is_set = true;
     }
-    if (proto_icon.__tentative__scale() != 0) {
-        this->icon_size = proto_icon.__tentative__scale();
+    if (proto_icon.tentative__scale() != 0) {
+        this->icon_size = proto_icon.tentative__scale();
         this->icon_size_is_set = true;
     }
     if (trigger.action_info_message() != "") {
@@ -792,16 +786,16 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->profession_filter = from_proto_profession_filter(proto_icon.profession_filter());
         this->profession_filter_is_set = true;
     }
-    if (proto_icon.__tentative__render_ingame() != 0) {
-        this->render_ingame = proto_icon.__tentative__render_ingame();
+    if (proto_icon.tentative__render_ingame() != 0) {
+        this->render_ingame = proto_icon.tentative__render_ingame();
         this->render_ingame_is_set = true;
     }
-    if (proto_icon.__tentative__render_on_map() != 0) {
-        this->render_on_map = proto_icon.__tentative__render_on_map();
+    if (proto_icon.tentative__render_on_map() != 0) {
+        this->render_on_map = proto_icon.tentative__render_on_map();
         this->render_on_map_is_set = true;
     }
-    if (proto_icon.__tentative__render_on_minimap() != 0) {
-        this->render_on_minimap = proto_icon.__tentative__render_on_minimap();
+    if (proto_icon.tentative__render_on_minimap() != 0) {
+        this->render_on_minimap = proto_icon.tentative__render_on_minimap();
         this->render_on_minimap_is_set = true;
     }
     if (trigger.reset_behavior() != 0) {

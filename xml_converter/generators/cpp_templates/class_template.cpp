@@ -18,12 +18,12 @@ string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
 {% if cpp_class == "Category": %}
-void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors) {
+void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, string base_dir) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
         bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors);
         bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors);
 
-        if (init_xml_attribute(attribute, errors)) {
+        if (init_xml_attribute(attribute, errors, base_dir)) {
         }
         else if (is_icon_value || is_trail_value) {
         }
@@ -34,25 +34,29 @@ void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>*
 }
 {% endif %}
 
-bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors) {
+bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
     {% for i, value in enumerate(attribute_variable.xml_fields) %}
     {% if i == 0 and n == 0: %}
     if (attributename == "{{value}}") {
-        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
+        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
-    {% elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.is_child == true) %}
+    {% elif (attribute_variable.attribute_type == "CompoundValue" and attribute_variable.compound_name != None) %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
-        this->{{attribute_variable.attribute_name}}_is_set = true;
+        this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}} = parse_float(attribute, errors);
+        this->{{attribute_variable.compound_name}}_is_set = true;
     }
     {% else: %}
     else if (attributename == "{{value}}") {
-        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}(attribute, errors);
+        this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
         this->{{attribute_variable.attribute_name}}_is_set = true;
+        {% for side_effect in attribute_variable.side_effects %}
+        this->{{side_effect}} = this->{{attribute_variable.class_name}}.side_effect_{{side_effect}};
+        this->{{side_effect}}_is_set = true;
+        {% endfor %}
     }
     {% endif %}
     {% endfor %}
@@ -78,11 +82,11 @@ vector<string> {{cpp_class}}::as_xml() const {
     xml_node_contents.push_back("<{{xml_class_name}} ");
     {% for attribute_variable in attribute_variables %}
     {% if (attribute_variable.attribute_type == "CompoundValue") %}
-    {% if (attribute_variable.xml_export == "Children" and attribute_variable.is_child == true) %}
-    if (this->{{attribute_variable.attribute_name}}_is_set) {
-        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + to_string(this->{{attribute_variable.attribute_name}}) + "\"");
+    {% if (attribute_variable.xml_export == "Children" and attribute_variable.compound_name != None) %}
+    if (this->{{attribute_variable.compound_name}}_is_set) {
+        xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + to_string(this->{{attribute_variable.compound_name}}.{{attribute_variable.attribute_name}}) + "\"");
     }
-    {% elif (attribute_variable.xml_export == "Parent" and attribute_variable.is_child == false)%}
+    {% elif (attribute_variable.xml_export == "Parent" and attribute_variable.compound_name == None)%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
     }
@@ -98,7 +102,7 @@ vector<string> {{cpp_class}}::as_xml() const {
         xml_node_contents.push_back(" {{attribute_variable.default_xml_fields[0]}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
     }
     {% endif %}
-{% endfor %}
+    {% endfor %}
 {% if cpp_class == "Category": %}
     xml_node_contents.push_back(">\n");
 
@@ -148,17 +152,15 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     }
     {% endif %}
     {% else: %}
-    {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
-//TODO: TrailDataMapID is currently not implemented
-    {% elif (attribute_variable.attribute_type == "Enum")%}
+    {% if (attribute_variable.attribute_type == "Enum")%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
     }
-    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.is_child == false%}
+    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.compound_name == None%}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
     }
-    {% elif attribute_variable.is_child == true%}
+    {% elif (attribute_variable.compound_name != None)%}
     {% else: %}
     if (this->{{attribute_variable.attribute_name}}_is_set) {
         proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
@@ -208,19 +210,18 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
     }
     {% endif %}
     {% else: %}
-    {% if (attribute_variable.attribute_type == "Custom" and attribute_variable.class_name == "TrailDataMapId")%}
-    {% elif (attribute_variable.attribute_type ==  "Enum") %}
+    {% if (attribute_variable.attribute_type ==  "Enum") %}
     if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != 0) {
         this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
-    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.is_child == false%}
+    {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom"]) and attribute_variable.compound_name == None%}
     if (proto_{{cpp_class_header}}.has_{{attribute_variable.protobuf_field}}()) {
         this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
         this->{{attribute_variable.attribute_name}}_is_set = true;
     }
-    {% elif attribute_variable.is_child == true%}
-    {% elif attribute_variable.class_name == "string" %}
+    {% elif (attribute_variable.compound_name != None) %}
+    {% elif (attribute_variable.class_name == "string") %}
     if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != "") {
         this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
         this->{{attribute_variable.attribute_name}}_is_set = true;

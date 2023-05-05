@@ -4,7 +4,8 @@ type: Custom
 class: Image
 applies_to: [Icon]
 xml_fields: [IconFile]
-protobuf_field: texture
+uses_file_path: false
+protobuf_field: texture_path
 compatability: [TacO, BlishHUD, Burrito]
 ---
 The path to an image which contains the texture that will be present on an icon.

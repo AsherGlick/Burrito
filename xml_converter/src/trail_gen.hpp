@@ -25,7 +25,6 @@ class Trail : public Parseable {
  public:
     int achievement_bitmask;
     int achievement_id;
-    float alpha;
     float animation_speed;
     bool can_fade;
     MarkerCategory category;
@@ -53,7 +52,6 @@ class Trail : public Parseable {
     float trail_scale;
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
-    bool alpha_is_set = false;
     bool animation_speed_is_set = false;
     bool can_fade_is_set = false;
     bool category_is_set = false;
@@ -81,7 +79,7 @@ class Trail : public Parseable {
     bool trail_scale_is_set = false;
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
-    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors);
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string base_dir = "");
     waypoint::Trail as_protobuf() const;
     void parse_protobuf(waypoint::Trail proto_trail);
     bool validate_attributes_of_type_marker_category();
