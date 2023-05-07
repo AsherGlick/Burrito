@@ -62,7 +62,6 @@ class Icon : public Parseable {
     bool render_on_minimap;
     ResetBehavior reset_behavior;
     float reset_length;
-    float reset_offset;
     bool scale_on_map_with_zoom;
     std::string schedule;
     float schedule_duration;
@@ -110,7 +109,6 @@ class Icon : public Parseable {
     bool render_on_minimap_is_set = false;
     bool reset_behavior_is_set = false;
     bool reset_length_is_set = false;
-    bool reset_offset_is_set = false;
     bool scale_on_map_with_zoom_is_set = false;
     bool schedule_is_set = false;
     bool schedule_duration_is_set = false;

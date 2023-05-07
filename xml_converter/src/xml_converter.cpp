@@ -217,7 +217,7 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
     vector<Parseable*> markers;
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
-        if (normalize(get_node_name(node)) == "poi") {
+        if (get_node_name(node) == "POI") {
             Category* default_category = get_category(node, marker_categories, errors);
 
             Icon* icon = new Icon();
@@ -229,7 +229,7 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
             icon->init_from_xml(node, errors);
             markers.push_back(icon);
         }
-        else if (normalize(get_node_name(node)) == "trail") {
+        else if (get_node_name(node) == "Tcd rail") {
             Category* default_category = get_category(node, marker_categories, errors);
 
             Trail* trail = new Trail();

@@ -258,10 +258,6 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->reset_length = parse_float(attribute, errors);
         this->reset_length_is_set = true;
     }
-    else if (attributename == "resetlength") {
-        this->reset_offset = parse_float(attribute, errors);
-        this->reset_offset_is_set = true;
-    }
     else if (attributename == "scaleonmapwithzoom") {
         this->scale_on_map_with_zoom = parse_bool(attribute, errors);
         this->scale_on_map_with_zoom_is_set = true;
@@ -448,9 +444,6 @@ vector<string> Icon::as_xml() const {
     if (this->reset_length_is_set) {
         xml_node_contents.push_back(" ResetLength=\"" + stringify_float(this->reset_length) + "\"");
     }
-    if (this->reset_offset_is_set) {
-        xml_node_contents.push_back(" ResetLength=\"" + stringify_float(this->reset_offset) + "\"");
-    }
     if (this->scale_on_map_with_zoom_is_set) {
         xml_node_contents.push_back(" ScaleOnMapWithZoom=\"" + stringify_bool(this->scale_on_map_with_zoom) + "\"");
     }
@@ -634,12 +627,6 @@ waypoint::Icon Icon::as_protobuf() const {
             trigger = new waypoint::Trigger();
         }
         trigger->set_reset_length(this->reset_length);
-    }
-    if (this->reset_offset_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_reset_length(this->reset_offset);
     }
     if (this->scale_on_map_with_zoom_is_set) {
         proto_icon.set_scale_on_map_with_zoom(this->scale_on_map_with_zoom);
@@ -835,10 +822,6 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
     if (trigger.reset_length() != 0) {
         this->reset_length = trigger.reset_length();
         this->reset_length_is_set = true;
-    }
-    if (trigger.reset_length() != 0) {
-        this->reset_offset = trigger.reset_length();
-        this->reset_offset_is_set = true;
     }
     if (proto_icon.scale_on_map_with_zoom() != 0) {
         this->scale_on_map_with_zoom = proto_icon.scale_on_map_with_zoom();
