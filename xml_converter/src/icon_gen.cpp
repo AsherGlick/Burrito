@@ -30,17 +30,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->achievement_id = parse_int(attribute, errors);
         this->achievement_id_is_set = true;
     }
-    else if (attributename == "alpha") {
-        this->color.alpha = parse_float(attribute, errors);
-        this->color_is_set = true;
-    }
     else if (attributename == "autotrigger") {
         this->auto_trigger = parse_bool(attribute, errors);
         this->auto_trigger_is_set = true;
-    }
-    else if (attributename == "blue") {
-        this->color.blue = parse_float(attribute, errors);
-        this->color_is_set = true;
     }
     else if (attributename == "bouncedelay") {
         this->bounce_delay = parse_float(attribute, errors);
@@ -72,6 +64,22 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     }
     else if (attributename == "bhcolor") {
         this->color = parse_color(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "alpha") {
+        this->color.alpha = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "blue") {
+        this->color.blue = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "green") {
+        this->color.green = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "red") {
+        this->color.red = parse_float(attribute, errors);
         this->color_is_set = true;
     }
     else if (attributename == "copy") {
@@ -110,13 +118,21 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->euler_rotation = parse_euler_rotation(attribute, errors);
         this->euler_rotation_is_set = true;
     }
+    else if (attributename == "rotatex") {
+        this->euler_rotation.x_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
+    }
+    else if (attributename == "rotatey") {
+        this->euler_rotation.y_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
+    }
+    else if (attributename == "rotatez") {
+        this->euler_rotation.z_rotation = parse_float(attribute, errors);
+        this->euler_rotation_is_set = true;
+    }
     else if (attributename == "festival") {
         this->festival_filter = parse_festival_filter(attribute, errors);
         this->festival_filter_is_set = true;
-    }
-    else if (attributename == "green") {
-        this->color.green = parse_float(attribute, errors);
-        this->color_is_set = true;
     }
     else if (attributename == "guid") {
         this->guid = parse_unique_id(attribute, errors);
@@ -182,13 +198,33 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->position = parse_position(attribute, errors);
         this->position_is_set = true;
     }
+    else if (attributename == "xpos") {
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "positionx") {
+        this->position.x_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "ypos") {
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "positiony") {
+        this->position.y_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "zpos") {
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
+    else if (attributename == "positionz") {
+        this->position.z_position = parse_float(attribute, errors);
+        this->position_is_set = true;
+    }
     else if (attributename == "profession") {
         this->profession_filter = parse_profession_filter(attribute, errors);
         this->profession_filter_is_set = true;
-    }
-    else if (attributename == "red") {
-        this->color.red = parse_float(attribute, errors);
-        this->color_is_set = true;
     }
     else if (attributename == "ingamevisibility") {
         this->render_ingame = parse_bool(attribute, errors);
@@ -278,47 +314,12 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         this->trigger_range = parse_float(attribute, errors);
         this->trigger_range_is_set = true;
     }
-    else if (attributename == "xpos") {
-        this->position.x_position = parse_float(attribute, errors);
-        this->position_is_set = true;
-    }
-    else if (attributename == "positionx") {
-        this->position.x_position = parse_float(attribute, errors);
-        this->position_is_set = true;
-    }
-    else if (attributename == "rotatex") {
-        this->euler_rotation.x_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
-    }
-    else if (attributename == "ypos") {
-        this->position.y_position = parse_float(attribute, errors);
-        this->position_is_set = true;
-    }
-    else if (attributename == "positiony") {
-        this->position.y_position = parse_float(attribute, errors);
-        this->position_is_set = true;
-    }
-    else if (attributename == "rotatey") {
-        this->euler_rotation.y_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
-    }
-    else if (attributename == "zpos") {
-        this->position.z_position = parse_float(attribute, errors);
-        this->position_is_set = true;
-    }
-    else if (attributename == "positionz") {
-        this->position.z_position = parse_float(attribute, errors);
-        this->position_is_set = true;
-    }
-    else if (attributename == "rotatez") {
-        this->euler_rotation.z_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
-    }
     else {
         return false;
     }
     return true;
 }
+
 bool Icon::validate_attributes_of_type_marker_category() {
     // TODO: validate "category"
     // TODO: validate "hide_category"
@@ -335,9 +336,6 @@ vector<string> Icon::as_xml() const {
     }
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
-    }
-    if (this->color_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
     }
     if (this->auto_trigger_is_set) {
         xml_node_contents.push_back(" AutoTrigger=\"" + stringify_bool(this->auto_trigger) + "\"");
@@ -359,6 +357,9 @@ vector<string> Icon::as_xml() const {
     }
     if (this->color_is_set) {
         xml_node_contents.push_back(" Color=\"" + stringify_color(this->color) + "\"");
+    }
+    if (this->color_is_set) {
+        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
     }
     if (this->copy_clipboard_is_set) {
         xml_node_contents.push_back(" Copy=\"" + stringify_string(this->copy_clipboard) + "\"");
@@ -420,6 +421,15 @@ vector<string> Icon::as_xml() const {
     if (this->mount_filter_is_set) {
         xml_node_contents.push_back(" Mount=\"" + stringify_mount_filter(this->mount_filter) + "\"");
     }
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" XPos=\"" + stringify_float(this->position.x_position) + "\"");
+    }
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" YPos=\"" + stringify_float(this->position.y_position) + "\"");
+    }
+    if (this->position_is_set) {
+        xml_node_contents.push_back(" ZPos=\"" + stringify_float(this->position.z_position) + "\"");
+    }
     if (this->profession_filter_is_set) {
         xml_node_contents.push_back(" Profession=\"" + stringify_profession_filter(this->profession_filter) + "\"");
     }
@@ -470,15 +480,6 @@ vector<string> Icon::as_xml() const {
     }
     if (this->trigger_range_is_set) {
         xml_node_contents.push_back(" TriggerRange=\"" + stringify_float(this->trigger_range) + "\"");
-    }
-    if (this->position_is_set) {
-        xml_node_contents.push_back(" XPos=\"" + stringify_float(this->position.x_position) + "\"");
-    }
-    if (this->position_is_set) {
-        xml_node_contents.push_back(" YPos=\"" + stringify_float(this->position.y_position) + "\"");
-    }
-    if (this->position_is_set) {
-        xml_node_contents.push_back(" ZPos=\"" + stringify_float(this->position.z_position) + "\"");
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;

@@ -5,7 +5,7 @@ applies_to: ["Icon"]
 xml_fields: ["Position"]
 compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: position
-xml_parent_export: ""
+xml_parent_export: []
 xml_child_export: ["X Position", "Y Position", "Z Position"]
 components:
   

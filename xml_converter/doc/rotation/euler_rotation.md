@@ -5,7 +5,7 @@ applies_to: ["Icon"]
 xml_fields: ["Rotate"]
 compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: euler_rotation
-xml_parent_export: "'X Rotation', 'Y Rotation', 'Z Rotation'"
+xml_parent_export: ['X Rotation', 'Y Rotation', 'Z Rotation']
 xml_child_export: []
 components:
 - name: X Rotation
