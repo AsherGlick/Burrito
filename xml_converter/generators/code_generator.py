@@ -340,7 +340,7 @@ class AttributeVariable:
     default_xml_field: str = ""
     side_effects: List[str] = field(default_factory=list)
     components_bundled_in_xml: List[str] = field(default_factory=list)
-    parser_flag_name: Optional[str] = ""
+    attribute_flag_name: Optional[str] = ""
     write_to_xml: bool = True
     is_trigger: bool = False
     uses_file_path: bool = False
@@ -585,7 +585,7 @@ class Generator:
                             xml_fields=component_xml_fields,
                             default_xml_field=component_default_xml_field,
                             protobuf_field=component["protobuf_field"],
-                            parser_flag_name=attribute_name,
+                            attribute_flag_name=attribute_name + "_is_set",
                             write_to_xml=write_to_xml,
                             is_component=True,
                             args=args,
@@ -606,7 +606,7 @@ class Generator:
                     is_trigger=is_trigger,
                     args=args,
                     write_to_xml=write_to_xml,
-                    parser_flag_name=attribute_name,
+                    attribute_flag_name=attribute_name + "_is_set",
                     side_effects=side_effects,
                 )
                 attribute_variables.append(attribute_variable)

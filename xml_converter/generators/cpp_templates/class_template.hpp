@@ -21,7 +21,7 @@ class {{cpp_class}} : public Parseable {
     {% endfor %}
     {% for attribute_variable in attribute_variables: %}
         {% if attribute_variable.is_component == false: %}
-            bool {{attribute_variable.attribute_name}}_is_set = false;
+            bool {{attribute_variable.attribute_flag_name}} = false;
         {% endif %}
     {% endfor %}
     {% if cpp_class == "Category": %}
