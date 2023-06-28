@@ -20,7 +20,7 @@ using namespace std;
 // Helper functions to convert the value of colors from one type to another.
 // Also serves to make sure the values stay within the bounds.
 ////////////////////////////////////////////////////////////////////////////////
-float int_to_float(int input) {
+float convert_color_channel_int_to_float(int input) {
     if (input > 255) {
         input = 255;
     }
@@ -31,7 +31,7 @@ float int_to_float(int input) {
     return output;
 }
 
-int float_to_int(float input) {
+int convert_color_channel_float_to_int(float input) {
     if (input > 1.0) {
         input = 1.0;
     }
@@ -47,7 +47,7 @@ int float_to_int(float input) {
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
     Color color;
     std::string input_string = get_attribute_value(input);
     std::string hex_string;
@@ -59,21 +59,27 @@ Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
         hex_string = input_string;
     }
 
-    std::regex hex_pattern("^([A-Fa-f0-9]{6})$|^([A-Fa-f0-9]{8})$");
+    std::regex hex_pattern("^([A-Fa-f0-9]+)");
 
     if (std::regex_match(hex_string, hex_pattern)) {
         // Extract the R, G, B, and A values from the Hex string
         if (hex_string.size() == 6 || hex_string.size() == 8) {
-            color.red = int_to_float(std::stoi(hex_string.substr(0, 2), nullptr, 16));
-            color.green = int_to_float(std::stoi(hex_string.substr(2, 2), nullptr, 16));
-            color.blue = int_to_float(std::stoi(hex_string.substr(4, 2), nullptr, 16));
+            color.red = convert_color_channel_int_to_float(std::stoi(hex_string.substr(0, 2), nullptr, 16));
+            color.green = convert_color_channel_int_to_float(std::stoi(hex_string.substr(2, 2), nullptr, 16));
+            color.blue = convert_color_channel_int_to_float(std::stoi(hex_string.substr(4, 2), nullptr, 16));
             if (hex_string.size() == 8) {
-                color.alpha = int_to_float(std::stoi(hex_string.substr(6, 2), nullptr, 16));
+                color.alpha = convert_color_channel_int_to_float(std::stoi(hex_string.substr(6, 2), nullptr, 16));
             }
             else {
                 color.alpha = 1.0;
             }
         }
+        else {
+            errors->push_back(new XMLAttributeValueError("Found a hex color value that was not 6 or 8 characters", input));
+        }
+    }
+    else {
+        errors->push_back(new XMLAttributeValueError("Found a color value not in hex format", input));
     }
     return color;
 }
@@ -87,13 +93,13 @@ string stringify_color(Color attribute_value) {
     std::stringstream stream;
     std::string hex_string = "#";
 
-    stream << std::hex << float_to_int(attribute_value.red);
+    stream << std::hex << convert_color_channel_float_to_int(attribute_value.red);
     hex_string += stream.str();
 
-    stream << std::hex << float_to_int(attribute_value.green);
+    stream << std::hex << convert_color_channel_float_to_int(attribute_value.green);
     hex_string += stream.str();
 
-    stream << std::hex << float_to_int(attribute_value.blue);
+    stream << std::hex << convert_color_channel_float_to_int(attribute_value.blue);
     hex_string += stream.str();
 
     std::string rgb = hex_string;
@@ -112,10 +118,10 @@ waypoint::RGBAColor* to_proto_color(Color attribute_value) {
     int int_alpha = 255;
     // If alpha (float) is not the default value, convert to int
     if (attribute_value.alpha != 0) {
-        int_alpha = float_to_int(attribute_value.alpha);
+        int_alpha = convert_color_channel_float_to_int(attribute_value.alpha);
     }
 
-    uint32_t rgba = ((float_to_int(attribute_value.red) & 0xff) << 24) + ((float_to_int(attribute_value.green) & 0xff) << 16) + ((float_to_int(attribute_value.blue) & 0xff) << 8) + (int_alpha & 0xff);
+    uint32_t rgba = ((convert_color_channel_float_to_int(attribute_value.red) & 0xff) << 24) + ((convert_color_channel_float_to_int(attribute_value.green) & 0xff) << 16) + ((convert_color_channel_float_to_int(attribute_value.blue) & 0xff) << 8) + (int_alpha & 0xff);
     color->set_rgba_color(rgba);
     return color;
 }
@@ -128,18 +134,12 @@ waypoint::RGBAColor* to_proto_color(Color attribute_value) {
 Color from_proto_color(waypoint::RGBAColor attribute_value) {
     Color color;
     std::stringstream stream;
-    stream << std::hex << attribute_value.rgba_color();
-    std::string hex_string = stream.str();
+    uint32_t rgba = attribute_value.rgba_color();
 
-    int int_red = std::stoi(hex_string.substr(0, 2), nullptr, 16);
-    int int_green = std::stoi(hex_string.substr(2, 2), nullptr, 16);
-    int int_blue = std::stoi(hex_string.substr(4, 2), nullptr, 16);
-    int int_alpha = std::stoi(hex_string.substr(6, 2), nullptr, 16);
-
-    color.red = int_to_float(int_red);
-    color.green = int_to_float(int_green);
-    color.blue = int_to_float(int_blue);
-    color.alpha = int_to_float(int_alpha);
+    color.red = convert_color_channel_int_to_float((rgba >> 24) & 0xff);
+    color.green = convert_color_channel_int_to_float((rgba >> 16) & 0xff);
+    color.blue = convert_color_channel_int_to_float((rgba >> 8) & 0xff);
+    color.alpha = convert_color_channel_int_to_float(rgba & 0xff);
 
     return color;
 }

@@ -131,19 +131,64 @@ allOf:
                 const: CompoundValue
       then:
         additionalProperties: false
-        required: [{shared_fields}, components]
+        required: [{shared_fields}, components_bundled_in_xml, components_separate_in_xml, components]
         properties:
             {shared_field_properties}
-            xml_parent_export:
+            components_bundled_in_xml:
                 type: array
                 items:
                     type: string
-                    pattern: "^[A-Za-z ]+$"
-            xml_child_export:
+            components_separate_in_xml:
                 type: array
                 items:
                     type: string
-                    pattern: "^[A-Za-z ]+$"
+            components:
+                type: array
+                items:
+                    type: object
+                    additionalProperties: false
+                    required: [name, type, xml_fields, protobuf_field, compatability]
+                    properties:
+                        name:
+                            type: string
+                        type:
+                            type: string
+                            enum: [Int32, Fixed32, Float32]
+                        xml_fields:
+                            type: array
+                            items:
+                                type: string
+                                pattern: "^[A-Za-z]+$"
+                        protobuf_field:
+                            type: string
+                            pattern: "^[a-z_.]+$"
+                        compatability:
+                            type: array
+                            items:
+                                type: string
+                                enum: [BlishHUD, Burrito, TacO]
+    #############################
+    # CompoundCustomClass Type
+    #############################
+    - if:
+        properties:
+            type:
+                const: CompoundCustomClass
+      then:
+        additionalProperties: false
+        required: [{shared_fields}, components_bundled_in_xml, components_separate_in_xml, class]
+        properties:
+            {shared_field_properties}
+            class:
+                type: string
+            components_bundled_in_xml:
+                type: array
+                items:
+                    type: string
+            components_separate_in_xml:
+                type: array
+                items:
+                    type: string
             components:
                 type: array
                 items:
@@ -170,7 +215,6 @@ allOf:
                                 type: string
                                 enum: [BlishHUD, Burrito, TacO]
 
-
     #############################
     # Custom Type
     #############################
@@ -191,16 +235,6 @@ allOf:
                     type: string
             uses_file_path:
                 type: boolean
-            xml_parent_export:
-                type: array
-                items:
-                    type: string
-                    pattern: "^[A-Za-z ]+$"
-            xml_child_export:
-                type: array
-                items:
-                    type: string
-                    pattern: "^[A-Za-z ]+$"
 
 """.format(
     shared_field_properties="""type:
@@ -305,7 +339,7 @@ class AttributeVariable:
     args: List[str] = field(default_factory=list)
     default_xml_field: str = ""
     side_effects: List[str] = field(default_factory=list)
-    xml_parent_export: List[str] = field(default_factory=list)
+    components_bundled_in_xml: List[str] = field(default_factory=list)
     parser_flag_name: Optional[str] = ""
     write_to_xml: bool = True
     is_trigger: bool = False
@@ -449,16 +483,9 @@ class Generator:
         doc_type: str,
     ) -> Tuple[List[AttributeVariable], CPPInclude]:
 
-        cpp_includes: CPPInclude = CPPInclude()
-        attribute_name: str = ""
+        # Type defining the outputs
         attribute_variables: List[AttributeVariable] = []
-        xml_fields: List[str] = []
-        default_xml_field: str = ""
-        side_effects: List[str] = []
-        args: List[str] = []
-        protobuf_field: str = ""
-        write_to_xml: bool = True
-        is_trigger: bool = False
+        cpp_includes: CPPInclude = CPPInclude()
 
         cpp_includes.hpp_absolute_includes.add("string")
         cpp_includes.hpp_absolute_includes.add("vector")
@@ -486,11 +513,14 @@ class Generator:
             attribute_name = attribute_name_from_markdown_data(fieldval['name'])
 
             if doc_type in fieldval['applies_to']:
-                xml_fields = []
-                default_xml_field = ""
-                side_effects = []
-                write_to_xml = True
-                args = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
+                xml_fields: List[str] = []
+                side_effects: List[str] = []
+                write_to_xml: bool = True
+                protobuf_field: str = ""
+                is_trigger: bool = False
+                default_xml_field: str = ""
+
+                args: List[str] = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
 
                 if fieldval['type'] in documentation_type_data:
                     cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
@@ -536,31 +566,33 @@ class Generator:
                 if fieldval['type'] in ["CompoundValue", "CompoundCustomClass"]:
                     for component in fieldval['components']:
                         component_xml_fields: List[str] = []
+                        component_name: str = attribute_name_from_markdown_data(component['name'])
+                        component_default_xml_field: str = ""
                         for x in component['xml_fields']:
                             component_xml_fields.append(lowercase(x, delimiter=""))
-                        component_default_xml_field: str = ""
                         component_class_name = documentation_type_data[component['type']]["class_name"]
-                        if component['name'] in fieldval['xml_child_export']:
+                        if component['name'] in fieldval['components_separate_in_xml']:
                             component_default_xml_field = component['xml_fields'][0]
                             write_to_xml = True
-                        if component['name'] in fieldval['xml_parent_export']:
+                        if component['name'] in fieldval['components_bundled_in_xml']:
                             component_default_xml_field = fieldval['xml_fields'][0]
                             write_to_xml = False
                         component_attribute_variable = AttributeVariable(
-                            attribute_name=lowercase(fieldval['name'], delimiter="_") + "." + lowercase(component['name'], delimiter="_"),
+                            attribute_name=attribute_name + "." + component_name,
                             attribute_type="CompoundValue",
                             cpp_type=doc_type_to_cpp_type[component['type']],
                             class_name=component_class_name,
                             xml_fields=component_xml_fields,
                             default_xml_field=component_default_xml_field,
                             protobuf_field=component["protobuf_field"],
-                            parser_flag_name=lowercase(fieldval['name'], delimiter="_"),
+                            parser_flag_name=attribute_name,
                             write_to_xml=write_to_xml,
                             is_component=True,
                             args=args,
                         )
                         attribute_variables.append(component_attribute_variable)
-                    if fieldval['xml_parent_export'] == []:
+                    # If there aren't any components to bundle, we don't want to render the attribute
+                    if fieldval['components_bundled_in_xml'] == []:
                         write_to_xml = False
 
                 attribute_variable = AttributeVariable(
@@ -658,7 +690,7 @@ class Generator:
                         cpp_type=doc_type_to_cpp_type[component['type']],
                         class_name=attribute_name,
                         xml_fields=xml_fields,
-                        xml_parent_export=metadata[filepath]['xml_parent_export'],
+                        components_bundled_in_xml=metadata[filepath]['components_bundled_in_xml'],
                         protobuf_field=component["protobuf_field"],
                         is_trigger=is_trigger,
                     )

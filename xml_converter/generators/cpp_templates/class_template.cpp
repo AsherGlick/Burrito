@@ -39,7 +39,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_fields) %}
-            {{ "" if i == 0 and n == 0 else "else " }}if (attributename == "{{value}}") {
+            {{ "if" if i == n == 0 else "else if" }} (attributename == "{{value}}") {
                 this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
                 this->{{attribute_variable.parser_flag_name}}_is_set = true;
                 {% for side_effect in attribute_variable.side_effects %}
@@ -87,7 +87,7 @@ vector<string> {{cpp_class}}::as_xml() const {
         }
 
         xml_node_contents.push_back("</MarkerCategory>\n");
-    {% else: %}
+    {% else %}
         xml_node_contents.push_back("/>");
     {% endif %}
     return xml_node_contents;
