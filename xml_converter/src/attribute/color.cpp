@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include <algorithm>
 #include <iosfwd>
 #include <ostream>
 #include <regex>
