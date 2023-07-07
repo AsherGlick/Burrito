@@ -131,14 +131,14 @@ allOf:
                 const: CompoundValue
       then:
         additionalProperties: false
-        required: [{shared_fields}, components_bundled_in_xml, components_separate_in_xml, components]
+        required: [{shared_fields}, xml_bundled_components, xml_separate_components, components]
         properties:
             {shared_field_properties}
-            components_bundled_in_xml:
+            xml_bundled_components:
                 type: array
                 items:
                     type: string
-            components_separate_in_xml:
+            xml_separate_components:
                 type: array
                 items:
                     type: string
@@ -176,16 +176,16 @@ allOf:
                 const: CompoundCustomClass
       then:
         additionalProperties: false
-        required: [{shared_fields}, components_bundled_in_xml, components_separate_in_xml, class]
+        required: [{shared_fields}, xml_bundled_components, xml_separate_components, class]
         properties:
             {shared_field_properties}
             class:
                 type: string
-            components_bundled_in_xml:
+            xml_bundled_components:
                 type: array
                 items:
                     type: string
-            components_separate_in_xml:
+            xml_separate_components:
                 type: array
                 items:
                     type: string
@@ -339,7 +339,7 @@ class AttributeVariable:
     args: List[str] = field(default_factory=list)
     default_xml_field: str = ""
     side_effects: List[str] = field(default_factory=list)
-    components_bundled_in_xml: List[str] = field(default_factory=list)
+    xml_bundled_components: List[str] = field(default_factory=list)
     attribute_flag_name: Optional[str] = ""
     write_to_xml: bool = True
     is_trigger: bool = False
@@ -510,7 +510,7 @@ class Generator:
 
         for filepath, document in sorted(self.data.items()):
             fieldval = document.metadata
-            attribute_name = attribute_name_from_markdown_data(fieldval['name'])
+            attribute_name: str = attribute_name_from_markdown_data(fieldval['name'])
 
             if doc_type in fieldval['applies_to']:
                 xml_fields: List[str] = []
@@ -571,10 +571,10 @@ class Generator:
                         for x in component['xml_fields']:
                             component_xml_fields.append(lowercase(x, delimiter=""))
                         component_class_name = documentation_type_data[component['type']]["class_name"]
-                        if component['name'] in fieldval['components_separate_in_xml']:
+                        if component['name'] in fieldval['xml_separate_components']:
                             component_default_xml_field = component['xml_fields'][0]
                             write_to_xml = True
-                        if component['name'] in fieldval['components_bundled_in_xml']:
+                        if component['name'] in fieldval['xml_bundled_components']:
                             component_default_xml_field = fieldval['xml_fields'][0]
                             write_to_xml = False
                         component_attribute_variable = AttributeVariable(
@@ -592,7 +592,7 @@ class Generator:
                         )
                         attribute_variables.append(component_attribute_variable)
                     # If there aren't any components to bundle, we don't want to render the attribute
-                    if fieldval['components_bundled_in_xml'] == []:
+                    if fieldval['xml_bundled_components'] == []:
                         write_to_xml = False
 
                 attribute_variable = AttributeVariable(
@@ -648,8 +648,9 @@ class Generator:
 
         for filepath in attribute_names:
             attribute_variables = []
-            attribute_name = attribute_names[filepath]
+            xml_bundled_components: List[str] = []
             metadata[filepath] = self.data[filepath].metadata
+            attribute_name = attribute_name_from_markdown_data(metadata[filepath]['name'])
 
             if metadata[filepath]["protobuf_field"].startswith("trigger"):
                 is_trigger = True
@@ -682,15 +683,17 @@ class Generator:
                         raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
                             attribute_name=attribute_name
                         ))
+                    component_attribute_name: str = attribute_name_from_markdown_data(component['name'])
                     for item in component['xml_fields']:
                         xml_fields.append(normalize(item))
+                    if component['name'] in metadata[filepath]['xml_bundled_components']:
+                        xml_bundled_components.append(component_attribute_name)
                     attribute_variable = AttributeVariable(
-                        attribute_name=lowercase(component['name'], delimiter="_"),
+                        attribute_name=component_attribute_name,
                         attribute_type=metadata[filepath]['type'],
                         cpp_type=doc_type_to_cpp_type[component['type']],
                         class_name=attribute_name,
                         xml_fields=xml_fields,
-                        components_bundled_in_xml=metadata[filepath]['components_bundled_in_xml'],
                         protobuf_field=component["protobuf_field"],
                         is_trigger=is_trigger,
                     )
@@ -729,6 +732,7 @@ class Generator:
                     attribute_variables=attribute_variables,
                     class_name=capitalize(attribute_name, delimiter=""),
                     enumerate=enumerate,
+                    xml_bundled_components=xml_bundled_components
                 ))
 
     ############################################################################

@@ -27,15 +27,17 @@ using namespace std;
     }
     return {{attribute_name}};
 }
-{% if attribute_variables[0].components_bundled_in_xml != [] %}
+{% if xml_bundled_components != [] %}
     
     string stringify_{{attribute_name}}({{class_name}} attribute_value) {
         string output;
         {% for n, attribute_variable in enumerate(attribute_variables) %}
-            {% if n == 0: %}
-                output = to_string(attribute_value.{{attribute_variables[n].attribute_name}});
-            {% else %}
-                output = output + "," + to_string(attribute_value.{{attribute_variables[n].attribute_name}});
+            {% if attribute_variables[n].attribute_name in xml_bundled_components %}
+                {% if n == 0: %}
+                    output = to_string(attribute_value.{{attribute_variables[n].attribute_name}});
+                {% else %}
+                    output = output + "," + to_string(attribute_value.{{attribute_variables[n].attribute_name}});
+                {% endif %}
             {% endif %}
         {% endfor %}
         return output;
