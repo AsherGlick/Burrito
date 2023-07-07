@@ -5,8 +5,8 @@ applies_to: ["Icon"]
 xml_fields: ["Rotate"]
 compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: euler_rotation
-components_bundled_in_xml: ['X Rotation', 'Y Rotation', 'Z Rotation']
-components_separate_in_xml: []
+xml_bundled_components: ['X Rotation', 'Y Rotation', 'Z Rotation']
+xml_separate_components: []
 components:
 - name: X Rotation
   type: Float32

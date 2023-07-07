@@ -6,8 +6,8 @@ applies_to: [Icon, Trail]
 xml_fields: [Color, BHColor]
 protobuf_field: rgba_color
 compatability: [TacO, BlishHUD, Burrito]
-components_bundled_in_xml: ['Red', 'Green', 'Blue']
-components_separate_in_xml: ['Alpha']
+xml_bundled_components: ['Red', 'Green', 'Blue']
+xml_separate_components: ['Alpha']
 components:
 - name: Red
   type: Float32

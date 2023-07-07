@@ -5,8 +5,8 @@ applies_to: ["Icon"]
 xml_fields: ["Position"]
 compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: position
-components_bundled_in_xml: []
-components_separate_in_xml: ["X Position", "Y Position", "Z Position"]
+xml_bundled_components: []
+xml_separate_components: ["X Position", "Y Position", "Z Position"]
 components:
 - name: X Position
   type: Float32
