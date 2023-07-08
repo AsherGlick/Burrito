@@ -27,6 +27,7 @@ EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLE
     }
     return euler_rotation;
 }
+
 string stringify_euler_rotation(EulerRotation attribute_value) {
     string output;
     output = to_string(attribute_value.x_rotation);

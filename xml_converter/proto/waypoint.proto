@@ -122,7 +122,7 @@ message Trigger {
     Category action_hide_category = 12;
     Category action_show_category = 13;
     Category action_toggle_category = 14;
-    ResetBehavior reset_behavior= 15;
+    ResetBehavior reset_behavior = 15;
 }
 
 message GUID {

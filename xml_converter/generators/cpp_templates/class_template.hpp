@@ -15,13 +15,13 @@
 class {{cpp_class}} : public Parseable {
  public:
     {% for attribute_variable in attribute_variables: %}
-        {% if attribute_variable.compound_name == None: %}
+        {% if attribute_variable.is_component == false: %}
             {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
         {% endif %}
     {% endfor %}
     {% for attribute_variable in attribute_variables: %}
-        {% if attribute_variable.compound_name == None: %}
-            bool {{attribute_variable.attribute_name}}_is_set = false;
+        {% if attribute_variable.is_component == false: %}
+            bool {{attribute_variable.attribute_flag_name}} = false;
         {% endif %}
     {% endfor %}
     {% if cpp_class == "Category": %}

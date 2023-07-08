@@ -12,7 +12,9 @@ class RGBAColor;
 
 class Color {
  public:
-    std::string hex;
+    float red;
+    float green;
+    float blue;
     float alpha;
 };
 

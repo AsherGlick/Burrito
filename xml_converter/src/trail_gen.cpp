@@ -58,6 +58,22 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         this->color = parse_color(attribute, errors);
         this->color_is_set = true;
     }
+    else if (attributename == "alpha") {
+        this->color.alpha = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "blue") {
+        this->color.blue = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "green") {
+        this->color.green = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
+    else if (attributename == "red") {
+        this->color.red = parse_float(attribute, errors);
+        this->color_is_set = true;
+    }
     else if (attributename == "cull") {
         this->cull_chirality = parse_cull_chirality(attribute, errors);
         this->cull_chirality_is_set = true;
@@ -173,6 +189,7 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     }
     return true;
 }
+
 bool Trail::validate_attributes_of_type_marker_category() {
     // TODO: validate "category"
     return true;
@@ -198,6 +215,9 @@ vector<string> Trail::as_xml() const {
     }
     if (this->color_is_set) {
         xml_node_contents.push_back(" Color=\"" + stringify_color(this->color) + "\"");
+    }
+    if (this->color_is_set) {
+        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
     }
     if (this->cull_chirality_is_set) {
         xml_node_contents.push_back(" Cull=\"" + stringify_cull_chirality(this->cull_chirality) + "\"");

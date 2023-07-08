@@ -22,19 +22,22 @@ using namespace std;
     compound_values = split(get_attribute_value(input), ",");
     if (compound_values.size() == {{ attribute_variables|length }}) {
         {% for n, attribute_variable in enumerate(attribute_variables) %}
-            {{attribute_name}}.{{attribute_variables[n].attribute_name}} = std::stof(compound_values[{{n}}]);
+            {{attribute_name}}.{{attribute_variable.attribute_name}} = std::stof(compound_values[{{n}}]);
         {% endfor %}
     }
     return {{attribute_name}};
 }
-{% if attribute_variables[0].xml_export == "Parent" %}
+{% if xml_bundled_components != [] %}
+    
     string stringify_{{attribute_name}}({{class_name}} attribute_value) {
         string output;
         {% for n, attribute_variable in enumerate(attribute_variables) %}
-            {% if n == 0: %}
-                output = to_string(attribute_value.{{attribute_variables[n].attribute_name}});
-            {% else %}
-                output = output + "," + to_string(attribute_value.{{attribute_variables[n].attribute_name}});
+            {% if attribute_variable.attribute_name in xml_bundled_components %}
+                {% if n == 0: %}
+                    output = to_string(attribute_value.{{attribute_variable.attribute_name}});
+                {% else %}
+                    output = output + "," + to_string(attribute_value.{{attribute_variable.attribute_name}});
+                {% endif %}
             {% endif %}
         {% endfor %}
         return output;
