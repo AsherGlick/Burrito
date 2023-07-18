@@ -397,7 +397,7 @@ func gen_map_markers():
 	for icon in icons.get_children():
 		icon.queue_free()
 
-	marker_packs.clear()
+	self.marker_packs.clear()
 	build_category_tree()
 
 	# Load the data from the markers
@@ -405,7 +405,7 @@ func gen_map_markers():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
 		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
-			print("Warning: Trail ", trail_data.get_category.get_name(), " does not have equal number of X, Y, and Z coordinates.")
+			print("Warning: Trail ", path.get_category.get_name(), " does not have equal number of X, Y, and Z coordinates.")
 		for index in range(0, trail_data.get_points_z().size()):
 			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
 		var texture_path = path.get_texture_path()
@@ -446,20 +446,20 @@ func search_category_tree(index, split_name, category_item):
 	return null
 
 func build_category_tree():
-	var root = marker_packs.create_item()
+	var root = self.marker_packs.create_item()
 	root.set_text(0, "Markers available on current map")
 	root.set_selectable(0, false)
 	root.set_text(1, "Visible")
 	
 	for category in self.markerdata.get_category():
-		marker_packs_array.append(category.get_name())
+		self.marker_packs_array.append(category.get_name())
 		add_category(root, category, category.get_name(), false)
 
 func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	if category.get_name() == "": 
 		print("Category found with no name. Full name ", full_category_name)
 		return
-	var category_item = marker_packs.create_item(item)
+	var category_item = self.marker_packs.create_item(item)
 	category_item.set_text(0,category.get_display_name())
 	category_item.set_metadata(0, full_category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
@@ -503,28 +503,28 @@ func is_category_visible(category_item: TreeItem) -> bool:
 		return false
 
 
-func show_or_hide_all(show_or_hide: bool) :
-	if show_or_hide == false:
+func show_or_hide_all(is_visible: bool) :
+	if is_visible == false:
 		Settings.local_category_data.clear()
 	var category_item = self.marker_packs.get_root().get_children()
 	while category_item != null:
-		category_item.set_checked(1, show_or_hide)
-		change_all_categories(category_item, show_or_hide)
+		category_item.set_checked(1, is_visible)
+		change_all_categories(category_item, is_visible)
 		update_node_visibility(category_item, self.paths)
 		update_node_visibility(category_item, self.icons)
 		category_item = category_item.get_next()
 	Settings.save()
 
 
-func change_all_categories(category_item: TreeItem, show_or_hide: bool):
-	category_item.set_checked(1, show_or_hide)
-	if show_or_hide == true:
+func change_all_categories(category_item: TreeItem, is_visible: bool):
+	category_item.set_checked(1, is_visible)
+	if is_visible == true:
 		Settings.local_category_data[category_item.get_metadata(0)] = {
 			"checked" : true,
 			}
 	var child_item = category_item.get_children()
 	while child_item != null:
-		change_all_categories(child_item, show_or_hide)
+		change_all_categories(child_item, is_visible)
 		child_item = child_item.get_next()
 
 
@@ -870,12 +870,12 @@ func _on_Settings_pressed():
 
 
 func _on_MarkerPacks_cell_selected():
-	var category_item = marker_packs.get_selected()
+	var category_item = self.marker_packs.get_selected()
 	self.currently_active_category = category_item
 
 
 func _on_MarkerPacks_item_edited():
-	var category_item = marker_packs.get_edited()
+	var category_item = self.marker_packs.get_edited()
 	switch_selected_category(category_item)
 
 
