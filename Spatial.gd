@@ -634,7 +634,6 @@ func gen_adjustment_nodes():
 	for index in range(self.paths.get_child_count()):
 		var route = self.paths.get_child(index)
 		var path2d = self.minimap.get_child(index)
-		#var curve: Curve3D = path.curve
 		if self.currently_active_category.get_metadata(0) == route.waypoint.get_category().get_name():
 			for i in range(route.get_point_count()):
 				var gizmo_position = route.get_point_position(i)
@@ -652,14 +651,14 @@ func gen_adjustment_nodes():
 				$Gizmos.add_child(new_gizmo)
 
 	for index in range(self.icons.get_child_count()):
-		#TODO check for currently active category
 		var icon = self.icons.get_child(index)
-		var new_gizmo = gizmo_scene.instance()
-		new_gizmo.translation = icon.translation
-		new_gizmo.link_point("icon", icon)
-		new_gizmo.connect("selected", self, "on_gizmo_selected")
-		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
-		$Gizmos.add_child(new_gizmo)
+		if self.currently_active_category.get_metadata(0) == icon.waypoint.get_category().get_name():
+			var new_gizmo = gizmo_scene.instance()
+			new_gizmo.translation = icon.translation
+			new_gizmo.link_point("icon", icon)
+			new_gizmo.connect("selected", self, "on_gizmo_selected")
+			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+			$Gizmos.add_child(new_gizmo)
 
 
 var currently_selected_node = null
