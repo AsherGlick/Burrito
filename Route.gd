@@ -1,9 +1,10 @@
 extends Spatial
 
+var Waypoint = preload("res://waypoint.gd")
+
 var texture_path
-var category_name = ""
 var color = Color(0.9, 0.1, 0.1)
-var is_editable = false
+var waypoint = Waypoint.Trail.new()
 
 var point_list := PoolVector3Array()
 
@@ -18,12 +19,12 @@ func refresh_mesh():
 	for point_index in range(len(point_list)-1):	
 		var point:Vector3 = point_list[point_index]
 		var next_point:Vector3 = point_list[point_index+1]
+		# If the line starts or ends at map 0, don't draw the line.
 		if point == Vector3(0,0,0) or next_point == Vector3(0,0,0):
 			continue
 
 		var distance: float = point.distance_to(next_point)
 		var normal: Vector3 = (next_point - point).normalized()
-		#print(normal)
 		var horizontal_tangent:Vector3 = Vector3(normal.z, 0, -normal.x).normalized()
 
 		normal = Vector3(0,0,0)

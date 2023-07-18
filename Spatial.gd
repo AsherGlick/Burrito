@@ -55,7 +55,6 @@ func _ready():
 	taco_parser = TacoParser.new()
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
-	print(OS.get_current_screen())
 	# Start off with a small size before GW2 client is up
 	OS.window_size = Vector2(800, 600)
 	# Postion at top left corner
@@ -289,7 +288,7 @@ var markerdata = Waypoint.Waypoint.new()
 var marker_file_dir = "user://protobins/"
 var marker_file_path = ""
 var marker_packs_array = Array()
-onready var marker_packs = get_node("Control/Dialogs/MarkerPacks/MarkerPacks")
+onready var marker_packs = $Control/Dialogs/MarkerPacks/MarkerPacks
 
 func load_waypoint_markers(map_id):
 	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
@@ -405,13 +404,19 @@ func gen_map_markers():
 	for path in self.markerdata.get_trail():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
-		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size()
-			print("Warning: Trail ", trail.get_category.get_name(), " does not have equal number of X, Y, and Z coordinates.")
+		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
+			print("Warning: Trail ", trail_data.get_category.get_name(), " does not have equal number of X, Y, and Z coordinates.")
 		for index in range(0, trail_data.get_points_z().size()):
 			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
 		var texture_path = path.get_texture_path()
+		if texture_path == null:
+			print("Warning: No texture found in " , path.get_category().name())
+			continue
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
-		gen_new_path(path_points, full_texture_path, path.get_category().get_name())
+		#TODO This tree look up is unnescary if we make path a child of Category in protobuf
+		var split_name = path.get_category().get_name().split(".")
+		var category_item = search_category_tree(split_name.size(), split_name, self.marker_packs.get_root())
+		gen_new_path(path_points, full_texture_path, path, category_item)
 	for icon in self.markerdata.get_icon():
 		var position = icon.get_position()
 		if position == null:
@@ -420,13 +425,25 @@ func gen_map_markers():
 		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
 		var texture_path = icon.get_texture_path()
 		if texture_path == null:
-			#Some icons have their texture in a parent of the category.
+			print("Warning: No texture found in " , icon.get_category().name())
 			continue
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
-		gen_new_icon(position_vector, full_texture_path, icon.get_category().get_name())
-	
-		
-onready var local_data = get_node("Control/LocalData") 
+		#TODO This tree look up is unnescary if we make path a child of Category in protobuf
+		var split_name = icon.get_category().get_name().split(".")
+		var category_item = search_category_tree(split_name.size(), split_name, self.marker_packs.get_root())
+		gen_new_icon(position_vector, full_texture_path, icon, category_item)
+
+func search_category_tree(index, split_name, category_item):
+	if index == split_name.size():
+		return category_item
+	var child_item = category_item.get_children()
+	while child_item != null:
+		if child_item.metadata(0) == split_name[index]:
+			print(child_item.metadata(0))
+			return search_category_tree(index + 1, split_name, child_item)
+		category_item.next()
+	print("No category found for ", split_name)
+	return null
 
 func build_category_tree():
 	var root = marker_packs.create_item()
@@ -435,65 +452,83 @@ func build_category_tree():
 	root.set_text(1, "Visible")
 	
 	for category in self.markerdata.get_category():
+		marker_packs_array.append(category.get_name())
 		add_category(root, category, category.get_name(), false)
 
-
-func add_category(item: TreeItem, category, tree_path: String, collapsed: bool):
-	if category.get_name() != "":
-		var category_item = marker_packs.create_item(item)
-		category_item.set_text(0,category.get_display_name())
-		category_item.set_metadata(0,category)
-		category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
-		category_item.set_checked(1, self.local_data.visible_dict.get(tree_path, false))
-		category_item.set_tooltip(1, "Show/Hide")
-		category_item.set_editable(1, true)
-		category_item.set_collapsed(collapsed)
-		for category_child in category.get_children():
-			add_category(category_item, category_child, tree_path + "." + category_child.get_name(), true)
+func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
+	if category.get_name() == "": 
+		print("Category found with no name. Full name ", full_category_name)
+		return
+	var category_item = marker_packs.create_item(item)
+	category_item.set_text(0,category.get_display_name())
+	category_item.set_metadata(0, full_category_name)
+	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
+	category_item.set_checked(1, Settings.local_category_data.get(full_category_name, {}).get("checked", false))
+	category_item.set_tooltip(1, "Show/Hide")
+	category_item.set_editable(1, true)
+	category_item.set_collapsed(collapsed)
+	for category_child in category.get_children():
+		add_category(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
 
 func switch_selected_category(category_item: TreeItem):
-	var selected_category_name = find_pedigree_name(category_item, category_item.get_metadata(0).get_name())
-	local_data.visible_dict[selected_category_name] = category_item.is_checked(1)
-	switch_checkboxes(category_item, category_item.is_checked(1))
-	
-	node_checkmark_switch(selected_category_name, category_item, self.paths)
-	node_checkmark_switch(selected_category_name, category_item, self.minimap)
-	node_checkmark_switch(selected_category_name, category_item, self.icons)
+	Settings.local_category_data[category_item.get_metadata(0)] = {
+		"checked" : category_item.is_checked(1),
+	} 
+	update_node_visibility(category_item, self.paths)
+	update_node_visibility(category_item, self.icons)
 
-	$Control/LocalData.save_local()
+	Settings.save()
 
-
-func find_pedigree_name(category_item: TreeItem, pedigree_name: String):
-	var parent =  category_item.get_parent()
-	if parent.is_selectable(0):
-		pedigree_name = parent.get_metadata(0).get_name() + "." + pedigree_name
-		pedigree_name = find_pedigree_name(parent, pedigree_name)
-	return pedigree_name
-
-
-func node_checkmark_switch(selected_category_name: String, category_item, nodes):
+func update_node_visibility(category_item: TreeItem, nodes):
 	for node in nodes.get_children():
-		if node.category_name.begins_with(selected_category_name):
-			local_data.visible_dict[node.category_name] = category_item.is_checked(1)
-			if category_item.is_checked(1):
-				node.show()
+		var node_name = node.waypoint.get_category().get_name()
+		if node_name.begins_with(category_item.get_metadata(0)):
+			if is_category_visible(category_item):
+				node.visible = true
 			else:
-				node.hide()
+				node.visible = false
+			if node.get_name() == "Path":
+				var index = node.get_index()
+				var route2d = self.minimap.get_child(index)
+				route2d.visible= node.visible 
+
+#Child visibility is contigent on all parents having permission 
+func is_category_visible(category_item: TreeItem) -> bool:
+	if category_item == marker_packs.get_root():
+		return true
+	if category_item.is_checked(1):
+		return is_category_visible(category_item.get_parent())
+	else:
+		return false
 
 
-func switch_checkboxes(item: TreeItem, checked: bool):
-	if item.get_cell_mode(1) == TreeItem.CELL_MODE_CHECK:
-		item.set_checked(1, checked)
-		local_data.visible_dict[find_pedigree_name(item, item.get_metadata(0).get_name())] = checked
-		
-	var child_item = item.get_children()
+func show_or_hide_all(show_or_hide: bool) :
+	if show_or_hide == false:
+		Settings.local_category_data.clear()
+	var category_item = self.marker_packs.get_root().get_children()
+	while category_item != null:
+		category_item.set_checked(1, show_or_hide)
+		change_all_categories(category_item, show_or_hide)
+		update_node_visibility(category_item, self.paths)
+		update_node_visibility(category_item, self.icons)
+		category_item = category_item.get_next()
+	Settings.save()
+
+
+func change_all_categories(category_item: TreeItem, show_or_hide: bool):
+	category_item.set_checked(1, show_or_hide)
+	if show_or_hide == true:
+		Settings.local_category_data[category_item.get_metadata(0)] = {
+			"checked" : true,
+			}
+	var child_item = category_item.get_children()
 	while child_item != null:
-		switch_checkboxes(child_item, checked)
+		change_all_categories(child_item, show_or_hide)
 		child_item = child_item.get_next()
 
 
-func gen_new_path(points: Array, texture_path: String, category_name: String):
+func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem):
 
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
@@ -513,18 +548,8 @@ func gen_new_path(points: Array, texture_path: String, category_name: String):
 	texture.storage = ImageTexture.STORAGE_COMPRESS_LOSSLESS
 	texture.create_from_image(image, 22)
 
-	# Create a new 3D route
-
-#	var new_curve = Curve3D.new()
-#	for point in points:
-#		new_curve.add_point(Vector3(point[0], point[1], -point[2]))
-#		points_2d.append(Vector2(point[0], -point[2]))
-#	new_path.curve = new_curve
-#	path_3d_markers.append(new_path)
-
 	var new_route = route_scene.instance()
 	new_route.texture_path = texture_path # Save the location of the image for later
-	#path_3d_markers.append(new_path)
 	
 	var points_3d := PoolVector3Array()
 	for point in points:
@@ -532,45 +557,32 @@ func gen_new_path(points: Array, texture_path: String, category_name: String):
 	
 	new_route.create_mesh(points_3d)
 	new_route.set_texture(texture)
-	new_route.visible = self.local_data.visible_dict.get(category_name, false)
-	new_route.category_name = category_name
+	new_route.waypoint = waypoint_trail
+	new_route.visible = is_category_visible(category_item)
 	
 	paths.add_child(new_route)
-	var points_2d_array = segment_2D_paths(points)
 	
 	# Create a new 2D Path
-	for segment in points_2d_array:
-		var new_2d_path = path2d_scene.instance()
-		new_2d_path.points = segment
-		new_2d_path.texture = texture
-		new_2d_path.visible = self.local_data.visible_dict.get(category_name, false)
-		new_2d_path.category_name = category_name
-		minimap.add_child(new_2d_path)
-
-
-func segment_2D_paths (points: Array):
-	var points_2d: PoolVector2Array = []
-	var points_2d_array = []
+	var new_2d_path = path2d_scene.instance()
+	var points_2d := PoolVector2Array()
 	for point in points:
-		if point == Vector3(0,0,0):
-			points_2d_array.append(points_2d)
-			points_2d = []
-			continue
 		points_2d.append(Vector2(point[0], -point[2]))
-	points_2d_array.append(points_2d)
-	return points_2d_array
+	new_2d_path.points = points_2d
+	new_2d_path.texture = texture
+	new_2d_path.visible = new_route.visible
+	minimap.add_child(new_2d_path)
+
 
 ################################################################################
 #
 ################################################################################
-func gen_new_icon(position: Vector3, texture_path: String, category_name: String): 
+func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem): 
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position
 	new_icon.set_icon_image(texture_path)
-	new_icon.visible = self.local_data.visible_dict.get(category_name, false)
-	new_icon.category_name = category_name
-	#icon_markers.append(new_icon)
+	new_icon.waypoint = waypoint_icon
+	new_icon.visible = is_category_visible(category_item)
 	icons.add_child(new_icon)
 
 # This function take all of the currently rendered objects and converts it into
@@ -623,13 +635,13 @@ func gen_adjustment_nodes():
 		var route = self.paths.get_child(index)
 		var path2d = self.minimap.get_child(index)
 		#var curve: Curve3D = path.curve
-		if route.is_editable:
+		if self.currently_active_category.get_metadata(0) == route.waypoint.get_category().get_name():
 			for i in range(route.get_point_count()):
 				var gizmo_position = route.get_point_position(i)
 			
-			# Simplistic cull to prevent nodes that are too far away to be
-			# visible from being created. Additional work can be done here
-			# if this is not enough of an optimization in the future.
+				# Simplistic cull to prevent nodes that are too far away to be
+				# visible from being created. Additional work can be done here
+				# if this is not enough of an optimization in the future.
 				if (gizmo_position.distance_squared_to(self.correct_player_position) > 10000):
 					continue
 				var new_gizmo = gizmo_scene.instance()
@@ -640,6 +652,7 @@ func gen_adjustment_nodes():
 				$Gizmos.add_child(new_gizmo)
 
 	for index in range(self.icons.get_child_count()):
+		#TODO check for currently active category
 		var icon = self.icons.get_child(index)
 		var new_gizmo = gizmo_scene.instance()
 		new_gizmo.translation = icon.translation
@@ -740,27 +753,21 @@ func _on_NewPath_pressed():
 # Create a new icon and give it the texture
 ################################################################################
 func _on_NewIcon_pressed():
-	gen_new_icon(self.player_position, self.next_texture_path, "")
+	var waypoint_icon = Waypoint.Icon.new()
+	waypoint_icon.set_name(self.currently_active_category.get_metadata(0))
+	gen_new_icon(self.player_position, self.next_texture_path, waypoint_icon, self.currently_active_category)
 
 # A new path point is created
 func _on_NewPathPoint_pressed():
 	if self.currently_active_path == null:
-		gen_new_path([self.player_position], self.next_texture_path, self.currently_active_category.get_name())
+		var waypoint_trail = Waypoint.Trail.new()
+		waypoint_trail.set_name(self.currently_active_category.get_metadata(0))
+		gen_new_path([self.player_position], self.next_texture_path, waypoint_trail, self.currently_active_category)
 	else:
 		var z_accurate_player_position = player_position
 		z_accurate_player_position.z = -z_accurate_player_position.z
 		self.currently_active_path.add_point(z_accurate_player_position)
-		for path2d in minimap.get_children():
-			if path2d.category_name == self.currently_active_path.category_name:
-				path2d.queue_free()
-		for segment in segment_2D_paths(self.currently_active_path.points()):
-			var new_2d_path = path2d_scene.instance()
-			new_2d_path.points = segment
-			new_2d_path.texture = self.currently_active_path.texture
-			new_2d_path.visible = self.currently_active_path.visibility
-			new_2d_path.category_name = self.currently_active_path.category_name
-			minimap.add_child(new_2d_path)
-			new_2d_path.refresh_mesh()
+		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
 
 
 ################################################################################
@@ -820,7 +827,7 @@ func _on_NewNodeAfter_pressed():
 			midpoint = ((start-end)/2) + end
 		
 		path.add_point(midpoint, index+1)
-		#path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
+		path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
 
 		clear_adjustment_nodes()
 		gen_adjustment_nodes()
@@ -864,18 +871,7 @@ func _on_Settings_pressed():
 
 func _on_MarkerPacks_cell_selected():
 	var category_item = marker_packs.get_selected()
-	self.currently_active_category = category_item.get_metadata(0)
-	for path in self.paths.get_children():
-		if path.category_name == find_pedigree_name(category_item, category_item.get_metadata(0).get_name()):
-			path.is_editable = true
-			self.currently_active_path = path
-		else:
-			path.is_editable = false
-	for icon in self.icons.get_children():
-		if icon.category_name == find_pedigree_name(category_item, category_item.get_metadata(0).get_name()):
-			icon.is_editable = true
-		else:
-			icon.is_editable = false
+	self.currently_active_category = category_item
 
 
 func _on_MarkerPacks_item_edited():
@@ -884,16 +880,7 @@ func _on_MarkerPacks_item_edited():
 
 
 func _on_ShowAll_pressed():
-	var category_item = self.marker_packs.get_root().get_children()
-	while category_item != null:
-		category_item.set_checked(1, true)
-		switch_selected_category(category_item)
-		category_item = category_item.get_next()	
-
+	show_or_hide_all(true)
 
 func _on_HideAll_pressed():
-	var category_item = self.marker_packs.get_root().get_children()
-	while category_item != null:
-		category_item.set_checked(1, false)
-		switch_selected_category(category_item)
-		category_item = category_item.get_next()
+	show_or_hide_all(false)
