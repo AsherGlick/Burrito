@@ -25,9 +25,7 @@ func _ready():
 		self._config_data = {}
 		
 	if "local_category_data" in self._config_data:
-		for key in self._config_data["local_category_data"].keys():
-			self.local_category_data[key] = self._config_data["local_category_data"][key]
-	
+		self.local_category_data = self._config_data["local_category_data"]
 	if "override_size_enabled" in self._config_data:
 		self.override_size_enabled = self._config_data["override_size_enabled"]
 	if "override_size_height" in self._config_data:

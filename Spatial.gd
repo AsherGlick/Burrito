@@ -415,7 +415,7 @@ func gen_map_markers():
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
 		#TODO This tree look up is unnescary if we make path a child of Category in protobuf
 		var split_name = path.get_category().get_name().split(".")
-		var category_item = search_category_tree(split_name.size(), split_name, self.marker_packs.get_root())
+		var category_item = search_category_tree(0, split_name, self.marker_packs.get_root())
 		gen_new_path(path_points, full_texture_path, path, category_item)
 	for icon in self.markerdata.get_icon():
 		var position = icon.get_position()
@@ -438,10 +438,13 @@ func search_category_tree(index, split_name, category_item):
 		return category_item
 	var child_item = category_item.get_children()
 	while child_item != null:
-		if child_item.metadata(0) == split_name[index]:
-			print(child_item.metadata(0))
-			return search_category_tree(index + 1, split_name, child_item)
-		category_item.next()
+		if child_item.get_text(0) != "No name":
+			var joined_name = ""
+			for i in range(index):
+				joined_name += split_name[i]
+			if child_item.get_metadata(0) == joined_name:
+				return search_category_tree(index + 1, split_name, child_item)
+		child_item = child_item.get_next()
 	print("No category found for ", split_name)
 	return null
 
@@ -456,12 +459,14 @@ func build_category_tree():
 		add_category(root, category, category.get_name(), false)
 
 func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
+	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
+		category_item.set_text(0, "No name")
 		print("Category found with no name. Full name ", full_category_name)
 		return
-	var category_item = self.marker_packs.create_item(item)
-	category_item.set_text(0,category.get_display_name())
-	category_item.set_metadata(0, full_category_name)
+	else:
+		category_item.set_text(0,category.get_display_name())
+		category_item.set_metadata(0, full_category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 	category_item.set_checked(1, Settings.local_category_data.get(full_category_name, {}).get("checked", false))
 	category_item.set_tooltip(1, "Show/Hide")
@@ -558,7 +563,10 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_route.create_mesh(points_3d)
 	new_route.set_texture(texture)
 	new_route.waypoint = waypoint_trail
-	new_route.visible = is_category_visible(category_item)
+	if category_item != null:
+		new_route.visible = is_category_visible(category_item)
+	else:
+		new_route.visible = false
 	
 	paths.add_child(new_route)
 	
