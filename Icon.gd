@@ -3,7 +3,7 @@ extends Sprite3D
 const Waypoint = preload("res://waypoint.gd")
 
 var texture_path
-var waypoint := Waypoint.Icon.new() as Waypoint.Icon
+var waypoint : Waypoint.Icon
 
 func set_icon_image(texture_path: String):
 	self.texture_path = texture_path

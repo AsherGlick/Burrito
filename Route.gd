@@ -4,7 +4,7 @@ const Waypoint = preload("res://waypoint.gd")
 
 var texture_path
 var color = Color(0.9, 0.1, 0.1)
-var waypoint := Waypoint.Trail.new() as Waypoint.Trail
+var waypoint : Waypoint.Trail
 
 var point_list := PoolVector3Array()
 

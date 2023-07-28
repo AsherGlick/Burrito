@@ -458,15 +458,15 @@ func build_category_tree():
 		self.marker_packs_array.append(category.get_name())
 		add_category(root, category, category.get_name(), false)
 
+
 func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
 		category_item.set_text(0, "No name")
-		print("Category found with no name. Full name ", full_category_name)
+		print("Category found with no name.")
 		return
-	else:
-		category_item.set_text(0,category.get_display_name())
-		category_item.set_metadata(0, full_category_name)
+	category_item.set_text(0, category.get_display_name())
+	category_item.set_metadata(0, full_category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 	category_item.set_checked(1, Settings.local_category_data.get(full_category_name, {}).get("checked", false))
 	category_item.set_tooltip(1, "Show/Hide")
@@ -476,20 +476,31 @@ func add_category(item: TreeItem, category, full_category_name: String, collapse
 		add_category(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
 
-func switch_selected_category(category_item: TreeItem):
+func apply_category_visibility_to_nodes(category_item: TreeItem):
 	Settings.local_category_data[category_item.get_metadata(0)] = {
 		"checked" : category_item.is_checked(1),
 	} 
-	update_node_visibility(category_item, self.paths)
-	update_node_visibility(category_item, self.icons)
-
 	Settings.save()
+	var temporary_cateogry_visibility_data = populate_update_dict(category_item, {})
+	update_node_visibility(temporary_cateogry_visibility_data, self.paths)
+	update_node_visibility(temporary_cateogry_visibility_data, self.icons)
 
-func update_node_visibility(category_item: TreeItem, nodes):
+
+# Builds a dictionary of the visibility of a specific category and all children
+func populate_update_dict(category_item: TreeItem, category_visibility_data):
+	category_visibility_data[category_item.get_metadata(0)] = is_category_visible(category_item)
+	var child_item = category_item.get_children()
+	while child_item != null:
+		category_visibility_data = populate_update_dict(child_item, category_visibility_data)
+		child_item = child_item.get_next()
+	return category_visibility_data
+
+#Updates the visibilty of a node and all children.
+func update_node_visibility(cateogry_data, nodes):
 	for node in nodes.get_children():
-		var node_name = node.waypoint.get_category().get_name()
-		if node_name.begins_with(category_item.get_metadata(0)):
-			if is_category_visible(category_item):
+		var node_name = node.waypoint.get_category().get_name()	 
+		if node_name in cateogry_data:
+			if cateogry_data[node_name]:
 				node.visible = true
 			else:
 				node.visible = false
@@ -502,35 +513,12 @@ func update_node_visibility(category_item: TreeItem, nodes):
 func is_category_visible(category_item: TreeItem) -> bool:
 	if category_item == marker_packs.get_root():
 		return true
+	if category_item == null:
+		return false
 	if category_item.is_checked(1):
 		return is_category_visible(category_item.get_parent())
 	else:
 		return false
-
-
-func show_or_hide_all(is_visible: bool) :
-	if is_visible == false:
-		Settings.local_category_data.clear()
-	var category_item = self.marker_packs.get_root().get_children()
-	while category_item != null:
-		category_item.set_checked(1, is_visible)
-		change_all_categories(category_item, is_visible)
-		update_node_visibility(category_item, self.paths)
-		update_node_visibility(category_item, self.icons)
-		category_item = category_item.get_next()
-	Settings.save()
-
-
-func change_all_categories(category_item: TreeItem, is_visible: bool):
-	category_item.set_checked(1, is_visible)
-	if is_visible == true:
-		Settings.local_category_data[category_item.get_metadata(0)] = {
-			"checked" : true,
-			}
-	var child_item = category_item.get_children()
-	while child_item != null:
-		change_all_categories(child_item, is_visible)
-		child_item = child_item.get_next()
 
 
 func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem):
@@ -590,7 +578,10 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 	new_icon.translation = position
 	new_icon.set_icon_image(texture_path)
 	new_icon.waypoint = waypoint_icon
-	new_icon.visible = is_category_visible(category_item)
+	if category_item != null:
+		new_icon.visible = is_category_visible(category_item)
+	else:
+		new_icon.visible = false
 	icons.add_child(new_icon)
 
 # This function take all of the currently rendered objects and converts it into
@@ -761,14 +752,14 @@ func _on_NewPath_pressed():
 ################################################################################
 func _on_NewIcon_pressed():
 	var waypoint_icon = Waypoint.Icon.new()
-	waypoint_icon.set_name(self.currently_active_category.get_metadata(0))
+	waypoint_icon.new_category().set_name(self.currently_active_category.get_metadata(0))
 	gen_new_icon(self.player_position, self.next_texture_path, waypoint_icon, self.currently_active_category)
 
 # A new path point is created
 func _on_NewPathPoint_pressed():
 	if self.currently_active_path == null:
 		var waypoint_trail = Waypoint.Trail.new()
-		waypoint_trail.set_name(self.currently_active_category.get_metadata(0))
+		waypoint_trail.new_category().set_name(self.currently_active_category.get_metadata(0))
 		gen_new_path([self.player_position], self.next_texture_path, waypoint_trail, self.currently_active_category)
 	else:
 		var z_accurate_player_position = player_position
@@ -883,11 +874,6 @@ func _on_MarkerPacks_cell_selected():
 
 func _on_MarkerPacks_item_edited():
 	var category_item = self.marker_packs.get_edited()
-	switch_selected_category(category_item)
+	apply_category_visibility_to_nodes(category_item)
 
 
-func _on_ShowAll_pressed():
-	show_or_hide_all(true)
-
-func _on_HideAll_pressed():
-	show_or_hide_all(false)
