@@ -3,6 +3,7 @@ extends Node
 const CONFIG_PATH = "user://settings.json"
 
 var _config_data = {}
+var local_category_data = {}
 
 var override_size_enabled: bool = false;
 var override_size_height: int = 1080
@@ -22,7 +23,9 @@ func _ready():
 
 	if self._config_data == null:
 		self._config_data = {}
-	
+		
+	if "local_category_data" in self._config_data:
+		self.local_category_data = self._config_data["local_category_data"]
 	if "override_size_enabled" in self._config_data:
 		self.override_size_enabled = self._config_data["override_size_enabled"]
 	if "override_size_height" in self._config_data:
@@ -45,8 +48,9 @@ func save():
 		"burrito_link_auto_launch_enabled": burrito_link_auto_launch_enabled,
 		"burrito_link_wine_path": burrito_link_wine_path,
 		"burrito_link_env_args": burrito_link_env_args,
+		"local_category_data": local_category_data
 	}
 	
 	var file = File.new()
 	file.open(CONFIG_PATH, File.WRITE)
-	file.store_string(JSON.print(self._config_data))
+	file.store_string(JSON.print(self._config_data, "    "))

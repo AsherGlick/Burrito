@@ -184,19 +184,18 @@ margin_right = 1307.0
 margin_bottom = 672.0
 window_title = "Open a File"
 mode = 0
-access = 2
-current_dir = "."
-current_file = "."
-current_path = "."
+access = 1
+current_dir = "user://"
+current_path = "user://"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
-margin_left = 48.1808
-margin_top = 88.7138
-margin_right = 261.181
-margin_bottom = 714.714
+margin_left = 48.0
+margin_top = 82.0
+margin_right = 268.0
+margin_bottom = 715.0
 window_title = "Main Menu"
 resizable = true
 __meta__ = {
@@ -211,26 +210,26 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/MainMenu/ScrollContainer"]
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 284.0
 size_flags_horizontal = 3
 
 [node name="LoadPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 0, 40 )
 text = "Open Markers File"
 
 [node name="SavePath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 44.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 84.0
 rect_min_size = Vector2( 0, 40 )
 text = "Save Markers File"
 
 [node name="HSeparator" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 88.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 92.0
 
 [node name="PointEditor" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
@@ -243,19 +242,19 @@ text = "Editor Panel"
 
 [node name="OpenEditorQuickPanel" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 96.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 136.0
 rect_min_size = Vector2( 0, 40 )
 text = "Editor Panel"
 
 [node name="HSeparator3" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 140.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 144.0
 
 [node name="Ranges" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 148.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 188.0
 rect_min_size = Vector2( 0, 40 )
 text = "Range Indicators"
@@ -278,12 +277,12 @@ text = "Guacamole Script Editor"
 
 [node name="HSeparator4" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 192.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 196.0
 
 [node name="Settings" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 200.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 240.0
 rect_min_size = Vector2( 0, 40 )
 text = "Settings"
@@ -304,14 +303,14 @@ __meta__ = {
 
 [node name="ActivePath" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
-margin_top = 268.0
+margin_top = 244.0
 margin_right = 213.0
-margin_bottom = 308.0
+margin_bottom = 284.0
 text = "Active Path"
 
 [node name="ExitButton" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 244.0
-margin_right = 213.0
+margin_right = 220.0
 margin_bottom = 284.0
 rect_min_size = Vector2( 0, 40 )
 text = "Exit Burrito"
@@ -481,11 +480,10 @@ margin_right = 1343.98
 margin_bottom = 602.437
 window_title = "Open a File"
 mode = 0
-access = 2
+access = 1
 filters = PoolStringArray( "*.png" )
-current_dir = "."
-current_file = "."
-current_path = "."
+current_dir = "user://"
+current_path = "user://"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -497,10 +495,9 @@ margin_right = 883.169
 margin_bottom = 624.833
 window_title = "Save Path"
 resizable = true
-access = 2
-current_dir = "."
-current_file = "."
-current_path = "."
+access = 1
+current_dir = "user://"
+current_path = "user://"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -725,6 +722,26 @@ margin_bottom = 200.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 
+[node name="MarkerPacks" type="WindowDialog" parent="Control/Dialogs"]
+margin_left = 280.0
+margin_top = 105.0
+margin_right = 751.0
+margin_bottom = 486.0
+resizable = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarkerPacks" type="Tree" parent="Control/Dialogs/MarkerPacks"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 47.0
+size_flags_vertical = 3
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Border" type="Control" parent="Control"]
 visible = false
 anchor_right = 1.0
@@ -854,3 +871,8 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/SettingsDialog/GridContainer/AutoLaunchBurritoLink" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/GridContainer/WinePath" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/GridContainer/EnvironmentVars" to="Control/Dialogs/SettingsDialog" method="save_settings"]
+[connection signal="hide" from="Control/Dialogs/MarkerPacks" to="." method="_on_Dialog_hide"]
+[connection signal="cell_selected" from="Control/Dialogs/MarkerPacks/MarkerPacks" to="." method="_on_MarkerPacks_cell_selected"]
+[connection signal="item_edited" from="Control/Dialogs/MarkerPacks/MarkerPacks" to="." method="_on_MarkerPacks_item_edited"]
+[connection signal="multi_selected" from="Control/Dialogs/MarkerPacks/MarkerPacks" to="." method="_on_Tree_multi_selected"]
+[connection signal="tree_entered" from="Control/Dialogs/MarkerPacks/MarkerPacks" to="." method="_on_Tree_tree_entered"]
