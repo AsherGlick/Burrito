@@ -434,7 +434,7 @@ func gen_map_markers():
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 
 
-func search_category_tree(split_name, category_item, index: int = 0):
+func search_category_tree(split_name: PoolStringArray, category_item: TreeItem, index: int = 0):
 	if index == split_name.size():
 		return category_item
 	var child_item = category_item.get_children()
@@ -462,7 +462,7 @@ func build_category_tree():
 func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
-		# If this is called, there is an error in the protobuf data
+		# If this is called, there is an error in the Waypoint data
 		category_item.set_text(0, "No name")
 		category_item.set_metadata(0, "")
 		print("Category found with no name.")
