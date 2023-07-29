@@ -415,7 +415,7 @@ func gen_map_markers():
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
 		#TODO This tree look up is unnescary if we make path a child of Category in protobuf
 		var split_name = path.get_category().get_name().split(".")
-		var category_item = search_category_tree(0, split_name, self.marker_packs.get_root())
+		var category_item = search_category_tree(split_name, self.marker_packs.get_root())
 		gen_new_path(path_points, full_texture_path, path, category_item)
 	for icon in self.markerdata.get_icon():
 		var position = icon.get_position()
@@ -430,20 +430,20 @@ func gen_map_markers():
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
 		#TODO This tree look up is unnescary if we make path a child of Category in protobuf
 		var split_name = icon.get_category().get_name().split(".")
-		var category_item = search_category_tree(split_name.size(), split_name, self.marker_packs.get_root())
+		var category_item = search_category_tree(split_name, self.marker_packs.get_root())
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 
-func search_category_tree(index, split_name, category_item):
+
+func search_category_tree(split_name, category_item, index: int = 0):
 	if index == split_name.size():
 		return category_item
 	var child_item = category_item.get_children()
 	while child_item != null:
-		if child_item.get_text(0) != "No name":
-			var joined_name = ""
-			for i in range(index):
-				joined_name += split_name[i]
-			if child_item.get_metadata(0) == joined_name:
-				return search_category_tree(index + 1, split_name, child_item)
+		var joined_name = ""
+		for i in range(index):
+			joined_name += split_name[i]
+		if child_item.get_metadata(0) == joined_name:
+			return search_category_tree(split_name, child_item, index + 1)
 		child_item = child_item.get_next()
 	print("No category found for ", split_name)
 	return null
@@ -462,7 +462,9 @@ func build_category_tree():
 func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
+		# If this is called, there is an error in the protobuf data
 		category_item.set_text(0, "No name")
+		category_item.set_metadata(0, "")
 		print("Category found with no name.")
 		return
 	category_item.set_text(0, category.get_display_name())
@@ -498,7 +500,7 @@ func populate_update_dict(category_item: TreeItem, category_visibility_data):
 #Updates the visibilty of a node and all children.
 func update_node_visibility(cateogry_data, nodes):
 	for node in nodes.get_children():
-		var node_name = node.waypoint.get_category().get_name()	 
+		var node_name = node.waypoint.get_category().get_name()
 		if node_name in cateogry_data:
 			if cateogry_data[node_name]:
 				node.visible = true
