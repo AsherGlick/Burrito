@@ -94,10 +94,10 @@ vector<string> {{cpp_class}}::as_xml() const {
 }
 
 {% if cpp_class == "Category": %}
-waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(string full_category_name, map<string, vector<Parseable*>>* parsed_pois) const {
-    full_category_name += this->name;
+    waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(string full_category_name, map<string, vector<Parseable*>>* parsed_pois) const {
+        full_category_name += this->name;
 {% else %}
-waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
+    waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
 {% endif %}
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% if cpp_class == "Icon": %}
