@@ -93,7 +93,12 @@ vector<string> {{cpp_class}}::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
+{% if cpp_class == "Category": %}
+    waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(string full_category_name, map<string, vector<Parseable*>>* parsed_pois) const {
+        full_category_name += this->name;
+{% else %}
+    waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
+{% endif %}
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% if cpp_class == "Icon": %}
         waypoint::Trigger* trigger = nullptr;
@@ -146,8 +151,24 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
         }
     {% endif %}
     {% if cpp_class == "Category": %}
+
+        auto pois = parsed_pois->find(full_category_name);
+
+        if (pois != parsed_pois->end()) {
+            for (unsigned int i = 0; i < pois->second.size(); i++) {
+                if (pois->second[i]->classname() == "POI") {
+                    Icon* icon = dynamic_cast<Icon*>(pois->second[i]);
+                    proto_{{cpp_class_header}}.add_icon()->MergeFrom(icon->as_protobuf());
+                }
+                else if (pois->second[i]->classname() == "Trail") {
+                    Trail* trail = dynamic_cast<Trail*>(pois->second[i]);
+                    proto_{{cpp_class_header}}.add_trail()->MergeFrom(trail->as_protobuf());
+                }
+            }
+        }
+
         for (const auto& [key, val] : this->children) {
-            waypoint::{{cpp_class}} proto_{{cpp_class_header}}_child = val.as_protobuf();
+            waypoint::{{cpp_class}} proto_{{cpp_class_header}}_child = val.as_protobuf(full_category_name + ".", parsed_pois);
             proto_{{cpp_class_header}}.add_children()->CopyFrom(proto_{{cpp_class_header}}_child);
         }
     {% endif %}
