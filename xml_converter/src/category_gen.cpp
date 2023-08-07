@@ -117,7 +117,7 @@ waypoint::Category Category::as_protobuf(string full_category_name, map<string, 
     auto pois = parsed_pois->find(full_category_name);
 
     if (pois != parsed_pois->end()) {
-        for (unsigned int i = 0; i < pois->second.size(); i++){
+        for (unsigned int i = 0; i < pois->second.size(); i++) {
             if (pois->second[i]->classname() == "POI") {
                 Icon* icon = dynamic_cast<Icon*>(pois->second[i]);
                 proto_category.add_icon()->MergeFrom(icon->as_protobuf());
