@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iosfwd>
+#include <map>
 #include <string>
 #include <type_traits>
 
@@ -94,7 +95,8 @@ vector<string> Category::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::Category Category::as_protobuf() const {
+waypoint::Category Category::as_protobuf(string full_category_name, map<string, Parseable*>* parsed_pois) const {
+    full_category_name += this->name;
     waypoint::Category proto_category;
     if (this->default_visibility_is_set) {
         proto_category.set_default_visibility(this->default_visibility);
@@ -111,8 +113,22 @@ waypoint::Category Category::as_protobuf() const {
     if (this->tooltip_description_is_set) {
         proto_category.set_tip_description(this->tooltip_description);
     }
+
+    auto poi = parsed_pois->find(full_category_name);
+
+    if (poi != parsed_pois->end()) {
+        if (poi->second->classname() == "POI") {
+            Icon* icon = dynamic_cast<Icon*>(poi->second);
+            proto_category.add_icon()->MergeFrom(icon->as_protobuf());
+        }
+        else if (poi->second->classname() == "Trail") {
+            Trail* trail = dynamic_cast<Trail*>(poi->second);
+            proto_category.add_trail()->MergeFrom(trail->as_protobuf());
+        }
+    }
+
     for (const auto& [key, val] : this->children) {
-        waypoint::Category proto_category_child = val.as_protobuf();
+        waypoint::Category proto_category_child = val.as_protobuf(full_category_name + ".", parsed_pois);
         proto_category.add_children()->CopyFrom(proto_category_child);
     }
     return proto_category;

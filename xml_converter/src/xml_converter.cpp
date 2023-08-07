@@ -104,27 +104,31 @@ void remove_proto_child(waypoint::Category* proto_category, set<string> categori
 }
 
 void write_protobuf_file(string proto_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    // Creates a Waypoint message that contains all categories
-    waypoint::Waypoint all_categories;
-    for (const auto& category : *marker_categories) {
-        waypoint::Category proto_category = category.second.as_protobuf();
-        all_categories.add_category()->CopyFrom(proto_category);
-    }
-
     waypoint::Waypoint proto_pois;
     // Collects a set of map ids from Icon and Trail data
     std::set<int> map_ids;
     ofstream trail_data_file;
+    map<string, Parseable*> map_of_pois;
     for (const auto& parsed_poi : *parsed_pois) {
         if (parsed_poi->classname() == "POI") {
             Icon* icon = dynamic_cast<Icon*>(parsed_poi);
             map_ids.insert(icon->map_id);
+            map_of_pois[icon->category.category] = icon;
         }
         else if (parsed_poi->classname() == "Trail") {
             Trail* trail = dynamic_cast<Trail*>(parsed_poi);
             map_ids.insert(trail->map_id);
+            map_of_pois[trail->category.category] = trail;
         }
     }
+
+    // Creates a Waypoint message that contains all categories
+    waypoint::Waypoint all_categories;
+    for (const auto& category : *marker_categories) {
+        waypoint::Category proto_category = category.second.as_protobuf("", &map_of_pois);
+        all_categories.add_category()->CopyFrom(proto_category);
+    }
+
     waypoint::Waypoint output_message;
     std::set<string> categories_to_retain;
     for (int map_id : map_ids) {
@@ -138,15 +142,12 @@ void write_protobuf_file(string proto_directory, map<string, Category>* marker_c
                 Icon* icon = dynamic_cast<Icon*>(parsed_poi);
                 if (icon->map_id == map_id) {
                     populate_categories_to_retain(icon->category.category, &categories_to_retain);
-                    output_message.add_icon()->MergeFrom(icon->as_protobuf());
                 }
             }
             else if (parsed_poi->classname() == "Trail") {
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
                 if (trail->map_id == map_id) {
                     populate_categories_to_retain(trail->category.category, &categories_to_retain);
-                    waypoint::Trail proto_trail = trail->as_protobuf();
-                    output_message.add_trail()->MergeFrom(proto_trail);
                 }
             }
         }
@@ -248,21 +249,6 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
     return markers;
 }
 
-vector<Parseable*> parse_proto_pois(waypoint::Waypoint proto_message) {
-    vector<Parseable*> markers;
-
-    for (int i = 0; i < proto_message.icon_size(); i++) {
-        Icon* icon = new Icon();
-        icon->parse_protobuf(proto_message.icon(i));
-        markers.push_back(icon);
-    }
-    for (int i = 0; i < proto_message.trail_size(); i++) {
-        Trail* trail = new Trail();
-        trail->parse_protobuf(proto_message.trail(i));
-        markers.push_back(trail);
-    }
-    return markers;
-}
 
 void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, int depth = 0) {
     if (get_node_name(node) == "MarkerCategory") {
@@ -278,12 +264,30 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
     }
 }
-void parse_proto_marker_categories(::waypoint::Category proto_category, map<string, Category>* marker_categories) {
-    string name = proto_category.name();
-    Category* this_category = &(*marker_categories)[name];
+void parse_waypoint_categories(string full_category_name, ::waypoint::Category proto_category, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    full_category_name += proto_category.name();
+    Category* this_category = &(*marker_categories)[full_category_name];
     this_category->parse_protobuf(proto_category);
+
+    for (int i = 0; i < proto_category.icon_size(); i++) {
+        Icon* icon = new Icon();
+        icon->parse_protobuf(proto_category.icon(i));
+        //TODO: The field category in Icon is being deprciated
+        //This overwrites any icon.category with its position in the heirarchy
+        icon->category.category = full_category_name;
+        parsed_pois->push_back(icon);
+    }
+    for (int i = 0; i < proto_category.trail_size(); i++) {
+        Trail* trail = new Trail();
+        trail->parse_protobuf(proto_category.trail(i));
+        //TODO: The field category in Trail is being deprciated
+        //This overwrites any trail.category with its position in the heirarchy
+        trail->category.category = full_category_name;
+        parsed_pois->push_back(trail);
+    }
+
     for (int i = 0; i < proto_category.children_size(); i++) {
-        parse_proto_marker_categories(proto_category.children(i), &(this_category->children));
+        parse_waypoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois);
     }
 }
 
@@ -335,10 +339,8 @@ void read_protobuf_file(string proto_filepath, map<string, Category>* marker_cat
     infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
     for (int i = 0; i < proto_message.category_size(); i++) {
-        parse_proto_marker_categories(proto_message.category(i), marker_categories);
+        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois);
     }
-    vector<Parseable*> temp_vector = parse_proto_pois(proto_message);
-    move(temp_vector.begin(), temp_vector.end(), back_inserter(*parsed_pois));
 }
 
 bool filename_comp(string a, string b) {
@@ -506,24 +508,23 @@ int main() {
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 
     ////////////////////////////////////////////////////////////////////////////
-    // This section tests that the protobuf file can be parsed back to xml
+    // This section can test that a protobuf file can be parsed back to xml
     ////////////////////////////////////////////////////////////////////////////
-    parsed_pois.clear();
-    marker_categories.clear();
+    // parsed_pois.clear();
+    // marker_categories.clear();
+    // begin = chrono::high_resolution_clock::now();
+    // read_protobuf_file("./protobins/1.data", &marker_categories, &parsed_pois);
+    // end = chrono::high_resolution_clock::now();
+    // dur = end - begin;
+    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    // cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
-    begin = chrono::high_resolution_clock::now();
-    read_protobuf_file("./protobins/50.data", &marker_categories, &parsed_pois);
-    end = chrono::high_resolution_clock::now();
-    dur = end - begin;
-    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
-
-    begin = chrono::high_resolution_clock::now();
-    write_xml_file("./protobins/50.xml", &marker_categories, &parsed_pois);
-    end = chrono::high_resolution_clock::now();
-    dur = end - begin;
-    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+    // begin = chrono::high_resolution_clock::now();
+    // write_xml_file("./protobins/1.xml", &marker_categories, &parsed_pois);
+    // end = chrono::high_resolution_clock::now();
+    // dur = end - begin;
+    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    // cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     return 0;
 }

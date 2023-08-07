@@ -4,8 +4,6 @@ package waypoint;
 
 message Waypoint {
     repeated Category category = 1;
-    repeated Icon icon = 2;
-    repeated Trail trail = 3;
 }
 
 message Category {
@@ -15,10 +13,11 @@ message Category {
     string name = 4;
     string tip_description = 5;
     repeated Category children = 6;
+    repeated Icon icon = 7;
+    repeated Trail trail = 8;
 }
 
-message Icon {
-    Category category = 1;
+message Icon {  
     TexturePath texture_path = 2;
     GUID guid = 3;
     int32 map_id = 4;
@@ -53,10 +52,10 @@ message Icon {
     bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
+    Category category = 2054;
 }
 
 message Trail {
-    Category category = 1;
     TexturePath texture_path = 2;
     GUID guid = 3;
     int32 map_id = 4;
@@ -85,6 +84,7 @@ message Trail {
     bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
+    Category category = 2054;
 }
     
 message TexturePath {

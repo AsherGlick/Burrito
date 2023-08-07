@@ -506,6 +506,7 @@ class Generator:
             cpp_includes.hpp_relative_includes.add("icon_gen.hpp")
             cpp_includes.hpp_relative_includes.add("trail_gen.hpp")
 
+            cpp_includes.cpp_absolute_includes.add("map")
             cpp_includes.cpp_absolute_includes.add("type_traits")
 
         for filepath, document in sorted(self.data.items()):

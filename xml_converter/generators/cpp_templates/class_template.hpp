@@ -34,7 +34,7 @@ class {{cpp_class}} : public Parseable {
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string base_dir = "");
-    waypoint::{{cpp_class}} as_protobuf() const;
+    waypoint::{{cpp_class}} as_protobuf({{"std::string full_category_name, std::map<std::string, Parseable*>* parsed_pois" if cpp_class == "Category" else ""}}) const;
     void parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}});
     {% if attributes_of_type_marker_category %}
         bool validate_attributes_of_type_marker_category();
