@@ -17,7 +17,7 @@ message Category {
     repeated Trail trail = 8;
 }
 
-message Icon {  
+message Icon {
     TexturePath texture_path = 2;
     GUID guid = 3;
     int32 map_id = 4;

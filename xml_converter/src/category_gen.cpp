@@ -2,9 +2,9 @@
 
 #include <algorithm>
 #include <iosfwd>
-#include <map>
 #include <string>
 #include <type_traits>
+#include <utility>
 
 #include "attribute/bool.hpp"
 #include "attribute/string.hpp"
@@ -95,7 +95,7 @@ vector<string> Category::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::Category Category::as_protobuf(string full_category_name, map<string, Parseable*>* parsed_pois) const {
+waypoint::Category Category::as_protobuf(string full_category_name, map<string, vector<Parseable*>>* parsed_pois) const {
     full_category_name += this->name;
     waypoint::Category proto_category;
     if (this->default_visibility_is_set) {
@@ -114,16 +114,18 @@ waypoint::Category Category::as_protobuf(string full_category_name, map<string, 
         proto_category.set_tip_description(this->tooltip_description);
     }
 
-    auto poi = parsed_pois->find(full_category_name);
+    auto pois = parsed_pois->find(full_category_name);
 
-    if (poi != parsed_pois->end()) {
-        if (poi->second->classname() == "POI") {
-            Icon* icon = dynamic_cast<Icon*>(poi->second);
-            proto_category.add_icon()->MergeFrom(icon->as_protobuf());
-        }
-        else if (poi->second->classname() == "Trail") {
-            Trail* trail = dynamic_cast<Trail*>(poi->second);
-            proto_category.add_trail()->MergeFrom(trail->as_protobuf());
+    if (pois != parsed_pois->end()) {
+        for (unsigned int i = 0; i < pois->second.size(); i++){
+            if (pois->second[i]->classname() == "POI") {
+                Icon* icon = dynamic_cast<Icon*>(pois->second[i]);
+                proto_category.add_icon()->MergeFrom(icon->as_protobuf());
+            }
+            else if (pois->second[i]->classname() == "Trail") {
+                Trail* trail = dynamic_cast<Trail*>(pois->second[i]);
+                proto_category.add_trail()->MergeFrom(trail->as_protobuf());
+            }
         }
     }
 

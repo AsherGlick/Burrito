@@ -94,7 +94,7 @@ vector<string> {{cpp_class}}::as_xml() const {
 }
 
 {% if cpp_class == "Category": %}
-waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(string full_category_name, map<string, Parseable*>* parsed_pois) const {
+waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(string full_category_name, map<string, vector<Parseable*>>* parsed_pois) const {
     full_category_name += this->name;
 {% else %}
 waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
@@ -152,16 +152,18 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     {% endif %}
     {% if cpp_class == "Category": %}
 
-        auto poi = parsed_pois->find(full_category_name);
+        auto pois = parsed_pois->find(full_category_name);
 
-        if (poi != parsed_pois->end()) {
-            if (poi->second->classname() == "POI") {
-                Icon* icon = dynamic_cast<Icon*>(poi->second);
-                proto_{{cpp_class_header}}.add_icon()->MergeFrom(icon->as_protobuf());
-            }
-            else if (poi->second->classname() == "Trail") {
-                Trail* trail = dynamic_cast<Trail*>(poi->second);
-                proto_{{cpp_class_header}}.add_trail()->MergeFrom(trail->as_protobuf());
+        if (pois != parsed_pois->end()) {
+            for (unsigned int i = 0; i < pois->second.size(); i++) {
+                if (pois->second[i]->classname() == "POI") {
+                    Icon* icon = dynamic_cast<Icon*>(pois->second[i]);
+                    proto_{{cpp_class_header}}.add_icon()->MergeFrom(icon->as_protobuf());
+                }
+                else if (pois->second[i]->classname() == "Trail") {
+                    Trail* trail = dynamic_cast<Trail*>(pois->second[i]);
+                    proto_{{cpp_class_header}}.add_trail()->MergeFrom(trail->as_protobuf());
+                }
             }
         }
 

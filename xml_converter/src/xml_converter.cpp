@@ -108,17 +108,17 @@ void write_protobuf_file(string proto_directory, map<string, Category>* marker_c
     // Collects a set of map ids from Icon and Trail data
     std::set<int> map_ids;
     ofstream trail_data_file;
-    map<string, Parseable*> map_of_pois;
+    map<string, vector<Parseable*>> map_of_pois;
     for (const auto& parsed_poi : *parsed_pois) {
         if (parsed_poi->classname() == "POI") {
             Icon* icon = dynamic_cast<Icon*>(parsed_poi);
             map_ids.insert(icon->map_id);
-            map_of_pois[icon->category.category] = icon;
+            map_of_pois[icon->category.category].push_back(icon);
         }
         else if (parsed_poi->classname() == "Trail") {
             Trail* trail = dynamic_cast<Trail*>(parsed_poi);
             map_ids.insert(trail->map_id);
-            map_of_pois[trail->category.category] = trail;
+            map_of_pois[trail->category.category].push_back(trail);
         }
     }
 
@@ -272,16 +272,16 @@ void parse_waypoint_categories(string full_category_name, ::waypoint::Category p
     for (int i = 0; i < proto_category.icon_size(); i++) {
         Icon* icon = new Icon();
         icon->parse_protobuf(proto_category.icon(i));
-        //TODO: The field category in Icon is being deprciated
-        //This overwrites any icon.category with its position in the heirarchy
+        // TODO: The field category in Icon is being deprciated
+        // This overwrites any icon.category with its position in the heirarchy
         icon->category.category = full_category_name;
         parsed_pois->push_back(icon);
     }
     for (int i = 0; i < proto_category.trail_size(); i++) {
         Trail* trail = new Trail();
         trail->parse_protobuf(proto_category.trail(i));
-        //TODO: The field category in Trail is being deprciated
-        //This overwrites any trail.category with its position in the heirarchy
+        // TODO: The field category in Trail is being deprciated
+        // This overwrites any trail.category with its position in the heirarchy
         trail->category.category = full_category_name;
         parsed_pois->push_back(trail);
     }
