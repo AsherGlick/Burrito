@@ -80,22 +80,40 @@ void populate_categories_to_retain(string category_name, set<string>* categories
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Iterates through all children of a Category and removes those that do not
-// have a nodes that belongs to it.
+// Iterates through all children of a Category and removes the categories and
+// POIs that do not belong on a particular map
 ////////////////////////////////////////////////////////////////////////////////
-void remove_proto_child(waypoint::Category* proto_category, set<string> categories_to_retain, string parent_name) {
+void remove_waypoint_elements(waypoint::Category* proto_category, set<string> categories_to_retain, string parent_name, int map_id) {
     int keep = 0;
+    for (int i = 0; i < proto_category->icon_size(); i++) {
+        if (proto_category->icon(i).map_id() == map_id) {
+            if (keep < i) {
+                proto_category->mutable_icon()->SwapElements(i, keep);
+            }
+            ++keep;
+        }
+    }
+    proto_category->mutable_icon()->DeleteSubrange(keep, proto_category->icon_size() - keep);
+
+    keep = 0;
+    for (int i = 0; i < proto_category->trail_size(); i++) {
+        if (proto_category->trail(i).map_id() == map_id) {
+            if (keep < i) {
+                proto_category->mutable_trail()->SwapElements(i, keep);
+            }
+            ++keep;
+        }
+    }
+    proto_category->mutable_trail()->DeleteSubrange(keep, proto_category->trail_size() - keep);
+
+    keep = 0;
     for (int i = 0; i < proto_category->children_size(); i++) {
         string name = parent_name + "." + proto_category->children(i).name();
-        auto pos = categories_to_retain.find(lowercase(name));
+        auto pos = categories_to_retain.find(name);
         if (pos != categories_to_retain.end()) {
+            remove_waypoint_elements(proto_category->mutable_children(i), categories_to_retain, name, map_id);
             if (keep < i) {
                 proto_category->mutable_children()->SwapElements(i, keep);
-                if (proto_category->children(i).children_size() >= 0) {
-                    for (int j = 0; j < proto_category->children_size(); j++) {
-                        remove_proto_child(proto_category->mutable_children(j), categories_to_retain, name);
-                    }
-                }
             }
             ++keep;
         }
@@ -152,14 +170,14 @@ void write_protobuf_file(string proto_directory, map<string, Category>* marker_c
             }
         }
         // In the XML, MarkerCategories have a tree hierarchy while POIS have a
-        // flat hierarchy. This is preserved in the protobuf for ease of
-        // translation. We are doing a removal instead of an insertion because
+        // flat hierarchy. In Waypoint, POIs are elements of the category they
+        // belong to. We are removing instead of inserting because
         // each parent category contains the data for all of its children. It
         // would be impractical to include all of the data from each category
         // except for the children and then iterating over all the children.
         // This pruning method is slower but ensures that information is kept.
         for (int i = 0; i < output_message.category_size(); i++) {
-            remove_proto_child(output_message.mutable_category(i), categories_to_retain, output_message.category(i).name());
+            remove_waypoint_elements(output_message.mutable_category(i), categories_to_retain, output_message.category(i).name(), map_id);
             if (output_message.mutable_category(i)->children_size() == 0) {
                 output_message.mutable_category(i)->Clear();
             }
