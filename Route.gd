@@ -8,6 +8,14 @@ var waypoint: Waypoint.Trail
 
 var point_list := PoolVector3Array()
 
+func update_waypoint_trail():
+	self.waypoint.clear_trail_data()
+	var trail_data = self.waypoint.new_trail_data()
+	for point in self.point_list:
+		trail_data.add_points_x(point[0])
+		trail_data.add_points_y(point[1])
+		trail_data.add_points_z(-point[2])
+
 func create_mesh(point_list: PoolVector3Array):
 	self.point_list = point_list
 	refresh_mesh()

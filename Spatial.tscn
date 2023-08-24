@@ -89,6 +89,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="UnsavedData" type="TextureRect" parent="Control/GlobalMenuButton/TextureRect"]
+visible = false
+modulate = Color( 0.941176, 0.00784314, 0.00784314, 1 )
+margin_right = 40.0
+margin_bottom = 40.0
+hint_tooltip = "Unsaved Data"
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
 margin_right = 27.0
@@ -821,6 +832,7 @@ color = Color( 0, 0, 0, 1 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
+[connection signal="visibility_changed" from="Control/GlobalMenuButton/TextureRect/UnsavedData" to="." method="_on_UnsavedData_visibility_changed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]

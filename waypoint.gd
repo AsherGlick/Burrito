@@ -670,18 +670,6 @@ class Waypoint:
 		service.func_ref = funcref(self, "add_category")
 		data[_category.tag] = service
 		
-		_icon = PBField.new("icon", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 2, true, [])
-		service = PBServiceField.new()
-		service.field = _icon
-		service.func_ref = funcref(self, "add_icon")
-		data[_icon.tag] = service
-		
-		_trail = PBField.new("trail", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 3, true, [])
-		service = PBServiceField.new()
-		service.field = _trail
-		service.func_ref = funcref(self, "add_trail")
-		data[_trail.tag] = service
-		
 	var data = {}
 	
 	var _category: PBField
@@ -693,28 +681,6 @@ class Waypoint:
 	func add_category() -> Category:
 		var element = Category.new()
 		_category.value.append(element)
-		return element
-	
-	var _icon: PBField
-	func get_icon() -> Array:
-		return _icon.value
-	func clear_icon() -> void:
-		data[2].state = PB_SERVICE_STATE.UNFILLED
-		_icon.value = []
-	func add_icon() -> Icon:
-		var element = Icon.new()
-		_icon.value.append(element)
-		return element
-	
-	var _trail: PBField
-	func get_trail() -> Array:
-		return _trail.value
-	func clear_trail() -> void:
-		data[3].state = PB_SERVICE_STATE.UNFILLED
-		_trail.value = []
-	func add_trail() -> Trail:
-		var element = Trail.new()
-		_trail.value.append(element)
 		return element
 	
 	func to_string() -> String:
@@ -772,6 +738,18 @@ class Category:
 		service.field = _children
 		service.func_ref = funcref(self, "add_children")
 		data[_children.tag] = service
+		
+		_icon = PBField.new("icon", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 7, true, [])
+		service = PBServiceField.new()
+		service.field = _icon
+		service.func_ref = funcref(self, "add_icon")
+		data[_icon.tag] = service
+		
+		_trail = PBField.new("trail", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 8, true, [])
+		service = PBServiceField.new()
+		service.field = _trail
+		service.func_ref = funcref(self, "add_trail")
+		data[_trail.tag] = service
 		
 	var data = {}
 	
@@ -831,6 +809,28 @@ class Category:
 		_children.value.append(element)
 		return element
 	
+	var _icon: PBField
+	func get_icon() -> Array:
+		return _icon.value
+	func clear_icon() -> void:
+		data[7].state = PB_SERVICE_STATE.UNFILLED
+		_icon.value = []
+	func add_icon() -> Icon:
+		var element = Icon.new()
+		_icon.value.append(element)
+		return element
+	
+	var _trail: PBField
+	func get_trail() -> Array:
+		return _trail.value
+	func clear_trail() -> void:
+		data[8].state = PB_SERVICE_STATE.UNFILLED
+		_trail.value = []
+	func add_trail() -> Trail:
+		var element = Trail.new()
+		_trail.value.append(element)
+		return element
+	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
 		
@@ -855,12 +855,6 @@ class Category:
 class Icon:
 	func _init():
 		var service
-		
-		_category = PBField.new("category", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
-		service = PBServiceField.new()
-		service.field = _category
-		service.func_ref = funcref(self, "new_category")
-		data[_category.tag] = service
 		
 		_texture_path = PBField.new("texture_path", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -1034,17 +1028,13 @@ class Icon:
 		service.field = _bhdraft__schedule_duration
 		data[_bhdraft__schedule_duration.tag] = service
 		
+		_category = PBField.new("category", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		service = PBServiceField.new()
+		service.field = _category
+		service.func_ref = funcref(self, "new_category")
+		data[_category.tag] = service
+		
 	var data = {}
-	
-	var _category: PBField
-	func get_category() -> Category:
-		return _category.value
-	func clear_category() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_category() -> Category:
-		_category.value = Category.new()
-		return _category.value
 	
 	var _texture_path: PBField
 	func get_texture_path() -> TexturePath:
@@ -1346,6 +1336,16 @@ class Icon:
 	func set_bhdraft__schedule_duration(value : float) -> void:
 		_bhdraft__schedule_duration.value = value
 	
+	var _category: PBField
+	func get_category() -> Category:
+		return _category.value
+	func clear_category() -> void:
+		data[2054].state = PB_SERVICE_STATE.UNFILLED
+		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_category() -> Category:
+		_category.value = Category.new()
+		return _category.value
+	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
 		
@@ -1370,12 +1370,6 @@ class Icon:
 class Trail:
 	func _init():
 		var service
-		
-		_category = PBField.new("category", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
-		service = PBServiceField.new()
-		service.field = _category
-		service.func_ref = funcref(self, "new_category")
-		data[_category.tag] = service
 		
 		_texture_path = PBField.new("texture_path", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
@@ -1517,17 +1511,13 @@ class Trail:
 		service.field = _bhdraft__schedule_duration
 		data[_bhdraft__schedule_duration.tag] = service
 		
+		_category = PBField.new("category", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		service = PBServiceField.new()
+		service.field = _category
+		service.func_ref = funcref(self, "new_category")
+		data[_category.tag] = service
+		
 	var data = {}
-	
-	var _category: PBField
-	func get_category() -> Category:
-		return _category.value
-	func clear_category() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_category() -> Category:
-		_category.value = Category.new()
-		return _category.value
 	
 	var _texture_path: PBField
 	func get_texture_path() -> TexturePath:
@@ -1772,6 +1762,16 @@ class Trail:
 		_bhdraft__schedule_duration.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
 	func set_bhdraft__schedule_duration(value : float) -> void:
 		_bhdraft__schedule_duration.value = value
+	
+	var _category: PBField
+	func get_category() -> Category:
+		return _category.value
+	func clear_category() -> void:
+		data[2054].state = PB_SERVICE_STATE.UNFILLED
+		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_category() -> Category:
+		_category.value = Category.new()
+		return _category.value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -4260,11 +4260,6 @@ class TrailData:
 	func _init():
 		var service
 		
-		_trail_data = PBField.new("trail_data", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
-		service = PBServiceField.new()
-		service.field = _trail_data
-		data[_trail_data.tag] = service
-		
 		_points_x = PBField.new("points_x", PB_DATA_TYPE.FLOAT, PB_RULE.REPEATED, 2, true, [])
 		service = PBServiceField.new()
 		service.field = _points_x
@@ -4281,15 +4276,6 @@ class TrailData:
 		data[_points_z.tag] = service
 		
 	var data = {}
-	
-	var _trail_data: PBField
-	func get_trail_data() -> String:
-		return _trail_data.value
-	func clear_trail_data() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_trail_data.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
-	func set_trail_data(value : String) -> void:
-		_trail_data.value = value
 	
 	var _points_x: PBField
 	func get_points_x() -> Array:
