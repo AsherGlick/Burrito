@@ -119,12 +119,13 @@ func exit_burrito():
 
 
 func set_minimal_mouse_block():
-	var top_corner := Vector2(321, 0)
-	var bottom_corner := Vector2(348, 32)
+	var menu_button = $Control/GlobalMenuButton
+	var top_corner = menu_button.get_position()
+	var bottom_corner = menu_button.get_position() + menu_button.get_size()
 
 	if self.edit_panel_open:
-		bottom_corner.y = 49
-		bottom_corner.x = 314+377
+		var editor_panel = $Control/GlobalMenuButton/EditorQuckPanel
+		bottom_corner = menu_button.get_position() + editor_panel.get_position() + editor_panel.get_size()
 
 	var clickthrough: PoolVector2Array = [
 		Vector2(top_corner.x ,top_corner.y),

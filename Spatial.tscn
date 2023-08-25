@@ -71,16 +71,16 @@ scale = Vector2( 2, 2 )
 [node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
 
 [node name="GlobalMenuButton" type="Control" parent="Control"]
-margin_left = 321.348
-margin_top = 4.0
-margin_right = 348.348
-margin_bottom = 36.0
+margin_left = 321.0
+margin_right = 348.0
+margin_bottom = 32.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
+margin_top = 4.0
 margin_right = 29.0
 margin_bottom = 30.0
 texture = ExtResource( 3 )
@@ -99,9 +99,6 @@ __meta__ = {
 [node name="EditorQuckPanel" type="PanelContainer" parent="Control/GlobalMenuButton"]
 visible = false
 margin_left = 32.0
-margin_top = -2.0
-margin_right = 306.0
-margin_bottom = 52.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
