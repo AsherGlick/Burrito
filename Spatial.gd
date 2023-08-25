@@ -74,8 +74,8 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
-
 	server.listen(4242)
+
 
 func set_minimal_mouse_block():
 	var top_corner := Vector2(287, 0)
