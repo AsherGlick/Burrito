@@ -80,8 +80,6 @@ __meta__ = {
 
 [node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
-margin_left = 1.591
-margin_top = 3.18198
 margin_right = 26.591
 margin_bottom = 28.182
 texture = ExtResource( 3 )
@@ -91,8 +89,12 @@ __meta__ = {
 
 [node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
-margin_right = 27.0
-margin_bottom = 32.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 51.152
+margin_top = 8.0
+margin_right = 78.152
+margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
