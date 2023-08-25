@@ -119,8 +119,8 @@ func exit_burrito():
 
 
 func set_minimal_mouse_block():
-	var top_corner := Vector2(287, 0)
-	var bottom_corner := Vector2(314, 32)
+	var top_corner := Vector2(321, 0)
+	var bottom_corner := Vector2(348, 32)
 
 	if self.edit_panel_open:
 		bottom_corner.y = 49
