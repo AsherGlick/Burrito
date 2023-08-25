@@ -257,7 +257,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if self.map_id != old_map_id:
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
-		gen_map_markers()
 
 	# TODO move this to reset_minimap_masks
 	for child in $Paths.get_children():
@@ -284,7 +283,7 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
-var markerdata = Waypoint.Waypoint.new()
+var Waypoint_data = Waypoint.Waypoint.new()
 var marker_file_dir = "user://protobins/"
 var marker_file_path = ""
 var root: TreeItem
@@ -306,12 +305,12 @@ func load_waypoint_markers(map_id):
 	print("Loading protobuf file from path ", self.marker_file_path)
 	file.open(self.marker_file_path, file.READ)
 	var data = file.get_buffer(file.get_len())
-	self.markerdata.from_bytes(data)
+	self.Waypoint_data.from_bytes(data)
 	if !Waypoint.PB_ERR.NO_ERRORS:
 		print("OK")
 	else:
 		print(Waypoint.PB_ERR)
-
+	parse_Waypoint()
 
 var route_scene = load("res://Route.tscn")
 var icon_scene = load("res://Icon.tscn")
@@ -401,18 +400,19 @@ func clear_map_markers():
 		icon.queue_free()
 
 
-func build_category_tree():
-	var root = self.marker_packs.create_item()
+func init_category_tree():
+	self.root = self.marker_packs.create_item()
 	root.set_text(0, "Markers available on current map")
 	root.set_selectable(0, false)
 	root.set_text(1, "Visible")
-	
-	for category in self.markerdata.get_category():
-		self.marker_packs_array.append(category.get_name())
-		add_category(root, category, category.get_name(), false)
 
 
-func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
+func parse_Waypoint():
+	for category in self.Waypoint_data.get_category():
+		parse_category(root, category, category.get_name(), false)
+
+
+func parse_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
 		# If this is called, there is an error in the Waypoint data
@@ -456,7 +456,7 @@ func add_category(item: TreeItem, category, full_category_name: String, collapse
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 	
 	for category_child in category.get_children():
-		add_category(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
+		parse_category(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
@@ -505,7 +505,6 @@ func is_category_visible(category_item: TreeItem) -> bool:
 
 
 func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem):
-
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
@@ -552,9 +551,6 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	minimap.add_child(new_2d_path)
 
 
-################################################################################
-#
-################################################################################
 func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem): 
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
@@ -567,14 +563,10 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 		new_icon.visible = false
 	icons.add_child(new_icon)
 
-func _on_main_menu_toggle_pressed():
-	$Control/Dialogs/MainMenu.show()
-	set_maximal_mouse_block()
-
-func _on_FileDialog_file_selected(path):
-	pass
 
 
+################################################################################
+# Adjustment and gizmo functions
 ################################################################################
 # The adjust nodes button creates handles at all the node points to allow for
 # editing of them via in-game interface. (Nodes can only be edited if the input
@@ -588,6 +580,10 @@ func _on_AdjustNodesButton_pressed():
 
 
 func gen_adjustment_nodes():
+	if self.currently_active_category == null:
+		print("No category selected")
+		return
+
 	for index in range(self.paths.get_child_count()):
 		var route = self.paths.get_child(index)
 		var path2d = self.minimap.get_child(index)
@@ -648,6 +644,15 @@ func clear_adjustment_nodes():
 		$Gizmos.remove_child(child)
 		child.queue_free()
 
+################################################################################
+# Signal Functions
+################################################################################
+func _on_main_menu_toggle_pressed():
+	$Control/Dialogs/MainMenu.show()
+	set_maximal_mouse_block()
+
+func _on_FileDialog_file_selected(path):
+	pass
 
 func _on_Dialog_hide():
 	for dialog in $Control/Dialogs.get_children():
@@ -727,16 +732,14 @@ func _on_NewPathPoint_pressed():
 
 
 ################################################################################
-# open the save dialog window. When a path is selected
-# _on_SaveDialog_file_selected() will be called with the user specified path.
+# 
 ################################################################################
 func _on_SavePath_pressed():
 	#TODO: Save to Waypoint
 	pass
 
 ################################################################################
-# Save the current markers to a file, this includes all markers in memory not
-# just the markers on the current map.
+# TODO: This function will be used when exporting packs
 ################################################################################
 func _on_SaveDialog_file_selected(path):
 	pass
