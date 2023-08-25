@@ -5,6 +5,12 @@ const Waypoint = preload("res://waypoint.gd")
 var texture_path
 var waypoint: Waypoint.Icon
 
+func update_waypoint_icon():
+	var position = self.waypoint.position()
+	position.set_x(translation[0])
+	position.set_y(translation[1])
+	position.set_z(-translation[2])
+
 func set_icon_image(texture_path: String):
 	self.texture_path = texture_path
 	

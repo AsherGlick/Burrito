@@ -48,8 +48,10 @@ func update_point():
 		if point_type == "path" || point_type == "area":
 			self.object_link.set_point_position(self.object_index, self.translation)
 			self.object_2d_link.points[self.object_index] = Vector2(self.translation.x, self.translation.z)
+			self.object_link.update_waypoint_trail(self.object_index)
 		if point_type == "icon":
 			self.object_link.translation = self.translation
+			self.object_link.update_waypoint_icon()
 		print("update")
 		self.last_translation  = self.translation
 
