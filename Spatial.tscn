@@ -71,17 +71,18 @@ scale = Vector2( 2, 2 )
 [node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
 
 [node name="GlobalMenuButton" type="Control" parent="Control"]
-margin_left = 287.348
-margin_right = 314.348
-margin_bottom = 32.0
+margin_left = 321.348
+margin_top = 4.0
+margin_right = 348.348
+margin_bottom = 36.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
-margin_right = 26.591
-margin_bottom = 28.182
+margin_right = 29.0
+margin_bottom = 30.0
 texture = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -89,12 +90,8 @@ __meta__ = {
 
 [node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = 51.152
-margin_top = 8.0
-margin_right = 78.152
-margin_bottom = 40.0
+margin_right = 29.0
+margin_bottom = 30.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -630,8 +627,8 @@ __meta__ = {
 }
 
 [node name="GridContainer" type="GridContainer" parent="Control/Dialogs/SettingsDialog/ScrollContainer"]
-margin_right = 384.002
-margin_bottom = 419.001
+margin_right = 384.0
+margin_bottom = 419.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
