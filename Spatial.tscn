@@ -78,9 +78,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
+[node name="BurritoIcon" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
-margin_left = 1.591
+margin_left = 2.0
 margin_top = 3.18198
 margin_right = 26.591
 margin_bottom = 28.182
@@ -88,6 +88,13 @@ texture = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="UnsavedData" type="TextureRect" parent="Control/GlobalMenuButton/BurritoIcon"]
+visible = false
+modulate = Color( 1, 0.0313726, 0.0313726, 1 )
+margin_right = 40.0
+margin_bottom = 40.0
+texture = ExtResource( 3 )
 
 [node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
@@ -821,6 +828,7 @@ color = Color( 0, 0, 0, 1 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
+[connection signal="visibility_changed" from="Control/GlobalMenuButton/BurritoIcon/UnsavedData" to="." method="_on_UnsavedData_visibility_changed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]

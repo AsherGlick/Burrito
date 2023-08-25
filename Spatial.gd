@@ -258,6 +258,8 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
+		if unsaved_data_icon.visible:
+			auto_saving()
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 
@@ -289,10 +291,12 @@ func reset_minimap_masks():
 var Waypoint_data = Waypoint.Waypoint.new()
 var marker_file_dir = Directory.new()
 var marker_file_path = ""
+var auto_save_file_path = ""
 var root: TreeItem
 
 ##########Node Connections###########
 onready var marker_packs = $Control/Dialogs/MarkerPacks/MarkerPacks
+onready var unsaved_data_icon = $Control/GlobalMenuButton/BurritoIcon/UnsavedData
 onready var icons = $Icons
 onready var paths = $Paths
 onready var minimap = $Control/MiniMap
@@ -304,9 +308,17 @@ func load_waypoint_markers(map_id):
 	clear_map_markers()
 	root.free()
 	init_category_tree()
+	self.auto_save_file_path = self.marker_file_dir.get_current_dir() + String(map_id) + "_auto.data"
 	var file = File.new()
-	print("Loading protobuf file from path ", self.marker_file_path)
-	file.open(self.marker_file_path, file.READ)
+	if self.marker_file_dir.file_exists(self.auto_save_file_path):
+		print("Loading autosave file from path ", self.auto_save_file_path)
+		file.open(self.auto_save_file_path, file.READ)
+		self.unsaved_data_icon.visible = true
+	elif self.marker_file_dir.file_exists(self.marker_file_path):
+		print("Loading protobuf file from path ", self.marker_file_path)
+		file.open(self.marker_file_path, file.READ)
+	else:
+		print("No markers on this map")
 	var data = file.get_buffer(file.get_len())
 	self.Waypoint_data.from_bytes(data)
 	if !Waypoint.PB_ERR.NO_ERRORS:
@@ -566,7 +578,30 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 		new_icon.visible = false
 	icons.add_child(new_icon)
 
+################################################################################
+# Section of functions for saving changes to markers
+################################################################################
+func on_change_made():
+	unsaved_data_icon.visible = true
 
+func auto_saving():
+	print("Auto save")
+	var packed_bytes = self.Waypoint_data.to_bytes()
+	if packed_bytes.size() > 0:
+		var file = File.new()
+		file.open(self.auto_save_file_path, file.WRITE)
+		file.store_buffer(packed_bytes)
+
+func manual_save():
+	print("Saving")
+	var packed_bytes = self.Waypoint_data.to_bytes()
+	if packed_bytes.size() > 0:
+		var file = File.new()
+		file.open(self.marker_file_path, file.WRITE)
+		file.store_buffer(packed_bytes)
+		if self.marker_file_dir.file_exists(self.auto_save_file_path):
+			self.marker_file_dir.remove(self.auto_save_file_path)
+		unsaved_data_icon.visible = false
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -619,6 +654,7 @@ func gen_adjustment_nodes():
 
 var currently_selected_node = null
 func on_gizmo_selected(object):
+	on_change_made()
 	self.currently_selected_node = object
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
 	# Only enable these buttons if the object selected is a point on the path not an icon
@@ -738,8 +774,7 @@ func _on_NewPathPoint_pressed():
 # 
 ################################################################################
 func _on_SavePath_pressed():
-	#TODO: Save to Waypoint
-	pass
+	manual_save()
 
 ################################################################################
 # TODO: This function will be used when exporting packs
@@ -820,6 +855,8 @@ func _on_ReversePathDirection_pressed():
 
 
 func _on_ExitButton_pressed():
+	if unsaved_data_icon.visible:
+		auto_saving()
 	get_tree().quit()
 
 
@@ -837,3 +874,10 @@ func _on_MarkerPacks_cell_selected():
 func _on_MarkerPacks_item_edited():
 	var category_item = self.marker_packs.get_edited()
 	apply_category_visibility_to_nodes(category_item)
+
+
+func _on_UnsavedData_visibility_changed():
+	if $Control/GlobalMenuButton/BurritoIcon/UnsavedData.visible:
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
+	else:
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""
