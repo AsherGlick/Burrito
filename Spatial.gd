@@ -60,6 +60,8 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
+	init_category_tree()
+	marker_file_dir.open("user://protobins/")
 	server.listen(4242)
 
 func set_minimal_mouse_block():
