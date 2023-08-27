@@ -286,7 +286,7 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
 var Waypoint_data = Waypoint.Waypoint.new()
-var marker_file_dir = "user://protobins/"
+var marker_file_dir = Directory.new()
 var marker_file_path = ""
 var root: TreeItem
 
