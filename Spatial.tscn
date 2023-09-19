@@ -96,6 +96,7 @@ __meta__ = {
 }
 
 [node name="EditorQuckPanel" type="PanelContainer" parent="Control/GlobalMenuButton"]
+visible = false
 margin_left = 32.0
 margin_right = 342.0
 margin_bottom = 54.0
