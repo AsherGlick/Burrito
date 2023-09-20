@@ -71,8 +71,8 @@ scale = Vector2( 2, 2 )
 [node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
 
 [node name="GlobalMenuButton" type="Control" parent="Control"]
-margin_left = 287.348
-margin_right = 314.348
+margin_left = 323.0
+margin_right = 349.0
 margin_bottom = 32.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -80,10 +80,9 @@ __meta__ = {
 
 [node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
-margin_left = 1.591
-margin_top = 3.18198
-margin_right = 26.591
-margin_bottom = 28.182
+margin_top = 4.0
+margin_right = 25.0
+margin_bottom = 29.0
 texture = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -91,6 +90,7 @@ __meta__ = {
 
 [node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
+margin_left = -2.0
 margin_right = 27.0
 margin_bottom = 32.0
 __meta__ = {
@@ -101,7 +101,7 @@ __meta__ = {
 visible = false
 margin_left = 32.0
 margin_top = -2.0
-margin_right = 306.0
+margin_right = 342.0
 margin_bottom = 52.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -628,8 +628,8 @@ __meta__ = {
 }
 
 [node name="GridContainer" type="GridContainer" parent="Control/Dialogs/SettingsDialog/ScrollContainer"]
-margin_right = 384.002
-margin_bottom = 419.001
+margin_right = 384.0
+margin_bottom = 419.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
