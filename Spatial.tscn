@@ -81,6 +81,8 @@ __meta__ = {
 [node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0.439216 )
 margin_top = 4.0
+margin_right = 25.0
+margin_bottom = 29.0
 texture = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -97,8 +99,9 @@ __meta__ = {
 
 [node name="EditorQuckPanel" type="PanelContainer" parent="Control/GlobalMenuButton"]
 margin_left = 32.0
+margin_top = -2.0
 margin_right = 342.0
-margin_bottom = 54.0
+margin_bottom = 52.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
