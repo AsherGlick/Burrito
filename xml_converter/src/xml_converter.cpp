@@ -437,75 +437,32 @@ void convert_taco_directory(string directory, string output_directory, map<strin
     read_taco_directory(directory, marker_categories, parsed_pois);
 }
 
-void test_proto() {
-    waypoint::Category testcategory;
-    testcategory.set_display_name("TEST");
-    if (testcategory.name() != "") {
-        cout << "Error in test_proto" << endl;
-        throw std::error_code();
-    }
-    string output = testcategory.display_name();
-    if (output != "TEST") {
-        cout << "Error in test_proto" << endl;
-        throw std::error_code();
-    }
-}
 
-void convert_all_markerpacks(string input_directory, string output_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    vector<string> marker_packs;
-
-    DIR* dir = opendir(input_directory.c_str());
-    struct dirent* entry = readdir(dir);
-    while ((entry = readdir(dir)) != NULL) {
-        string filename = entry->d_name;
-        if (entry->d_type == DT_DIR && filename != "." && filename != "..") {
-            string path = input_directory + "/" + filename;
-            marker_packs.push_back(path);
-            cout << path << endl;
-            convert_taco_directory(path, output_directory, marker_categories, parsed_pois);
-        }
-    }
-    closedir(dir);
-}
-
-string create_burrito_data_folder() {
-    // Get the home directory path
-    const char* home_dir = getenv("HOME");
-    if (home_dir == nullptr) {
-        throw "Error: HOME environment variable is not set.";
-    }
-
-    string data_directory = ".local/share/godot/app_userdata/Burrito/protobins";
-    // Construct the folder path
-    // For Linux, the deafult for "user://"" in Godot is
-    // ~/.local/share/godot/app_userdata/[project_name]
-    // Variable folder_path can be thought of as "user://Burrito/protobins"
-    string folder_path = string(home_dir) + "/" + data_directory;
-    // Create the folder with permissions 0700 (read/write/execute for owner only)
-    int result = mkdir(folder_path.c_str(), S_IRWXU);
-    if (result != 0 && errno != EEXIST) {
-        std::cerr << "Error: Failed to create folder " << folder_path << "." << std::endl;
-    }
-    return folder_path;
-}
-
-int main() {
+////////////////////////////////////////////////////////////////////////////////
+// process_data
+//
+// The universal entrypoint into the xml converter functionality. Both the CLI
+// and the library entrypoints direct here to do their actual processing.
+////////////////////////////////////////////////////////////////////////////////
+void process_data(
+    vector<string> input_paths,
+    string output_directory
+) {
     auto begin = chrono::high_resolution_clock::now();
 
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
-    test_proto();
-    string output_directory;
 
     try {
-        output_directory = create_burrito_data_folder();
-        // Input will be supplied via FileDialog in Godot
-        string input_directory = "./packs";
-        convert_all_markerpacks(input_directory, output_directory, &marker_categories, &parsed_pois);
+        for (size_t i = 0; i < input_paths.size(); i++) {
+            cout << input_paths[i] << endl;
+            convert_taco_directory(input_paths[i], output_directory, &marker_categories, &parsed_pois);
+        }
     }
     catch (const char* msg) {
         cout << msg << endl;
     }
+
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
@@ -524,25 +481,46 @@ int main() {
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
+}
 
-    ////////////////////////////////////////////////////////////////////////////
-    // This section can test that a protobuf file can be parsed back to xml
-    ////////////////////////////////////////////////////////////////////////////
-    // parsed_pois.clear();
-    // marker_categories.clear();
-    // begin = chrono::high_resolution_clock::now();
-    // read_protobuf_file("./protobins/1.data", &marker_categories, &parsed_pois);
-    // end = chrono::high_resolution_clock::now();
-    // dur = end - begin;
-    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    // cout << "The protobuf read function took " << ms << " milliseconds to run" << endl;
 
-    // begin = chrono::high_resolution_clock::now();
-    // write_xml_file("./protobins/1.xml", &marker_categories, &parsed_pois);
-    // end = chrono::high_resolution_clock::now();
-    // dur = end - begin;
-    // ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    // cout << "The xml write function took " << ms << " milliseconds to run" << endl;
+////////////////////////////////////////////////////////////////////////////////
+// main
+//
+// Main is the CLI entrypoint to the xml converter. It handles processing all
+// of the command line data into a format the internal functions want to
+// receive.
+//
+// Example usage
+//   ./xml_converter --input-path ../packs/marker_pack --output-path ../output_packs
+//   ./xml_converter --input-path ../packs/* --output-path ../output_packs
+////////////////////////////////////////////////////////////////////////////////
+int main(int argc, char *argv[]) {
+
+    vector<string> input_paths;
+
+    // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
+    // converting from xml markerpacks to internal protobuf files.
+    vector<string> output_paths;
+
+    vector<string>* arg_target = &input_paths;
+
+    for (int i = 1; i < argc; i++) {
+        if (!strcmp(argv[i], "--input-path")) {
+            arg_target = &input_paths;
+        }
+        else if (!strcmp(argv[i], "--output-path")) {
+            arg_target = &output_paths;
+        }
+        else {
+            arg_target->push_back(argv[i]);
+        }
+    }
+
+    cout << input_paths[0] << " " << input_paths.size() << endl;
+    cout << output_paths[0] << " " << output_paths.size() << endl;
+
+    process_data(input_paths, output_paths[0]);
 
     return 0;
 }
