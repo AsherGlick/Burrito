@@ -1,6 +1,5 @@
 #include <dirent.h>
-#include <errno.h>
-#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 
 #include <algorithm>
@@ -437,7 +436,6 @@ void convert_taco_directory(string directory, string output_directory, map<strin
     read_taco_directory(directory, marker_categories, parsed_pois);
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // process_data
 //
@@ -446,8 +444,7 @@ void convert_taco_directory(string directory, string output_directory, map<strin
 ////////////////////////////////////////////////////////////////////////////////
 void process_data(
     vector<string> input_paths,
-    string output_directory
-) {
+    string output_directory) {
     auto begin = chrono::high_resolution_clock::now();
 
     vector<Parseable*> parsed_pois;
@@ -483,7 +480,6 @@ void process_data(
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // main
 //
@@ -495,8 +491,7 @@ void process_data(
 //   ./xml_converter --input-path ../packs/marker_pack --output-path ../output_packs
 //   ./xml_converter --input-path ../packs/* --output-path ../output_packs
 ////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char *argv[]) {
-
+int main(int argc, char* argv[]) {
     vector<string> input_paths;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
