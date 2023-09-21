@@ -431,11 +431,6 @@ void write_taco_directory(string directory, map<string, Category>* marker_catego
     write_xml_file(xml_filepath, marker_categories, parsed_pois);
 }
 
-void convert_taco_directory(string directory, string output_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    move_supplementary_files(directory, output_directory);
-    read_taco_directory(directory, marker_categories, parsed_pois);
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // process_data
 //
@@ -443,37 +438,70 @@ void convert_taco_directory(string directory, string output_directory, map<strin
 // and the library entrypoints direct here to do their actual processing.
 ////////////////////////////////////////////////////////////////////////////////
 void process_data(
-    vector<string> input_paths,
-    string output_directory) {
-    auto begin = chrono::high_resolution_clock::now();
+    vector<string> input_taco_paths,
+    vector<string> input_waypoint_paths,
 
+    // These will eventually have additional arguments for each output path to
+    // allow for splitting out a single markerpack
+    vector<string> output_taco_paths,
+    vector<string> output_waypoint_paths,
+
+    // This is a special output path used for burrito internal use that splits
+    // the waypoint protobins by map id.
+    string output_split_waypoint_dir) {
+    // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
 
-    try {
-        for (size_t i = 0; i < input_paths.size(); i++) {
-            cout << input_paths[i] << endl;
-            convert_taco_directory(input_paths[i], output_directory, &marker_categories, &parsed_pois);
+    // Read in all the xml taco markerpacks
+    auto begin = chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < input_taco_paths.size(); i++) {
+        cout << "Loading taco pack " << input_taco_paths[i] << endl;
+        read_taco_directory(
+            input_taco_paths[i],
+            &marker_categories,
+            &parsed_pois);
+
+        // TODO: This is wildly incorrect now because we might have a
+        //       different output directory then output_split_waypoint_dir
+        if (output_split_waypoint_dir != "") {
+            move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
         }
     }
-    catch (const char* msg) {
-        cout << msg << endl;
-    }
-
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-    cout << "The parse function took " << ms << " milliseconds to run" << endl;
+    cout << "The taco parse function took " << ms << " milliseconds to run" << endl;
 
+    // Read in all the protobin waypoint markerpacks
+    for (size_t i = 0; i < input_waypoint_paths.size(); i++) {
+        cout << "Loading waypoint pack " << input_waypoint_paths[i] << endl;
+        read_protobuf_file(
+            input_waypoint_paths[i],
+            &marker_categories,
+            &parsed_pois);
+    }
+
+    // Write all of the xml taco paths
     begin = chrono::high_resolution_clock::now();
-    write_xml_file("./export_packs/export.xml", &marker_categories, &parsed_pois);
+    for (size_t i = 0; i < output_taco_paths.size(); i++) {
+        write_taco_directory(output_taco_paths[i], &marker_categories, &parsed_pois);
+    }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
+    // Write all of the protobin waypoint paths
+    for (size_t i = 0; i < output_waypoint_paths.size(); i++) {
+        write_protobuf_file(output_waypoint_paths[i], &marker_categories, &parsed_pois);
+    }
+
+    // Write the special map-split protbin waypoint file
     begin = chrono::high_resolution_clock::now();
-    write_protobuf_file(output_directory, &marker_categories, &parsed_pois);
+    if (output_split_waypoint_dir != "") {
+        write_protobuf_file(output_split_waypoint_dir, &marker_categories, &parsed_pois);
+    }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
@@ -488,34 +516,61 @@ void process_data(
 // receive.
 //
 // Example usage
-//   ./xml_converter --input-path ../packs/marker_pack --output-path ../output_packs
-//   ./xml_converter --input-path ../packs/* --output-path ../output_packs
+//   ./xml_converter --input-taco-paths ../packs/marker_pack --output-split-waypoint-path ../output_packs
+//   ./xml_converter --input-taco-paths ../packs/* --output-split-waypoint-path ../output_packs
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[]) {
-    vector<string> input_paths;
+    vector<string> input_taco_paths;
+    vector<string> output_taco_paths;
+    vector<string> input_waypoint_paths;
+    vector<string> output_waypoint_paths;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
-    vector<string> output_paths;
+    vector<string> output_split_waypoint_paths;
 
-    vector<string>* arg_target = &input_paths;
+    vector<string>* arg_target = &input_taco_paths;
 
     for (int i = 1; i < argc; i++) {
-        if (!strcmp(argv[i], "--input-path")) {
-            arg_target = &input_paths;
+        if (!strcmp(argv[i], "--input-taco-path")) {
+            arg_target = &input_taco_paths;
         }
-        else if (!strcmp(argv[i], "--output-path")) {
-            arg_target = &output_paths;
+        else if (!strcmp(argv[i], "--output-taco-path")) {
+            arg_target = &output_taco_paths;
+        }
+        else if (!strcmp(argv[i], "--input-waypoint-path")) {
+            arg_target = &input_waypoint_paths;
+        }
+        else if (!strcmp(argv[i], "--output-waypoint-path")) {
+            arg_target = &output_waypoint_paths;
+        }
+        else if (!strcmp(argv[i], "--output-split-waypoint-path")) {
+            // We dont actually support multiple values for this argument but
+            // I am leaving this as-is because it is simpler. We can adjust the
+            // CLI arg parsing later to properly capture this.
+            arg_target = &output_split_waypoint_paths;
         }
         else {
             arg_target->push_back(argv[i]);
         }
     }
 
-    cout << input_paths[0] << " " << input_paths.size() << endl;
-    cout << output_paths[0] << " " << output_paths.size() << endl;
+    // Strip all but the first output split waypoint argument, because we dont
+    // actually support multiple arguments.
+    string output_split_waypoint_dir = "";
+    if (output_split_waypoint_paths.size() > 0) {
+        output_split_waypoint_dir = output_split_waypoint_paths[0];
+    }
+    else if (output_split_waypoint_paths.size() > 1) {
+        cout << "Only one --output-split-waypoint-path is accepted" << endl;
+    }
 
-    process_data(input_paths, output_paths[0]);
+    process_data(
+        input_taco_paths,
+        input_waypoint_paths,
+        output_taco_paths,
+        output_waypoint_paths,
+        output_split_waypoint_dir);
 
     return 0;
 }
