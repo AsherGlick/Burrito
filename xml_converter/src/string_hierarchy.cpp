@@ -8,7 +8,7 @@
 // Returns if the given path is in the hierarchy or not
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::in_hierarchy(
-    const std::vector<std::string> &path) {
+    const std::vector<std::string> &path) const {
     return this->_in_hierarchy(path, 0);
 }
 
@@ -20,7 +20,7 @@ bool StringHierarchy::in_hierarchy(
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::_in_hierarchy(
     const std::vector<std::string> &path,
-    const size_t continue_index) {
+    const size_t continue_index) const {
     // If all children of this hierarchy node are included then this path exists.
     if (this->all_children_included) {
         return true;

@@ -48,6 +48,18 @@ vector<string> split(string input, string delimiter) {
     return output;
 }
 
+string join(const vector<string> &input, string delimiter) {
+    string result;
+    for(size_t i = 0; i < input.size(); i++) {
+        result += input[i];
+        // Don't add delimiter after the last element
+        if(i < input.size() - 1) {
+            result += delimiter;
+        }
+    }
+    return result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // normalize
 //

@@ -7,7 +7,7 @@
 class StringHierarchy {
  public:
     bool in_hierarchy(
-        const std::vector<std::string> &path);
+        const std::vector<std::string> &path) const;
 
     void add_path(
         const std::vector<std::string> &path,
@@ -16,7 +16,7 @@ class StringHierarchy {
  private:
     bool _in_hierarchy(
         const std::vector<std::string> &path,
-        const size_t continue_index);
+        const size_t continue_index) const;
 
     void _add_path(
         const std::vector<std::string> &path,

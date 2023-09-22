@@ -10,6 +10,9 @@
 #include "parseable.hpp"
 #include "string_helper.hpp"
 #include "waypoint.pb.h"
+#include "string_hierarchy.hpp"
+
+#include <google/protobuf/text_format.h> // For TextProtos
 
 using namespace std;
 
@@ -70,132 +73,157 @@ void read_protobuf_file(string proto_filepath, map<string, Category>* marker_cat
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// Adds the name of a category and all of it's parents to a set
-// eg.
-// {
-//     "mypath",
-//     "mypath.easypath",
-//     "mypath.easypath.trail",
-//     "mypath.hardpath",
-//     "mypath.hardpath.trail",
-// }
+// build_category_object
+//
+// Builds all the hierarchical category object info as long as the category
+// has contents that exist in the category filter.
 ////////////////////////////////////////////////////////////////////////////////
-void populate_categories_to_retain(string category_name, set<string>* categories_to_retain) {
-    string name;
-    vector<string> split_categories = split(category_name, ".");
-    for (unsigned int j = 0; j < split_categories.size(); j++) {
-        name += split_categories[j];
-        categories_to_retain->insert(name);
-        name += ".";
-    }
-}
+struct MaybeCategory {
+    waypoint::Category category;
+    bool is_category;
+};
+MaybeCategory build_category_objects(
+    const Category* category,
+    const StringHierarchy &category_filter,
+    const std::map<string, std::vector<Parseable*>> &category_to_pois,
+    vector<string> &category_vector
+) {
+    waypoint::Category category_proto = category->as_protobuf();
+    bool has_valid_contents = false;
 
-////////////////////////////////////////////////////////////////////////////////
-// Iterates through all children of a Category and removes the categories and
-// POIs that do not belong on a particular map
-////////////////////////////////////////////////////////////////////////////////
-void remove_waypoint_elements(waypoint::Category* proto_category, set<string> categories_to_retain, string parent_name, int map_id) {
-    int keep = 0;
-    for (int i = 0; i < proto_category->icon_size(); i++) {
-        if (proto_category->icon(i).map_id() == map_id) {
-            if (keep < i) {
-                proto_category->mutable_icon()->SwapElements(i, keep);
+    vector<waypoint::Category> categories_to_write;
+
+    for (map<string, Category>::const_iterator it = category->children.begin(); it != category->children.end(); it++) {
+
+        // This is currently a copy operation which is kind expensive
+        category_vector.push_back(it->first);
+
+        if (category_filter.in_hierarchy(category_vector)) {
+            MaybeCategory child_category = build_category_objects(
+                &it->second,
+                category_filter,
+                category_to_pois,
+                category_vector
+            );
+
+            if (child_category.is_category) {
+                has_valid_contents = true;
+                category_proto.add_children()->MergeFrom(child_category.category);
             }
-            ++keep;
         }
-    }
-    proto_category->mutable_icon()->DeleteSubrange(keep, proto_category->icon_size() - keep);
-
-    keep = 0;
-    for (int i = 0; i < proto_category->trail_size(); i++) {
-        if (proto_category->trail(i).map_id() == map_id) {
-            if (keep < i) {
-                proto_category->mutable_trail()->SwapElements(i, keep);
-            }
-            ++keep;
-        }
-    }
-    proto_category->mutable_trail()->DeleteSubrange(keep, proto_category->trail_size() - keep);
-
-    keep = 0;
-    for (int i = 0; i < proto_category->children_size(); i++) {
-        string name = parent_name + "." + proto_category->children(i).name();
-        auto pos = categories_to_retain.find(name);
-        if (pos != categories_to_retain.end()) {
-            remove_waypoint_elements(proto_category->mutable_children(i), categories_to_retain, name, map_id);
-            if (keep < i) {
-                proto_category->mutable_children()->SwapElements(i, keep);
-            }
-            ++keep;
-        }
-    }
-    proto_category->mutable_children()->DeleteSubrange(keep, proto_category->children_size() - keep);
-}
-
-void write_protobuf_file(string proto_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    waypoint::Waypoint proto_pois;
-    // Collects a set of map ids from Icon and Trail data
-    std::set<int> map_ids;
-    ofstream trail_data_file;
-    map<string, vector<Parseable*>> map_of_pois;
-    for (const auto& parsed_poi : *parsed_pois) {
-        if (parsed_poi->classname() == "POI") {
-            Icon* icon = dynamic_cast<Icon*>(parsed_poi);
-            map_ids.insert(icon->map_id);
-            map_of_pois[icon->category.category].push_back(icon);
-        }
-        else if (parsed_poi->classname() == "Trail") {
-            Trail* trail = dynamic_cast<Trail*>(parsed_poi);
-            map_ids.insert(trail->map_id);
-            map_of_pois[trail->category.category].push_back(trail);
-        }
+        category_vector.pop_back();
     }
 
-    // Creates a Waypoint message that contains all categories
-    waypoint::Waypoint all_categories;
-    for (const auto& category : *marker_categories) {
-        waypoint::Category proto_category = category.second.as_protobuf("", &map_of_pois);
-        all_categories.add_category()->CopyFrom(proto_category);
-    }
+    // This is a pretty expensive operation
+    string full_category_name = join(category_vector, ".");
+    auto iterator = category_to_pois.find(full_category_name);
+    if (iterator != category_to_pois.end()) {
+        for (size_t i = 0; i < iterator->second.size(); i++) {
+            Parseable* parsed_poi = iterator->second[i];
 
-    waypoint::Waypoint output_message;
-    std::set<string> categories_to_retain;
-    for (int map_id : map_ids) {
-        ofstream outfile;
-        string output_filepath = proto_directory + "/" + to_string(map_id) + ".data";
-        outfile.open(output_filepath, ios::out | ios::binary);
-        output_message.MergeFrom(all_categories);
-
-        for (const auto& parsed_poi : *parsed_pois) {
             if (parsed_poi->classname() == "POI") {
                 Icon* icon = dynamic_cast<Icon*>(parsed_poi);
-                if (icon->map_id == map_id) {
-                    populate_categories_to_retain(icon->category.category, &categories_to_retain);
+                if (category_filter.in_hierarchy(split(icon->category.category,"."))) {
+                    category_proto.add_icon()->MergeFrom(icon->as_protobuf());
+                    has_valid_contents = true;
                 }
             }
             else if (parsed_poi->classname() == "Trail") {
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
-                if (trail->map_id == map_id) {
-                    populate_categories_to_retain(trail->category.category, &categories_to_retain);
+                if (category_filter.in_hierarchy(split(trail->category.category,"."))) {
+                    category_proto.add_trail()->MergeFrom(trail->as_protobuf());
+                    has_valid_contents = true;
                 }
             }
-        }
-        // In the XML, MarkerCategories have a tree hierarchy while POIS have a
-        // flat hierarchy. In Waypoint, POIs are elements of the category they
-        // belong to. We are removing instead of inserting because
-        // each parent category contains the data for all of its children. It
-        // would be impractical to include all of the data from each category
-        // except for the children and then iterating over all the children.
-        // This pruning method is slower but ensures that information is kept.
-        for (int i = 0; i < output_message.category_size(); i++) {
-            remove_waypoint_elements(output_message.mutable_category(i), categories_to_retain, output_message.category(i).name(), map_id);
-            if (output_message.mutable_category(i)->children_size() == 0) {
-                output_message.mutable_category(i)->Clear();
+            else {
+                std::cout << "Unknown type" << std::endl;
             }
+
         }
-        output_message.SerializeToOstream(&outfile);
-        outfile.close();
-        output_message.Clear();
-        categories_to_retain.clear();
+    }
+
+    MaybeCategory return_value;
+    return_value.category = category_proto;
+    return_value.is_category = has_valid_contents;
+    return return_value;
+}
+
+void write_protobuf_file(
+    const string &filepath,
+    const StringHierarchy &category_filter,
+    const map<string, Category>* marker_categories,
+    const vector<Parseable*>* parsed_pois
+) {
+    // TODO: call _write_protobuf_file
+}
+
+void _write_protobuf_file(
+    const string &filepath,
+    const StringHierarchy &category_filter,
+    const map<string, Category>* marker_categories,
+    const std::map<string, std::vector<Parseable*>> &category_to_pois
+){
+    ofstream outfile;
+    outfile.open(filepath, ios::out | ios::binary);
+
+    waypoint::Waypoint output_message;
+
+    for (map<string, Category>::const_iterator it = marker_categories->begin(); it != marker_categories->end(); it++) {
+        string category_name = it->first;
+        const Category* category_object = &it->second;
+
+        vector<string> category_vector = {it->first};
+        MaybeCategory maybe_category = build_category_objects(
+            category_object,
+            category_filter,
+            category_to_pois,
+            category_vector
+        );
+
+        if (maybe_category.is_category) {
+            output_message.add_category()->MergeFrom(maybe_category.category);
+        }
+    }
+
+    output_message.SerializeToOstream(&outfile);
+    outfile.close();
+}
+
+// Write protobuf per map id
+void write_protobuf_file_per_map_id(
+    const string &proto_directory,
+    const StringHierarchy &category_filter,
+    const map<string, Category>* marker_categories,
+    const vector<Parseable*>* parsed_pois
+) {
+
+    std::map<int, std::map<string, std::vector<Parseable*>>> mapid_to_category_to_pois;
+
+    for (size_t i = 0; i < parsed_pois->size(); i++) {
+        Parseable* parsed_poi = (*parsed_pois)[i];
+        if (parsed_poi->classname() == "POI") {
+            Icon* icon = dynamic_cast<Icon*>(parsed_poi);
+            mapid_to_category_to_pois[icon->map_id][icon->category.category].push_back(parsed_poi);
+        }
+        else if (parsed_poi->classname() == "Trail") {
+            Trail* trail = dynamic_cast<Trail*>(parsed_poi);
+            mapid_to_category_to_pois[trail->map_id][trail->category.category].push_back(parsed_poi);
+        }
+        else {
+            std::cout << "Unknown type" << std::endl;
+        }
+    }
+
+    for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
+
+        string output_filepath = proto_directory + "/" + to_string(iterator->first) + ".data";
+
+        _write_protobuf_file(
+            output_filepath,
+            category_filter,
+            marker_categories,
+            iterator->second
+        );
     }
 }
+

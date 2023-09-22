@@ -12,6 +12,7 @@ bool normalized_matches_any(std::string test, std::vector<std::string> list);
 std::string lowercase(std::string);
 
 std::vector<std::string> split(std::string input, std::string delimiter);
+std::string join(const std::vector<std::string> &input, std::string delimiter);
 
 std::string normalize(std::string input_string);
 
