@@ -9,10 +9,8 @@
 #include "category_gen.hpp"
 #include "parseable.hpp"
 #include "string_helper.hpp"
-#include "waypoint.pb.h"
 #include "string_hierarchy.hpp"
-
-#include <google/protobuf/text_format.h> // For TextProtos
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -84,38 +82,35 @@ struct MaybeCategory {
 };
 MaybeCategory build_category_objects(
     const Category* category,
-    const StringHierarchy &category_filter,
-    const std::map<string, std::vector<Parseable*>> &category_to_pois,
-    vector<string> &category_vector
-) {
+    const StringHierarchy& category_filter,
+    const std::map<string, std::vector<Parseable*>>& category_to_pois,
+    vector<string>* category_vector) {
     waypoint::Category category_proto = category->as_protobuf();
     bool has_valid_contents = false;
 
     vector<waypoint::Category> categories_to_write;
 
     for (map<string, Category>::const_iterator it = category->children.begin(); it != category->children.end(); it++) {
-
         // This is currently a copy operation which is kind expensive
-        category_vector.push_back(it->first);
+        category_vector->push_back(it->first);
 
-        if (category_filter.in_hierarchy(category_vector)) {
+        if (category_filter.in_hierarchy(*category_vector)) {
             MaybeCategory child_category = build_category_objects(
                 &it->second,
                 category_filter,
                 category_to_pois,
-                category_vector
-            );
+                category_vector);
 
             if (child_category.is_category) {
                 has_valid_contents = true;
                 category_proto.add_children()->MergeFrom(child_category.category);
             }
         }
-        category_vector.pop_back();
+        category_vector->pop_back();
     }
 
     // This is a pretty expensive operation
-    string full_category_name = join(category_vector, ".");
+    string full_category_name = join(*category_vector, ".");
     auto iterator = category_to_pois.find(full_category_name);
     if (iterator != category_to_pois.end()) {
         for (size_t i = 0; i < iterator->second.size(); i++) {
@@ -123,14 +118,14 @@ MaybeCategory build_category_objects(
 
             if (parsed_poi->classname() == "POI") {
                 Icon* icon = dynamic_cast<Icon*>(parsed_poi);
-                if (category_filter.in_hierarchy(split(icon->category.category,"."))) {
+                if (category_filter.in_hierarchy(split(icon->category.category, "."))) {
                     category_proto.add_icon()->MergeFrom(icon->as_protobuf());
                     has_valid_contents = true;
                 }
             }
             else if (parsed_poi->classname() == "Trail") {
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
-                if (category_filter.in_hierarchy(split(trail->category.category,"."))) {
+                if (category_filter.in_hierarchy(split(trail->category.category, "."))) {
                     category_proto.add_trail()->MergeFrom(trail->as_protobuf());
                     has_valid_contents = true;
                 }
@@ -138,7 +133,6 @@ MaybeCategory build_category_objects(
             else {
                 std::cout << "Unknown type" << std::endl;
             }
-
         }
     }
 
@@ -148,14 +142,11 @@ MaybeCategory build_category_objects(
     return return_value;
 }
 
-
-
 void _write_protobuf_file(
-    const string &filepath,
-    const StringHierarchy &category_filter,
+    const string& filepath,
+    const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
-    const std::map<string, std::vector<Parseable*>> &category_to_pois
-){
+    const std::map<string, std::vector<Parseable*>>& category_to_pois) {
     ofstream outfile;
     outfile.open(filepath, ios::out | ios::binary);
 
@@ -170,8 +161,7 @@ void _write_protobuf_file(
             category_object,
             category_filter,
             category_to_pois,
-            category_vector
-        );
+            &category_vector);
 
         if (maybe_category.is_category) {
             output_message.add_category()->MergeFrom(maybe_category.category);
@@ -183,11 +173,10 @@ void _write_protobuf_file(
 }
 
 void write_protobuf_file(
-    const string &filepath,
-    const StringHierarchy &category_filter,
+    const string& filepath,
+    const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
-    const vector<Parseable*>* parsed_pois
-) {
+    const vector<Parseable*>* parsed_pois) {
     std::map<string, std::vector<Parseable*>> category_to_pois;
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
@@ -209,18 +198,15 @@ void write_protobuf_file(
         filepath,
         category_filter,
         marker_categories,
-        category_to_pois
-    );
+        category_to_pois);
 }
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
-    const string &proto_directory,
-    const StringHierarchy &category_filter,
+    const string& proto_directory,
+    const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
-    const vector<Parseable*>* parsed_pois
-) {
-
+    const vector<Parseable*>* parsed_pois) {
     std::map<int, std::map<string, std::vector<Parseable*>>> mapid_to_category_to_pois;
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
@@ -239,15 +225,12 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-
         string output_filepath = proto_directory + "/" + to_string(iterator->first) + ".data";
 
         _write_protobuf_file(
             output_filepath,
             category_filter,
             marker_categories,
-            iterator->second
-        );
+            iterator->second);
     }
 }
-
