@@ -42,6 +42,8 @@ TEST_F(StringHierarchyTest, NonExistantDepthNode) {
 TEST_F(StringHierarchyTest, AllExistDepthNode) {
     string_hierarchy.add_path({"root", "child1", "child2"}, true);
     EXPECT_TRUE(string_hierarchy.in_hierarchy({"root", "child1", "child2", "child3"}));
+    EXPECT_TRUE(string_hierarchy.in_hierarchy({"root", "child1", "child2"}));
+    EXPECT_FALSE(string_hierarchy.in_hierarchy({"root", "child1", "child2b"}));
 }
 
 TEST_F(StringHierarchyTest, DoubleNode) {
@@ -58,6 +60,11 @@ TEST_F(StringHierarchyTest, OverwriteAllChildrenRoot) {
     string_hierarchy.add_path({"root"}, true);
     EXPECT_TRUE(string_hierarchy.in_hierarchy({"root", "child1", "child2", "child3"}));
     EXPECT_TRUE(string_hierarchy.in_hierarchy({"root", "somethingrandom"}));
+}
+
+TEST_F(StringHierarchyTest, AllowAll) {
+    string_hierarchy.add_path({}, true);
+    EXPECT_TRUE(string_hierarchy.in_hierarchy({"literally", "anything"}));
 }
 
 int main(int argc, char **argv) {
