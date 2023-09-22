@@ -148,14 +148,7 @@ MaybeCategory build_category_objects(
     return return_value;
 }
 
-void write_protobuf_file(
-    const string &filepath,
-    const StringHierarchy &category_filter,
-    const map<string, Category>* marker_categories,
-    const vector<Parseable*>* parsed_pois
-) {
-    // TODO: call _write_protobuf_file
-}
+
 
 void _write_protobuf_file(
     const string &filepath,
@@ -187,6 +180,37 @@ void _write_protobuf_file(
 
     output_message.SerializeToOstream(&outfile);
     outfile.close();
+}
+
+void write_protobuf_file(
+    const string &filepath,
+    const StringHierarchy &category_filter,
+    const map<string, Category>* marker_categories,
+    const vector<Parseable*>* parsed_pois
+) {
+    std::map<string, std::vector<Parseable*>> category_to_pois;
+
+    for (size_t i = 0; i < parsed_pois->size(); i++) {
+        Parseable* parsed_poi = (*parsed_pois)[i];
+        if (parsed_poi->classname() == "POI") {
+            Icon* icon = dynamic_cast<Icon*>(parsed_poi);
+            category_to_pois[icon->category.category].push_back(parsed_poi);
+        }
+        else if (parsed_poi->classname() == "Trail") {
+            Trail* trail = dynamic_cast<Trail*>(parsed_poi);
+            category_to_pois[trail->category.category].push_back(parsed_poi);
+        }
+        else {
+            std::cout << "Unknown type" << std::endl;
+        }
+    }
+
+    _write_protobuf_file(
+        filepath,
+        category_filter,
+        marker_categories,
+        category_to_pois
+    );
 }
 
 // Write protobuf per map id
