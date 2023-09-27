@@ -165,13 +165,17 @@ void process_data(
 
     // Write all of the protobin waypoint paths
     for (size_t i = 0; i < output_waypoint_paths.size(); i++) {
-        write_protobuf_file(output_waypoint_paths[i], &marker_categories, &parsed_pois);
+        StringHierarchy category_filter;
+        category_filter.add_path({}, true);
+        write_protobuf_file(output_waypoint_paths[i], category_filter, &marker_categories, &parsed_pois);
     }
 
     // Write the special map-split protbin waypoint file
     begin = chrono::high_resolution_clock::now();
     if (output_split_waypoint_dir != "") {
-        write_protobuf_file(output_split_waypoint_dir, &marker_categories, &parsed_pois);
+        StringHierarchy category_filter;
+        category_filter.add_path({}, true);
+        write_protobuf_file_per_map_id(output_split_waypoint_dir, category_filter, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
