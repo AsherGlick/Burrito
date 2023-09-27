@@ -31,3 +31,21 @@ if(MSVC)
 else()
   target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+### TESTS ######################################################################
+# Enable testing using CMake's built-in functionality
+enable_testing()
+
+set(TEST_TARGET_NAME xml_converter_tests)
+
+file(GLOB_RECURSE TEST_SOURCES "src/*.cpp")
+list(REMOVE_ITEM TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/xml_converter.cpp")
+
+find_package(GTest REQUIRED)
+
+add_executable(${TEST_TARGET_NAME} tests/test_string_hierarchy.cpp ${TEST_SOURCES} ${PROTO_SRC})
+
+target_link_libraries(${TEST_TARGET_NAME} GTest::GTest GTest::Main)
+target_link_libraries(${TEST_TARGET_NAME} ${Protobuf_LIBRARIES})
+
+gtest_discover_tests(${TEST_TARGET_NAME})
