@@ -1,7 +1,7 @@
 from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple, Set, Optional, Final
+from typing import Any, Dict, List, Tuple, Set, Optional, Final, TypedDict
 import os
 import markdown
 from dataclasses import dataclass, field
@@ -104,7 +104,20 @@ class FieldRow:
     description: str
 
 
-documentation_type_data = {
+################################################################################
+# DocumentationTypeData
+#
+# A type definition to indicate what information should be included in the
+# documentation_type_data variable.
+################################################################################
+class DocumentationTypeData(TypedDict):
+    class_name: str
+    cpp_type: str
+
+
+# A map between the documentation types, and useful class name info related to
+# that type.
+documentation_type_data: Dict[str, DocumentationTypeData] = {
     "Fixed32": {
         "class_name": "int",
         "cpp_type": "int",
