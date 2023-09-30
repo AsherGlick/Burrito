@@ -4,7 +4,6 @@ type: String
 applies_to: [Icon]
 xml_fields: [Info]
 protobuf_field: trigger.action_info_message
-compatability: [TacO, BlishHUD, Burrito]
 ---
 Show a message to the user when triggered
 

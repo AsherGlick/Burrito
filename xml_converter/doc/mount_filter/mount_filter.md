@@ -2,7 +2,6 @@
 name: Mount Filter
 type: MultiflagValue
 applies_to: [Icon, Trail]
-compatability: [TacO, BlishHUD, Burrito]
 xml_fields: ["Mount"]
 protobuf_field: mount_filter
 flags:

@@ -4,7 +4,6 @@ type: String
 applies_to: [Icon]
 xml_fields: [Copy, CopyClipboard]
 protobuf_field: trigger.action_copy_clipboard
-compatability: [TacO, BlishHUD, Burrito]
 ---
 A value that is copied to the clipboard when triggered.
 

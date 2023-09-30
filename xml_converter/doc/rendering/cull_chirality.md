@@ -4,7 +4,6 @@ applies_to: [Icon, Trail]
 xml_fields: [Cull]
 protobuf_field: cull_chirality
 type: Enum
-compatability: [TacO, BlishHUD, Burrito]
 values:
   none: ["None"]
   clockwise: ["Clockwise"]

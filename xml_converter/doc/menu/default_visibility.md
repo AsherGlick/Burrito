@@ -4,7 +4,6 @@ type: Boolean
 applies_to: [Category]
 xml_fields: [DefaultToggle]
 protobuf_field: default_visibility
-compatability: [TacO, BlishHUD, Burrito]
 ---
 
 Notes

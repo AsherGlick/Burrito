@@ -4,7 +4,6 @@
         <th>XML Attribute</th>
         <th>Binary Field Name</th>
         <th>Data Type</th>
-        <th>Supported By</th>
         <th>Usable On</th>
     </tr>
     {% for field_row in field_rows %}
@@ -13,7 +12,6 @@
             <td>{{field_row.xml_attribute}}{% for alternate in field_row.alternate_xml_attributes %}, {{alternate}}{% endfor %}</td>
             <td>{{field_row.binary_field}}</td>
             <td>{{field_row.data_type}}</td>
-            <td>{{field_row.supported_by_html}}</td>
             <td>{{field_row.usable_on_html}}</td>
         </tr>
     {% endfor %}
@@ -31,7 +29,6 @@
                 <th>XML Attribute</th>
                 <th>Binary Field Name</th>
                 <th>Data Type</th>
-                <th>Supported By</th>
                 <th>Usable On</th>
             </tr>
             <tr>
@@ -39,7 +36,6 @@
                 <td>{{field_row.xml_attribute}}{% for alternate in field_row.alternate_xml_attributes %}, {{alternate}}{% endfor %}</td>
                 <td>{{field_row.binary_field}}</td>
                 <td>{{field_row.data_type}}</td>
-                <td>{{field_row.supported_by_html}}</td>
                 <td>{{field_row.usable_on_html}}</td>
             </tr>
         </table>

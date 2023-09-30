@@ -2,7 +2,6 @@
 name: Profession Filter
 type: MultiflagValue
 applies_to: [Icon, Trail]
-compatability: [TacO, BlishHUD, Burrito]
 xml_fields: [Profession]
 protobuf_field: profession_filter
 flags:

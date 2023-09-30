@@ -7,7 +7,6 @@ uses_file_path: true
 protobuf_field: trail_data
 side_effects: [Map ID]
 applies_to: [Trail]
-compatability: [TacO, BlishHUD, Burrito]
 ---
 A binary coordinate array for the path of a trail.
 
