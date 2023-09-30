@@ -5,6 +5,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 // in_hierarchy
 //
+// Returns if a particular node exists at the top level of the hirearchy.
+////////////////////////////////////////////////////////////////////////////////
+bool StringHierarchy::in_hierarchy(
+    const std::string &node) const {
+    if (this->all_children_included) {
+        return true;
+    }
+
+    auto iterator = this->children.find(node);
+    if (iterator == this->children.end()) {
+        return false;
+    }
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// in_hierarchy
+//
 // Returns if the given path is in the hierarchy or not
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::in_hierarchy(
@@ -37,6 +55,40 @@ bool StringHierarchy::_in_hierarchy(
     }
 
     return iterator->second._in_hierarchy(path, continue_index + 1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// sub_hierarchy
+//
+// A helper function to grab a sub hierarchy one level down from the top.
+////////////////////////////////////////////////////////////////////////////////
+const StringHierarchy* StringHierarchy::sub_hierarchy(
+    const std::string &node) const {
+    if (this->all_children_included) {
+        return this;
+    }
+
+    auto iterator = this->children.find(node);
+    if (iterator == this->children.end()) {
+        return nullptr;
+    }
+    return &(iterator->second);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// sub_hierarchy
+//
+// Get a subtree of the StringHierarchy in order to avoid needing to query the
+// entire hierarchy in the case where the use case is traversing down a tree
+// anyways and does not want to keep track of the parent's values.
+////////////////////////////////////////////////////////////////////////////////
+const StringHierarchy* StringHierarchy::sub_hierarchy(
+    const std::vector<std::string> &path) const {
+    const StringHierarchy* sub_hierarchy = this;
+    for (size_t i = 0; i < path.size(); i++) {
+        sub_hierarchy = this->sub_hierarchy(path[i]);
+    }
+    return sub_hierarchy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
