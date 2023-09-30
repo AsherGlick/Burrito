@@ -480,7 +480,6 @@ vector<string> Icon::as_xml() const {
 
 waypoint::Icon Icon::as_protobuf() const {
     waypoint::Icon proto_icon;
-    waypoint::Trigger* trigger = nullptr;
     if (this->achievement_bitmask_is_set) {
         proto_icon.set_achievement_bit(this->achievement_bitmask);
     }
@@ -488,28 +487,16 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_achievement_id(this->achievement_id);
     }
     if (this->auto_trigger_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_auto_trigger(this->auto_trigger);
+        proto_icon.mutable_trigger()->set_auto_trigger(this->auto_trigger);
     }
     if (this->bounce_delay_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_bounce_delay(this->bounce_delay);
+        proto_icon.mutable_trigger()->set_bounce_delay(this->bounce_delay);
     }
     if (this->bounce_duration_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_bounce_duration(this->bounce_duration);
+        proto_icon.mutable_trigger()->set_bounce_duration(this->bounce_duration);
     }
     if (this->bounce_height_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_bounce_height(this->bounce_height);
+        proto_icon.mutable_trigger()->set_bounce_height(this->bounce_height);
     }
     if (this->can_fade_is_set) {
         proto_icon.set_can_fade(this->can_fade);
@@ -521,16 +508,10 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_rgba_color(to_proto_color(this->color));
     }
     if (this->copy_clipboard_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_action_copy_clipboard(this->copy_clipboard);
+        proto_icon.mutable_trigger()->set_action_copy_clipboard(this->copy_clipboard);
     }
     if (this->copy_message_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_action_copy_message(this->copy_message);
+        proto_icon.mutable_trigger()->set_action_copy_message(this->copy_message);
     }
     if (this->cull_chirality_is_set) {
         proto_icon.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
@@ -551,19 +532,13 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_guid(to_proto_unique_id(this->guid));
     }
     if (this->has_countdown_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_has_countdown(this->has_countdown);
+        proto_icon.mutable_trigger()->set_has_countdown(this->has_countdown);
     }
     if (this->height_offset_is_set) {
         proto_icon.set_height_offset(this->height_offset);
     }
     if (this->hide_category_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_allocated_action_hide_category(to_proto_marker_category(this->hide_category));
+        proto_icon.mutable_trigger()->set_allocated_action_hide_category(to_proto_marker_category(this->hide_category));
     }
     if (this->icon_is_set) {
         proto_icon.set_allocated_texture_path(to_proto_image(this->icon));
@@ -572,16 +547,10 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_tentative__scale(this->icon_size);
     }
     if (this->info_message_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_action_info_message(this->info_message);
+        proto_icon.mutable_trigger()->set_action_info_message(this->info_message);
     }
     if (this->invert_visibility_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_invert_display(this->invert_visibility);
+        proto_icon.mutable_trigger()->set_invert_display(this->invert_visibility);
     }
     if (this->map_display_size_is_set) {
         proto_icon.set_map_display_size(this->map_display_size);
@@ -617,16 +586,10 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_tentative__render_on_minimap(this->render_on_minimap);
     }
     if (this->reset_behavior_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_reset_behavior(to_proto_reset_behavior(this->reset_behavior));
+        proto_icon.mutable_trigger()->set_reset_behavior(to_proto_reset_behavior(this->reset_behavior));
     }
     if (this->reset_length_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_reset_length(this->reset_length);
+        proto_icon.mutable_trigger()->set_reset_length(this->reset_length);
     }
     if (this->scale_on_map_with_zoom_is_set) {
         proto_icon.set_scale_on_map_with_zoom(this->scale_on_map_with_zoom);
@@ -638,10 +601,7 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_bhdraft__schedule_duration(this->schedule_duration);
     }
     if (this->show_category_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_allocated_action_show_category(to_proto_marker_category(this->show_category));
+        proto_icon.mutable_trigger()->set_allocated_action_show_category(to_proto_marker_category(this->show_category));
     }
     if (this->specialization_filter_is_set) {
         proto_icon.set_allocated_specialization_filter(to_proto_specialization_filter(this->specialization_filter));
@@ -650,10 +610,7 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_species_filter(to_proto_species_filter(this->species_filter));
     }
     if (this->toggle_category_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_allocated_action_toggle_category(to_proto_marker_category(this->toggle_category));
+        proto_icon.mutable_trigger()->set_allocated_action_toggle_category(to_proto_marker_category(this->toggle_category));
     }
     if (this->tooltip_description_is_set) {
         proto_icon.set_tip_description(this->tooltip_description);
@@ -662,13 +619,7 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_tip_name(this->tooltip_name);
     }
     if (this->trigger_range_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_range(this->trigger_range);
-    }
-    if (trigger != nullptr) {
-        proto_icon.set_allocated_trigger(trigger);
+        proto_icon.mutable_trigger()->set_range(this->trigger_range);
     }
     return proto_icon;
 }

@@ -95,56 +95,23 @@ vector<string> {{cpp_class}}::as_xml() const {
 
 waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
-    {% if cpp_class == "Icon": %}
-        waypoint::Trigger* trigger = nullptr;
-    {% endif %}
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
-            {% if (attribute_variable.proto_drilldown_calls != "")%}{# TODO: This is a hack to preserve functionality when removing is_trigger #}
-                {% if (attribute_variable.attribute_type == "Custom")%}
-                    if (this->{{attribute_variable.attribute_flag_name}}) {
-                        if (trigger == nullptr) {
-                            trigger = new waypoint::Trigger();
-                        }
-                        trigger->set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-                    }
-                {% elif (attribute_variable.attribute_type == "Enum")%}
-                    if (this->{{attribute_variable.attribute_flag_name}}) {
-                        if (trigger == nullptr) {
-                            trigger = new waypoint::Trigger();
-                        }
-                        trigger->set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-                    }
-                {% else: %}
-                    if (this->{{attribute_variable.attribute_flag_name}}) {
-                        if (trigger == nullptr) {
-                            trigger = new waypoint::Trigger();
-                        }
-                        trigger->set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
-                    }
-                {% endif %}
+            {% if (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"])%}
+                if (this->{{attribute_variable.attribute_flag_name}}) {
+                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+                }
+            {% elif (attribute_variable.attribute_type == "Enum")%}
+                if (this->{{attribute_variable.attribute_flag_name}}) {
+                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+                }
             {% else: %}
-                {% if (attribute_variable.attribute_type == "Enum")%}
-                    if (this->{{attribute_variable.attribute_flag_name}}) {
-                        proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-                    }
-                {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"])%}
-                    if (this->{{attribute_variable.attribute_flag_name}}) {
-                        proto_{{cpp_class_header}}.set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-                    }
-                {% else: %}
-                    if (this->{{attribute_variable.attribute_flag_name}}) {
-                        proto_{{cpp_class_header}}.set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
-                    }
-                {% endif %}
+                if (this->{{attribute_variable.attribute_flag_name}}) {
+                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
+                }
             {% endif %}
         {% endif %}
     {% endfor %}
-    {% if cpp_class == "Icon": %}
-        if (trigger != nullptr) {
-            proto_{{cpp_class_header}}.set_allocated_trigger(trigger);
-        }
-    {% endif %}
     return proto_{{cpp_class_header}};
 }
 
