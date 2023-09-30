@@ -98,42 +98,42 @@ vector<string> Category::as_xml() const {
 waypoint::Category Category::as_protobuf() const {
     waypoint::Category proto_category;
     if (this->default_visibility_is_set) {
-        proto_category.set_default_visibility(this->default_visibility);
+        proto_category.set_default_visibility(to_proto_bool(this->default_visibility));
     }
     if (this->display_name_is_set) {
-        proto_category.set_display_name(this->display_name);
+        proto_category.set_display_name(to_proto_string(this->display_name));
     }
     if (this->is_separator_is_set) {
-        proto_category.set_is_separator(this->is_separator);
+        proto_category.set_is_separator(to_proto_bool(this->is_separator));
     }
     if (this->name_is_set) {
-        proto_category.set_name(this->name);
+        proto_category.set_name(to_proto_string(this->name));
     }
     if (this->tooltip_description_is_set) {
-        proto_category.set_tip_description(this->tooltip_description);
+        proto_category.set_tip_description(to_proto_string(this->tooltip_description));
     }
     return proto_category;
 }
 
 void Category::parse_protobuf(waypoint::Category proto_category) {
     if (proto_category.default_visibility() != 0) {
-        this->default_visibility = proto_category.default_visibility();
+        this->default_visibility = from_proto_bool(proto_category.default_visibility());
         this->default_visibility_is_set = true;
     }
     if (proto_category.display_name() != "") {
-        this->display_name = proto_category.display_name();
+        this->display_name = from_proto_string(proto_category.display_name());
         this->display_name_is_set = true;
     }
     if (proto_category.is_separator() != 0) {
-        this->is_separator = proto_category.is_separator();
+        this->is_separator = from_proto_bool(proto_category.is_separator());
         this->is_separator_is_set = true;
     }
     if (proto_category.name() != "") {
-        this->name = proto_category.name();
+        this->name = from_proto_string(proto_category.name());
         this->name_is_set = true;
     }
     if (proto_category.tip_description() != "") {
-        this->tooltip_description = proto_category.tip_description();
+        this->tooltip_description = from_proto_string(proto_category.tip_description());
         this->tooltip_description_is_set = true;
     }
 }
