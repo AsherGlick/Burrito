@@ -12,13 +12,16 @@ from schema import string_t, array_t, enum_t, union_t, union_partial_t, pattern_
 
 SchemaType = Dict[str, Any]
 
+XML_ATTRIBUTE_REGEX: Final[str] = "^[A-Za-z]+$"
+PROTO_FIELD_REGEX: Final[str] = "^[a-z_.]+$"
+INTERNAL_VARIABLE_REGEX: Final[str] = "^[a-z_]+$"
 
 shared_field_properties: Dict[str, DefType] = {
     "type": string_t(),
     "name": string_t(),
     "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
-    "xml_fields": array_t(string_t(pattern="^[A-Za-z]+$")),
-    "protobuf_field": string_t(pattern="^[a-z_.]+$"),
+    "xml_fields": array_t(string_t(pattern=XML_ATTRIBUTE_REGEX)),
+    "protobuf_field": string_t(pattern=PROTO_FIELD_REGEX),
 }
 
 schema = union_t({
@@ -29,12 +32,12 @@ schema = union_t({
     "Boolean": union_partial_t(required=shared_field_properties),
     "MultiflagValue": union_partial_t(
         required={**shared_field_properties, **{
-            "flags": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())}),
+            "flags": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())}),
         }},
     ),
     "Enum": union_partial_t(
         required={**shared_field_properties, **{
-            "values": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())})
+            "values": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())})
         }}
     ),
     "CompoundValue": union_partial_t(
@@ -44,8 +47,8 @@ schema = union_t({
             "components": array_t(object_t({
                 "name": string_t(),
                 "type": enum_t(["Int32", "Fixed32", "Float32"]),
-                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
-                "protobuf_field": string_t("^[a-z_.]+$"),
+                "xml_fields": array_t(string_t(XML_ATTRIBUTE_REGEX)),
+                "protobuf_field": string_t(PROTO_FIELD_REGEX),
             })),
         }}
     ),
@@ -57,8 +60,8 @@ schema = union_t({
             "components": array_t(object_t({
                 "name": string_t(),
                 "type": enum_t(["Int32", "Fixed32", "Float32"]),
-                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
-                "protobuf_field": string_t("^[a-z_.]+$"),
+                "xml_fields": array_t(string_t(XML_ATTRIBUTE_REGEX)),
+                "protobuf_field": string_t(PROTO_FIELD_REGEX),
             })),
         }}
     ),
