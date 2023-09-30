@@ -104,16 +104,6 @@ class FieldRow:
     description: str
 
 
-# TODO: Eventually replace all references to `doc_type_to_cpp_type` with
-# references to `documentation_type_data` because they contain the same data
-doc_type_to_cpp_type: Dict[str, str] = {
-    "Fixed32": "int",
-    "Int32": "int",
-    "Boolean": "bool",
-    "Float32": "float",
-    "String": "std::string",
-}
-
 documentation_type_data = {
     "Fixed32": {
         "class_name": "int",
@@ -391,7 +381,7 @@ class Generator:
                         component_attribute_variable = AttributeVariable(
                             attribute_name=attribute_name + "." + component_name,
                             attribute_type="CompoundValue",
-                            cpp_type=doc_type_to_cpp_type[component['type']],
+                            cpp_type=documentation_type_data[component['type']]["cpp_type"],
                             class_name=component_class_name,
                             xml_fields=component_xml_fields,
                             default_xml_field=component_default_xml_field,
@@ -490,7 +480,7 @@ class Generator:
             elif metadata[filepath]['type'] == "CompoundValue":
                 for component in metadata[filepath]['components']:
                     xml_fields = []
-                    if component['type'] not in doc_type_to_cpp_type:
+                    if component['type'] not in documentation_type_data:
                         raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
                             attribute_name=attribute_name
                         ))
@@ -502,7 +492,7 @@ class Generator:
                     attribute_variable = AttributeVariable(
                         attribute_name=component_attribute_name,
                         attribute_type=metadata[filepath]['type'],
-                        cpp_type=doc_type_to_cpp_type[component['type']],
+                        cpp_type=documentation_type_data[component['type']]["cpp_type"],
                         class_name=attribute_name,
                         xml_fields=xml_fields,
                         protobuf_field=component["protobuf_field"],
