@@ -7,10 +7,75 @@ import markdown
 from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
 from jinja_helpers import UnindentBlocks
-from schema import schema
+from schema import string_t, array_t, enum_t, union_t, union_partial_t, pattern_dictionary_t, object_t, boolean_t, DefType
 
 
 SchemaType = Dict[str, Any]
+
+
+shared_field_properties: Dict[str, DefType] = {
+    "type": string_t(),
+    "name": string_t(),
+    "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
+    # To Be Depricated
+    "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"])),
+    "xml_fields": array_t(string_t(pattern="^[A-Za-z]+$")),
+    "protobuf_field": string_t(pattern="^[a-z_.]+$"),
+}
+
+schema = union_t({
+    "Int32": union_partial_t(required=shared_field_properties),
+    "Fixed32": union_partial_t(required=shared_field_properties),
+    "Float32": union_partial_t(required=shared_field_properties),
+    "String": union_partial_t(required=shared_field_properties),
+    "Boolean": union_partial_t(required=shared_field_properties),
+    "MultiflagValue": union_partial_t(
+        required={**shared_field_properties, **{
+            "flags": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())}),
+        }},
+    ),
+    "Enum": union_partial_t(
+        required={**shared_field_properties, **{
+            "values": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())})
+        }}
+    ),
+    "CompoundValue": union_partial_t(
+        required={**shared_field_properties, **{
+            "xml_bundled_components": array_t(string_t()),
+            "xml_separate_components": array_t(string_t()),
+            "components": array_t(object_t({
+                "name": string_t(),
+                "type": enum_t(["Int32", "Fixed32", "Float32"]),
+                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
+                "protobuf_field": string_t("^[a-z_.]+$"),
+                # To Be Depricated
+                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
+            })),
+        }}
+    ),
+    "CompoundCustomClass": union_partial_t(
+        required={**shared_field_properties, **{
+            "class": string_t(),
+            "xml_bundled_components": array_t(string_t()),
+            "xml_separate_components": array_t(string_t()),
+            "components": array_t(object_t({
+                "name": string_t(),
+                "type": enum_t(["Int32", "Fixed32", "Float32"]),
+                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
+                "protobuf_field": string_t("^[a-z_.]+$"),
+                # To Be Depricated
+                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
+            })),
+        }}
+    ),
+    "Custom": union_partial_t(
+        required={**shared_field_properties, **{"class": string_t()}},
+        optional={
+            "side_effects": array_t(string_t()),
+            "uses_file_path": boolean_t(),
+        }
+    ),
+})
 
 
 def validate_front_matter_schema(front_matter: Any) -> str:

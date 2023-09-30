@@ -17,7 +17,9 @@ DefType = Union[
 ################################################################################
 # String Definition Helpers
 #
-#
+# These are used as helpers for string_t() which is a helper for creating a
+# "string" jsonschema definition object. Optionally string_t() can be called
+# with a regex pattern that will be applied to the json schema.
 ################################################################################
 class BaseStringDef(TypedDict):
     type: Literal["string"]
@@ -39,6 +41,12 @@ def string_t(pattern: Optional[str] = None) -> StringDef:
         }
 
 
+################################################################################
+# Boolean Definition Helpers
+#
+# These are helpers for creating a "boolean" jsonschema definition object.
+# boolean_t() does not take any arguments and will always return the same value
+################################################################################
 class BooleanDef(TypedDict):
     type: Literal["boolean"]
 
@@ -49,6 +57,13 @@ def boolean_t() -> BooleanDef:
     }
 
 
+################################################################################
+# Enumeration Definition Helpers
+#
+# These are helpers for creating "enum" jsonschema definition objects. These
+# are string values that can only be one of a set number of values. The values
+# that are allowed are passed into the enum_t() function.
+################################################################################
 class EnumDef(TypedDict):
     type: Literal["string"]
     enum: List[str]
@@ -61,6 +76,12 @@ def enum_t(options: Iterable[str]) -> EnumDef:
     }
 
 
+################################################################################
+# Array Definition Helpers
+#
+# Theses are helpers for creating "array" jsonschema definition objects. Arrays
+# Take in a subtype that represents the type of their elements.
+################################################################################
 class ArrayDef(TypedDict):
     type: Literal["array"]
     items: DefType
@@ -73,6 +94,15 @@ def array_t(element_type: DefType) -> ArrayDef:
     }
 
 
+################################################################################
+# Object Definition Helpers
+#
+# These are helpers for creating object jsonschema definitions. Objects contain
+# both required and optional fields. Objects in jsonschema normally just
+# denote fields that might exist, but dont force them to exist or prevent other
+# fields from existing by default. This helper automatically forces all of the
+# required fields to exist, and restricts any non-required non-optional field.
+################################################################################
 class ObjectDef(TypedDict):
     type: Literal["object"]
     additionalProperties: Literal[False]
@@ -89,6 +119,13 @@ def object_t(fields: Dict[str, DefType], optional_fields: Dict[str, DefType] = {
     }
 
 
+################################################################################
+# Pattern Dictionary Definition Helpers
+#
+# These are helpers for creating dictionary types that have pattern
+# requirements on their keys. This is a special type for jsonschema and it
+# may be replaced in the future with something else given its uniqueness.
+################################################################################
 class PatternDictionaryDef(TypedDict):
     type: Literal["object"]
     patternProperties: Dict[str, DefType]
@@ -101,7 +138,16 @@ def pattern_dictionary_t(pattern_properties: Dict[str, DefType]) -> PatternDicti
     }
 
 
-# Helper function for the union types
+################################################################################
+# Union Definition Type
+#
+# These are helpers for creating union types in jsonschema. Unions seem to be
+# very difficult to accomplish in jsonschema but union_t() will abstract all
+# of the complexities away, only requiring a map of strings to required and
+# optional fields, similar to an object.
+################################################################################
+# Helper function for the union types to more easily write required/optional
+# tuples inline.
 def union_partial_t(
     *,
     required: Dict[str, DefType] = {},
@@ -154,70 +200,3 @@ def union_t(options: Dict[str, Tuple[Dict[str, DefType], Dict[str, DefType]]]) -
     }
 
     return union_type
-
-
-shared_field_properties: Dict[str, DefType] = {
-    "type": string_t(),
-    "name": string_t(),
-    "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
-    # To Be Depricated
-    "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"])),
-    "xml_fields": array_t(string_t(pattern="^[A-Za-z]+$")),
-    "protobuf_field": string_t(pattern="^[a-z_.]+$"),
-}
-
-schema = union_t({
-    "Int32": union_partial_t(required=shared_field_properties),
-    "Fixed32": union_partial_t(required=shared_field_properties),
-    "Float32": union_partial_t(required=shared_field_properties),
-    "String": union_partial_t(required=shared_field_properties),
-    "Boolean": union_partial_t(required=shared_field_properties),
-    "MultiflagValue": union_partial_t(
-        required={**shared_field_properties, **{
-            "flags": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())}),
-        }},
-    ),
-    "Enum": union_partial_t(
-        required={**shared_field_properties, **{
-            "values": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())})
-        }}
-    ),
-    "CompoundValue": union_partial_t(
-        required={**shared_field_properties, **{
-            "xml_bundled_components": array_t(string_t()),
-            "xml_separate_components": array_t(string_t()),
-            "components": array_t(object_t({
-                "name": string_t(),
-                "type": enum_t(["Int32", "Fixed32", "Float32"]),
-                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
-                "protobuf_field": string_t("^[a-z_.]+$"),
-                # To Be Depricated
-                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
-            })),
-        }}
-    ),
-
-    "CompoundCustomClass": union_partial_t(
-        required={**shared_field_properties, **{
-            "class": string_t(),
-            "xml_bundled_components": array_t(string_t()),
-            "xml_separate_components": array_t(string_t()),
-            "components": array_t(object_t({
-                "name": string_t(),
-                "type": enum_t(["Int32", "Fixed32", "Float32"]),
-                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
-                "protobuf_field": string_t("^[a-z_.]+$"),
-                # To Be Depricated
-                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
-            })),
-        }}
-    ),
-
-    "Custom": union_partial_t(
-        required={**shared_field_properties, **{"class": string_t()}},
-        optional={
-            "side_effects": array_t(string_t()),
-            "uses_file_path": boolean_t(),
-        }
-    ),
-})
