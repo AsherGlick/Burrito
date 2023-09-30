@@ -26,30 +26,36 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  Build-Linux:
+  Build-XMLConverter-Linux:
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Create the Output Directory
         run: mkdir -v -p output
 
-      # `clang-9` must be installed here because of a weird unlisted dependency
-      # on some sort of file that clang-9 installs. Without it iwyu would
-      # complain about missing files and error out.
-      - name: Install include-what-you-use
-        run: |
-          sudo apt-get install iwyu
-          sudo apt-get install clang-9
+      # IWYU is disabled for now due to noise. It will be re-enabled at a later date
+      # # `clang-9` must be installed here because of a weird unlisted dependency
+      # # on some sort of file that clang-9 installs. Without it iwyu would
+      # # complain about missing files and error out.
+      # - name: Install include-what-you-use
+      #   run: |
+      #     sudo apt-get install iwyu
+      #     sudo apt-get install clang-9
 
+      - name: Install protoc
+        run: sudo apt-get install protobuf-compiler
+
+      - name: Install gtest
+        run: sudo apt-get install libgtest-dev
 
       - name: Install cpplint
         run: |
           pip3 install cpplint
-
 
       - name: Install xml_converter/generators Dependencies
         run: |
@@ -58,13 +64,6 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-
-      - name: Install protoc
-        run: sudo apt-get install protobuf-compiler 
-
-      - name: Install gtest
-        run: sudo apt-get install libgtest-dev
-
       - name: Build xml_converter
         run: |
           cd xml_converter
@@ -72,15 +71,88 @@ jobs:
           cd build
           cmake ..
           make
-          mv xml_converter ../../output/
-          cp compile_commands.json ../compile_commands.json
-
 
       - name: Validate xml_converter
         run: |
           cd xml_converter
+          cp build/compile_commands.json ./compile_commands.json
           ./presubmit.sh
 
+      - name: Upload created file
+        uses: actions/upload-artifact@v3
+        with:
+          name: xml_converter
+          path: xml_converter/build/xml_converter
+          if-no-files-found: error 
+
+  Build-BurritoLink-Linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create the Output Directory
+        run: mkdir -v -p output
+
+      - name: Install mingw
+        run: sudo apt-get install gcc-mingw-w64
+
+      - name: Build Burrito Link
+        run: |
+          cd burrito_link
+          make
+
+      - name: Upload created file
+        uses: actions/upload-artifact@v3
+        with:
+          name: burrito_link
+          path: burrito_link/burrito_link.exe
+          if-no-files-found: error 
+
+  Build-BurritoFG-Linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build X11_FG
+        run: |
+            cd burrito-fg
+            cargo build --release
+
+      - name: Upload created file
+        uses: actions/upload-artifact@v3
+        with:
+          name: BurritoFG
+          path: burrito-fg/target/release/libburrito_fg.so
+          if-no-files-found: error 
+
+  Build-TacoParser-Linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build taco_parser
+        run: |
+            cd taco_parser
+            cargo build --release
+
+      - name: Upload created file
+        uses: actions/upload-artifact@v3
+        with:
+          name: TacoParser
+          path: taco_parser/target/release/libgw2_taco_parser.so
+          if-no-files-found: error 
+
+  Build-BurritoUI-Linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create the Output Directory
+        run: mkdir -v -p output
 
       # - name: Cache Godot
       #   id: cache-godot
@@ -117,47 +189,69 @@ jobs:
           mv templates/* ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
           ls ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
 
-
-      - name: Install mingw
-        run: sudo apt-get install gcc-mingw-w64
-      
-
-      - name: Build X11_FG
+      - name: Fake The GDNative Files
         run: |
-            cd burrito-fg
-            cargo build --release
-
-
-      - name: Build taco_parser
-        run: |
-            cd taco_parser
-            cargo build --release
-
-
-      - name: Build Burrito Link
-        run: |
-          cd burrito_link
-          make
-          mv burrito_link.exe ../output
-
+          mkdir -p burrito-fg/target/release/
+          touch burrito-fg/target/release/libburrito_fg.so
+          mkdir -p taco_parser/target/release/
+          touch taco_parser/target/release/libgw2_taco_parser.so
 
       - name: Build Burrito
         run: |
           mkdir -v -p build
           ./Godot_v${GODOT_VERSION}-stable_linux_headless.64 --export "Linux/X11"
           chmod +x build/burrito.x86_64
-          mv build/burrito.x86_64 output/
-          mv build/libburrito_fg.so output/
-          mv build/libgw2_taco_parser.so output/
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Burrito_UI
+          path: build/burrito.x86_64
+          if-no-files-found: error
 
-      - uses: actions/upload-artifact@v2.2.4
+  Package-Burrito-Linux:
+    runs-on: ubuntu-20.04
+    needs:
+      - Build-XMLConverter-Linux
+      - Build-BurritoLink-Linux
+      - Build-BurritoUI-Linux
+      - Build-BurritoFG-Linux
+      - Build-TacoParser-Linux
+    steps:
+      - name: Download Burrito UI
+        uses: actions/download-artifact@v3
+        with:
+          name: Burrito_UI
+
+      - name: Download Burrito FG
+        uses: actions/download-artifact@v3
+        with:
+          name: BurritoFG
+
+      - name: Download TacoParser
+        uses: actions/download-artifact@v3
+        with:
+          name: TacoParser
+
+      - name: Download XML Converter
+        uses: actions/download-artifact@v3
+        with:
+          name: xml_converter
+
+      - name: Download Burrito Link
+        uses: actions/download-artifact@v3
+        with:
+          name: burrito_link
+
+      - name: Move Burrito Link
+        run: |
+          mkdir burrito_link/
+          mv burrito_link.exe burrito_link/
+
+      - uses: actions/upload-artifact@v3
         with:
           # Artifact name
           name: "Burrito_Linux" # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path:  "output/*"
+          path:  "./*"
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error 
-          # Duration after which artifact will expire in days. 0 means using default retention. 
-          retention-days: 7
