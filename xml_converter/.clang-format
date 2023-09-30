@@ -106,7 +106,6 @@ PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1 # 1000000
 PenaltyReturnTypeOnItsOwnLine: 200
 PointerAlignment: Left
-ReferenceAlignment: Right
 RawStringFormats:
   - Language:        Cpp
     Delimiters:
