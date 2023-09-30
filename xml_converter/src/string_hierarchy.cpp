@@ -20,6 +20,8 @@ bool StringHierarchy::in_hierarchy(
     return true;
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // in_hierarchy
 //
@@ -28,6 +30,20 @@ bool StringHierarchy::in_hierarchy(
 bool StringHierarchy::in_hierarchy(
     const std::vector<std::string> &path) const {
     return this->_in_hierarchy(path, 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// in_hierarchy
+//
+// An explicit version of in_hierarchy that takes an initalizer list to prevent
+// ambiguity between the vector and string overloads of the function.
+////////////////////////////////////////////////////////////////////////////////
+bool StringHierarchy::in_hierarchy(
+    const std::initializer_list<std::string> input
+) const {
+    std::vector<std::string> vec;
+    vec.insert(vec.end(), input.begin(), input.end());
+    return this->in_hierarchy(vec);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +91,21 @@ const StringHierarchy* StringHierarchy::sub_hierarchy(
     return &(iterator->second);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// sub_hierarchy
+//
+// An explicit version of sub_hierarchy that takes an initalizer list to
+// prevent ambiguity between the vector and string overloads of the function.
+////////////////////////////////////////////////////////////////////////////////
+const StringHierarchy* StringHierarchy::sub_hierarchy(
+    const std::initializer_list<std::string> input) const {
+    std::vector<std::string> vec;
+    vec.insert(vec.end(), input.begin(), input.end());
+    return this->sub_hierarchy(vec);
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // sub_hierarchy
 //
@@ -86,7 +117,11 @@ const StringHierarchy* StringHierarchy::sub_hierarchy(
     const std::vector<std::string> &path) const {
     const StringHierarchy* sub_hierarchy = this;
     for (size_t i = 0; i < path.size(); i++) {
-        sub_hierarchy = this->sub_hierarchy(path[i]);
+        sub_hierarchy = sub_hierarchy->sub_hierarchy(path[i]);
+        // Escape before segfaulting.
+        if (sub_hierarchy == nullptr) {
+            return nullptr;
+        }
     }
     return sub_hierarchy;
 }
