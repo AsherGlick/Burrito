@@ -1,6 +1,5 @@
 from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
-import yaml
 import frontmatter  # type:ignore
 from typing import Any, Dict, List, Tuple, Set, Optional, Final
 import os
@@ -8,10 +7,12 @@ import markdown
 from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
 from jinja_helpers import UnindentBlocks
-
 from schema import schema
 
+
 SchemaType = Dict[str, Any]
+
+
 def validate_front_matter_schema(front_matter: Any) -> str:
     try:
         validate(front_matter, schema)

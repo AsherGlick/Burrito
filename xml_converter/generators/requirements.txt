@@ -5,8 +5,7 @@ jsonschema==4.7.2
 Markdown==3.4.1
 MarkupSafe==2.1.1
 mccabe==0.6.1
-mypy==0.971
-mypy-extensions==0.4.3
+mypy==1.5.1
 pyaml==21.10.1
 pycodestyle==2.8.0
 pyflakes==2.4.0

@@ -1,7 +1,4 @@
-from jsonschema import validate  # type:ignore
-from jsonschema.exceptions import ValidationError  # type:ignore
-from typing import Any, Optional, List, Dict, Iterable, TypedDict, Literal, Union, Tuple
-import yaml
+from typing import Optional, List, Dict, Iterable, TypedDict, Literal, Union, Tuple
 
 
 ################################################################################
@@ -14,18 +11,22 @@ DefType = Union[
     "ArrayDef",
     "ObjectDef",
     "PatternDictionaryDef"
-];
+]
 
 
 ################################################################################
 # String Definition Helpers
 #
-# 
+#
 ################################################################################
 class BaseStringDef(TypedDict):
     type: Literal["string"]
+
+
 class StringDef(BaseStringDef, total=False):
     pattern: Optional[str]
+
+
 def string_t(pattern: Optional[str] = None) -> StringDef:
     if pattern is None:
         return {
@@ -37,36 +38,48 @@ def string_t(pattern: Optional[str] = None) -> StringDef:
             "pattern": pattern,
         }
 
+
 class BooleanDef(TypedDict):
     type: Literal["boolean"]
+
+
 def boolean_t() -> BooleanDef:
     return {
         "type": "boolean"
     }
 
+
 class EnumDef(TypedDict):
     type: Literal["string"]
     enum: List[str]
+
+
 def enum_t(options: Iterable[str]) -> EnumDef:
     return {
         "type": "string",
         "enum": list(options)
     }
 
+
 class ArrayDef(TypedDict):
     type: Literal["array"]
     items: DefType
+
+
 def array_t(element_type: DefType) -> ArrayDef:
     return {
         "type": "array",
         "items": element_type
     }
 
+
 class ObjectDef(TypedDict):
     type: Literal["object"]
     additionalProperties: Literal[False]
     required: List[str]
     properties: Dict[str, DefType]
+
+
 def object_t(fields: Dict[str, DefType], optional_fields: Dict[str, DefType] = {}) -> ObjectDef:
     return {
         "type": "object",
@@ -75,9 +88,12 @@ def object_t(fields: Dict[str, DefType], optional_fields: Dict[str, DefType] = {
         "properties": {**fields, **optional_fields}
     }
 
+
 class PatternDictionaryDef(TypedDict):
     type: Literal["object"]
     patternProperties: Dict[str, DefType]
+
+
 def pattern_dictionary_t(pattern_properties: Dict[str, DefType]) -> PatternDictionaryDef:
     return {
         "type": "object",
@@ -86,14 +102,34 @@ def pattern_dictionary_t(pattern_properties: Dict[str, DefType]) -> PatternDicti
 
 
 # Helper function for the union types
-def union_partial_t(*, required: Dict[str, DefType]={}, optional: Dict[str, DefType]={}) ->Tuple[Dict[str, DefType], Dict[str, DefType]]:
+def union_partial_t(
+    *,
+    required: Dict[str, DefType] = {},
+    optional: Dict[str, DefType] = {}
+) -> Tuple[Dict[str, DefType], Dict[str, DefType]]:
     return (required, optional)
-upt=union_partial_t
 
 
+class UnionBranchThenDef(TypedDict):
+    additionalProperties: Literal[False]
+    required: List[str]
+    properties: Dict[str, DefType]
 
-def union_t(options: Dict[str, Tuple[Dict[str, DefType], Dict[str, DefType]]]):
-    union_type = {
+
+UnionBranchDef = TypedDict('UnionBranchDef', {
+    'if': Dict[Literal["properties"], Dict[Literal["type"], Dict[Literal["const"], str]]],
+    'then': UnionBranchThenDef,
+})
+
+
+class UnionDef(TypedDict):
+    type: Literal["object"]
+    properties: Dict[Literal["type"], EnumDef]
+    allOf: List[UnionBranchDef]
+
+
+def union_t(options: Dict[str, Tuple[Dict[str, DefType], Dict[str, DefType]]]) -> UnionDef:
+    union_type: UnionDef = {
         "type": "object",
         "properties": {
             "type": enum_t(options.keys())
@@ -113,7 +149,8 @@ def union_t(options: Dict[str, Tuple[Dict[str, DefType], Dict[str, DefType]]]):
                     "properties": {**value[0], **value[1]}
                 }
             }
-        for key, value in options.items()]
+            for key, value in options.items()
+        ]
     }
 
     return union_type
@@ -136,7 +173,7 @@ schema = union_t({
     "String": union_partial_t(required=shared_field_properties),
     "Boolean": union_partial_t(required=shared_field_properties),
     "MultiflagValue": union_partial_t(
-        required = {**shared_field_properties, **{
+        required={**shared_field_properties, **{
             "flags": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())}),
         }},
     ),
@@ -184,8 +221,3 @@ schema = union_t({
         }
     ),
 })
-
-    
-
-
-
