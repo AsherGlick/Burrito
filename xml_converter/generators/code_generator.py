@@ -365,14 +365,7 @@ class Generator:
                     xml_fields.append(lowercase(x, delimiter=""))
                 default_xml_field = fieldval['xml_fields'][0]
 
-                # TODO: this should handle more then just `trigger.` variants
-                if fieldval["protobuf_field"].startswith("trigger"):
-                    proto_drilldown_calls = ".trigger()"
-                    # TODO this would not properly catch trigger.something.ourvariable
-                    protobuf_field = fieldval["protobuf_field"].split('.')[1]
-                else:
-                    proto_drilldown_calls = ""
-                    protobuf_field = fieldval["protobuf_field"]
+                proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval["protobuf_field"])
 
                 if fieldval.get("uses_file_path", False):
                     args.append("base_dir")
@@ -471,14 +464,7 @@ class Generator:
             metadata[filepath] = self.data[filepath].metadata
             attribute_name = attribute_name_from_markdown_data(metadata[filepath]['name'])
 
-            # TODO this should handle more then just `trigger.` variants
-            if metadata[filepath]["protobuf_field"].startswith("trigger"):
-                proto_drilldown_calls = ".trigger()"
-                # TODO this would not properly catch trigger.something.ourvariable
-                protobuf_field = metadata[filepath]["protobuf_field"].split('.')[1]
-            else:
-                proto_drilldown_calls = ""
-                protobuf_field = metadata[filepath]["protobuf_field"]
+            proto_drilldown_calls, protobuf_field = split_field_into_drilldown(metadata[filepath]["protobuf_field"])
 
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
@@ -752,6 +738,22 @@ class Generator:
                     ))
 
         return template.render(field_rows=field_rows), field_rows
+
+
+################################################################################
+# split_field_into_drilldown
+#
+# Splits the field string into a cpp drilldown function call stack and the
+# final proto field name.
+# EG:
+#   field: "trigger.range"
+#   returns: (".trigger()", "range")
+################################################################################
+def split_field_into_drilldown(field: str) -> Tuple[str, str]:
+    components = field.split(".")
+    proto_drilldown_calls = "".join([".{}()".format(x) for x in components[:-1]])
+    protobuf_field = components[-1]
+    return proto_drilldown_calls, protobuf_field
 
 
 ############################################################################
