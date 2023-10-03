@@ -34,22 +34,21 @@ if (( $? > 0 )); then
     error_count=`expr $error_count + 1`
 fi
 
-# Run Include What You Use
-#
-# We have 2 sed filters here, they could be combined but they are split for clarity
-# The first one removes all blank lines
-# The second one removes all "everything is good" lines from iwyu
-#
-# TODO: When this or newer versions of iwyu_tool that carry over the exit codes
-# from the include-what-you-use command calls are more widely standard this can
-# be replaced with just a call to iwyu_tool instead.
-echo "Include What You Use"
-echo "--------------------"
-../third_party/iwyu_tool.py -p . -o quiet
-# include-what-you-use has a "success code" of 2 for a legacy reason.
-if [[ $? -ne 2 ]]; then
-    error_count=`expr $error_count + 1`
-fi
+
+# IWYU is too noisy right now and not always completely correct. It is going
+# to be disabled for now but later will be re-enabled once it is wrangled better
+# # Run Include What You Use
+# #
+# # TODO: When this or newer versions of iwyu_tool that carry over the exit codes
+# # from the include-what-you-use command calls are more widely standard this can
+# # be replaced with just a call to iwyu_tool instead.
+# echo "Include What You Use"
+# echo "--------------------"
+# ../third_party/iwyu_tool.py -p . -o quiet
+# # include-what-you-use has a "success code" of 2 for a legacy reason.
+# if [[ $? -ne 2 ]]; then
+#     error_count=`expr $error_count + 1`
+# fi
 
 
 # Validate that clang-format would make no changes
