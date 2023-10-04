@@ -35,9 +35,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create the Output Directory
-        run: mkdir -v -p output
-
       # IWYU is disabled for now due to noise. It will be re-enabled at a later date
       # # `clang-9` must be installed here because of a weird unlisted dependency
       # # on some sort of file that clang-9 installs. Without it iwyu would
@@ -90,9 +87,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Create the Output Directory
-        run: mkdir -v -p output
 
       - name: Install mingw
         run: sudo apt-get install gcc-mingw-w64
@@ -150,9 +144,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Create the Output Directory
-        run: mkdir -v -p output
 
       # - name: Cache Godot
       #   id: cache-godot
