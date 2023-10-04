@@ -13,13 +13,13 @@ class StringHierarchy {
         const std::vector<std::string> &path) const;
 
     bool in_hierarchy(
-        const std::initializer_list<std::string>) const;
+        const std::initializer_list<std::string> &input) const;
 
     const StringHierarchy *sub_hierarchy(
         const std::string &node) const;
 
     const StringHierarchy *sub_hierarchy(
-        const std::initializer_list<std::string> input) const;
+        const std::initializer_list<std::string> &input) const;
 
     const StringHierarchy *sub_hierarchy(
         const std::vector<std::string> &path) const;

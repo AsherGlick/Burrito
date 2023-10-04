@@ -37,7 +37,7 @@ bool StringHierarchy::in_hierarchy(
 // ambiguity between the vector and string overloads of the function.
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::in_hierarchy(
-    const std::initializer_list<std::string> input) const {
+    const std::initializer_list<std::string> &input) const {
     std::vector<std::string> vec;
     vec.insert(vec.end(), input.begin(), input.end());
     return this->in_hierarchy(vec);
@@ -95,7 +95,7 @@ const StringHierarchy *StringHierarchy::sub_hierarchy(
 // prevent ambiguity between the vector and string overloads of the function.
 ////////////////////////////////////////////////////////////////////////////////
 const StringHierarchy *StringHierarchy::sub_hierarchy(
-    const std::initializer_list<std::string> input) const {
+    const std::initializer_list<std::string> &input) const {
     std::vector<std::string> vec;
     vec.insert(vec.end(), input.begin(), input.end());
     return this->sub_hierarchy(vec);
