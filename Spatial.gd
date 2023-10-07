@@ -48,6 +48,20 @@ var taco_parser: TacoParser
 var x11_window_id_burrito: int
 var is_transient:bool = false
 
+# Scenes used throughout this scene
+var route_scene = load("res://Route.tscn")
+var icon_scene = load("res://Icon.tscn")
+var path2d_scene = load("res://Route2D.tscn")
+var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
+
+##########Node Connections###########
+onready var marker_packs := $Control/Dialogs/MarkerPacks/MarkerPacks as Tree
+onready var root := self.marker_packs.create_item() as TreeItem
+onready var icons := $Icons as Spatial
+onready var paths := $Paths as Spatial
+onready var minimap := $Control/MiniMap as Node2D
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
@@ -60,8 +74,7 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
-	init_category_tree()
-	marker_file_dir.open("user://protobins/")
+
 	server.listen(4242)
 
 func set_minimal_mouse_block():
@@ -285,39 +298,26 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
-var Waypoint_data = Waypoint.Waypoint.new()
-var marker_file_dir = Directory.new()
+var waypoint_data = Waypoint.Waypoint.new()
+var marker_file_dir = "user://protobins/"
 var marker_file_path = ""
-var root: TreeItem
-
-##########Node Connections###########
-onready var marker_packs = $Control/Dialogs/MarkerPacks/MarkerPacks
-onready var icons = $Icons
-onready var paths = $Paths
-onready var minimap = $Control/MiniMap
-
 
 func load_waypoint_markers(map_id):
-	self.marker_file_path = self.marker_file_dir.get_current_dir() + String(map_id) + ".data"
-	self.Waypoint_data.clear_category()
+	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
+	self.waypoint_data.clear_category()
 	clear_map_markers()
-	root.free()
 	init_category_tree()
 	var file = File.new()
 	print("Loading protobuf file from path ", self.marker_file_path)
 	file.open(self.marker_file_path, file.READ)
 	var data = file.get_buffer(file.get_len())
-	self.Waypoint_data.from_bytes(data)
+	self.waypoint_data.from_bytes(data)
 	if !Waypoint.PB_ERR.NO_ERRORS:
 		print("OK")
 	else:
 		print(Waypoint.PB_ERR)
-	parse_Waypoint()
+	Waypoint_categories_to_godot_nodes()
 
-var route_scene = load("res://Route.tscn")
-var icon_scene = load("res://Icon.tscn")
-var path2d_scene = load("res://Route2D.tscn")
-var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
 
 ##########Gizmo Stuff###########
 # How long the ray to search for 3D clickable object should be.
@@ -409,12 +409,12 @@ func init_category_tree():
 	root.set_text(1, "Visible")
 
 
-func parse_Waypoint():
-	for category in self.Waypoint_data.get_category():
-		parse_category(root, category, category.get_name(), false)
+func Waypoint_categories_to_godot_nodes():
+	for category in self.waypoint_data.get_category():
+		_Waypoint_categories_to_godot_nodes(root, category, category.get_name(), false)
 
 
-func parse_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
+func _Waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
 		# If this is called, there is an error in the Waypoint data
@@ -441,7 +441,7 @@ func parse_category(item: TreeItem, category, full_category_name: String, collap
 		if texture_path == null:
 			print("Warning: No texture found in " , full_category_name)
 			continue
-		var full_texture_path = self.marker_file_dir.get_current_dir() + texture_path.get_path()
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
 		gen_new_path(path_points, full_texture_path, path, category_item)
 
 	for icon in category.get_icon():
@@ -454,11 +454,11 @@ func parse_category(item: TreeItem, category, full_category_name: String, collap
 		if texture_path == null:
 			print("Warning: No texture found in " , full_category_name)
 			continue
-		var full_texture_path = self.marker_file_dir.get_current_dir() + texture_path.get_path()
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 	
 	for category_child in category.get_children():
-		parse_category(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
+		_Waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
@@ -565,7 +565,31 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 		new_icon.visible = false
 	icons.add_child(new_icon)
 
+# This function take all of the currently rendered objects and converts it into
+# the data format that is saved/loaded from.
+func data_from_renderview():
+	var icons_data = []
+	var paths_data = []
 
+	for icon in $Icons.get_children():
+		icons_data.append({
+			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
+			"texture": icon.texture_path
+		})
+
+	for path in $Paths.get_children():
+		#print(path)
+		var points = []
+		for point in range(path.get_point_count()):
+			var point_position:Vector3 = path.get_point_position(point)
+			points.append([point_position.x, point_position.y, -point_position.z])
+		paths_data.append({
+			"points": points,
+			"texture": path.texture_path
+		})
+
+	var data_out = {"icons": icons_data, "paths": paths_data}
+	return data_out
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -737,15 +761,16 @@ func _on_NewPathPoint_pressed():
 # 
 ################################################################################
 func _on_SavePath_pressed():
-	#TODO: Save to Waypoint
-	pass
+	$Control/Dialogs/SaveDialog.show()
 
 ################################################################################
 # TODO: This function will be used when exporting packs
 ################################################################################
 func _on_SaveDialog_file_selected(path):
-	pass
-
+	self.markerdata[str(self.map_id)] = data_from_renderview()
+	var save_game = File.new()
+	save_game.open(path, File.WRITE)
+	save_game.store_string(JSON.print(self.markerdata))
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
