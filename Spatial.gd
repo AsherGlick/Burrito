@@ -75,6 +75,8 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
+	init_category_tree()
+	marker_file_dir.open("user://protobins/")
 	server.listen(4242)
 
 
@@ -301,9 +303,13 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
+
 var waypoint_data = Waypoint.Waypoint.new()
 var marker_file_dir = Directory.new().open("user://protobins/")
 var auto_save_file_path = ""
+var marker_file_path = ""
+var auto_save_file_path = ""
+var root: TreeItem
 
 
 func load_waypoint_markers(map_id):
@@ -774,7 +780,7 @@ func _on_NewPathPoint_pressed():
 ################################################################################
 func _on_SavePath_pressed():
 	manual_save()
-	
+
 ################################################################################
 # TODO: This function will be used when exporting packs
 ################################################################################
