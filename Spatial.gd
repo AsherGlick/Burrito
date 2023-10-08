@@ -316,7 +316,7 @@ func load_waypoint_markers(map_id):
 		print("OK")
 	else:
 		print(Waypoint.PB_ERR)
-	Waypoint_categories_to_godot_nodes()
+	waypoint_categories_to_godot_nodes()
 
 
 ##########Gizmo Stuff###########
@@ -409,12 +409,12 @@ func init_category_tree():
 	root.set_text(1, "Visible")
 
 
-func Waypoint_categories_to_godot_nodes():
+func waypoint_categories_to_godot_nodes():
 	for category in self.waypoint_data.get_category():
-		_Waypoint_categories_to_godot_nodes(root, category, category.get_name(), false)
+		_waypoint_categories_to_godot_nodes(root, category, category.get_name(), false)
 
 
-func _Waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
+func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
 		# If this is called, there is an error in the Waypoint data
@@ -458,7 +458,7 @@ func _Waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 	
 	for category_child in category.get_children():
-		_Waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
+		_waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
