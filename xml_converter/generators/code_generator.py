@@ -169,7 +169,11 @@ class AttributeVariable:
     is_component: bool = False
 
     # A flag to override the type that should be used when writing or reading from a protobuf
-    ptotobuf_type: Optional[str] = None
+    ptotobuf_type: str = ""
+
+    def __post_init__(self) -> None:
+        if self.ptotobuf_type == "":
+            self.ptotobuf_type = self.attribute_type
 
 
 XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
@@ -417,7 +421,7 @@ class Generator:
                     if fieldval['xml_bundled_components'] == []:
                         write_to_xml = False
 
-                ptotobuf_type = None
+                ptotobuf_type = ""
                 if "ptotobuf_type" in fieldval:
                     ptotobuf_type = fieldval["ptotobuf_type"]
 
