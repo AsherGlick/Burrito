@@ -319,7 +319,7 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
     }
     if (this->guid_is_set) {
-        proto_trail.set_allocated_guid(to_proto_unique_id(this->guid));
+        proto_trail.set_guid(to_proto_unique_id(this->guid));
     }
     if (this->is_wall_is_set) {
         proto_trail.set_is_wall(to_proto_bool(this->is_wall));
@@ -413,7 +413,7 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->festival_filter = from_proto_festival_filter(proto_trail.festival_filter());
         this->festival_filter_is_set = true;
     }
-    if (proto_trail.has_guid()) {
+    if (proto_trail.guid() != "") {
         this->guid = from_proto_unique_id(proto_trail.guid());
         this->guid_is_set = true;
     }

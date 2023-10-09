@@ -529,7 +529,7 @@ waypoint::Icon Icon::as_protobuf() const {
         proto_icon.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
     }
     if (this->guid_is_set) {
-        proto_icon.set_allocated_guid(to_proto_unique_id(this->guid));
+        proto_icon.set_guid(to_proto_unique_id(this->guid));
     }
     if (this->has_countdown_is_set) {
         proto_icon.mutable_trigger()->set_has_countdown(to_proto_bool(this->has_countdown));
@@ -689,7 +689,7 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->festival_filter = from_proto_festival_filter(proto_icon.festival_filter());
         this->festival_filter_is_set = true;
     }
-    if (proto_icon.has_guid()) {
+    if (proto_icon.guid() != "") {
         this->guid = from_proto_unique_id(proto_icon.guid());
         this->guid_is_set = true;
     }
