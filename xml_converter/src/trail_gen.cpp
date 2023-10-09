@@ -289,16 +289,16 @@ vector<string> Trail::as_xml() const {
 waypoint::Trail Trail::as_protobuf() const {
     waypoint::Trail proto_trail;
     if (this->achievement_bitmask_is_set) {
-        proto_trail.set_achievement_bit(this->achievement_bitmask);
+        proto_trail.set_achievement_bit(to_proto_int(this->achievement_bitmask));
     }
     if (this->achievement_id_is_set) {
-        proto_trail.set_achievement_id(this->achievement_id);
+        proto_trail.set_achievement_id(to_proto_int(this->achievement_id));
     }
     if (this->animation_speed_is_set) {
-        proto_trail.set_animation_speed(this->animation_speed);
+        proto_trail.set_animation_speed(to_proto_float(this->animation_speed));
     }
     if (this->can_fade_is_set) {
-        proto_trail.set_can_fade(this->can_fade);
+        proto_trail.set_can_fade(to_proto_bool(this->can_fade));
     }
     if (this->category_is_set) {
         proto_trail.set_allocated_category(to_proto_marker_category(this->category));
@@ -310,10 +310,10 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
     }
     if (this->distance_fade_end_is_set) {
-        proto_trail.set_distance_fade_end(this->distance_fade_end);
+        proto_trail.set_distance_fade_end(to_proto_float(this->distance_fade_end));
     }
     if (this->distance_fade_start_is_set) {
-        proto_trail.set_distance_fade_start(this->distance_fade_start);
+        proto_trail.set_distance_fade_start(to_proto_float(this->distance_fade_start));
     }
     if (this->festival_filter_is_set) {
         proto_trail.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
@@ -322,13 +322,13 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_guid(to_proto_unique_id(this->guid));
     }
     if (this->is_wall_is_set) {
-        proto_trail.set_is_wall(this->is_wall);
+        proto_trail.set_is_wall(to_proto_bool(this->is_wall));
     }
     if (this->map_display_size_is_set) {
-        proto_trail.set_map_display_size(this->map_display_size);
+        proto_trail.set_map_display_size(to_proto_int(this->map_display_size));
     }
     if (this->map_id_is_set) {
-        proto_trail.set_map_id(this->map_id);
+        proto_trail.set_map_id(to_proto_int(this->map_id));
     }
     if (this->map_type_filter_is_set) {
         proto_trail.set_allocated_map_type_filter(to_proto_map_type_filter(this->map_type_filter));
@@ -340,19 +340,19 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
     }
     if (this->render_ingame_is_set) {
-        proto_trail.set_tentative__render_ingame(this->render_ingame);
+        proto_trail.set_tentative__render_ingame(to_proto_bool(this->render_ingame));
     }
     if (this->render_on_map_is_set) {
-        proto_trail.set_tentative__render_on_map(this->render_on_map);
+        proto_trail.set_tentative__render_on_map(to_proto_bool(this->render_on_map));
     }
     if (this->render_on_minimap_is_set) {
-        proto_trail.set_tentative__render_on_minimap(this->render_on_minimap);
+        proto_trail.set_tentative__render_on_minimap(to_proto_bool(this->render_on_minimap));
     }
     if (this->schedule_is_set) {
-        proto_trail.set_bhdraft__schedule(this->schedule);
+        proto_trail.set_bhdraft__schedule(to_proto_string(this->schedule));
     }
     if (this->schedule_duration_is_set) {
-        proto_trail.set_bhdraft__schedule_duration(this->schedule_duration);
+        proto_trail.set_bhdraft__schedule_duration(to_proto_float(this->schedule_duration));
     }
     if (this->specialization_filter_is_set) {
         proto_trail.set_allocated_specialization_filter(to_proto_specialization_filter(this->specialization_filter));
@@ -367,26 +367,26 @@ waypoint::Trail Trail::as_protobuf() const {
         proto_trail.set_allocated_trail_data(to_proto_trail_data(this->trail_data));
     }
     if (this->trail_scale_is_set) {
-        proto_trail.set_scale(this->trail_scale);
+        proto_trail.set_scale(to_proto_float(this->trail_scale));
     }
     return proto_trail;
 }
 
 void Trail::parse_protobuf(waypoint::Trail proto_trail) {
     if (proto_trail.achievement_bit() != 0) {
-        this->achievement_bitmask = proto_trail.achievement_bit();
+        this->achievement_bitmask = from_proto_int(proto_trail.achievement_bit());
         this->achievement_bitmask_is_set = true;
     }
     if (proto_trail.achievement_id() != 0) {
-        this->achievement_id = proto_trail.achievement_id();
+        this->achievement_id = from_proto_int(proto_trail.achievement_id());
         this->achievement_id_is_set = true;
     }
     if (proto_trail.animation_speed() != 0) {
-        this->animation_speed = proto_trail.animation_speed();
+        this->animation_speed = from_proto_float(proto_trail.animation_speed());
         this->animation_speed_is_set = true;
     }
     if (proto_trail.can_fade() != 0) {
-        this->can_fade = proto_trail.can_fade();
+        this->can_fade = from_proto_bool(proto_trail.can_fade());
         this->can_fade_is_set = true;
     }
     if (proto_trail.has_category()) {
@@ -402,11 +402,11 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->cull_chirality_is_set = true;
     }
     if (proto_trail.distance_fade_end() != 0) {
-        this->distance_fade_end = proto_trail.distance_fade_end();
+        this->distance_fade_end = from_proto_float(proto_trail.distance_fade_end());
         this->distance_fade_end_is_set = true;
     }
     if (proto_trail.distance_fade_start() != 0) {
-        this->distance_fade_start = proto_trail.distance_fade_start();
+        this->distance_fade_start = from_proto_float(proto_trail.distance_fade_start());
         this->distance_fade_start_is_set = true;
     }
     if (proto_trail.has_festival_filter()) {
@@ -418,15 +418,15 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->guid_is_set = true;
     }
     if (proto_trail.is_wall() != 0) {
-        this->is_wall = proto_trail.is_wall();
+        this->is_wall = from_proto_bool(proto_trail.is_wall());
         this->is_wall_is_set = true;
     }
     if (proto_trail.map_display_size() != 0) {
-        this->map_display_size = proto_trail.map_display_size();
+        this->map_display_size = from_proto_int(proto_trail.map_display_size());
         this->map_display_size_is_set = true;
     }
     if (proto_trail.map_id() != 0) {
-        this->map_id = proto_trail.map_id();
+        this->map_id = from_proto_int(proto_trail.map_id());
         this->map_id_is_set = true;
     }
     if (proto_trail.has_map_type_filter()) {
@@ -442,23 +442,23 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->profession_filter_is_set = true;
     }
     if (proto_trail.tentative__render_ingame() != 0) {
-        this->render_ingame = proto_trail.tentative__render_ingame();
+        this->render_ingame = from_proto_bool(proto_trail.tentative__render_ingame());
         this->render_ingame_is_set = true;
     }
     if (proto_trail.tentative__render_on_map() != 0) {
-        this->render_on_map = proto_trail.tentative__render_on_map();
+        this->render_on_map = from_proto_bool(proto_trail.tentative__render_on_map());
         this->render_on_map_is_set = true;
     }
     if (proto_trail.tentative__render_on_minimap() != 0) {
-        this->render_on_minimap = proto_trail.tentative__render_on_minimap();
+        this->render_on_minimap = from_proto_bool(proto_trail.tentative__render_on_minimap());
         this->render_on_minimap_is_set = true;
     }
     if (proto_trail.bhdraft__schedule() != "") {
-        this->schedule = proto_trail.bhdraft__schedule();
+        this->schedule = from_proto_string(proto_trail.bhdraft__schedule());
         this->schedule_is_set = true;
     }
     if (proto_trail.bhdraft__schedule_duration() != 0) {
-        this->schedule_duration = proto_trail.bhdraft__schedule_duration();
+        this->schedule_duration = from_proto_float(proto_trail.bhdraft__schedule_duration());
         this->schedule_duration_is_set = true;
     }
     if (proto_trail.has_specialization_filter()) {
@@ -478,7 +478,7 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
         this->trail_data_is_set = true;
     }
     if (proto_trail.scale() != 0) {
-        this->trail_scale = proto_trail.scale();
+        this->trail_scale = from_proto_float(proto_trail.scale());
         this->trail_scale_is_set = true;
     }
 }

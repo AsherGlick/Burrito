@@ -97,19 +97,13 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
-            {% if (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"])%}
-                if (this->{{attribute_variable.attribute_flag_name}}) {
+            if (this->{{attribute_variable.attribute_flag_name}}) {
+                {% if (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) %}
                     proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-                }
-            {% elif (attribute_variable.attribute_type == "Enum")%}
-                if (this->{{attribute_variable.attribute_flag_name}}) {
+                {% else %}
                     proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
-                }
-            {% else: %}
-                if (this->{{attribute_variable.attribute_flag_name}}) {
-                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(this->{{attribute_variable.attribute_name}});
-                }
-            {% endif %}
+                {% endif %}
+            }
         {% endif %}
     {% endfor %}
     return proto_{{cpp_class_header}};
@@ -120,25 +114,16 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
         {% if attribute_variable.is_component == false %}
             {% if (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.has_{{attribute_variable.protobuf_field}}()) {
-                    this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
-                    this->{{attribute_variable.attribute_flag_name}} = true;
-                }
-            {% elif (attribute_variable.class_name == "string") %}{# TODO: why is this .class_name when the others are .attribute_name #}
+            {% elif (attribute_variable.attribute_type == "String") %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != "") {
-                    this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}();
-                    this->{{attribute_variable.attribute_flag_name}} = true;
-                }
             {% elif (attribute_variable.attribute_type ==  "Enum") %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
-                    this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
-                    this->{{attribute_variable.attribute_flag_name}} = true;
-                }
             {% else %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
-                    this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}();
-                    this->{{attribute_variable.attribute_flag_name}} = true;
-                }
             {% endif %}
+                this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
+                this->{{attribute_variable.attribute_flag_name}} = true;
+            }
         {% endif %}
     {% endfor %}
 }
