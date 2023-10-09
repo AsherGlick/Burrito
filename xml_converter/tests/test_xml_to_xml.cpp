@@ -1,7 +1,7 @@
 #include "../src/attribute/bool.hpp"
-#include <gtest/gtest.h>
 #include "../src/packaging_xml.hpp"
 #include <fstream>
+#include <gtest/gtest.h>
 
 class XMLtoXMLTest : public ::testing::Test {
  protected:
