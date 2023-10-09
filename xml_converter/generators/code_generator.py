@@ -155,7 +155,10 @@ class AttributeVariable:
     xml_bundled_components: List[str] = field(default_factory=list)
     attribute_flag_name: Optional[str] = ""
     write_to_xml: bool = True
-    is_trigger: bool = False
+
+    # The CPP code to inject into the variable getter to drill down to the
+    # variable we are looking for. eg ".trigger()" or ".one().two()"
+    proto_drilldown_calls: str = ""
     uses_file_path: bool = False
     is_component: bool = False
 
@@ -331,7 +334,7 @@ class Generator:
                 side_effects: List[str] = []
                 write_to_xml: bool = True
                 protobuf_field: str = ""
-                is_trigger: bool = False
+                proto_drilldown_calls: str = ""
                 default_xml_field: str = ""
 
                 args: List[str] = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
@@ -362,11 +365,13 @@ class Generator:
                     xml_fields.append(lowercase(x, delimiter=""))
                 default_xml_field = fieldval['xml_fields'][0]
 
+                # TODO: this should handle more then just `trigger.` variants
                 if fieldval["protobuf_field"].startswith("trigger"):
-                    is_trigger = True
+                    proto_drilldown_calls = ".trigger()"
+                    # TODO this would not properly catch trigger.something.ourvariable
                     protobuf_field = fieldval["protobuf_field"].split('.')[1]
                 else:
-                    is_trigger = False
+                    proto_drilldown_calls = ""
                     protobuf_field = fieldval["protobuf_field"]
 
                 if fieldval.get("uses_file_path", False):
@@ -417,7 +422,7 @@ class Generator:
                     xml_fields=xml_fields,
                     default_xml_field=default_xml_field,
                     protobuf_field=protobuf_field,
-                    is_trigger=is_trigger,
+                    proto_drilldown_calls=proto_drilldown_calls,
                     args=args,
                     write_to_xml=write_to_xml,
                     attribute_flag_name=attribute_name + "_is_set",
@@ -449,7 +454,7 @@ class Generator:
         attribute_variable: AttributeVariable
         metadata: Dict[str, SchemaType] = {}
         xml_fields: List[str] = []
-        is_trigger: bool = False
+        proto_drilldown_calls: str = ""
         template: Dict[str, Template] = {
             "MultiflagValue": env.get_template("multiflagvalue.cpp"),
             "CompoundValue": env.get_template("compoundvalue.cpp"),
@@ -466,11 +471,13 @@ class Generator:
             metadata[filepath] = self.data[filepath].metadata
             attribute_name = attribute_name_from_markdown_data(metadata[filepath]['name'])
 
+            # TODO this should handle more then just `trigger.` variants
             if metadata[filepath]["protobuf_field"].startswith("trigger"):
-                is_trigger = True
+                proto_drilldown_calls = ".trigger()"
+                # TODO this would not properly catch trigger.something.ourvariable
                 protobuf_field = metadata[filepath]["protobuf_field"].split('.')[1]
             else:
-                is_trigger = False
+                proto_drilldown_calls = ""
                 protobuf_field = metadata[filepath]["protobuf_field"]
 
             if metadata[filepath]['type'] == "MultiflagValue":
@@ -486,7 +493,7 @@ class Generator:
                         class_name=attribute_name,
                         xml_fields=xml_fields,
                         protobuf_field=protobuf_field,
-                        is_trigger=is_trigger,
+                        proto_drilldown_calls=proto_drilldown_calls,
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -509,7 +516,7 @@ class Generator:
                         class_name=attribute_name,
                         xml_fields=xml_fields,
                         protobuf_field=component["protobuf_field"],
-                        is_trigger=is_trigger,
+                        proto_drilldown_calls=proto_drilldown_calls,
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -525,7 +532,7 @@ class Generator:
                         class_name=attribute_name,
                         xml_fields=xml_fields,
                         protobuf_field=protobuf_field,
-                        is_trigger=is_trigger,
+                        proto_drilldown_calls=proto_drilldown_calls,
                     )
                     attribute_variables.append(attribute_variable)
 

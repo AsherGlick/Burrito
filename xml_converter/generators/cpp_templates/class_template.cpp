@@ -100,7 +100,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     {% endif %}
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
-            {% if (attribute_variable.is_trigger == true)%}
+            {% if (attribute_variable.proto_drilldown_calls != "")%}{# TODO: This is a hack to preserve functionality when removing is_trigger #}
                 {% if (attribute_variable.attribute_type == "Custom")%}
                     if (this->{{attribute_variable.attribute_flag_name}}) {
                         if (trigger == nullptr) {
@@ -149,55 +149,28 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
 }
 
 void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) {
-    {% if cpp_class == "Icon": %}
-        waypoint::Trigger trigger = proto_{{cpp_class_header}}.trigger();
-    {% endif %}
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
-            {% if (attribute_variable.is_trigger == true) %}
-                {% if (attribute_variable.attribute_type == "Custom") %}
-                    if (trigger.has_{{attribute_variable.protobuf_field}}()) {
-                        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(trigger.{{attribute_variable.protobuf_field}}());
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% elif attribute_variable.class_name == "string" %}
-                    if (trigger.{{attribute_variable.protobuf_field}}() != "") {
-                        this->{{attribute_variable.attribute_name}} = trigger.{{attribute_variable.protobuf_field}}();
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% elif (attribute_variable.attribute_type ==  "Enum") %}
-                    if (trigger.{{attribute_variable.protobuf_field}}() != 0) {
-                        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(trigger.{{attribute_variable.protobuf_field}}());
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% else: %}
-                    if (trigger.{{attribute_variable.protobuf_field}}() != 0) {
-                        this->{{attribute_variable.attribute_name}} = trigger.{{attribute_variable.protobuf_field}}();
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% endif %}
-            {% else: %}
-                {% if (attribute_variable.attribute_type ==  "Enum") %}
-                    if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != 0) {
-                        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% elif (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"])%}
-                    if (proto_{{cpp_class_header}}.has_{{attribute_variable.protobuf_field}}()) {
-                        this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}());
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% elif (attribute_variable.class_name == "string") %}
-                    if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != "") {
-                        this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% else: %}
-                    if (proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}() != 0) {
-                        this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}.{{attribute_variable.protobuf_field}}();
-                        this->{{attribute_variable.attribute_flag_name}} = true;
-                    }
-                {% endif %}
+            {% if (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) %}
+                if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.has_{{attribute_variable.protobuf_field}}()) {
+                    this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
+                    this->{{attribute_variable.attribute_flag_name}} = true;
+                }
+            {% elif (attribute_variable.class_name == "string") %}{# TODO: why is this .class_name when the others are .attribute_name #}
+                if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != "") {
+                    this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}();
+                    this->{{attribute_variable.attribute_flag_name}} = true;
+                }
+            {% elif (attribute_variable.attribute_type ==  "Enum") %}
+                if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
+                    this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
+                    this->{{attribute_variable.attribute_flag_name}} = true;
+                }
+            {% else %}
+                if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
+                    this->{{attribute_variable.attribute_name}} = proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}();
+                    this->{{attribute_variable.attribute_flag_name}} = true;
+                }
             {% endif %}
         {% endif %}
     {% endfor %}

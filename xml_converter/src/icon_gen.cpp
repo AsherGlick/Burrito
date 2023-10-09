@@ -674,7 +674,6 @@ waypoint::Icon Icon::as_protobuf() const {
 }
 
 void Icon::parse_protobuf(waypoint::Icon proto_icon) {
-    waypoint::Trigger trigger = proto_icon.trigger();
     if (proto_icon.achievement_bit() != 0) {
         this->achievement_bitmask = proto_icon.achievement_bit();
         this->achievement_bitmask_is_set = true;
@@ -683,20 +682,20 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->achievement_id = proto_icon.achievement_id();
         this->achievement_id_is_set = true;
     }
-    if (trigger.auto_trigger() != 0) {
-        this->auto_trigger = trigger.auto_trigger();
+    if (proto_icon.trigger().auto_trigger() != 0) {
+        this->auto_trigger = proto_icon.trigger().auto_trigger();
         this->auto_trigger_is_set = true;
     }
-    if (trigger.bounce_delay() != 0) {
-        this->bounce_delay = trigger.bounce_delay();
+    if (proto_icon.trigger().bounce_delay() != 0) {
+        this->bounce_delay = proto_icon.trigger().bounce_delay();
         this->bounce_delay_is_set = true;
     }
-    if (trigger.bounce_duration() != 0) {
-        this->bounce_duration = trigger.bounce_duration();
+    if (proto_icon.trigger().bounce_duration() != 0) {
+        this->bounce_duration = proto_icon.trigger().bounce_duration();
         this->bounce_duration_is_set = true;
     }
-    if (trigger.bounce_height() != 0) {
-        this->bounce_height = trigger.bounce_height();
+    if (proto_icon.trigger().bounce_height() != 0) {
+        this->bounce_height = proto_icon.trigger().bounce_height();
         this->bounce_height_is_set = true;
     }
     if (proto_icon.can_fade() != 0) {
@@ -711,12 +710,12 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->color = from_proto_color(proto_icon.rgba_color());
         this->color_is_set = true;
     }
-    if (trigger.action_copy_clipboard() != "") {
-        this->copy_clipboard = trigger.action_copy_clipboard();
+    if (proto_icon.trigger().action_copy_clipboard() != "") {
+        this->copy_clipboard = proto_icon.trigger().action_copy_clipboard();
         this->copy_clipboard_is_set = true;
     }
-    if (trigger.action_copy_message() != "") {
-        this->copy_message = trigger.action_copy_message();
+    if (proto_icon.trigger().action_copy_message() != "") {
+        this->copy_message = proto_icon.trigger().action_copy_message();
         this->copy_message_is_set = true;
     }
     if (proto_icon.cull_chirality() != 0) {
@@ -743,16 +742,16 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->guid = from_proto_unique_id(proto_icon.guid());
         this->guid_is_set = true;
     }
-    if (trigger.has_countdown() != 0) {
-        this->has_countdown = trigger.has_countdown();
+    if (proto_icon.trigger().has_countdown() != 0) {
+        this->has_countdown = proto_icon.trigger().has_countdown();
         this->has_countdown_is_set = true;
     }
     if (proto_icon.height_offset() != 0) {
         this->height_offset = proto_icon.height_offset();
         this->height_offset_is_set = true;
     }
-    if (trigger.has_action_hide_category()) {
-        this->hide_category = from_proto_marker_category(trigger.action_hide_category());
+    if (proto_icon.trigger().has_action_hide_category()) {
+        this->hide_category = from_proto_marker_category(proto_icon.trigger().action_hide_category());
         this->hide_category_is_set = true;
     }
     if (proto_icon.has_texture_path()) {
@@ -763,12 +762,12 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->icon_size = proto_icon.tentative__scale();
         this->icon_size_is_set = true;
     }
-    if (trigger.action_info_message() != "") {
-        this->info_message = trigger.action_info_message();
+    if (proto_icon.trigger().action_info_message() != "") {
+        this->info_message = proto_icon.trigger().action_info_message();
         this->info_message_is_set = true;
     }
-    if (trigger.invert_display() != 0) {
-        this->invert_visibility = trigger.invert_display();
+    if (proto_icon.trigger().invert_display() != 0) {
+        this->invert_visibility = proto_icon.trigger().invert_display();
         this->invert_visibility_is_set = true;
     }
     if (proto_icon.map_display_size() != 0) {
@@ -815,12 +814,12 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->render_on_minimap = proto_icon.tentative__render_on_minimap();
         this->render_on_minimap_is_set = true;
     }
-    if (trigger.reset_behavior() != 0) {
-        this->reset_behavior = from_proto_reset_behavior(trigger.reset_behavior());
+    if (proto_icon.trigger().reset_behavior() != 0) {
+        this->reset_behavior = from_proto_reset_behavior(proto_icon.trigger().reset_behavior());
         this->reset_behavior_is_set = true;
     }
-    if (trigger.reset_length() != 0) {
-        this->reset_length = trigger.reset_length();
+    if (proto_icon.trigger().reset_length() != 0) {
+        this->reset_length = proto_icon.trigger().reset_length();
         this->reset_length_is_set = true;
     }
     if (proto_icon.scale_on_map_with_zoom() != 0) {
@@ -835,8 +834,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->schedule_duration = proto_icon.bhdraft__schedule_duration();
         this->schedule_duration_is_set = true;
     }
-    if (trigger.has_action_show_category()) {
-        this->show_category = from_proto_marker_category(trigger.action_show_category());
+    if (proto_icon.trigger().has_action_show_category()) {
+        this->show_category = from_proto_marker_category(proto_icon.trigger().action_show_category());
         this->show_category_is_set = true;
     }
     if (proto_icon.has_specialization_filter()) {
@@ -847,8 +846,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->species_filter = from_proto_species_filter(proto_icon.species_filter());
         this->species_filter_is_set = true;
     }
-    if (trigger.has_action_toggle_category()) {
-        this->toggle_category = from_proto_marker_category(trigger.action_toggle_category());
+    if (proto_icon.trigger().has_action_toggle_category()) {
+        this->toggle_category = from_proto_marker_category(proto_icon.trigger().action_toggle_category());
         this->toggle_category_is_set = true;
     }
     if (proto_icon.tip_description() != "") {
@@ -859,8 +858,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
         this->tooltip_name = proto_icon.tip_name();
         this->tooltip_name_is_set = true;
     }
-    if (trigger.range() != 0) {
-        this->trigger_range = trigger.range();
+    if (proto_icon.trigger().range() != 0) {
+        this->trigger_range = proto_icon.trigger().range();
         this->trigger_range_is_set = true;
     }
 }
