@@ -1,9 +1,9 @@
 #include "../src/attribute/bool.hpp"
-#include "../src/packaging_xml.hpp"
 #include <gtest/gtest.h>
+#include "../src/packaging_xml.hpp"
 #include <fstream>
 
-class BoolTest : public ::testing::Test {
+class XMLtoXMLTest : public ::testing::Test {
  protected:
     void SetUp() override {
     }
@@ -49,7 +49,7 @@ bool compare_files(const std::string& file1_path, const std::string& file2_path)
     return files_are_equal;
 }
 
-TEST_F(BoolTest, ValueIsFalse) {
+TEST_F(XMLtoXMLTest, ValueIsValid) {
     std::map<std::string, Category> marker_categories;
     std::vector<Parseable*> parsed_pois;
     std::string xml_input = "../test_cases/can_fade_tests/can_fade_is_false.xml";
@@ -59,7 +59,7 @@ TEST_F(BoolTest, ValueIsFalse) {
     EXPECT_TRUE(compare_files(xml_input, xml_output));
 }
 
-TEST_F(BoolTest, ValueIsZero) {
+TEST_F(XMLtoXMLTest, ValueIsValidButCorrected) {
     std::map<std::string, Category> marker_categories;
     std::vector<Parseable*> parsed_pois;
     std::string xml_input = "../test_cases/can_fade_tests/can_fade_is_zero.xml";

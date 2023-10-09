@@ -1,8 +1,8 @@
 <OverlayData>
-<MarkerCategory  Name="IsZero">
+<MarkerCategory  Name="iszero">
 </MarkerCategory>
 
 <POIs>
-<POI  CanFade="0" Type="IsZero"/>
+<POI  CanFade="0" Type="iszero"/>
 </POIs>
 </OverlayData>
