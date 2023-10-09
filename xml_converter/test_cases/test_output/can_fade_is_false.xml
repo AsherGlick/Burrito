@@ -3,6 +3,6 @@
 </MarkerCategory>
 
 <POIs>
-<POI  CanFade="false"/>
+<POI  CanFade="false" Type="IsFalse"/>
 </POIs>
 </OverlayData>
