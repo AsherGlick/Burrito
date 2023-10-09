@@ -1,6 +1,5 @@
 from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
-import yaml
 import frontmatter  # type:ignore
 from typing import Any, Dict, List, Tuple, Set, Optional, Final
 import os
@@ -8,265 +7,80 @@ import markdown
 from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
 from jinja_helpers import UnindentBlocks
+from schema import string_t, array_t, enum_t, union_t, union_partial_t, pattern_dictionary_t, object_t, boolean_t, DefType
+
 
 SchemaType = Dict[str, Any]
-schema = """
-type: object
-properties:
-    type:
-        type: string
-        enum: [Int32, Fixed32, Float32, String, Boolean, MultiflagValue, Enum, CompoundValue, Custom, CompoundCustomClass]
-allOf:
-    #############################
-    # Int32 Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: Int32
-      then:
-        additionalProperties: false
-        required: [{shared_fields}]
-        properties:
-            {shared_field_properties}
 
-    #############################
-    # Fixed32 Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: Fixed32
-      then:
-        additionalProperties: false
-        required: [{shared_fields}]
-        properties:
-            {shared_field_properties}
 
-    #############################
-    # Float32 Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: Float32
-      then:
-        additionalProperties: false
-        required: [{shared_fields}]
-        properties:
-            {shared_field_properties}
+shared_field_properties: Dict[str, DefType] = {
+    "type": string_t(),
+    "name": string_t(),
+    "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
+    # To Be Depricated
+    "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"])),
+    "xml_fields": array_t(string_t(pattern="^[A-Za-z]+$")),
+    "protobuf_field": string_t(pattern="^[a-z_.]+$"),
+}
 
-    #############################
-    # String Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: String
-      then:
-        additionalProperties: false
-        required: [{shared_fields}]
-        properties:
-            {shared_field_properties}
-
-    #############################
-    # Boolean Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: Boolean
-      then:
-        additionalProperties: false
-        required: [{shared_fields}]
-        properties:
-            {shared_field_properties}
-
-    #############################
-    # MultiflagValue Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: MultiflagValue
-      then:
-        additionalProperties: false
-        required: [{shared_fields}, flags]
-        properties:
-            {shared_field_properties}
-            flags:
-                type: object
-                patternProperties:
-                    "^[a-z_]+$":
-                        type: array
-                        items:
-                            type: string
-
-    #############################
-    # Enum Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: Enum
-      then:
-        additionalProperties: false
-        required: [{shared_fields}, values]
-        properties:
-            {shared_field_properties}
-            values:
-                type: object
-                patternProperties:
-                    "^[a-z_]+$":
-                        type: array
-                        items:
-                            type: string
-
-    #############################
-    # CompoundValue Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: CompoundValue
-      then:
-        additionalProperties: false
-        required: [{shared_fields}, xml_bundled_components, xml_separate_components, components]
-        properties:
-            {shared_field_properties}
-            xml_bundled_components:
-                type: array
-                items:
-                    type: string
-            xml_separate_components:
-                type: array
-                items:
-                    type: string
-            components:
-                type: array
-                items:
-                    type: object
-                    additionalProperties: false
-                    required: [name, type, xml_fields, protobuf_field, compatability]
-                    properties:
-                        name:
-                            type: string
-                        type:
-                            type: string
-                            enum: [Int32, Fixed32, Float32]
-                        xml_fields:
-                            type: array
-                            items:
-                                type: string
-                                pattern: "^[A-Za-z]+$"
-                        protobuf_field:
-                            type: string
-                            pattern: "^[a-z_.]+$"
-                        compatability:
-                            type: array
-                            items:
-                                type: string
-                                enum: [BlishHUD, Burrito, TacO]
-    #############################
-    # CompoundCustomClass Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: CompoundCustomClass
-      then:
-        additionalProperties: false
-        required: [{shared_fields}, xml_bundled_components, xml_separate_components, class]
-        properties:
-            {shared_field_properties}
-            class:
-                type: string
-            xml_bundled_components:
-                type: array
-                items:
-                    type: string
-            xml_separate_components:
-                type: array
-                items:
-                    type: string
-            components:
-                type: array
-                items:
-                    type: object
-                    additionalProperties: false
-                    required: [name, type, xml_fields, protobuf_field, compatability]
-                    properties:
-                        name:
-                            type: string
-                        type:
-                            type: string
-                            enum: [Int32, Fixed32, Float32]
-                        xml_fields:
-                            type: array
-                            items:
-                                type: string
-                                pattern: "^[A-Za-z]+$"
-                        protobuf_field:
-                            type: string
-                            pattern: "^[a-z_.]+$"
-                        compatability:
-                            type: array
-                            items:
-                                type: string
-                                enum: [BlishHUD, Burrito, TacO]
-
-    #############################
-    # Custom Type
-    #############################
-    - if:
-        properties:
-            type:
-                const: Custom
-      then:
-        additionalProperties: false
-        required: [{shared_fields}, class]
-        properties:
-            {shared_field_properties}
-            class:
-                type: string
-            side_effects:
-                type: array
-                items:
-                    type: string
-            uses_file_path:
-                type: boolean
-
-""".format(
-    shared_field_properties="""type:
-                type: string
-            name:
-                type: string
-            applies_to:
-                type: array
-                items:
-                    type: string
-                    enum: [Icon, Trail, Category]
-            compatability:
-                type: array
-                items:
-                    type: string
-                    enum: [BlishHUD, Burrito, TacO]
-            xml_fields:
-                type: array
-                items:
-                    type: string
-                    pattern: "^[A-Za-z]+$"
-            protobuf_field:
-                type: string
-                pattern: "^[a-z_.]+$"
-    """,
-    shared_fields="type, name, applies_to, compatability, xml_fields, protobuf_field"
-)
+schema = union_t({
+    "Int32": union_partial_t(required=shared_field_properties),
+    "Fixed32": union_partial_t(required=shared_field_properties),
+    "Float32": union_partial_t(required=shared_field_properties),
+    "String": union_partial_t(required=shared_field_properties),
+    "Boolean": union_partial_t(required=shared_field_properties),
+    "MultiflagValue": union_partial_t(
+        required={**shared_field_properties, **{
+            "flags": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())}),
+        }},
+    ),
+    "Enum": union_partial_t(
+        required={**shared_field_properties, **{
+            "values": pattern_dictionary_t({"^[a-z_]+$": array_t(string_t())})
+        }}
+    ),
+    "CompoundValue": union_partial_t(
+        required={**shared_field_properties, **{
+            "xml_bundled_components": array_t(string_t()),
+            "xml_separate_components": array_t(string_t()),
+            "components": array_t(object_t({
+                "name": string_t(),
+                "type": enum_t(["Int32", "Fixed32", "Float32"]),
+                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
+                "protobuf_field": string_t("^[a-z_.]+$"),
+                # To Be Depricated
+                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
+            })),
+        }}
+    ),
+    "CompoundCustomClass": union_partial_t(
+        required={**shared_field_properties, **{
+            "class": string_t(),
+            "xml_bundled_components": array_t(string_t()),
+            "xml_separate_components": array_t(string_t()),
+            "components": array_t(object_t({
+                "name": string_t(),
+                "type": enum_t(["Int32", "Fixed32", "Float32"]),
+                "xml_fields": array_t(string_t("^[A-Za-z]+$")),
+                "protobuf_field": string_t("^[a-z_.]+$"),
+                # To Be Depricated
+                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
+            })),
+        }}
+    ),
+    "Custom": union_partial_t(
+        required={**shared_field_properties, **{"class": string_t()}},
+        optional={
+            "side_effects": array_t(string_t()),
+            "uses_file_path": boolean_t(),
+        }
+    ),
+})
 
 
 def validate_front_matter_schema(front_matter: Any) -> str:
     try:
-        validate(front_matter, yaml.safe_load(schema))
+        validate(front_matter, schema)
     except ValidationError as e:
         return "Error Message: {} (Path: {}".format(e.message, e.json_path)
     return ""
