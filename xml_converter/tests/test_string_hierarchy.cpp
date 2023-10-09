@@ -111,8 +111,3 @@ TEST_F(StringHierarchyTest, SubHierarchySingle) {
     EXPECT_TRUE(sub_hierarchy->in_hierarchy("child1"));
     EXPECT_TRUE(sub_hierarchy->in_hierarchy({"child1", "child2"}));
 }
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
