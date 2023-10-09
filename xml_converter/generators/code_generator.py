@@ -70,7 +70,7 @@ schema = union_t({
         optional={
             "side_effects": array_t(string_t()),
             "uses_file_path": boolean_t(),
-            "ptotobuf_type": enum_t(["Int32", "Fixed32", "Float32", "String"]),
+            "protobuf_type": enum_t(["Int32", "Fixed32", "Float32", "String"]),
         }
     ),
 })
@@ -169,11 +169,11 @@ class AttributeVariable:
     is_component: bool = False
 
     # A flag to override the type that should be used when writing or reading from a protobuf
-    ptotobuf_type: str = ""
+    protobuf_type: str = ""
 
     def __post_init__(self) -> None:
-        if self.ptotobuf_type == "":
-            self.ptotobuf_type = self.attribute_type
+        if self.protobuf_type == "":
+            self.protobuf_type = self.attribute_type
 
 
 XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
@@ -421,9 +421,9 @@ class Generator:
                     if fieldval['xml_bundled_components'] == []:
                         write_to_xml = False
 
-                ptotobuf_type = ""
-                if "ptotobuf_type" in fieldval:
-                    ptotobuf_type = fieldval["ptotobuf_type"]
+                protobuf_type = ""
+                if "protobuf_type" in fieldval:
+                    protobuf_type = fieldval["protobuf_type"]
 
                 attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
@@ -439,7 +439,7 @@ class Generator:
                     write_to_xml=write_to_xml,
                     attribute_flag_name=attribute_name + "_is_set",
                     side_effects=side_effects,
-                    ptotobuf_type=ptotobuf_type
+                    protobuf_type=protobuf_type
                 )
                 attribute_variables.append(attribute_variable)
 
