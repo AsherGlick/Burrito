@@ -159,6 +159,11 @@ class AttributeVariable:
     # The CPP code to inject into the variable getter to drill down to the
     # variable we are looking for. eg ".trigger()" or ".one().two()"
     proto_drilldown_calls: str = ""
+
+    # The CPP code to inject into the variable setter to drill down to the
+    # variable we are looking for. eg ".mutable_trigger()" or "mutable_one()->mutable_two()->"
+    mutable_proto_drilldown_calls: str = ""
+
     uses_file_path: bool = False
     is_component: bool = False
 
@@ -333,8 +338,6 @@ class Generator:
                 xml_fields: List[str] = []
                 side_effects: List[str] = []
                 write_to_xml: bool = True
-                protobuf_field: str = ""
-                proto_drilldown_calls: str = ""
                 default_xml_field: str = ""
 
                 args: List[str] = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
@@ -365,7 +368,10 @@ class Generator:
                     xml_fields.append(lowercase(x, delimiter=""))
                 default_xml_field = fieldval['xml_fields'][0]
 
-                proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval["protobuf_field"])
+                proto_drilldown_calls: str
+                mutable_proto_drilldown_calls: str
+                protobuf_field: str
+                proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval["protobuf_field"])
 
                 if fieldval.get("uses_file_path", False):
                     args.append("base_dir")
@@ -416,6 +422,7 @@ class Generator:
                     default_xml_field=default_xml_field,
                     protobuf_field=protobuf_field,
                     proto_drilldown_calls=proto_drilldown_calls,
+                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
                     args=args,
                     write_to_xml=write_to_xml,
                     attribute_flag_name=attribute_name + "_is_set",
@@ -447,7 +454,6 @@ class Generator:
         attribute_variable: AttributeVariable
         metadata: Dict[str, SchemaType] = {}
         xml_fields: List[str] = []
-        proto_drilldown_calls: str = ""
         template: Dict[str, Template] = {
             "MultiflagValue": env.get_template("multiflagvalue.cpp"),
             "CompoundValue": env.get_template("compoundvalue.cpp"),
@@ -464,7 +470,10 @@ class Generator:
             metadata[filepath] = self.data[filepath].metadata
             attribute_name = attribute_name_from_markdown_data(metadata[filepath]['name'])
 
-            proto_drilldown_calls, protobuf_field = split_field_into_drilldown(metadata[filepath]["protobuf_field"])
+            proto_drilldown_calls: str
+            mutable_proto_drilldown_calls: str
+            protobuf_field: str
+            proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(metadata[filepath]["protobuf_field"])
 
             if metadata[filepath]['type'] == "MultiflagValue":
                 for flag in metadata[filepath]['flags']:
@@ -480,6 +489,7 @@ class Generator:
                         xml_fields=xml_fields,
                         protobuf_field=protobuf_field,
                         proto_drilldown_calls=proto_drilldown_calls,
+                        mutable_proto_drilldown_calls=mutable_proto_drilldown_calls
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -503,6 +513,7 @@ class Generator:
                         xml_fields=xml_fields,
                         protobuf_field=component["protobuf_field"],
                         proto_drilldown_calls=proto_drilldown_calls,
+                        mutable_proto_drilldown_calls=mutable_proto_drilldown_calls
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -519,6 +530,7 @@ class Generator:
                         xml_fields=xml_fields,
                         protobuf_field=protobuf_field,
                         proto_drilldown_calls=proto_drilldown_calls,
+                        mutable_proto_drilldown_calls=mutable_proto_drilldown_calls
                     )
                     attribute_variables.append(attribute_variable)
 
@@ -746,14 +758,15 @@ class Generator:
 # Splits the field string into a cpp drilldown function call stack and the
 # final proto field name.
 # EG:
-#   field: "trigger.range"
-#   returns: (".trigger()", "range")
+#   field: "trigger.subclass.fieldname"
+#   returns: (".trigger().subclass()", "mutable_trigger()->mutable_subclass()->", "fieldname")
 ################################################################################
-def split_field_into_drilldown(field: str) -> Tuple[str, str]:
+def split_field_into_drilldown(field: str) -> Tuple[str, str, str]:
     components = field.split(".")
     proto_drilldown_calls = "".join([".{}()".format(x) for x in components[:-1]])
+    mutable_proto_drilldown_calls = "".join(["mutable_{}()->".format(x) for x in components[:-1]])
     protobuf_field = components[-1]
-    return proto_drilldown_calls, protobuf_field
+    return proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field
 
 
 ############################################################################
