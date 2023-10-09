@@ -421,7 +421,6 @@ class Generator:
                 if "ptotobuf_type" in fieldval:
                     ptotobuf_type = fieldval["ptotobuf_type"]
 
-
                 attribute_variable = AttributeVariable(
                     attribute_name=attribute_name,
                     attribute_type=fieldval["type"],
