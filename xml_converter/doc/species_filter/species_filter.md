@@ -2,7 +2,6 @@
 name: Species Filter
 type: MultiflagValue
 applies_to: [Icon, Trail]
-compatability: [TacO, BlishHUD, Burrito]
 xml_fields: [Race, Species]
 protobuf_field: species_filter
 

@@ -4,7 +4,6 @@ type: Float32
 applies_to: [Icon]
 xml_fields: [TriggerRange, InfoRange]
 protobuf_field: trigger.range
-compatability: [TacO, BlishHUD, Burrito]
 ---
 
 Used to indicate a trigger range. This attribute is used by multiple other attributes to define a distance from the marker in which those attributes will activate their functionality or behavior.

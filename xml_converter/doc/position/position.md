@@ -3,7 +3,6 @@ name: Position
 type: CompoundValue
 applies_to: ["Icon"]
 xml_fields: ["Position"]
-compatability: [TacO, Burrito, BlishHUD]
 protobuf_field: position
 xml_bundled_components: []
 xml_separate_components: ["X Position", "Y Position", "Z Position"]
@@ -12,19 +11,16 @@ components:
   type: Float32
   xml_fields: [XPos, PositionX]
   protobuf_field: "x"
-  compatability: [TacO, Burrito, BlishHUD]
 
 - name: Y Position
   type: Float32
   xml_fields: [YPos, PositionY]
   protobuf_field: "y"
-  compatability: [TacO, Burrito, BlishHUD]
 
 - name: Z Position
   type: Float32
   xml_fields: [ZPos, PositionZ]
   protobuf_field: "z"
-  compatability: [TacO, Burrito, BlishHUD]
 ---
 An XYZ location of a point in the game world.
 

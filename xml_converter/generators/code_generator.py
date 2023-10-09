@@ -17,8 +17,6 @@ shared_field_properties: Dict[str, DefType] = {
     "type": string_t(),
     "name": string_t(),
     "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
-    # To Be Depricated
-    "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"])),
     "xml_fields": array_t(string_t(pattern="^[A-Za-z]+$")),
     "protobuf_field": string_t(pattern="^[a-z_.]+$"),
 }
@@ -48,8 +46,6 @@ schema = union_t({
                 "type": enum_t(["Int32", "Fixed32", "Float32"]),
                 "xml_fields": array_t(string_t("^[A-Za-z]+$")),
                 "protobuf_field": string_t("^[a-z_.]+$"),
-                # To Be Depricated
-                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
             })),
         }}
     ),
@@ -63,8 +59,6 @@ schema = union_t({
                 "type": enum_t(["Int32", "Fixed32", "Float32"]),
                 "xml_fields": array_t(string_t("^[A-Za-z]+$")),
                 "protobuf_field": string_t("^[a-z_.]+$"),
-                # To Be Depricated
-                "compatability": array_t(enum_t(["BlishHUD", "Burrito", "TacO"]))
             })),
         }}
     ),
@@ -99,7 +93,6 @@ class FieldRow:
     alternate_xml_attributes: List[str]
     binary_field: str
     data_type: str
-    supported_by_html: str
     usable_on_html: str
     example: str
     valid_values_html: str
@@ -208,7 +201,7 @@ class Generator:
     def delete_generated_docs(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
             filepath = os.path.join(dir_path, filepath)
-            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith("_gen.html"):
+            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith(".html"):
                 os.remove(filepath)
 
     def load_input_doc(self, dir_path: str) -> None:
@@ -589,7 +582,7 @@ class Generator:
             for field_row in field_rows:
                 complete_field_row_list.append(field_row)
 
-            with open(os.path.join(output_directory, page + "_gen.html"), 'w') as f:
+            with open(os.path.join(output_directory, page + ".html"), 'w') as f:
 
                 f.write(template.render(
                     generated_doc=generated_doc,
@@ -716,7 +709,6 @@ class Generator:
                 alternate_xml_attributes=fieldval["xml_fields"][1:],
                 binary_field=fieldval["protobuf_field"],
                 data_type=fieldval["type"],
-                supported_by_html="<br>".join(fieldval["compatability"]),
                 usable_on_html="<br>".join(fieldval["applies_to"]),
                 example=example,
                 valid_values_html=valid_values,
@@ -733,7 +725,6 @@ class Generator:
                         alternate_xml_attributes=component_field["xml_fields"][1:],
                         binary_field=fieldval["protobuf_field"] + "." + component_field["protobuf_field"],
                         data_type=component_field["type"],
-                        supported_by_html="<br>".join(component_field["compatability"]),
                         usable_on_html="<br>".join(fieldval["applies_to"]),
                         example=self.build_example(
                             type=component_field["type"],

@@ -4,7 +4,6 @@ type: Boolean
 xml_fields: ["HasCountdown"]
 applies_to: ["Icon"]
 protobuf_field: trigger.has_countdown
-compatability: ["TacO"]
 ---
 ?
 

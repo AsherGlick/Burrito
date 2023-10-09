@@ -2,7 +2,6 @@
 name: Specialization Filter
 type: MultiflagValue
 applies_to: [Icon, Trail]
-compatability: [TacO, BlishHUD, Burrito]
 xml_fields: ["Specialization"]
 protobuf_field: specialization_filter
 flags:

@@ -4,7 +4,6 @@ type: Float32
 applies_to: [Icon]
 xml_fields: [BounceDelay]
 protobuf_field: trigger.bounce_delay
-compatability: [TacO, BlishHUD, Burrito]
 ---
 How many seconds should pass before the bouncing begins.
 

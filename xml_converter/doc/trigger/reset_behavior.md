@@ -4,7 +4,6 @@ type: Enum
 applies_to: [Icon]
 xml_fields: [Behavior]
 protobuf_field: trigger.reset_behavior
-compatability: [TacO, BlishHUD, Burrito]
 values:
   always_visible: ["0", "always_visible"]
   map_change: ["1", "map_change"]

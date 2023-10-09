@@ -4,7 +4,6 @@ type: Boolean
 applies_to: [Icon]
 xml_fields: [AutoTrigger]
 protobuf_field: trigger.auto_trigger
-compatability: [TacO, BlishHUD, Burrito]
 ---
 Any triggers will be triggered automatially when the player enters within range instead of being triggered.
 
