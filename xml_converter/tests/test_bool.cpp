@@ -1,9 +1,8 @@
 #include "../src/attribute/bool.hpp"
-#include "../src/packaging_xml.hpp"
-#include <fstream>
 #include <gtest/gtest.h>
+#include <fstream>
 
-class XMLtoXMLTest : public ::testing::Test {
+class BoolTest : public ::testing::Test {
  protected:
     void SetUp() override {
     }
@@ -49,22 +48,14 @@ bool compare_files(const std::string& file1_path, const std::string& file2_path)
     return files_are_equal;
 }
 
-TEST_F(XMLtoXMLTest, ValueIsValid) {
-    std::map<std::string, Category> marker_categories;
-    std::vector<Parseable*> parsed_pois;
-    std::string xml_input = "../test_cases/can_fade_tests/can_fade_is_false.xml";
-    std::string xml_output = "../test_cases/test_output/can_fade_is_false.xml";
-    parse_xml_file(xml_input, &marker_categories, &parsed_pois);
-    write_xml_file(xml_output, &marker_categories, &parsed_pois);
+TEST_F(BoolTest, ValueIsFalse) {
+    std::string xml_input = "./test_cases/can_fade_tests/can_fade_is_false.xml";
+    std::string xml_output = "./test_cases/test_output/can_fade_tests/can_fade_is_false.xml";
     EXPECT_TRUE(compare_files(xml_input, xml_output));
 }
 
-TEST_F(XMLtoXMLTest, ValueIsValidButCorrected) {
-    std::map<std::string, Category> marker_categories;
-    std::vector<Parseable*> parsed_pois;
-    std::string xml_input = "../test_cases/can_fade_tests/can_fade_is_zero.xml";
-    std::string xml_output = "../test_cases/test_output/can_fade_corrected_zero.xml";
-    parse_xml_file(xml_input, &marker_categories, &parsed_pois);
-    write_xml_file(xml_output, &marker_categories, &parsed_pois);
+TEST_F(BoolTest, ValueIsZero) {
+    std::string xml_input = "./test_cases/can_fade_tests/can_fade_is_zero.xml";
+    std::string xml_output = "./test_cases/test_output/can_fade_tests/can_fade_is_zero.xml";
     EXPECT_FALSE(compare_files(xml_input, xml_output));
 }
