@@ -1,4 +1,3 @@
-#include "../src/attribute/bool.hpp"
 #include <gtest/gtest.h>
 #include <fstream>
 
