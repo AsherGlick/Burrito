@@ -98,7 +98,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                {% if (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) %}
+                {% if attribute_variable.protobuf_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"] %}
                     proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
                 {% else %}
                     proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
@@ -112,11 +112,11 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
 void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
-            {% if (attribute_variable.attribute_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"]) %}
+            {% if attribute_variable.protobuf_type in ["MultiflagValue", "CompoundValue", "Custom", "CompoundCustomClass"] %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.has_{{attribute_variable.protobuf_field}}()) {
-            {% elif (attribute_variable.attribute_type == "String") %}
+            {% elif attribute_variable.protobuf_type == "String" %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != "") {
-            {% elif (attribute_variable.attribute_type ==  "Enum") %}
+            {% elif attribute_variable.protobuf_type ==  "Enum" %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
             {% else %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {

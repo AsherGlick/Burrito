@@ -19,7 +19,7 @@ message Category {
 
 message Icon {
     TexturePath texture_path = 2;
-    GUID guid = 3;
+    bytes guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
     float distance_fade_start = 6;
@@ -57,7 +57,7 @@ message Icon {
 
 message Trail {
     TexturePath texture_path = 2;
-    GUID guid = 3;
+    bytes guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
     float distance_fade_start = 6;
@@ -123,10 +123,6 @@ message Trigger {
     Category action_show_category = 13;
     Category action_toggle_category = 14;
     ResetBehavior reset_behavior = 15;
-}
-
-message GUID {
-    bytes guid = 1;
 }
 
 enum CullChirality {
