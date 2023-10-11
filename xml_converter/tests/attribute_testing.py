@@ -64,9 +64,9 @@ arg_input_xml: str = "--input-taco-path"
 arg_output_xml: str = "--output-taco-path"
 
 chrono_patterns = [
-    "The taco parse function took [0-9]+ milliseconds to run",
-    "The xml write function took [0-9]+ milliseconds to run",
-    "The protobuf write function took [0-9]+ milliseconds to run"
+    "^The taco parse function took [0-9]+ milliseconds to run$",
+    "^The xml write function took [0-9]+ milliseconds to run$",
+    "^The protobuf write function took [0-9]+ milliseconds to run$"
 ]
 
 
