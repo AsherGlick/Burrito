@@ -1,8 +1,8 @@
 <OverlayData>
-<MarkerCategory  Name="isfalse">
+<MarkerCategory  Name="iswrongoutput">
 </MarkerCategory>
 
 <POIs>
-<POI  CanFade="false" Type="isfalse"/>
+<POI  CanFade="false" Type="iswrongoutput"/>
 </POIs>
 </OverlayData>
