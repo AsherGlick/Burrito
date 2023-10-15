@@ -1,0 +1,26 @@
+{
+    "can_fade": {
+        "path": "../test_cases/can_fade_tests",
+        "tests": {
+            "_is_correct": {
+                "output_result": [
+                    "Loading taco pack ../test_cases/can_fade_tests/can_fade_is_correct.xml"
+                ],
+                "expect_output_to_be_equal": true,
+                "expect_files_to_be_equal": true
+            },
+            "_is_different_file": {
+                "output_result": [
+                    "Loading taco pack ../test_cases/can_fade_tests/can_fade_is_different_file.xml"
+                ],
+                "expect_output_to_be_equal": true,
+                "expect_files_to_be_equal": false
+            },
+            "_is_wrong_output": {
+                "output_result": [],
+                "expect_output_to_be_equal": false,
+                "expect_files_to_be_equal": true
+            }
+        }
+    }
+}
