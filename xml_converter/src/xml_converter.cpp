@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -89,16 +90,40 @@ void move_supplementary_files(string input_directory, string output_directory) {
     }
 }
 
-void read_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    vector<string> xml_files = get_files_by_suffix(directory, ".xml");
-    for (const string& path : xml_files) {
-        parse_xml_file(path, marker_categories, parsed_pois);
+void read_taco_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    if (filesystem::is_regular_file(input_path)) {
+        if (has_suffix(input_path, ".xml")) {
+            parse_xml_file(input_path, marker_categories, parsed_pois);
+        }
+        else {
+            cout << "Error: " << input_path << " is a file that does not end in .xml" << endl;
+        }
+    }
+    else if (filesystem::is_directory(input_path)) {
+        vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
+        for (const string& path : xml_files) {
+            parse_xml_file(path, marker_categories, parsed_pois);
+        }
+    }
+    else {
+        cout << "Error: Unknown file type" << endl;
     }
 }
 
-void write_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
-    string xml_filepath = directory + "xml_file.xml";
+    string xml_filepath;
+    if (filesystem::is_regular_file(output_path)) {
+        if (has_suffix(output_path, ".xml")) {
+            xml_filepath = output_path;
+        }
+        else {
+            xml_filepath = output_path + "xml_file.xml";
+        }
+    }
+    else {
+        xml_filepath = output_path + "xml_file.xml";
+    }
     write_xml_file(xml_filepath, marker_categories, parsed_pois);
 }
 
