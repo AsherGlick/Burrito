@@ -91,13 +91,8 @@ void move_supplementary_files(string input_directory, string output_directory) {
 }
 
 void read_taco_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    if (filesystem::is_regular_file(input_path)) {
-        if (has_suffix(input_path, ".xml")) {
-            parse_xml_file(input_path, marker_categories, parsed_pois);
-        }
-        else {
-            cout << "Error: " << input_path << " is a file that does not end in .xml" << endl;
-        }
+    if (!filesystem::exists(input_path)){
+        cout << "Error: " << input_path << " is not an existing directory or file";
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
@@ -105,24 +100,21 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
             parse_xml_file(path, marker_categories, parsed_pois);
         }
     }
-    else {
-        cout << "Error: Unknown file type" << endl;
+    else if (filesystem::is_regular_file(input_path)) {
+        parse_xml_file(input_path, marker_categories, parsed_pois);
     }
 }
 
 void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     string xml_filepath;
-    if (filesystem::is_regular_file(output_path)) {
-        if (has_suffix(output_path, ".xml")) {
-            xml_filepath = output_path;
-        }
-        else {
-            xml_filepath = output_path + "xml_file.xml";
-        }
+    if (filesystem::is_directory(output_path)) {
+        if (!has_suffix(output_path, "/"))
+            output_path += "/";
+        xml_filepath = output_path + "/xml_file.xml";
     }
     else {
-        xml_filepath = output_path + "xml_file.xml";
+        xml_filepath = output_path;
     }
     write_xml_file(xml_filepath, marker_categories, parsed_pois);
 }
