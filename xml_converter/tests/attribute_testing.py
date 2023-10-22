@@ -20,13 +20,14 @@ class XMLConverter_arguments:
     arg_output_proto: str = "--output-waypoint-path"
     arg_split_proto: str = "--output-split-waypoint-path"
 
+
 def run_xml_converter(
-    input_xml: Optional[List[str]]= None,
-    output_xml: Optional[List[str]]= None,
-    input_proto: Optional[List[str]]= None,
-    output_proto: Optional[List[str]]= None,
-    split_output_proto: Optional[str]= None,
-    ) -> subprocess.CompletedProcess[str]:
+    input_xml: Optional[List[str]] = None,
+    output_xml: Optional[List[str]] = None,
+    input_proto: Optional[List[str]] = None,
+    output_proto: Optional[List[str]] = None,
+    split_output_proto: Optional[str] = None,
+) -> subprocess.CompletedProcess[str]:
 
     # Build the command to execute the C++ program with the desired function and arguments
     cmd: List[str] = [xml_converter]
@@ -46,6 +47,7 @@ def run_xml_converter(
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     return result
+
 
 def compare_files(file_path1: str, file_path2: str) -> List[str]:
     try:
@@ -90,7 +92,7 @@ def remove_noisy_lines(array: List[str]) -> List[str]:
     return filtered_array
 
 
-def main(args):
+def main(args: argparse.Namespace) -> None:
     try:
         with open(json_file_path, 'r') as json_file:
             data = json.load(json_file)
@@ -112,13 +114,13 @@ def main(args):
                 input_xml_path = os.path.join(attribute_data["path"], file_name)
                 output_xml_path = os.path.join(output_dir_path, file_name)
 
-                result = run_xml_converter(input_xml = [input_xml_path], output_xml = [output_xml_path])
+                result = run_xml_converter(input_xml=[input_xml_path], output_xml=[output_xml_path])
                 # Remove noisy lines
                 stdout = remove_noisy_lines(result.stdout.split("\n"))
                 stderr = remove_noisy_lines(result.stderr.split("\n"))
                 xml_diff = compare_files(input_xml_path, output_xml_path)
 
-                #Prints the results rather than comparing them to a file
+                # Prints the results rather than comparing them to a file
                 if args.print:
                     print(f"Test {attribute_name}{test}")
                     print(f"'output_stdout' : {json.dumps(stdout)}")
@@ -145,7 +147,7 @@ def main(args):
                     all_tests_passed = False
 
                 if all_tests_passed:
-                        print(f"Success: test {attribute_name}{test}")
+                    print(f"Success: test {attribute_name}{test}")
 
     except FileNotFoundError:
         print(f"The file '{json_file_path}' does not exist.")
