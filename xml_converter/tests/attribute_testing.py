@@ -86,7 +86,6 @@ def remove_noisy_lines(lines: List[str]) -> List[str]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="A test harness for evaluating the output of the xmlconverter program")
     parser.add_argument("-v", "--verbose", help="Prints the results from xmlconverter in JSON format", action="store_true")
-    parser.add_argument("-s", "--skiptests", help="Run the program but skip the comparison tests", action="store_true")
     args = parser.parse_args()
 
     with open(json_file_path, 'r') as json_file:
@@ -123,11 +122,6 @@ def main() -> None:
                 print(f"\"expected_stderr\" : {json.dumps(stderr)}")
                 print(f"\"expected_return_code\" : {json.dumps(returncode)}")
 
-            if args.skiptests:
-                continue
-
-            xml_diff = compare_files(expected_output_xml_path, output_xml_path)
-
             all_tests_passed: bool = True
             error_diff: List[str]
 
@@ -150,10 +144,13 @@ def main() -> None:
                 print(f"expected_returncode = {test['expected_returncode']}")
                 print(f"returncode = {returncode}")
 
+            xml_diff = compare_files(expected_output_xml_path, output_xml_path)
+
             if xml_diff != []:
                 print(f"\033[91mDiff was incorrect for test {attribute_name}{test['name']}\033[0m")
                 for line in xml_diff:
-                    print(line)
+                    if line.startswith("+ "):
+                        print(line)
                 all_tests_passed = False
 
             if all_tests_passed:
