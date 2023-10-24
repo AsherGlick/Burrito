@@ -1,0 +1,8 @@
+<OverlayData>
+<MarkerCategory  Name="iscorrect">
+</MarkerCategory>
+
+<POIs>
+<POI  CanFade="false" Type="iscorrect"/>
+</POIs>
+</OverlayData>

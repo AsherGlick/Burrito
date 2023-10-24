@@ -1,0 +1,36 @@
+[
+    {
+        "attribute_name": "can_fade",
+        "tests": [
+            {
+                "name": "is_correct", 
+                "expected_stdout" : [
+                    "Loading taco pack ../test_cases/can_fade/inputs/can_fade_is_correct.xml"
+                ],
+
+                "expected_stderr": [],
+                "expected_returncode" : 0
+            },
+            {
+                "name" : "is_supported_value_not_default",
+                "expected_stdout": [
+                    "Loading taco pack ../test_cases/can_fade/inputs/can_fade_is_supported_value_not_default.xml"
+                ], 
+                "expected_stderr": [],
+                "expected_returncode" : 0
+            },
+            {
+                "name": "unsupported_value",
+                "expected_stdout": [
+                    "Loading taco pack ../test_cases/can_fade/inputs/can_fade_unsupported_value.xml",
+                    "\u001b[31;1mError: \u001b[0m\u001b[1mFound a boolean value that was not a '1', '0', 'true', or 'false'\u001b[0m",
+                    "../test_cases/can_fade/inputs/can_fade_unsupported_value.xml",
+                    "6 |<POI  CanFade=\"\u001b[31;1myes\u001b[0m\" Type=\"unsupportedvalue\"/>",
+                    "  |               \u001b[31;1m^^^\u001b[0m"
+                ],
+                "expected_stderr" : [],
+                "expected_returncode" : 0
+            }
+        ]
+    }
+]

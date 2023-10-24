@@ -1,24 +1,22 @@
-from dataclasses import dataclass
 import argparse
 import difflib
 import json
 import subprocess
 import re
 import os
-from typing import List, Optional
+from typing import List, Optional, Final, Tuple
 
 # Path to compiled C++ executable
-xml_converter: str = "../build/xml_converter"
-json_file_path: str = "../test_cases/test_expected_outputs.json"
+xml_converter_binary_path: str = "../build/xml_converter"
+# Paths to data for the tests
+json_file_path: str = "./test_expected_outputs.json"
+tests_cases_path: str = "../test_cases"
 
-
-@dataclass
-class XMLConverter_arguments:
-    arg_input_xml: str = "--input-taco-path"
-    arg_output_xml: str = "--output-taco-path"
-    arg_input_proto: str = "--input-waypoint-path"
-    arg_output_proto: str = "--output-waypoint-path"
-    arg_split_proto: str = "--output-split-waypoint-path"
+arg_input_xml: Final[str] = "--input-taco-path"
+arg_output_xml: Final[str] = "--output-taco-path"
+arg_input_proto: Final[str] = "--input-waypoint-path"
+arg_output_proto: Final[str] = "--output-waypoint-path"
+arg_split_proto: Final[str] = "--output-split-waypoint-path"
 
 
 def run_xml_converter(
@@ -27,47 +25,40 @@ def run_xml_converter(
     input_proto: Optional[List[str]] = None,
     output_proto: Optional[List[str]] = None,
     split_output_proto: Optional[str] = None,
-) -> subprocess.CompletedProcess[str]:
+) -> Tuple[str, str, int]:
 
     # Build the command to execute the C++ program with the desired function and arguments
-    cmd: List[str] = [xml_converter]
+    cmd: List[str] = [xml_converter_binary_path]
 
     if input_xml:
-        cmd += [XMLConverter_arguments.arg_input_xml] + input_xml
+        cmd += [arg_input_xml] + input_xml
     if output_xml:
-        cmd += [XMLConverter_arguments.arg_output_xml] + output_xml
+        cmd += [arg_output_xml] + output_xml
     if input_proto:
-        cmd += [XMLConverter_arguments.arg_input_proto] + input_proto
+        cmd += [arg_input_proto] + input_proto
     if output_proto:
-        cmd += [XMLConverter_arguments.arg_output_proto] + output_proto
+        cmd += [arg_output_proto] + output_proto
     if split_output_proto:
-        cmd += [XMLConverter_arguments.arg_split_proto] + [split_output_proto]
+        cmd += [arg_split_proto] + [split_output_proto]
 
     # Run the C++ program and capture its output
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-    return result
+    return (result.stdout, result.stderr, result.returncode)
 
 
 def compare_files(file_path1: str, file_path2: str) -> List[str]:
-    try:
-        with open(file_path1, 'r') as file1, open(file_path2, 'r') as file2:
-            content1 = file1.readlines()
-            content2 = file2.readlines()
+    with open(file_path1, 'r') as file1, open(file_path2, 'r') as file2:
+        content1 = file1.readlines()
+        content2 = file2.readlines()
 
-        differ = difflib.Differ()
-        diff = list(differ.compare(content1, content2))
-        filtered_diff: List[str] = []
-        for line in diff:
-            if line.startswith("+ ") or line.startswith("- "):
-                filtered_diff.append(line)
+    diff = list(difflib.Differ().compare(content1, content2))
+    filtered_diff: List[str] = []
+    for line in diff:
+        if line.startswith("+ ") or line.startswith("- "):
+            filtered_diff.append(line)
 
-        return filtered_diff
-
-    except (FileNotFoundError, PermissionError) as e:
-        print(f"Error opening file {file_path1} or {file_path2}")
-        print(e)
-        return [str(e)]
+    return filtered_diff
 
 
 patterns_for_noisy_lines = [
@@ -79,9 +70,9 @@ patterns_for_noisy_lines = [
 ]
 
 
-def remove_noisy_lines(array: List[str]) -> List[str]:
+def remove_noisy_lines(lines: List[str]) -> List[str]:
     filtered_array = []
-    for line in array:
+    for line in lines:
         match_found: bool = False
         for pattern in patterns_for_noisy_lines:
             if re.fullmatch(pattern, line):
@@ -92,74 +83,82 @@ def remove_noisy_lines(array: List[str]) -> List[str]:
     return filtered_array
 
 
-def main(args: argparse.Namespace) -> None:
-    try:
-        with open(json_file_path, 'r') as json_file:
-            data = json.load(json_file)
+def main() -> None:
+    parser = argparse.ArgumentParser(description="A test harness for evaluating the output of the xmlconverter program")
+    parser.add_argument("-v", "--verbose", help="Prints the results from xmlconverter in JSON format", action="store_true")
+    parser.add_argument("-s", "--skiptests", help="Run the program but skip the comparison tests", action="store_true")
+    args = parser.parse_args()
 
-        for attribute_name in data.keys():
-            print(attribute_name)
-            attribute_data = data[attribute_name]
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
 
-            # Ensure that the test output directory is created
-            output_dir_path = attribute_data["path"] + "-output/"
-            if not os.path.exists(output_dir_path):
-                try:
-                    os.makedirs(output_dir_path)
-                except OSError as e:
-                    print(f"Error: {e}")
+    for attribute_data in data:
+        attribute_name: str = attribute_data["attribute_name"]
+        print(attribute_name)
 
-            for test in attribute_data["tests"].keys():
-                file_name: str = attribute_name + test + ".xml"
-                input_xml_path = os.path.join(attribute_data["path"], file_name)
-                output_xml_path = os.path.join(output_dir_path, file_name)
+        input_dir_path = os.path.join(tests_cases_path, attribute_name, "inputs")
+        expected_output_dir_path = os.path.join(tests_cases_path, attribute_name, "expected_outputs")
+        output_dir_path = os.path.join(tests_cases_path, attribute_name, "outputs")
 
-                result = run_xml_converter(input_xml=[input_xml_path], output_xml=[output_xml_path])
-                # Remove noisy lines
-                stdout = remove_noisy_lines(result.stdout.split("\n"))
-                stderr = remove_noisy_lines(result.stderr.split("\n"))
-                xml_diff = compare_files(input_xml_path, output_xml_path)
+        # Ensure that the test output directory is created
+        os.makedirs(output_dir_path, exist_ok=True)
 
-                # Prints the results rather than comparing them to a file
-                if args.print:
-                    print(f"Test {attribute_name}{test}")
-                    print(f"'output_stdout' : {json.dumps(stdout)}")
-                    print(f"'output_stderr' = {json.dumps(stderr)}")
-                    print(f"'expected_xml_diff' = {json.dumps(xml_diff)}")
-                    continue
+        for test in attribute_data["tests"]:
+            file_name: str = attribute_name + "_" + test["name"] + ".xml"
+            input_xml_path = os.path.join(input_dir_path, file_name)
+            output_xml_path = os.path.join(output_dir_path, file_name)
+            expected_output_xml_path = os.path.join(expected_output_dir_path, file_name)
 
-                all_tests_passed: bool = True
-                expected_results = attribute_data["tests"][test]
+            result = run_xml_converter(input_xml=[input_xml_path], output_xml=[output_xml_path])
 
-                if stdout != expected_results["output_stdout"]:
-                    print(f"Output did not match for test {attribute_name}{test}")
-                    print(f"Expected stdout {expected_results['output_stdout']} and got {stdout}")
-                    all_tests_passed = False
+            # Remove noisy lines
+            stdout: List[str] = remove_noisy_lines(result[0].split("\n"))
+            stderr: List[str] = remove_noisy_lines(result[1].split("\n"))
+            returncode: int = result[2]
 
-                if stderr != expected_results["output_stderr"]:
-                    print(f"Output did not match for test {attribute_name}{test}")
-                    print(f"Expected stderr {expected_results['output_stderr']} and got {stderr}")
-                    all_tests_passed = False
+            # Prints the results rather than comparing them to a file
+            if args.verbose:
+                print(f"\033[94mTest {attribute_name}_{test['name']}\033[0m")
+                print(f"\"expected_stdout\" : {json.dumps(stdout)}")
+                print(f"\"expected_stderr\" : {json.dumps(stderr)}")
+                print(f"\"expected_return_code\" : {json.dumps(returncode)}")
 
-                if xml_diff != expected_results["expected_xml_diff"]:
-                    print(f"Diff was incorrect for test {attribute_name}{test}")
-                    print(f"Expected {expected_results['expected_xml_diff']} and got {xml_diff}")
-                    all_tests_passed = False
+            if args.skiptests:
+                continue
 
-                if all_tests_passed:
-                    print(f"Success: test {attribute_name}{test}")
+            xml_diff = compare_files(expected_output_xml_path, output_xml_path)
 
-    except FileNotFoundError:
-        print(f"The file '{json_file_path}' does not exist.")
-    except json.JSONDecodeError as e:
-        print(f"JSON decoding error: {e}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+            all_tests_passed: bool = True
+            error_diff: List[str]
+
+            if stdout != test["expected_stdout"]:
+                print(f"\033[91mDStandard output did not match for test {attribute_name}{test['name']}\033[0m")
+                error_diff = list(difflib.Differ().compare(test["expected_stdout"], stdout))
+                for line in error_diff:
+                    print(line)
+                all_tests_passed = False
+
+            if stderr != test["expected_stderr"]:
+                print(f"\033[91mStandard error did not match for test {attribute_name}{test['name']}\033[0m")
+                error_diff = list(difflib.Differ().compare(test["expected_stderr"], stderr))
+                for line in error_diff:
+                    print(line)
+                all_tests_passed = False
+
+            if returncode != test["expected_returncode"]:
+                print(f"\033[91mReturn code did not match for test {attribute_name}{test['name']}\033[0m")
+                print(f"expected_returncode = {test['expected_returncode']}")
+                print(f"returncode = {returncode}")
+
+            if xml_diff != []:
+                print(f"\033[91mDiff was incorrect for test {attribute_name}{test['name']}\033[0m")
+                for line in xml_diff:
+                    print(line)
+                all_tests_passed = False
+
+            if all_tests_passed:
+                print(f"\033[92mSuccess: test {attribute_name}_{test['name']}\033[0m")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="An example script with an optional argument.")
-    parser.add_argument("-p", "--print", help="Prints the results rather than comparing them to a file", action="store_true")
-
-    args = parser.parse_args()
-    main(args)
+    main()
