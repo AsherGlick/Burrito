@@ -1,0 +1,8 @@
+<OverlayData>
+<MarkerCategory  Name="mycategory">
+</MarkerCategory>
+
+<POIs>
+<POI  CanFade="yes" Type="mycategory"/>
+</POIs>
+</OverlayData>
