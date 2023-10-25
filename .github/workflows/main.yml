@@ -93,14 +93,23 @@ jobs:
 
       - name: Build Burrito Link
         run: |
+          mkdir burrito_link/build
           cd burrito_link
+          cmake ..
           make
 
-      - name: Upload created file
+      - name: Upload Standalone Executable Burrito Link
         uses: actions/upload-artifact@v3
         with:
-          name: burrito_link
-          path: burrito_link/burrito_link.exe
+          name: burrito_link_exe
+          path: burrito_link/build/burrito_link.exe
+          if-no-files-found: error
+
+      - name: Upload Shared Library Burrito Link
+        uses: actions/upload-artifact@v3
+        with:
+          name: burrito_link_dll
+          path: burrito_link/build/d3d11.dll
           if-no-files-found: error 
 
   Build-BurritoFG-Linux:
@@ -228,15 +237,22 @@ jobs:
         with:
           name: xml_converter
 
-      - name: Download Burrito Link
+      - name: Download Burrito Link Exe
         uses: actions/download-artifact@v3
         with:
-          name: burrito_link
+          name: burrito_link_exe
+
+      - name: Download Burrito Link DLL
+        uses: actions/download-artifact@v3
+        with:
+          name: burrito_link_dll
+
 
       - name: Move Burrito Link
         run: |
           mkdir burrito_link/
           mv burrito_link.exe burrito_link/
+          mv d3d11.dll burrito_link/
 
       - uses: actions/upload-artifact@v3
         with:
