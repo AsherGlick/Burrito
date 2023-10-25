@@ -94,7 +94,7 @@ jobs:
       - name: Build Burrito Link
         run: |
           mkdir burrito_link/build
-          cd burrito_link
+          cd burrito_link/build
           cmake ..
           make
 
