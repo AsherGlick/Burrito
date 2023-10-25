@@ -62,12 +62,19 @@ def compare_files(file_path1: str, file_path2: str) -> List[str]:
 
 
 patterns_for_noisy_lines = [
-    "^The taco parse function took [0-9]+ milliseconds to run$",
-    "^The xml write function took [0-9]+ milliseconds to run$",
-    "^The protobuf read function took [0-9]+ milliseconds to run$",
-    "^The protobuf write function took [0-9]+ milliseconds to run$",
-    "^$"
+    r"^The taco parse function took [0-9]+ milliseconds to run$",
+    r"^The xml write function took [0-9]+ milliseconds to run$",
+    r"^The protobuf read function took [0-9]+ milliseconds to run$",
+    r"^The protobuf write function took [0-9]+ milliseconds to run$",
+    r"^$"
 ]
+
+pattern_for_color_escape_codes = r"\u001b\[[0-9;]+m"
+
+
+def remove_color_tags(string: str) -> str:
+    string = re.sub(pattern_for_color_escape_codes, '', string)
+    return string
 
 
 def remove_noisy_lines(lines: List[str]) -> List[str]:
@@ -79,7 +86,7 @@ def remove_noisy_lines(lines: List[str]) -> List[str]:
                 match_found = True
                 break
         if not match_found:
-            filtered_array.append(line)
+            filtered_array.append(remove_color_tags(line))
     return filtered_array
 
 
@@ -106,7 +113,7 @@ def main() -> None:
             file_name: str = attribute_name + "_" + test["name"] + ".xml"
             input_xml_path = os.path.join(input_dir_path, file_name)
             output_xml_path = os.path.join(output_dir_path, file_name)
-            expected_output_xml_path = os.path.join(expected_output_dir_path, file_name)
+            expected_output_xml_path = os.path.join(expected_output_dir_path, test["xml_expected_output_file_name"])
 
             result = run_xml_converter(input_xml=[input_xml_path], output_xml=[output_xml_path])
 
@@ -115,46 +122,46 @@ def main() -> None:
             stderr: List[str] = remove_noisy_lines(result[1].split("\n"))
             returncode: int = result[2]
 
-            # Prints the results rather than comparing them to a file
+            # Prints the results of xml_converter
             if args.verbose:
-                print(f"\033[94mTest {attribute_name}_{test['name']}\033[0m")
-                print(f"\"expected_stdout\" : {json.dumps(stdout)}")
-                print(f"\"expected_stderr\" : {json.dumps(stderr)}")
-                print(f"\"expected_return_code\" : {json.dumps(returncode)}")
+                print(f"Test {attribute_name}_{test['name']}")
+                print(f"\"stdout\" : {json.dumps(stdout)}")
+                print(f"\"stderr\" : {json.dumps(stderr)}")
+                print(f"\"return_code\" : {json.dumps(returncode)}")
 
             all_tests_passed: bool = True
             error_diff: List[str]
 
             if stdout != test["expected_stdout"]:
-                print(f"\033[91mDStandard output did not match for test {attribute_name}{test['name']}\033[0m")
+                print(f"Standard output did not match for test {attribute_name}{test['name']}")
                 error_diff = list(difflib.Differ().compare(test["expected_stdout"], stdout))
                 for line in error_diff:
                     print(line)
                 all_tests_passed = False
 
             if stderr != test["expected_stderr"]:
-                print(f"\033[91mStandard error did not match for test {attribute_name}{test['name']}\033[0m")
+                print(f"Standard error did not match for test {attribute_name}{test['name']}")
                 error_diff = list(difflib.Differ().compare(test["expected_stderr"], stderr))
                 for line in error_diff:
                     print(line)
                 all_tests_passed = False
 
             if returncode != test["expected_returncode"]:
-                print(f"\033[91mReturn code did not match for test {attribute_name}{test['name']}\033[0m")
+                print(f"Return code did not match for test {attribute_name}{test['name']}")
                 print(f"expected_returncode = {test['expected_returncode']}")
                 print(f"returncode = {returncode}")
 
             xml_diff = compare_files(expected_output_xml_path, output_xml_path)
 
             if xml_diff != []:
-                print(f"\033[91mDiff was incorrect for test {attribute_name}{test['name']}\033[0m")
+                print(f"Diff was incorrect for test {attribute_name}{test['name']}")
                 for line in xml_diff:
                     if line.startswith("+ "):
                         print(line)
                 all_tests_passed = False
 
             if all_tests_passed:
-                print(f"\033[92mSuccess: test {attribute_name}_{test['name']}\033[0m")
+                print(f"Success: test {attribute_name}_{test['name']}")
 
 
 if __name__ == "__main__":

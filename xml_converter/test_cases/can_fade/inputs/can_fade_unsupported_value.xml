@@ -1,8 +1,8 @@
 <OverlayData>
-<MarkerCategory  Name="unsupportedvalue">
+<MarkerCategory  Name="">
 </MarkerCategory>
 
 <POIs>
-<POI  CanFade="yes" Type="unsupportedvalue"/>
+<POI  CanFade="yes" Type=""/>
 </POIs>
 </OverlayData>
