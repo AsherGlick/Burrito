@@ -4,7 +4,7 @@
         "tests": [
             {
                 "name": "is_correct",
-                "xml_expected_output_file_name": "can_fade_false.xml",
+                "expected_output_xml_file_name": "can_fade_false.xml",
                 "expected_stdout" : [
                     "Loading taco pack ../test_cases/can_fade/inputs/can_fade_is_correct.xml"
                 ],
@@ -13,7 +13,7 @@
             },
             {
                 "name" : "is_supported_value_not_default",
-                "xml_expected_output_file_name": "can_fade_false.xml",
+                "expected_output_xml_file_name": "can_fade_false.xml",
                 "expected_stdout": [
                     "Loading taco pack ../test_cases/can_fade/inputs/can_fade_is_supported_value_not_default.xml"
                 ], 
@@ -22,7 +22,7 @@
             },
             {
                 "name": "unsupported_value",
-                "xml_expected_output_file_name": "can_fade_false.xml",
+                "expected_output_xml_file_name": "can_fade_false.xml",
                 "expected_stdout": [
                     "Loading taco pack ../test_cases/can_fade/inputs/can_fade_unsupported_value.xml",
                     "Error: Found a boolean value that was not a '1', '0', 'true', or 'false'",

@@ -110,10 +110,10 @@ def main() -> None:
         os.makedirs(output_dir_path, exist_ok=True)
 
         for test in attribute_data["tests"]:
-            file_name: str = attribute_name + "_" + test["name"] + ".xml"
-            input_xml_path = os.path.join(input_dir_path, file_name)
-            output_xml_path = os.path.join(output_dir_path, file_name)
-            expected_output_xml_path = os.path.join(expected_output_dir_path, test["xml_expected_output_file_name"])
+            xml_file_name: str = attribute_name + "_" + test["name"] + ".xml"
+            input_xml_path = os.path.join(input_dir_path, xml_file_name)
+            output_xml_path = os.path.join(output_dir_path, xml_file_name)
+            expected_output_xml_path = os.path.join(expected_output_dir_path, test["expected_output_xml_file_name"])
 
             result = run_xml_converter(input_xml=[input_xml_path], output_xml=[output_xml_path])
 
