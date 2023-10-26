@@ -4,5 +4,6 @@
 
 <POIs>
 <POI  CanFade="false" Type="mycategory"/>
+<POI  CanFade="false" Type="mycategory"/>
 </POIs>
 </OverlayData>
