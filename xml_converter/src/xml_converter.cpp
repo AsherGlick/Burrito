@@ -98,7 +98,7 @@ void read_taco_directory(string directory, map<string, Category>* marker_categor
 
 void write_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
-    string xml_filepath = directory + "xml_file.xml";
+    string xml_filepath = directory + "/xml_file.xml";
     write_xml_file(xml_filepath, marker_categories, parsed_pois);
 }
 
