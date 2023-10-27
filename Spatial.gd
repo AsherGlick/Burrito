@@ -324,7 +324,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		print("New Map")
 
 		print("Saving Old Map")
-		self.markerdata[str(old_map_id)] = data_from_renderview()
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 		gen_map_markers()
