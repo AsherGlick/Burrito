@@ -601,7 +601,7 @@ disabled = true
 text = "Reverse Path Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
-visible = true
+visible = false
 margin_left = 592.0
 margin_top = 146.0
 margin_right = 981.0
