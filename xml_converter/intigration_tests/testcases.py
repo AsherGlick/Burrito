@@ -29,8 +29,8 @@ testcases: List[Testcase] = [
         expected_stdout=[
             "Error: Found a boolean value that was not a '1', '0', 'true', or 'false'",
             "./inputs/xml_can_fade_invalid/xml_file.xml",
-            '6 |<POI  CanFade="yes" Type="mycategory"/>',
+            '6 |<POI  CanFade="yes" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" />',
             "  |               ^^^"
         ]
-    )
+    ),
 ]
