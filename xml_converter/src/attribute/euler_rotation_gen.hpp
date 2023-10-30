@@ -20,6 +20,6 @@ class EulerRotation {
     }
 };
 EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_euler_rotation(EulerRotation attribute_value);
+std::string euler_rotation_to_xml_attribute(const std::string& attribute_name, const EulerRotation* value);
 waypoint::EulerRotation* to_proto_euler_rotation(EulerRotation attribute_value);
 EulerRotation from_proto_euler_rotation(waypoint::EulerRotation proto_euler_rotation);

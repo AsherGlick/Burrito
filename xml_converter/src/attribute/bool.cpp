@@ -30,15 +30,15 @@ bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_bool
+// bool_to_xml_attribute
 //
-// Converts a bool into a stringy value so that it can be saved to xml.
+// Converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_bool(bool attribute_value) {
-    if (attribute_value) {
-        return "true";
+string bool_to_xml_attribute(const string& attribute_name, const bool* value) {
+    if (value) {
+        return " " + attribute_name + "=\"true\"";
     }
     else {
-        return "false";
+        return " " + attribute_name + "=\"false\"";
     }
 }

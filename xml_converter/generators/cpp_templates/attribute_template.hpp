@@ -32,7 +32,7 @@
     };
 {% endif %}
 {{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_{{attribute_name}}({{class_name}} attribute_value);
+std::string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value);
 {% if type == "Enum":%}
     waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_value);
 {% else: %}

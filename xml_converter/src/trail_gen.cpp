@@ -199,88 +199,88 @@ vector<string> Trail::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<Trail ");
     if (this->achievement_bitmask_is_set) {
-        xml_node_contents.push_back(" AchievementBit=\"" + stringify_int(this->achievement_bitmask) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("AchievementBit", &this->achievement_bitmask));
     }
     if (this->achievement_id_is_set) {
-        xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("AchievementId", &this->achievement_id));
     }
     if (this->animation_speed_is_set) {
-        xml_node_contents.push_back(" AnimSpeed=\"" + stringify_float(this->animation_speed) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("AnimSpeed", &this->animation_speed));
     }
     if (this->can_fade_is_set) {
-        xml_node_contents.push_back(" CanFade=\"" + stringify_bool(this->can_fade) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("CanFade", &this->can_fade));
     }
     if (this->category_is_set) {
-        xml_node_contents.push_back(" Type=\"" + stringify_marker_category(this->category) + "\"");
+        xml_node_contents.push_back(marker_category_to_xml_attribute("Type", &this->category));
     }
     if (this->color_is_set) {
-        xml_node_contents.push_back(" Color=\"" + stringify_color(this->color) + "\"");
+        xml_node_contents.push_back(color_to_xml_attribute("Color", &this->color));
     }
     if (this->color_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("Alpha", &this->color.alpha));
     }
     if (this->cull_chirality_is_set) {
-        xml_node_contents.push_back(" Cull=\"" + stringify_cull_chirality(this->cull_chirality) + "\"");
+        xml_node_contents.push_back(cull_chirality_to_xml_attribute("Cull", &this->cull_chirality));
     }
     if (this->distance_fade_end_is_set) {
-        xml_node_contents.push_back(" FadeFar=\"" + stringify_float(this->distance_fade_end) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("FadeFar", &this->distance_fade_end));
     }
     if (this->distance_fade_start_is_set) {
-        xml_node_contents.push_back(" FadeNear=\"" + stringify_float(this->distance_fade_start) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("FadeNear", &this->distance_fade_start));
     }
     if (this->festival_filter_is_set) {
-        xml_node_contents.push_back(" Festival=\"" + stringify_festival_filter(this->festival_filter) + "\"");
+        xml_node_contents.push_back(festival_filter_to_xml_attribute("Festival", &this->festival_filter));
     }
     if (this->guid_is_set) {
-        xml_node_contents.push_back(" GUID=\"" + stringify_unique_id(this->guid) + "\"");
+        xml_node_contents.push_back(unique_id_to_xml_attribute("GUID", &this->guid));
     }
     if (this->is_wall_is_set) {
-        xml_node_contents.push_back(" IsWall=\"" + stringify_bool(this->is_wall) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("IsWall", &this->is_wall));
     }
     if (this->map_display_size_is_set) {
-        xml_node_contents.push_back(" MapDisplaySize=\"" + stringify_int(this->map_display_size) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("MapDisplaySize", &this->map_display_size));
     }
     if (this->map_id_is_set) {
-        xml_node_contents.push_back(" MapID=\"" + stringify_int(this->map_id) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("MapID", &this->map_id));
     }
     if (this->map_type_filter_is_set) {
-        xml_node_contents.push_back(" MapType=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
+        xml_node_contents.push_back(map_type_filter_to_xml_attribute("MapType", &this->map_type_filter));
     }
     if (this->mount_filter_is_set) {
-        xml_node_contents.push_back(" Mount=\"" + stringify_mount_filter(this->mount_filter) + "\"");
+        xml_node_contents.push_back(mount_filter_to_xml_attribute("Mount", &this->mount_filter));
     }
     if (this->profession_filter_is_set) {
-        xml_node_contents.push_back(" Profession=\"" + stringify_profession_filter(this->profession_filter) + "\"");
+        xml_node_contents.push_back(profession_filter_to_xml_attribute("Profession", &this->profession_filter));
     }
     if (this->render_ingame_is_set) {
-        xml_node_contents.push_back(" IngameVisibility=\"" + stringify_bool(this->render_ingame) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("IngameVisibility", &this->render_ingame));
     }
     if (this->render_on_map_is_set) {
-        xml_node_contents.push_back(" MapVisibility=\"" + stringify_bool(this->render_on_map) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("MapVisibility", &this->render_on_map));
     }
     if (this->render_on_minimap_is_set) {
-        xml_node_contents.push_back(" MinimapVisibility=\"" + stringify_bool(this->render_on_minimap) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("MinimapVisibility", &this->render_on_minimap));
     }
     if (this->schedule_is_set) {
-        xml_node_contents.push_back(" Schedule=\"" + stringify_string(this->schedule) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("Schedule", &this->schedule));
     }
     if (this->schedule_duration_is_set) {
-        xml_node_contents.push_back(" ScheduleDuration=\"" + stringify_float(this->schedule_duration) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("ScheduleDuration", &this->schedule_duration));
     }
     if (this->specialization_filter_is_set) {
-        xml_node_contents.push_back(" Specialization=\"" + stringify_specialization_filter(this->specialization_filter) + "\"");
+        xml_node_contents.push_back(specialization_filter_to_xml_attribute("Specialization", &this->specialization_filter));
     }
     if (this->species_filter_is_set) {
-        xml_node_contents.push_back(" Race=\"" + stringify_species_filter(this->species_filter) + "\"");
+        xml_node_contents.push_back(species_filter_to_xml_attribute("Race", &this->species_filter));
     }
     if (this->texture_is_set) {
-        xml_node_contents.push_back(" Texture=\"" + stringify_image(this->texture) + "\"");
+        xml_node_contents.push_back(image_to_xml_attribute("Texture", &this->texture));
     }
     if (this->trail_data_is_set) {
-        xml_node_contents.push_back(" TrailData=\"" + stringify_trail_data(this->trail_data) + "\"");
+        xml_node_contents.push_back(trail_data_to_xml_attribute("TrailData", &this->trail_data));
     }
     if (this->trail_scale_is_set) {
-        xml_node_contents.push_back(" TrailScale=\"" + stringify_float(this->trail_scale) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("TrailScale", &this->trail_scale));
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;

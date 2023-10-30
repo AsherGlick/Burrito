@@ -31,18 +31,18 @@ CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLE
     return cull_chirality;
 }
 
-string stringify_cull_chirality(CullChirality attribute_value) {
-    if (attribute_value == CullChirality::none) {
-        return "none";
+string cull_chirality_to_xml_attribute(const std::string& attribute_name, const CullChirality* value) {
+    if (*value == CullChirality::none) {
+        return " " + attribute_name + "=\"" + "none" + "\"";
     }
-    else if (attribute_value == CullChirality::clockwise) {
-        return "clockwise";
+    else if (*value == CullChirality::clockwise) {
+        return " " + attribute_name + "=\"" + "clockwise" + "\"";
     }
-    else if (attribute_value == CullChirality::counter_clockwise) {
-        return "counterclockwise";
+    else if (*value == CullChirality::counter_clockwise) {
+        return " " + attribute_name + "=\"" + "counterclockwise" + "\"";
     }
     else {
-        return "CullChirality::none";
+        return " " + attribute_name + "=\"" + "CullChirality::none" + "\"";
     }
 }
 

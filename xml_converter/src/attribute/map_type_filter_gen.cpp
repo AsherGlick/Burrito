@@ -123,81 +123,81 @@ MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XML
     return map_type_filter;
 }
 
-string stringify_map_type_filter(MapTypeFilter attribute_value) {
+string map_type_filter_to_xml_attribute(const std::string& attribute_name, const MapTypeFilter* value) {
     string output = "";
-    if (attribute_value.unknown_map == true) {
+    if (value->unknown_map == true) {
         output = output + "unknown";
     }
-    if (attribute_value.redirect_map == true) {
+    if (value->redirect_map == true) {
         output = output + "redirect";
     }
-    if (attribute_value.character_create_map == true) {
+    if (value->character_create_map == true) {
         output = output + "charactercreate";
     }
-    if (attribute_value.pvp_map == true) {
+    if (value->pvp_map == true) {
         output = output + "pvp";
     }
-    if (attribute_value.gvg_map == true) {
+    if (value->gvg_map == true) {
         output = output + "gvg";
     }
-    if (attribute_value.instance_map == true) {
+    if (value->instance_map == true) {
         output = output + "instance";
     }
-    if (attribute_value.public_map == true) {
+    if (value->public_map == true) {
         output = output + "public";
     }
-    if (attribute_value.tournament_map == true) {
+    if (value->tournament_map == true) {
         output = output + "tournament";
     }
-    if (attribute_value.tutorial_map == true) {
+    if (value->tutorial_map == true) {
         output = output + "tutorial";
     }
-    if (attribute_value.user_tournament_map == true) {
+    if (value->user_tournament_map == true) {
         output = output + "usertournament";
     }
-    if (attribute_value.center_map == true) {
+    if (value->center_map == true) {
         output = output + "center";
     }
-    if (attribute_value.eternal_battlegrounds_map == true) {
+    if (value->eternal_battlegrounds_map == true) {
         output = output + "eternalbattlegrounds";
     }
-    if (attribute_value.bluehome_map == true) {
+    if (value->bluehome_map == true) {
         output = output + "bluehome";
     }
-    if (attribute_value.blue_borderlands_map == true) {
+    if (value->blue_borderlands_map == true) {
         output = output + "blueborderlands";
     }
-    if (attribute_value.green_home_map == true) {
+    if (value->green_home_map == true) {
         output = output + "greenhome";
     }
-    if (attribute_value.green_borderlands_map == true) {
+    if (value->green_borderlands_map == true) {
         output = output + "greenborderlands";
     }
-    if (attribute_value.red_home_map == true) {
+    if (value->red_home_map == true) {
         output = output + "redhome";
     }
-    if (attribute_value.red_borderlands_map == true) {
+    if (value->red_borderlands_map == true) {
         output = output + "redborderlands";
     }
-    if (attribute_value.fortunes_vale_map == true) {
+    if (value->fortunes_vale_map == true) {
         output = output + "fortunesvale";
     }
-    if (attribute_value.jump_puzzle_map == true) {
+    if (value->jump_puzzle_map == true) {
         output = output + "jumppuzzle";
     }
-    if (attribute_value.obsidian_sanctum_map == true) {
+    if (value->obsidian_sanctum_map == true) {
         output = output + "obsidiansanctum";
     }
-    if (attribute_value.edge_of_the_mists_map == true) {
+    if (value->edge_of_the_mists_map == true) {
         output = output + "edgeofthemists";
     }
-    if (attribute_value.public_mini_map == true) {
+    if (value->public_mini_map == true) {
         output = output + "publicmini";
     }
-    if (attribute_value.wvw_lounge_map == true) {
+    if (value->wvw_lounge_map == true) {
         output = output + "wvwlounge";
     }
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::MapTypeFilter* to_proto_map_type_filter(MapTypeFilter attribute_value) {

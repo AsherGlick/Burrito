@@ -9,7 +9,7 @@ class XMLError;
 
 int parse_int(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
-std::string stringify_int(int attribute_value);
+std::string int_to_xml_attribute(const std::string& attribute_name, const int* value);
 
 // Zero Cost Abstraction identity functions to make parsing and writing protobufs more uniform
 inline int const& from_proto_int(const int& x) {

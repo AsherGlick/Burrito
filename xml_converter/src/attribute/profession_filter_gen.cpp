@@ -63,36 +63,36 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
     return profession_filter;
 }
 
-string stringify_profession_filter(ProfessionFilter attribute_value) {
+string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value) {
     string output = "";
-    if (attribute_value.guardian == true) {
+    if (value->guardian == true) {
         output = output + "guardian";
     }
-    if (attribute_value.warrior == true) {
+    if (value->warrior == true) {
         output = output + "warrior";
     }
-    if (attribute_value.engineer == true) {
+    if (value->engineer == true) {
         output = output + "engineer";
     }
-    if (attribute_value.ranger == true) {
+    if (value->ranger == true) {
         output = output + "ranger";
     }
-    if (attribute_value.thief == true) {
+    if (value->thief == true) {
         output = output + "thief";
     }
-    if (attribute_value.elementalist == true) {
+    if (value->elementalist == true) {
         output = output + "elementalist";
     }
-    if (attribute_value.mesmer == true) {
+    if (value->mesmer == true) {
         output = output + "mesmer";
     }
-    if (attribute_value.necromancer == true) {
+    if (value->necromancer == true) {
         output = output + "necromancer";
     }
-    if (attribute_value.revenant == true) {
+    if (value->revenant == true) {
         output = output + "revenant";
     }
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::ProfessionFilter* to_proto_profession_filter(ProfessionFilter attribute_value) {

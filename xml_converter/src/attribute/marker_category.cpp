@@ -19,13 +19,12 @@ MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vect
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_marker_category
+// marker_category_to_xml_attribute
 //
-// Converts a MarkerCategory into a stringy value so that it can be saved to
-// xml. The stringy value is a full hierarchical path to the MarkerCategory.
+// Converts a marker category a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string stringify_marker_category(MarkerCategory attribute_value) {
-    return attribute_value.category;
+std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value) {
+    return " " + attribute_name + "=\"" + value->category + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

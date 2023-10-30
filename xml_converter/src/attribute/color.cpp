@@ -86,25 +86,26 @@ Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_color
+// color_to_xml_attribute
 //
-// Converts a Color into a stringy value so it can be saved to xml.
+// Converts a color into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_color(Color attribute_value) {
+string color_to_xml_attribute(const string& attribute_name, const Color* value) {
     std::stringstream stream;
     std::string hex_string = "#";
 
-    stream << std::hex << convert_color_channel_float_to_int(attribute_value.red);
+    stream << std::hex << convert_color_channel_float_to_int((*value).red);
     hex_string += stream.str();
 
-    stream << std::hex << convert_color_channel_float_to_int(attribute_value.green);
+    stream << std::hex << convert_color_channel_float_to_int((*value).green);
     hex_string += stream.str();
 
-    stream << std::hex << convert_color_channel_float_to_int(attribute_value.blue);
+    stream << std::hex << convert_color_channel_float_to_int((*value).blue);
     hex_string += stream.str();
 
     std::string rgb = hex_string;
-    return rgb;
+
+    return " " + attribute_name + "=\"" + rgb + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

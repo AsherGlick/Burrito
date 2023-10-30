@@ -22,12 +22,12 @@ Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_image
+// image_to_xml_attribute
 //
-// Converts an Image into a stringy value representing the path to the image.
+// Converts an image into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_image(Image attribute_value) {
-    return attribute_value.path;
+string image_to_xml_attribute(const string& attribute_name, const Image* value) {
+    return " " + attribute_name + "=\"" + value->path + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
