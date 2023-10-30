@@ -15,10 +15,13 @@ using namespace std;
 //
 // Parses the path to an image from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
-    Image image;
-    image.path = get_attribute_value(input);
-    return image;
+void xml_attribute_to_image(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Image* value,
+    bool* is_set) {
+    value->path = get_attribute_value(input);
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,11 @@
 
 using namespace std;
 
-{{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_{{attribute_name}}(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    {{class_name}}* value,
+    bool* is_set) {
     {{class_name}} {{attribute_name}};
     string normalized_value = normalize(get_attribute_value(input));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
@@ -32,7 +36,8 @@ using namespace std;
         errors->push_back(new XMLAttributeValueError("Found an invalid value that was not in the Enum {{class_name}}", input));
         {{attribute_name}} = {{class_name}}::{{attribute_variables[0].attribute_name}};
     }
-    return {{attribute_name}};
+    *value = {{attribute_name}};
+    *is_set = true;
 }
 
 string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value) {

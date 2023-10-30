@@ -11,7 +11,11 @@
 
 using namespace std;
 
-{{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+void xml_attribute_to_{{attribute_name}}(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    {{class_name}}* value,
+    bool* is_set) {
     {{class_name}} {{attribute_name}};
     vector<string> compound_values;
     string attributename;
@@ -25,7 +29,8 @@ using namespace std;
             {{attribute_name}}.{{attribute_variable.attribute_name}} = std::stof(compound_values[{{n}}]);
         {% endfor %}
     }
-    return {{attribute_name}};
+    *value = {{attribute_name}};
+    *is_set = true;
 }
 {% if xml_bundled_components != [] %}
     string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value) {

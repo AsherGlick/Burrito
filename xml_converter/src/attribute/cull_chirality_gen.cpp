@@ -12,7 +12,11 @@
 
 using namespace std;
 
-CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_cull_chirality(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    CullChirality* value,
+    bool* is_set) {
     CullChirality cull_chirality;
     string normalized_value = normalize(get_attribute_value(input));
     if (normalized_value == "none") {
@@ -28,7 +32,8 @@ CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLE
         errors->push_back(new XMLAttributeValueError("Found an invalid value that was not in the Enum CullChirality", input));
         cull_chirality = CullChirality::none;
     }
-    return cull_chirality;
+    *value = cull_chirality;
+    *is_set = true;
 }
 
 string cull_chirality_to_xml_attribute(const std::string& attribute_name, const CullChirality* value) {

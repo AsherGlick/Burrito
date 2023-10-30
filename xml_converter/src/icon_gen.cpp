@@ -23,292 +23,220 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
-        this->achievement_bitmask = parse_int(attribute, errors);
-        this->achievement_bitmask_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->achievement_bitmask), &(this->achievement_bitmask_is_set));
     }
     else if (attributename == "achievementid") {
-        this->achievement_id = parse_int(attribute, errors);
-        this->achievement_id_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->achievement_id), &(this->achievement_id_is_set));
     }
     else if (attributename == "autotrigger") {
-        this->auto_trigger = parse_bool(attribute, errors);
-        this->auto_trigger_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->auto_trigger), &(this->auto_trigger_is_set));
     }
     else if (attributename == "bouncedelay") {
-        this->bounce_delay = parse_float(attribute, errors);
-        this->bounce_delay_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->bounce_delay), &(this->bounce_delay_is_set));
     }
     else if (attributename == "bounceduration") {
-        this->bounce_duration = parse_float(attribute, errors);
-        this->bounce_duration_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->bounce_duration), &(this->bounce_duration_is_set));
     }
     else if (attributename == "bounceheight") {
-        this->bounce_height = parse_float(attribute, errors);
-        this->bounce_height_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->bounce_height), &(this->bounce_height_is_set));
     }
     else if (attributename == "canfade") {
-        this->can_fade = parse_bool(attribute, errors);
-        this->can_fade_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->can_fade), &(this->can_fade_is_set));
     }
     else if (attributename == "type") {
-        this->category = parse_marker_category(attribute, errors);
-        this->category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
     }
     else if (attributename == "category") {
-        this->category = parse_marker_category(attribute, errors);
-        this->category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
     }
     else if (attributename == "color") {
-        this->color = parse_color(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_color(attribute, errors, &(this->color), &(this->color_is_set));
     }
     else if (attributename == "bhcolor") {
-        this->color = parse_color(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_color(attribute, errors, &(this->color), &(this->color_is_set));
     }
     else if (attributename == "alpha") {
-        this->color.alpha = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.alpha), &(this->color_is_set));
     }
     else if (attributename == "blue") {
-        this->color.blue = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.blue), &(this->color_is_set));
     }
     else if (attributename == "green") {
-        this->color.green = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.green), &(this->color_is_set));
     }
     else if (attributename == "red") {
-        this->color.red = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.red), &(this->color_is_set));
     }
     else if (attributename == "copy") {
-        this->copy_clipboard = parse_string(attribute, errors);
-        this->copy_clipboard_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->copy_clipboard), &(this->copy_clipboard_is_set));
     }
     else if (attributename == "copyclipboard") {
-        this->copy_clipboard = parse_string(attribute, errors);
-        this->copy_clipboard_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->copy_clipboard), &(this->copy_clipboard_is_set));
     }
     else if (attributename == "copymessage") {
-        this->copy_message = parse_string(attribute, errors);
-        this->copy_message_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->copy_message), &(this->copy_message_is_set));
     }
     else if (attributename == "cull") {
-        this->cull_chirality = parse_cull_chirality(attribute, errors);
-        this->cull_chirality_is_set = true;
+        xml_attribute_to_cull_chirality(attribute, errors, &(this->cull_chirality), &(this->cull_chirality_is_set));
     }
     else if (attributename == "fadefar") {
-        this->distance_fade_end = parse_float(attribute, errors);
-        this->distance_fade_end_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
     }
     else if (attributename == "distancefadeend") {
-        this->distance_fade_end = parse_float(attribute, errors);
-        this->distance_fade_end_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
     }
     else if (attributename == "fadenear") {
-        this->distance_fade_start = parse_float(attribute, errors);
-        this->distance_fade_start_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
     }
     else if (attributename == "distancefadestart") {
-        this->distance_fade_start = parse_float(attribute, errors);
-        this->distance_fade_start_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
     }
     else if (attributename == "rotate") {
-        this->euler_rotation = parse_euler_rotation(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_euler_rotation(attribute, errors, &(this->euler_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "rotatex") {
-        this->euler_rotation.x_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->euler_rotation.x_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "rotatey") {
-        this->euler_rotation.y_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->euler_rotation.y_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "rotatez") {
-        this->euler_rotation.z_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->euler_rotation.z_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "festival") {
-        this->festival_filter = parse_festival_filter(attribute, errors);
-        this->festival_filter_is_set = true;
+        xml_attribute_to_festival_filter(attribute, errors, &(this->festival_filter), &(this->festival_filter_is_set));
     }
     else if (attributename == "guid") {
-        this->guid = parse_unique_id(attribute, errors);
-        this->guid_is_set = true;
+        xml_attribute_to_unique_id(attribute, errors, &(this->guid), &(this->guid_is_set));
     }
     else if (attributename == "hascountdown") {
-        this->has_countdown = parse_bool(attribute, errors);
-        this->has_countdown_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->has_countdown), &(this->has_countdown_is_set));
     }
     else if (attributename == "heightoffset") {
-        this->height_offset = parse_float(attribute, errors);
-        this->height_offset_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->height_offset), &(this->height_offset_is_set));
     }
     else if (attributename == "bhheightoffset") {
-        this->height_offset = parse_float(attribute, errors);
-        this->height_offset_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->height_offset), &(this->height_offset_is_set));
     }
     else if (attributename == "hide") {
-        this->hide_category = parse_marker_category(attribute, errors);
-        this->hide_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->hide_category), &(this->hide_category_is_set));
     }
     else if (attributename == "iconfile") {
-        this->icon = parse_image(attribute, errors);
-        this->icon_is_set = true;
+        xml_attribute_to_image(attribute, errors, &(this->icon), &(this->icon_is_set));
     }
     else if (attributename == "iconsize") {
-        this->icon_size = parse_float(attribute, errors);
-        this->icon_size_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->icon_size), &(this->icon_size_is_set));
     }
     else if (attributename == "info") {
-        this->info_message = parse_string(attribute, errors);
-        this->info_message_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->info_message), &(this->info_message_is_set));
     }
     else if (attributename == "invertbehavior") {
-        this->invert_visibility = parse_bool(attribute, errors);
-        this->invert_visibility_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->invert_visibility), &(this->invert_visibility_is_set));
     }
     else if (attributename == "mapdisplaysize") {
-        this->map_display_size = parse_int(attribute, errors);
-        this->map_display_size_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->map_display_size), &(this->map_display_size_is_set));
     }
     else if (attributename == "mapid") {
-        this->map_id = parse_int(attribute, errors);
-        this->map_id_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->map_id), &(this->map_id_is_set));
     }
     else if (attributename == "maptype") {
-        this->map_type_filter = parse_map_type_filter(attribute, errors);
-        this->map_type_filter_is_set = true;
+        xml_attribute_to_map_type_filter(attribute, errors, &(this->map_type_filter), &(this->map_type_filter_is_set));
     }
     else if (attributename == "maxsize") {
-        this->maximum_size_on_screen = parse_int(attribute, errors);
-        this->maximum_size_on_screen_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->maximum_size_on_screen), &(this->maximum_size_on_screen_is_set));
     }
     else if (attributename == "minsize") {
-        this->minimum_size_on_screen = parse_int(attribute, errors);
-        this->minimum_size_on_screen_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->minimum_size_on_screen), &(this->minimum_size_on_screen_is_set));
     }
     else if (attributename == "mount") {
-        this->mount_filter = parse_mount_filter(attribute, errors);
-        this->mount_filter_is_set = true;
+        xml_attribute_to_mount_filter(attribute, errors, &(this->mount_filter), &(this->mount_filter_is_set));
     }
     else if (attributename == "position") {
-        this->position = parse_position(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_position(attribute, errors, &(this->position), &(this->position_is_set));
     }
     else if (attributename == "xpos") {
-        this->position.x_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.x_position), &(this->position_is_set));
     }
     else if (attributename == "positionx") {
-        this->position.x_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.x_position), &(this->position_is_set));
     }
     else if (attributename == "ypos") {
-        this->position.y_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.y_position), &(this->position_is_set));
     }
     else if (attributename == "positiony") {
-        this->position.y_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.y_position), &(this->position_is_set));
     }
     else if (attributename == "zpos") {
-        this->position.z_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.z_position), &(this->position_is_set));
     }
     else if (attributename == "positionz") {
-        this->position.z_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.z_position), &(this->position_is_set));
     }
     else if (attributename == "profession") {
-        this->profession_filter = parse_profession_filter(attribute, errors);
-        this->profession_filter_is_set = true;
+        xml_attribute_to_profession_filter(attribute, errors, &(this->profession_filter), &(this->profession_filter_is_set));
     }
     else if (attributename == "ingamevisibility") {
-        this->render_ingame = parse_bool(attribute, errors);
-        this->render_ingame_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_ingame), &(this->render_ingame_is_set));
     }
     else if (attributename == "bhingamevisibility") {
-        this->render_ingame = parse_bool(attribute, errors);
-        this->render_ingame_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_ingame), &(this->render_ingame_is_set));
     }
     else if (attributename == "mapvisibility") {
-        this->render_on_map = parse_bool(attribute, errors);
-        this->render_on_map_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "bhmapvisibility") {
-        this->render_on_map = parse_bool(attribute, errors);
-        this->render_on_map_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "minimapvisibility") {
-        this->render_on_minimap = parse_bool(attribute, errors);
-        this->render_on_minimap_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "bhminimapvisibility") {
-        this->render_on_minimap = parse_bool(attribute, errors);
-        this->render_on_minimap_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "behavior") {
-        this->reset_behavior = parse_reset_behavior(attribute, errors);
-        this->reset_behavior_is_set = true;
+        xml_attribute_to_reset_behavior(attribute, errors, &(this->reset_behavior), &(this->reset_behavior_is_set));
     }
     else if (attributename == "resetlength") {
-        this->reset_length = parse_float(attribute, errors);
-        this->reset_length_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->reset_length), &(this->reset_length_is_set));
     }
     else if (attributename == "scaleonmapwithzoom") {
-        this->scale_on_map_with_zoom = parse_bool(attribute, errors);
-        this->scale_on_map_with_zoom_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->scale_on_map_with_zoom), &(this->scale_on_map_with_zoom_is_set));
     }
     else if (attributename == "schedule") {
-        this->schedule = parse_string(attribute, errors);
-        this->schedule_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->schedule), &(this->schedule_is_set));
     }
     else if (attributename == "scheduleduration") {
-        this->schedule_duration = parse_float(attribute, errors);
-        this->schedule_duration_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->schedule_duration), &(this->schedule_duration_is_set));
     }
     else if (attributename == "show") {
-        this->show_category = parse_marker_category(attribute, errors);
-        this->show_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->show_category), &(this->show_category_is_set));
     }
     else if (attributename == "specialization") {
-        this->specialization_filter = parse_specialization_filter(attribute, errors);
-        this->specialization_filter_is_set = true;
+        xml_attribute_to_specialization_filter(attribute, errors, &(this->specialization_filter), &(this->specialization_filter_is_set));
     }
     else if (attributename == "race") {
-        this->species_filter = parse_species_filter(attribute, errors);
-        this->species_filter_is_set = true;
+        xml_attribute_to_species_filter(attribute, errors, &(this->species_filter), &(this->species_filter_is_set));
     }
     else if (attributename == "species") {
-        this->species_filter = parse_species_filter(attribute, errors);
-        this->species_filter_is_set = true;
+        xml_attribute_to_species_filter(attribute, errors, &(this->species_filter), &(this->species_filter_is_set));
     }
     else if (attributename == "toggle") {
-        this->toggle_category = parse_marker_category(attribute, errors);
-        this->toggle_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->toggle_category), &(this->toggle_category_is_set));
     }
     else if (attributename == "togglecategory") {
-        this->toggle_category = parse_marker_category(attribute, errors);
-        this->toggle_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->toggle_category), &(this->toggle_category_is_set));
     }
     else if (attributename == "tipdescription") {
-        this->tooltip_description = parse_string(attribute, errors);
-        this->tooltip_description_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
     else if (attributename == "tipname") {
-        this->tooltip_name = parse_string(attribute, errors);
-        this->tooltip_name_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->tooltip_name), &(this->tooltip_name_is_set));
     }
     else if (attributename == "triggerrange") {
-        this->trigger_range = parse_float(attribute, errors);
-        this->trigger_range_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->trigger_range), &(this->trigger_range_is_set));
     }
     else if (attributename == "inforange") {
-        this->trigger_range = parse_float(attribute, errors);
-        this->trigger_range_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->trigger_range), &(this->trigger_range_is_set));
     }
     else {
         return false;

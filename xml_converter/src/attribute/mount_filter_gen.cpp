@@ -12,7 +12,11 @@
 
 using namespace std;
 
-MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_mount_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    MountFilter* value,
+    bool* is_set) {
     MountFilter mount_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -64,7 +68,8 @@ MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError
             continue;
         }
     }
-    return mount_filter;
+    *value = mount_filter;
+    *is_set = true;
 }
 
 string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value) {

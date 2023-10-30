@@ -15,7 +15,11 @@ class MarkerCategory {
     std::string category;
 };
 
-MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_marker_category(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    MarkerCategory* value,
+    bool* is_set);
 
 std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value);
 

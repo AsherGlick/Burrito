@@ -15,7 +15,11 @@ class Image {
     std::string path;
 };
 
-Image parse_image(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_image(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Image* value,
+    bool* is_set);
 
 std::string image_to_xml_attribute(const std::string& attribute_name, const Image* value);
 

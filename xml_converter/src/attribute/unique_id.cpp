@@ -12,13 +12,16 @@
 
 using namespace std;
 
-UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
-    UniqueId unique_id;
+void xml_attribute_to_unique_id(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    UniqueId* value,
+    bool* is_set) {
     string base64;
     base64 = get_attribute_value(input);
     std::vector<uint8_t> guid = base64_decode(base64);
-    unique_id.guid = guid;
-    return unique_id;
+    value->guid = guid;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

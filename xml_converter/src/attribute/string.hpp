@@ -7,7 +7,11 @@
 
 class XMLError;
 
-std::string parse_string(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_string(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    std::string* value,
+    bool* is_set);
 
 std::string string_to_xml_attribute(const std::string& attribute_name, const std::string* value);
 

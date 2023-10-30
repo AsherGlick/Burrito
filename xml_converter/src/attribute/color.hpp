@@ -18,7 +18,11 @@ class Color {
     float alpha;
 };
 
-Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_color(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Color* value,
+    bool* is_set);
 
 std::string color_to_xml_attribute(const std::string& attribute_name, const Color* value);
 

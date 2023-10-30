@@ -11,18 +11,22 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_int
+// xml_attribute_to_int
 //
 // Parses an int from the value of a rapidxml::xml_attribute. Adds an error
 // if the value cannot be parsed properly.
 ////////////////////////////////////////////////////////////////////////////////
-int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_int(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    int* value,
+    bool* is_set) {
     try {
-        return stoi(get_attribute_value(input));
+        *value = stoi(get_attribute_value(input));
+        *is_set = true;
     }
     catch (std::invalid_argument const& exception) {
         errors->push_back(new XMLAttributeValueError("Invalid integer value", input));
-        return 0;
     }
     // TODO(#99): Do we need an out_of_range exception catch when parsing integers?
     // catch(std::out_of_range const& exception) {

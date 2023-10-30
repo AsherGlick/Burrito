@@ -11,7 +11,11 @@
 
 using namespace std;
 
-EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+void xml_attribute_to_euler_rotation(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    EulerRotation* value,
+    bool* is_set) {
     EulerRotation euler_rotation;
     vector<string> compound_values;
     string attributename;
@@ -25,7 +29,8 @@ EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLE
         euler_rotation.y_rotation = std::stof(compound_values[1]);
         euler_rotation.z_rotation = std::stof(compound_values[2]);
     }
-    return euler_rotation;
+    *value = euler_rotation;
+    *is_set = true;
 }
 string euler_rotation_to_xml_attribute(const std::string& attribute_name, const EulerRotation* value) {
     string output;

@@ -12,7 +12,11 @@
 
 using namespace std;
 
-MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_map_type_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    MapTypeFilter* value,
+    bool* is_set) {
     MapTypeFilter map_type_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -120,7 +124,8 @@ MapTypeFilter parse_map_type_filter(rapidxml::xml_attribute<>* input, vector<XML
             continue;
         }
     }
-    return map_type_filter;
+    *value = map_type_filter;
+    *is_set = true;
 }
 
 string map_type_filter_to_xml_attribute(const std::string& attribute_name, const MapTypeFilter* value) {

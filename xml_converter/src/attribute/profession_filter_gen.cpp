@@ -12,7 +12,11 @@
 
 using namespace std;
 
-ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_profession_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    ProfessionFilter* value,
+    bool* is_set) {
     ProfessionFilter profession_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -60,7 +64,8 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
             continue;
         }
     }
-    return profession_filter;
+    *value = profession_filter;
+    *is_set = true;
 }
 
 string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value) {
