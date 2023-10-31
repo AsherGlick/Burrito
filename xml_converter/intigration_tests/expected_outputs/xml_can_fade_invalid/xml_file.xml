@@ -3,6 +3,6 @@
 </MarkerCategory>
 
 <POIs>
-<POI  CanFade="false" Type="mycategory" IconFile="texture.png" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" IconFile="texture.png" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
 </POIs>
 </OverlayData>

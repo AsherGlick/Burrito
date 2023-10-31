@@ -40,7 +40,7 @@ void xml_attribute_to_bool(
 // Converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
 string bool_to_xml_attribute(const string& attribute_name, const bool* value) {
-    if (value) {
+    if (*value) {
         return " " + attribute_name + "=\"true\"";
     }
     else {
