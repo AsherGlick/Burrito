@@ -44,12 +44,19 @@ using namespace std;
 }
 
 string stringify_{{attribute_name}}({{class_name}} attribute_value) {
-    string output = "";
+    vector<string> flag_values;
     {% for n, attribute_variable in enumerate(attribute_variables)%}
         if (attribute_value.{{attribute_variable.attribute_name}} == true) {
-            output = output + "{{attribute_variable.xml_fields[0]}}";
+            flag_values.push_back("{{attribute_variable.xml_fields[0]}}");
         }
     {% endfor %}
+    string output = "";
+    for (size_t i = 0; i < flag_values.size(); ++i) {
+        output += flag_values[i];
+        if (i < flag_values.size() - 1){
+            output += ",";
+        }
+    }
     return output;
 }
 

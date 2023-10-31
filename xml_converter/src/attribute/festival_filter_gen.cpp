@@ -59,27 +59,34 @@ FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XM
 }
 
 string stringify_festival_filter(FestivalFilter attribute_value) {
-    string output = "";
+    vector<string> flag_values;
     if (attribute_value.dragonbash == true) {
-        output = output + "dragonbash";
+        flag_values.push_back("dragonbash");
     }
     if (attribute_value.festival_of_the_four_winds == true) {
-        output = output + "festivalofthefourwinds";
+        flag_values.push_back("festivalofthefourwinds");
     }
     if (attribute_value.halloween == true) {
-        output = output + "halloween";
+        flag_values.push_back("halloween");
     }
     if (attribute_value.lunar_new_year == true) {
-        output = output + "lunarnewyear";
+        flag_values.push_back("lunarnewyear");
     }
     if (attribute_value.super_adventure_festival == true) {
-        output = output + "superadventurefestival";
+        flag_values.push_back("superadventurefestival");
     }
     if (attribute_value.wintersday == true) {
-        output = output + "wintersday";
+        flag_values.push_back("wintersday");
     }
     if (attribute_value.none == true) {
-        output = output + "none";
+        flag_values.push_back("none");
+    }
+    string output = "";
+    for (size_t i = 0; i < flag_values.size(); ++i) {
+        output += flag_values[i];
+        if (i < flag_values.size() - 1){
+            output += ",";
+        }
     }
     return output;
 }

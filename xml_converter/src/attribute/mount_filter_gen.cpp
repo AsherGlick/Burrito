@@ -68,36 +68,43 @@ MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError
 }
 
 string stringify_mount_filter(MountFilter attribute_value) {
-    string output = "";
+    vector<string> flag_values;
     if (attribute_value.raptor == true) {
-        output = output + "raptor";
+        flag_values.push_back("raptor");
     }
     if (attribute_value.springer == true) {
-        output = output + "springer";
+        flag_values.push_back("springer");
     }
     if (attribute_value.skimmer == true) {
-        output = output + "skimmer";
+        flag_values.push_back("skimmer");
     }
     if (attribute_value.jackal == true) {
-        output = output + "jackal";
+        flag_values.push_back("jackal");
     }
     if (attribute_value.griffon == true) {
-        output = output + "griffon";
+        flag_values.push_back("griffon");
     }
     if (attribute_value.roller_beetle == true) {
-        output = output + "rollerbeetle";
+        flag_values.push_back("rollerbeetle");
     }
     if (attribute_value.warclaw == true) {
-        output = output + "warclaw";
+        flag_values.push_back("warclaw");
     }
     if (attribute_value.skyscale == true) {
-        output = output + "skyscale";
+        flag_values.push_back("skyscale");
     }
     if (attribute_value.skiff == true) {
-        output = output + "skiff";
+        flag_values.push_back("skiff");
     }
     if (attribute_value.seige_turtle == true) {
-        output = output + "seigeturtle";
+        flag_values.push_back("seigeturtle");
+    }
+    string output = "";
+    for (size_t i = 0; i < flag_values.size(); ++i) {
+        output += flag_values[i];
+        if (i < flag_values.size() - 1){
+            output += ",";
+        }
     }
     return output;
 }

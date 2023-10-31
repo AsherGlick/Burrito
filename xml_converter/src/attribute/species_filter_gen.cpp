@@ -48,21 +48,28 @@ SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLE
 }
 
 string stringify_species_filter(SpeciesFilter attribute_value) {
-    string output = "";
+    vector<string> flag_values;
     if (attribute_value.asura == true) {
-        output = output + "asura";
+        flag_values.push_back("asura");
     }
     if (attribute_value.charr == true) {
-        output = output + "charr";
+        flag_values.push_back("charr");
     }
     if (attribute_value.human == true) {
-        output = output + "human";
+        flag_values.push_back("human");
     }
     if (attribute_value.norn == true) {
-        output = output + "norn";
+        flag_values.push_back("norn");
     }
     if (attribute_value.sylvari == true) {
-        output = output + "sylvari";
+        flag_values.push_back("sylvari");
+    }
+    string output = "";
+    for (size_t i = 0; i < flag_values.size(); ++i) {
+        output += flag_values[i];
+        if (i < flag_values.size() - 1){
+            output += ",";
+        }
     }
     return output;
 }

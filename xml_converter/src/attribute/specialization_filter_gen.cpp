@@ -397,222 +397,229 @@ SpecializationFilter parse_specialization_filter(rapidxml::xml_attribute<>* inpu
 }
 
 string stringify_specialization_filter(SpecializationFilter attribute_value) {
-    string output = "";
+    vector<string> flag_values;
     if (attribute_value.elementalist_tempest == true) {
-        output = output + "48";
+        flag_values.push_back("48");
     }
     if (attribute_value.engineer_scrapper == true) {
-        output = output + "43";
+        flag_values.push_back("43");
     }
     if (attribute_value.guardian_dragonhunter == true) {
-        output = output + "27";
+        flag_values.push_back("27");
     }
     if (attribute_value.mesmer_chronomancer == true) {
-        output = output + "40";
+        flag_values.push_back("40");
     }
     if (attribute_value.necromancer_reaper == true) {
-        output = output + "34";
+        flag_values.push_back("34");
     }
     if (attribute_value.ranger_druid == true) {
-        output = output + "5";
+        flag_values.push_back("5");
     }
     if (attribute_value.revenant_herald == true) {
-        output = output + "52";
+        flag_values.push_back("52");
     }
     if (attribute_value.thief_daredevil == true) {
-        output = output + "7";
+        flag_values.push_back("7");
     }
     if (attribute_value.warrior_berserker == true) {
-        output = output + "18";
+        flag_values.push_back("18");
     }
     if (attribute_value.elementalist_weaver == true) {
-        output = output + "56";
+        flag_values.push_back("56");
     }
     if (attribute_value.engineer_holosmith == true) {
-        output = output + "57";
+        flag_values.push_back("57");
     }
     if (attribute_value.guardian_firebrand == true) {
-        output = output + "62";
+        flag_values.push_back("62");
     }
     if (attribute_value.mesmer_mirage == true) {
-        output = output + "59";
+        flag_values.push_back("59");
     }
     if (attribute_value.necromancer_scourge == true) {
-        output = output + "60";
+        flag_values.push_back("60");
     }
     if (attribute_value.ranger_soulbeast == true) {
-        output = output + "55";
+        flag_values.push_back("55");
     }
     if (attribute_value.revenant_renegade == true) {
-        output = output + "63";
+        flag_values.push_back("63");
     }
     if (attribute_value.thief_deadeye == true) {
-        output = output + "58";
+        flag_values.push_back("58");
     }
     if (attribute_value.warrior_spellbreaker == true) {
-        output = output + "61";
+        flag_values.push_back("61");
     }
     if (attribute_value.elementalist_catalyst == true) {
-        output = output + "67";
+        flag_values.push_back("67");
     }
     if (attribute_value.engineer_mechanist == true) {
-        output = output + "70";
+        flag_values.push_back("70");
     }
     if (attribute_value.guardian_willbender == true) {
-        output = output + "65";
+        flag_values.push_back("65");
     }
     if (attribute_value.mesmer_virtuoso == true) {
-        output = output + "66";
+        flag_values.push_back("66");
     }
     if (attribute_value.necromancer_harbinger == true) {
-        output = output + "64";
+        flag_values.push_back("64");
     }
     if (attribute_value.ranger_untamed == true) {
-        output = output + "72";
+        flag_values.push_back("72");
     }
     if (attribute_value.revenant_vindicator == true) {
-        output = output + "69";
+        flag_values.push_back("69");
     }
     if (attribute_value.thief_specter == true) {
-        output = output + "71";
+        flag_values.push_back("71");
     }
     if (attribute_value.warrior_bladesworn == true) {
-        output = output + "68";
+        flag_values.push_back("68");
     }
     if (attribute_value.elementalist_air == true) {
-        output = output + "41";
+        flag_values.push_back("41");
     }
     if (attribute_value.elementalist_arcane == true) {
-        output = output + "37";
+        flag_values.push_back("37");
     }
     if (attribute_value.elementalist_earth == true) {
-        output = output + "26";
+        flag_values.push_back("26");
     }
     if (attribute_value.elementalist_fire == true) {
-        output = output + "31";
+        flag_values.push_back("31");
     }
     if (attribute_value.elementalist_water == true) {
-        output = output + "17";
+        flag_values.push_back("17");
     }
     if (attribute_value.engineer_alchemy == true) {
-        output = output + "29";
+        flag_values.push_back("29");
     }
     if (attribute_value.engineer_explosives == true) {
-        output = output + "6";
+        flag_values.push_back("6");
     }
     if (attribute_value.engineer_firearms == true) {
-        output = output + "38";
+        flag_values.push_back("38");
     }
     if (attribute_value.engineer_inventions == true) {
-        output = output + "47";
+        flag_values.push_back("47");
     }
     if (attribute_value.engineer_tools == true) {
-        output = output + "21";
+        flag_values.push_back("21");
     }
     if (attribute_value.guardian_honor == true) {
-        output = output + "49";
+        flag_values.push_back("49");
     }
     if (attribute_value.guardian_radiance == true) {
-        output = output + "16";
+        flag_values.push_back("16");
     }
     if (attribute_value.guardian_valor == true) {
-        output = output + "13";
+        flag_values.push_back("13");
     }
     if (attribute_value.guardian_virtues == true) {
-        output = output + "46";
+        flag_values.push_back("46");
     }
     if (attribute_value.guardian_zeal == true) {
-        output = output + "42";
+        flag_values.push_back("42");
     }
     if (attribute_value.mesmer_chaos == true) {
-        output = output + "45";
+        flag_values.push_back("45");
     }
     if (attribute_value.mesmer_domination == true) {
-        output = output + "10";
+        flag_values.push_back("10");
     }
     if (attribute_value.mesmer_dueling == true) {
-        output = output + "1";
+        flag_values.push_back("1");
     }
     if (attribute_value.mesmer_illusions == true) {
-        output = output + "24";
+        flag_values.push_back("24");
     }
     if (attribute_value.mesmer_inspiration == true) {
-        output = output + "23";
+        flag_values.push_back("23");
     }
     if (attribute_value.necromancer_blood_magic == true) {
-        output = output + "19";
+        flag_values.push_back("19");
     }
     if (attribute_value.necromancer_curses == true) {
-        output = output + "39";
+        flag_values.push_back("39");
     }
     if (attribute_value.necromancer_death_magic == true) {
-        output = output + "2";
+        flag_values.push_back("2");
     }
     if (attribute_value.necromancer_soul_reaping == true) {
-        output = output + "50";
+        flag_values.push_back("50");
     }
     if (attribute_value.necromancer_spite == true) {
-        output = output + "53";
+        flag_values.push_back("53");
     }
     if (attribute_value.ranger_beastmastery == true) {
-        output = output + "32";
+        flag_values.push_back("32");
     }
     if (attribute_value.ranger_marksmanship == true) {
-        output = output + "8";
+        flag_values.push_back("8");
     }
     if (attribute_value.ranger_nature_magic == true) {
-        output = output + "25";
+        flag_values.push_back("25");
     }
     if (attribute_value.ranger_skirmishing == true) {
-        output = output + "30";
+        flag_values.push_back("30");
     }
     if (attribute_value.ranger_wilderness_survival == true) {
-        output = output + "33";
+        flag_values.push_back("33");
     }
     if (attribute_value.revenant_corruption == true) {
-        output = output + "14";
+        flag_values.push_back("14");
     }
     if (attribute_value.revenant_devastation == true) {
-        output = output + "15";
+        flag_values.push_back("15");
     }
     if (attribute_value.revenant_invocation == true) {
-        output = output + "3";
+        flag_values.push_back("3");
     }
     if (attribute_value.revenant_retribution == true) {
-        output = output + "9";
+        flag_values.push_back("9");
     }
     if (attribute_value.revenant_salvation == true) {
-        output = output + "12";
+        flag_values.push_back("12");
     }
     if (attribute_value.thief_acrobatics == true) {
-        output = output + "54";
+        flag_values.push_back("54");
     }
     if (attribute_value.thief_critical_strikes == true) {
-        output = output + "35";
+        flag_values.push_back("35");
     }
     if (attribute_value.thief_deadly_arts == true) {
-        output = output + "28";
+        flag_values.push_back("28");
     }
     if (attribute_value.thief_shadow_arts == true) {
-        output = output + "20";
+        flag_values.push_back("20");
     }
     if (attribute_value.thief_trickery == true) {
-        output = output + "44";
+        flag_values.push_back("44");
     }
     if (attribute_value.warrior_arms == true) {
-        output = output + "36";
+        flag_values.push_back("36");
     }
     if (attribute_value.warrior_defense == true) {
-        output = output + "22";
+        flag_values.push_back("22");
     }
     if (attribute_value.warrior_discipline == true) {
-        output = output + "51";
+        flag_values.push_back("51");
     }
     if (attribute_value.warrior_strength == true) {
-        output = output + "4";
+        flag_values.push_back("4");
     }
     if (attribute_value.warrior_tactics == true) {
-        output = output + "11";
+        flag_values.push_back("11");
+    }
+    string output = "";
+    for (size_t i = 0; i < flag_values.size(); ++i) {
+        output += flag_values[i];
+        if (i < flag_values.size() - 1){
+            output += ",";
+        }
     }
     return output;
 }

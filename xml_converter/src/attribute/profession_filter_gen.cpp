@@ -64,33 +64,40 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
 }
 
 string stringify_profession_filter(ProfessionFilter attribute_value) {
-    string output = "";
+    vector<string> flag_values;
     if (attribute_value.guardian == true) {
-        output = output + "guardian";
+        flag_values.push_back("guardian");
     }
     if (attribute_value.warrior == true) {
-        output = output + "warrior";
+        flag_values.push_back("warrior");
     }
     if (attribute_value.engineer == true) {
-        output = output + "engineer";
+        flag_values.push_back("engineer");
     }
     if (attribute_value.ranger == true) {
-        output = output + "ranger";
+        flag_values.push_back("ranger");
     }
     if (attribute_value.thief == true) {
-        output = output + "thief";
+        flag_values.push_back("thief");
     }
     if (attribute_value.elementalist == true) {
-        output = output + "elementalist";
+        flag_values.push_back("elementalist");
     }
     if (attribute_value.mesmer == true) {
-        output = output + "mesmer";
+        flag_values.push_back("mesmer");
     }
     if (attribute_value.necromancer == true) {
-        output = output + "necromancer";
+        flag_values.push_back("necromancer");
     }
     if (attribute_value.revenant == true) {
-        output = output + "revenant";
+        flag_values.push_back("revenant");
+    }
+    string output = "";
+    for (size_t i = 0; i < flag_values.size(); ++i) {
+        output += flag_values[i];
+        if (i < flag_values.size() - 1){
+            output += ",";
+        }
     }
     return output;
 }
