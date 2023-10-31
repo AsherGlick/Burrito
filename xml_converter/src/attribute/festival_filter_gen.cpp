@@ -64,28 +64,29 @@ void xml_attribute_to_festival_filter(
 }
 
 string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value) {
-    string output = "";
+    vector<string> flag_values;
     if (value->dragonbash == true) {
-        output = output + "dragonbash";
+        flag_values.push_back("dragonbash");
     }
     if (value->festival_of_the_four_winds == true) {
-        output = output + "festivalofthefourwinds";
+        flag_values.push_back("festivalofthefourwinds");
     }
     if (value->halloween == true) {
-        output = output + "halloween";
+        flag_values.push_back("halloween");
     }
     if (value->lunar_new_year == true) {
-        output = output + "lunarnewyear";
+        flag_values.push_back("lunarnewyear");
     }
     if (value->super_adventure_festival == true) {
-        output = output + "superadventurefestival";
+        flag_values.push_back("superadventurefestival");
     }
     if (value->wintersday == true) {
-        output = output + "wintersday";
+        flag_values.push_back("wintersday");
     }
     if (value->none == true) {
-        output = output + "none";
+        flag_values.push_back("none");
     }
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

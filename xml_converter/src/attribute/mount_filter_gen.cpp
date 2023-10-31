@@ -73,37 +73,38 @@ void xml_attribute_to_mount_filter(
 }
 
 string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value) {
-    string output = "";
+    vector<string> flag_values;
     if (value->raptor == true) {
-        output = output + "raptor";
+        flag_values.push_back("raptor");
     }
     if (value->springer == true) {
-        output = output + "springer";
+        flag_values.push_back("springer");
     }
     if (value->skimmer == true) {
-        output = output + "skimmer";
+        flag_values.push_back("skimmer");
     }
     if (value->jackal == true) {
-        output = output + "jackal";
+        flag_values.push_back("jackal");
     }
     if (value->griffon == true) {
-        output = output + "griffon";
+        flag_values.push_back("griffon");
     }
     if (value->roller_beetle == true) {
-        output = output + "rollerbeetle";
+        flag_values.push_back("rollerbeetle");
     }
     if (value->warclaw == true) {
-        output = output + "warclaw";
+        flag_values.push_back("warclaw");
     }
     if (value->skyscale == true) {
-        output = output + "skyscale";
+        flag_values.push_back("skyscale");
     }
     if (value->skiff == true) {
-        output = output + "skiff";
+        flag_values.push_back("skiff");
     }
     if (value->seige_turtle == true) {
-        output = output + "seigeturtle";
+        flag_values.push_back("seigeturtle");
     }
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

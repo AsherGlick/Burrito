@@ -53,22 +53,23 @@ void xml_attribute_to_species_filter(
 }
 
 string species_filter_to_xml_attribute(const std::string& attribute_name, const SpeciesFilter* value) {
-    string output = "";
+    vector<string> flag_values;
     if (value->asura == true) {
-        output = output + "asura";
+        flag_values.push_back("asura");
     }
     if (value->charr == true) {
-        output = output + "charr";
+        flag_values.push_back("charr");
     }
     if (value->human == true) {
-        output = output + "human";
+        flag_values.push_back("human");
     }
     if (value->norn == true) {
-        output = output + "norn";
+        flag_values.push_back("norn");
     }
     if (value->sylvari == true) {
-        output = output + "sylvari";
+        flag_values.push_back("sylvari");
     }
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

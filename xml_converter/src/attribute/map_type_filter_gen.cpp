@@ -129,79 +129,80 @@ void xml_attribute_to_map_type_filter(
 }
 
 string map_type_filter_to_xml_attribute(const std::string& attribute_name, const MapTypeFilter* value) {
-    string output = "";
+    vector<string> flag_values;
     if (value->unknown_map == true) {
-        output = output + "unknown";
+        flag_values.push_back("unknown");
     }
     if (value->redirect_map == true) {
-        output = output + "redirect";
+        flag_values.push_back("redirect");
     }
     if (value->character_create_map == true) {
-        output = output + "charactercreate";
+        flag_values.push_back("charactercreate");
     }
     if (value->pvp_map == true) {
-        output = output + "pvp";
+        flag_values.push_back("pvp");
     }
     if (value->gvg_map == true) {
-        output = output + "gvg";
+        flag_values.push_back("gvg");
     }
     if (value->instance_map == true) {
-        output = output + "instance";
+        flag_values.push_back("instance");
     }
     if (value->public_map == true) {
-        output = output + "public";
+        flag_values.push_back("public");
     }
     if (value->tournament_map == true) {
-        output = output + "tournament";
+        flag_values.push_back("tournament");
     }
     if (value->tutorial_map == true) {
-        output = output + "tutorial";
+        flag_values.push_back("tutorial");
     }
     if (value->user_tournament_map == true) {
-        output = output + "usertournament";
+        flag_values.push_back("usertournament");
     }
     if (value->center_map == true) {
-        output = output + "center";
+        flag_values.push_back("center");
     }
     if (value->eternal_battlegrounds_map == true) {
-        output = output + "eternalbattlegrounds";
+        flag_values.push_back("eternalbattlegrounds");
     }
     if (value->bluehome_map == true) {
-        output = output + "bluehome";
+        flag_values.push_back("bluehome");
     }
     if (value->blue_borderlands_map == true) {
-        output = output + "blueborderlands";
+        flag_values.push_back("blueborderlands");
     }
     if (value->green_home_map == true) {
-        output = output + "greenhome";
+        flag_values.push_back("greenhome");
     }
     if (value->green_borderlands_map == true) {
-        output = output + "greenborderlands";
+        flag_values.push_back("greenborderlands");
     }
     if (value->red_home_map == true) {
-        output = output + "redhome";
+        flag_values.push_back("redhome");
     }
     if (value->red_borderlands_map == true) {
-        output = output + "redborderlands";
+        flag_values.push_back("redborderlands");
     }
     if (value->fortunes_vale_map == true) {
-        output = output + "fortunesvale";
+        flag_values.push_back("fortunesvale");
     }
     if (value->jump_puzzle_map == true) {
-        output = output + "jumppuzzle";
+        flag_values.push_back("jumppuzzle");
     }
     if (value->obsidian_sanctum_map == true) {
-        output = output + "obsidiansanctum";
+        flag_values.push_back("obsidiansanctum");
     }
     if (value->edge_of_the_mists_map == true) {
-        output = output + "edgeofthemists";
+        flag_values.push_back("edgeofthemists");
     }
     if (value->public_mini_map == true) {
-        output = output + "publicmini";
+        flag_values.push_back("publicmini");
     }
     if (value->wvw_lounge_map == true) {
-        output = output + "wvwlounge";
+        flag_values.push_back("wvwlounge");
     }
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

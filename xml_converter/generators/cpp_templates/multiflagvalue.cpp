@@ -49,12 +49,13 @@ void xml_attribute_to_{{attribute_name}}(
 }
 
 string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value) {
-    string output = "";
+    vector<string> flag_values;
     {% for n, attribute_variable in enumerate(attribute_variables)%}
         if (value->{{attribute_variable.attribute_name}} == true) {
-            output = output + "{{attribute_variable.xml_fields[0]}}";
+            flag_values.push_back("{{attribute_variable.xml_fields[0]}}");
         }
     {% endfor %}
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

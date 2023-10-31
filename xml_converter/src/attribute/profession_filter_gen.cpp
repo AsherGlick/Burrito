@@ -69,34 +69,35 @@ void xml_attribute_to_profession_filter(
 }
 
 string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value) {
-    string output = "";
+    vector<string> flag_values;
     if (value->guardian == true) {
-        output = output + "guardian";
+        flag_values.push_back("guardian");
     }
     if (value->warrior == true) {
-        output = output + "warrior";
+        flag_values.push_back("warrior");
     }
     if (value->engineer == true) {
-        output = output + "engineer";
+        flag_values.push_back("engineer");
     }
     if (value->ranger == true) {
-        output = output + "ranger";
+        flag_values.push_back("ranger");
     }
     if (value->thief == true) {
-        output = output + "thief";
+        flag_values.push_back("thief");
     }
     if (value->elementalist == true) {
-        output = output + "elementalist";
+        flag_values.push_back("elementalist");
     }
     if (value->mesmer == true) {
-        output = output + "mesmer";
+        flag_values.push_back("mesmer");
     }
     if (value->necromancer == true) {
-        output = output + "necromancer";
+        flag_values.push_back("necromancer");
     }
     if (value->revenant == true) {
-        output = output + "revenant";
+        flag_values.push_back("revenant");
     }
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
