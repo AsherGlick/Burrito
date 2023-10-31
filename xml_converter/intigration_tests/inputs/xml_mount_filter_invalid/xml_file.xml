@@ -4,7 +4,8 @@
 
 <POIs>
 <POI Mount="" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>
-<POI Mount="Dragon" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>
+<POI Mount="NotAMount" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>
 <POI Mount="Raptor,Springer," Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>
+<POI Mount="Raptor,NotAMount,Springer" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>
 </POIs>
 </OverlayData>
