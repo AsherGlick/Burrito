@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 3.16)
 project (XMLConverter)
 
+# Set CPP standard library to cpp17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
@@ -23,8 +27,6 @@ add_library(${CORE_LIB} STATIC ${SOURCES} ${PROTO_SRC})
 # Include protobuf libraies.
 target_link_libraries(${CORE_LIB} PUBLIC ${Protobuf_LIBRARIES})
 
-# Require C++ 17 or newer.
-target_compile_features(${CORE_LIB} PUBLIC cxx_std_17)
 if(MSVC)
   target_compile_options(${CORE_LIB} PUBLIC /W4 /WX)
 else()
