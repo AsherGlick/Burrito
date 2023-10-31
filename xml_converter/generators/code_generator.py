@@ -470,9 +470,9 @@ class Generator:
         metadata: Dict[str, SchemaType] = {}
         xml_fields: List[str] = []
         template: Dict[str, Template] = {
-            "MultiflagValue": env.get_template("multiflagvalue.cpp"),
-            "CompoundValue": env.get_template("compoundvalue.cpp"),
-            "Enum": env.get_template("enum.cpp"),
+            "MultiflagValue": env.get_template("attribute_template_multiflagvalue.cpp"),
+            "CompoundValue": env.get_template("attribute_template_compoundvalue.cpp"),
+            "Enum": env.get_template("attribute_template_enum.cpp"),
         }
 
         for filepath in self.data.keys():
