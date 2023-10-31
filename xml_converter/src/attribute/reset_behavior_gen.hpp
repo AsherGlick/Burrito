@@ -20,6 +20,6 @@ enum ResetBehavior {
     weekly_reset,
 };
 ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_reset_behavior(ResetBehavior attribute_value);
+std::string reset_behavior_to_xml_attribute(const std::string& attribute_name, const ResetBehavior* value);
 waypoint::ResetBehavior to_proto_reset_behavior(ResetBehavior attribute_value);
 ResetBehavior from_proto_reset_behavior(waypoint::ResetBehavior proto_reset_behavior);

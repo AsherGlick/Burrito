@@ -17,7 +17,7 @@ class MarkerCategory {
 
 MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
-std::string stringify_marker_category(MarkerCategory attribute_value);
+std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value);
 
 waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value);
 

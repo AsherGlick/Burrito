@@ -33,10 +33,10 @@ int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_int
+// int_to_xml_attribute
 //
-// Converts an int into a stringy value so that it can be saved to xml.
+// Converts an int a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_int(int attribute_value) {
-    return to_string(attribute_value);
+string int_to_xml_attribute(const string& attribute_name, const int* value) {
+    return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }

@@ -28,19 +28,18 @@ using namespace std;
     return {{attribute_name}};
 }
 {% if xml_bundled_components != [] %}
-    
-    string stringify_{{attribute_name}}({{class_name}} attribute_value) {
+    string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value) {
         string output;
         {% for n, attribute_variable in enumerate(attribute_variables) %}
             {% if attribute_variable.attribute_name in xml_bundled_components %}
                 {% if n == 0: %}
-                    output = to_string(attribute_value.{{attribute_variable.attribute_name}});
+                    output = to_string(value->{{attribute_variable.attribute_name}});
                 {% else %}
-                    output = output + "," + to_string(attribute_value.{{attribute_variable.attribute_name}});
+                    output = output + "," + to_string(value->{{attribute_variable.attribute_name}});
                 {% endif %}
             {% endif %}
         {% endfor %}
-        return output;
+        return " " + attribute_name + "=\"" + output + "\"";
     }
 {% endif %}
 

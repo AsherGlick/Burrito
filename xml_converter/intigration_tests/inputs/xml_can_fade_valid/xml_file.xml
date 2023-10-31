@@ -3,8 +3,8 @@
 </MarkerCategory>
 
 <POIs>
-<POI CanFade="false" Type="mycategory"/>
-<POI CanFade="0" Type="mycategory"/>
+<POI CanFade="false" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" />
+<POI CanFade="0" Type="mycategory" XPos="179.81" YPos="220.65" ZPos="225.83" MapID="50" IconFile="texture.png" />
 <!-- TODO: This value should be elided in the output, but it is not currently
 so we are ignoring the test instead of wriitng a bad test
 <POI CanFade="true" Type="mycategory"/>

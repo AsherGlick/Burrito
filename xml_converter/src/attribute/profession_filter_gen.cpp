@@ -63,33 +63,33 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
     return profession_filter;
 }
 
-string stringify_profession_filter(ProfessionFilter attribute_value) {
-    vector<string> flag_values;
-    if (attribute_value.guardian == true) {
+string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value) {
+    string output = "";
+    if (value->guardian == true) {
         flag_values.push_back("guardian");
     }
-    if (attribute_value.warrior == true) {
+    if (value->warrior == true) {
         flag_values.push_back("warrior");
     }
-    if (attribute_value.engineer == true) {
+    if (value->engineer == true) {
         flag_values.push_back("engineer");
     }
-    if (attribute_value.ranger == true) {
+    if (value->ranger == true) {
         flag_values.push_back("ranger");
     }
-    if (attribute_value.thief == true) {
+    if (value->thief == true) {
         flag_values.push_back("thief");
     }
-    if (attribute_value.elementalist == true) {
+    if (value->elementalist == true) {
         flag_values.push_back("elementalist");
     }
-    if (attribute_value.mesmer == true) {
+    if (value->mesmer == true) {
         flag_values.push_back("mesmer");
     }
-    if (attribute_value.necromancer == true) {
+    if (value->necromancer == true) {
         flag_values.push_back("necromancer");
     }
-    if (attribute_value.revenant == true) {
+    if (value->revenant == true) {
         flag_values.push_back("revenant");
     }
     string output = "";
@@ -98,8 +98,7 @@ string stringify_profession_filter(ProfessionFilter attribute_value) {
         if (i < flag_values.size() - 1) {
             output += ",";
         }
-    }
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::ProfessionFilter* to_proto_profession_filter(ProfessionFilter attribute_value) {

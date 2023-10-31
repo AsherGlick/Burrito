@@ -20,7 +20,7 @@ class TrailData {
 
 TrailData parse_trail_data(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors, std::string base_dir);
 
-std::string stringify_trail_data(TrailData attribute_value);
+std::string trail_data_to_xml_attribute(const std::string& attribute_name, const TrailData* value);
 
 waypoint::TrailData* to_proto_trail_data(TrailData attribute_value);
 

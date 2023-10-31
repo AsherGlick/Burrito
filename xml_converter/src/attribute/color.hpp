@@ -20,7 +20,7 @@ class Color {
 
 Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
 
-std::string stringify_color(Color attribute_value);
+std::string color_to_xml_attribute(const std::string& attribute_name, const Color* value);
 
 waypoint::RGBAColor* to_proto_color(Color attribute_value);
 

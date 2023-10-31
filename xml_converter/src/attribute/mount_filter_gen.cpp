@@ -67,36 +67,36 @@ MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError
     return mount_filter;
 }
 
-string stringify_mount_filter(MountFilter attribute_value) {
+string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value) {
     vector<string> flag_values;
-    if (attribute_value.raptor == true) {
+    if (value->raptor == true) {
         flag_values.push_back("raptor");
     }
-    if (attribute_value.springer == true) {
+    if (value->springer == true) {
         flag_values.push_back("springer");
     }
-    if (attribute_value.skimmer == true) {
+    if (value->skimmer == true) {
         flag_values.push_back("skimmer");
     }
-    if (attribute_value.jackal == true) {
+    if (value->jackal == true) {
         flag_values.push_back("jackal");
     }
-    if (attribute_value.griffon == true) {
+    if (value->griffon == true) {
         flag_values.push_back("griffon");
     }
-    if (attribute_value.roller_beetle == true) {
+    if (value->roller_beetle == true) {
         flag_values.push_back("rollerbeetle");
     }
-    if (attribute_value.warclaw == true) {
+    if (value->warclaw == true) {
         flag_values.push_back("warclaw");
     }
-    if (attribute_value.skyscale == true) {
+    if (value->skyscale == true) {
         flag_values.push_back("skyscale");
     }
-    if (attribute_value.skiff == true) {
+    if (value->skiff == true) {
         flag_values.push_back("skiff");
     }
-    if (attribute_value.seige_turtle == true) {
+    if (value->seige_turtle == true) {
         flag_values.push_back("seigeturtle");
     }
     string output = "";
@@ -105,8 +105,7 @@ string stringify_mount_filter(MountFilter attribute_value) {
         if (i < flag_values.size() - 1) {
             output += ",";
         }
-    }
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value) {

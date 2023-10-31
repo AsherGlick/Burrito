@@ -6,6 +6,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 
+using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 // parse_float
 //
@@ -16,10 +17,10 @@ float parse_float(rapidxml::xml_attribute<>* input, std::vector<XMLError*>*) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_float
+// float_to_xml_attribute
 //
-// Converts a float into a stringy value so that it can be saved to xml.
+// Converts a float into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string stringify_float(float attribute_value) {
-    return std::to_string(attribute_value);
+string float_to_xml_attribute(const string& attribute_name, const float* value) {
+    return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }

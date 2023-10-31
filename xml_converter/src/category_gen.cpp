@@ -66,19 +66,19 @@ vector<string> Category::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<MarkerCategory ");
     if (this->default_visibility_is_set) {
-        xml_node_contents.push_back(" DefaultToggle=\"" + stringify_bool(this->default_visibility) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("DefaultToggle", &this->default_visibility));
     }
     if (this->display_name_is_set) {
-        xml_node_contents.push_back(" DisplayName=\"" + stringify_string(this->display_name) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("DisplayName", &this->display_name));
     }
     if (this->is_separator_is_set) {
-        xml_node_contents.push_back(" IsSeparator=\"" + stringify_bool(this->is_separator) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("IsSeparator", &this->is_separator));
     }
     if (this->name_is_set) {
-        xml_node_contents.push_back(" Name=\"" + stringify_string(this->name) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("Name", &this->name));
     }
     if (this->tooltip_description_is_set) {
-        xml_node_contents.push_back(" TipDescription=\"" + stringify_string(this->tooltip_description) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("TipDescription", &this->tooltip_description));
     }
     xml_node_contents.push_back(">\n");
 

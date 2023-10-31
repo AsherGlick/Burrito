@@ -58,27 +58,27 @@ FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XM
     return festival_filter;
 }
 
-string stringify_festival_filter(FestivalFilter attribute_value) {
+string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value) {
     vector<string> flag_values;
-    if (attribute_value.dragonbash == true) {
+    if (value->dragonbash == true) {
         flag_values.push_back("dragonbash");
     }
-    if (attribute_value.festival_of_the_four_winds == true) {
+    if (value->festival_of_the_four_winds == true) {
         flag_values.push_back("festivalofthefourwinds");
     }
-    if (attribute_value.halloween == true) {
+    if (value->halloween == true) {
         flag_values.push_back("halloween");
     }
-    if (attribute_value.lunar_new_year == true) {
+    if (value->lunar_new_year == true) {
         flag_values.push_back("lunarnewyear");
     }
-    if (attribute_value.super_adventure_festival == true) {
+    if (value->super_adventure_festival == true) {
         flag_values.push_back("superadventurefestival");
     }
-    if (attribute_value.wintersday == true) {
+    if (value->wintersday == true) {
         flag_values.push_back("wintersday");
     }
-    if (attribute_value.none == true) {
+    if (value->none == true) {
         flag_values.push_back("none");
     }
     string output = "";
@@ -87,8 +87,7 @@ string stringify_festival_filter(FestivalFilter attribute_value) {
         if (i < flag_values.size() - 1) {
             output += ",";
         }
-    }
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {
