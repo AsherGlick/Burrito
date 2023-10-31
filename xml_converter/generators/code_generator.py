@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from jinja2 import Template, FileSystemLoader, Environment
 from jinja_helpers import UnindentBlocks
 from schema import string_t, array_t, enum_t, union_t, union_partial_t, pattern_dictionary_t, object_t, boolean_t, DefType
+from protobuf_types import get_proto_field_type
 
 
 SchemaType = Dict[str, Any]
@@ -96,6 +97,7 @@ class FieldRow:
     xml_attribute: str
     alternate_xml_attributes: List[str]
     binary_field: str
+    binary_field_type: str
     data_type: str
     usable_on_html: str
     example: str
@@ -727,11 +729,19 @@ class Generator:
                 )
                 # self.get_examples(fieldval['type'], fieldval['applies_to'], fieldval['xml_fieldsval'][0])
 
+            proto_field_type: str = ""
+            for marker_type in fieldval["applies_to"]:
+                proto_field_type = get_proto_field_type(marker_type, fieldval["protobuf_field"])
+                # TODO: catch discrepencies if the proto field types across
+                # different messages have differing types. This will be caught
+                # in the cpp code regardless.
+
             field_rows.append(FieldRow(
                 name=fieldval["name"],
                 xml_attribute=fieldval["xml_fields"][0],
                 alternate_xml_attributes=fieldval["xml_fields"][1:],
                 binary_field=fieldval["protobuf_field"],
+                binary_field_type=proto_field_type,
                 data_type=fieldval["type"],
                 usable_on_html="<br>".join(fieldval["applies_to"]),
                 example=example,
@@ -743,11 +753,22 @@ class Generator:
 
             if fieldval['type'] == "CompoundValue":
                 for component_field in fieldval["components"]:
+
+                    binary_field_name = fieldval["protobuf_field"] + "." + component_field["protobuf_field"]
+
+                    component_field_type: str = ""
+                    for marker_type in fieldval["applies_to"]:
+                        component_field_type = get_proto_field_type(marker_type, binary_field_name)
+                        # TODO: catch discrepencies if the proto field types across
+                        # different messages have differing types. This will be caught
+                        # in the cpp code regardless.
+
                     field_rows.append(FieldRow(
                         name=component_field["name"],
                         xml_attribute=component_field["xml_fields"][0],
                         alternate_xml_attributes=component_field["xml_fields"][1:],
-                        binary_field=fieldval["protobuf_field"] + "." + component_field["protobuf_field"],
+                        binary_field=binary_field_name,
+                        binary_field_type=component_field_type,
                         data_type=component_field["type"],
                         usable_on_html="<br>".join(fieldval["applies_to"]),
                         example=self.build_example(
