@@ -200,7 +200,7 @@ string stringify_map_type_filter(MapTypeFilter attribute_value) {
     string output = "";
     for (size_t i = 0; i < flag_values.size(); ++i) {
         output += flag_values[i];
-        if (i < flag_values.size() - 1){
+        if (i < flag_values.size() - 1) {
             output += ",";
         }
     }

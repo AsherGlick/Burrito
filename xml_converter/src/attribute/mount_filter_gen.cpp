@@ -102,7 +102,7 @@ string stringify_mount_filter(MountFilter attribute_value) {
     string output = "";
     for (size_t i = 0; i < flag_values.size(); ++i) {
         output += flag_values[i];
-        if (i < flag_values.size() - 1){
+        if (i < flag_values.size() - 1) {
             output += ",";
         }
     }
