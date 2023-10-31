@@ -40,9 +40,9 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_fields) %}
             {{ "if" if i == n == 0 else "else if" }} (attributename == "{{value}}") {
-                this->{{attribute_variable.attribute_name}} = parse_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}});
-                this->{{attribute_variable.attribute_flag_name}} = true;
+                xml_attribute_to_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}}, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}));
                 {% for side_effect in attribute_variable.side_effects %}
+                    // TOOD: this side effects should be passed into the parse function
                     this->{{side_effect}} = this->{{attribute_variable.class_name}}.side_effect_{{side_effect}};
                     this->{{side_effect}}_is_set = true;
                 {% endfor %}

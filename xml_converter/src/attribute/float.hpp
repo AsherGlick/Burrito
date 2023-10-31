@@ -7,7 +7,11 @@
 
 class XMLError;
 
-float parse_float(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_float(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    float* value,
+    bool* is_set);
 
 std::string float_to_xml_attribute(const std::string& attribute_name, const float* value);
 

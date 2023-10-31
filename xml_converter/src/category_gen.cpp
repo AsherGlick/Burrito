@@ -37,24 +37,19 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "defaulttoggle") {
-        this->default_visibility = parse_bool(attribute, errors);
-        this->default_visibility_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->default_visibility), &(this->default_visibility_is_set));
     }
     else if (attributename == "displayname") {
-        this->display_name = parse_string(attribute, errors);
-        this->display_name_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->display_name), &(this->display_name_is_set));
     }
     else if (attributename == "isseparator") {
-        this->is_separator = parse_bool(attribute, errors);
-        this->is_separator_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->is_separator), &(this->is_separator_is_set));
     }
     else if (attributename == "name") {
-        this->name = parse_string(attribute, errors);
-        this->name_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->name), &(this->name_is_set));
     }
     else if (attributename == "tipdescription") {
-        this->tooltip_description = parse_string(attribute, errors);
-        this->tooltip_description_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
     else {
         return false;

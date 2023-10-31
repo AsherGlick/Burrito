@@ -48,7 +48,11 @@ int convert_color_channel_float_to_int(float input) {
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_color(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Color* value,
+    bool* is_set) {
     Color color;
     std::string input_string = get_attribute_value(input);
     std::string hex_string;
@@ -82,7 +86,8 @@ Color parse_color(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
     else {
         errors->push_back(new XMLAttributeValueError("Found a color value not in hex format", input));
     }
-    return color;
+    *value = color;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -16,16 +16,21 @@ using namespace std;
 // evaluated as `true`. 'false' or '0' are evaluated as `false`. Everything is
 // is also evaluated as false but appends an error to the errors vector.
 ////////////////////////////////////////////////////////////////////////////////
-bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_bool(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    bool* value,
+    bool* is_set) {
     if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
-        return false;
+        *value = false;
+        *is_set = true;
     }
     else if (get_attribute_value(input) == "1" || get_attribute_value(input) == "true") {
-        return true;
+        *value = true;
+        *is_set = true;
     }
     else {
         errors->push_back(new XMLAttributeValueError("Found a boolean value that was not a '1', '0', 'true', or 'false'", input));
-        return false;
     }
 }
 

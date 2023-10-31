@@ -12,7 +12,11 @@
 
 using namespace std;
 
-SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_species_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    SpeciesFilter* value,
+    bool* is_set) {
     SpeciesFilter species_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -44,7 +48,8 @@ SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLE
             continue;
         }
     }
-    return species_filter;
+    *value = species_filter;
+    *is_set = true;
 }
 
 string species_filter_to_xml_attribute(const std::string& attribute_name, const SpeciesFilter* value) {

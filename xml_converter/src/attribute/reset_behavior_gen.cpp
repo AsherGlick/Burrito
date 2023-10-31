@@ -12,7 +12,11 @@
 
 using namespace std;
 
-ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_reset_behavior(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    ResetBehavior* value,
+    bool* is_set) {
     ResetBehavior reset_behavior;
     string normalized_value = normalize(get_attribute_value(input));
     if (normalized_value == "0") {
@@ -73,7 +77,8 @@ ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, vector<XMLE
         errors->push_back(new XMLAttributeValueError("Found an invalid value that was not in the Enum ResetBehavior", input));
         reset_behavior = ResetBehavior::always_visible;
     }
-    return reset_behavior;
+    *value = reset_behavior;
+    *is_set = true;
 }
 
 string reset_behavior_to_xml_attribute(const std::string& attribute_name, const ResetBehavior* value) {

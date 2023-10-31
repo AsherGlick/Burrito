@@ -10,12 +10,17 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_string
+// xml_attribute_to_string
 //
 // Parses a string from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-string parse_string(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
-    return get_attribute_value(input);
+void xml_attribute_to_string(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    string* value,
+    bool* is_set) {
+    *value = get_attribute_value(input);
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

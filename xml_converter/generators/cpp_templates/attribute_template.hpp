@@ -31,7 +31,11 @@
         }
     };
 {% endif %}
-{{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_{{attribute_name}}(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    {{class_name}}* value,
+    bool* is_set);
 std::string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value);
 {% if type == "Enum":%}
     waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_value);
