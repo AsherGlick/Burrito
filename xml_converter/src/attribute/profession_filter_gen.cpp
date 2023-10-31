@@ -64,7 +64,7 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
 }
 
 string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value) {
-    string output = "";
+    vector<string> flag_values;
     if (value->guardian == true) {
         flag_values.push_back("guardian");
     }
@@ -98,6 +98,7 @@ string profession_filter_to_xml_attribute(const std::string& attribute_name, con
         if (i < flag_values.size() - 1) {
             output += ",";
         }
+    }
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

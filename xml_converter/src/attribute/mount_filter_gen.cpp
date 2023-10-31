@@ -105,6 +105,7 @@ string mount_filter_to_xml_attribute(const std::string& attribute_name, const Mo
         if (i < flag_values.size() - 1) {
             output += ",";
         }
+    }
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
