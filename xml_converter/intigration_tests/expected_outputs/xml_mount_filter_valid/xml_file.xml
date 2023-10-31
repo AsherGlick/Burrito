@@ -4,8 +4,8 @@
 
 <POIs>
 <POI  Type="mycategory" IconFile="texture.png" MapID="50" Mount="raptor" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
-<POI  Type="mycategory" IconFile="texture.png" MapID="50" Mount="raptor, springer" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
-<POI  Type="mycategory" IconFile="texture.png" MapID="50" Mount="raptor, springer" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
-<POI  Type="mycategory" IconFile="texture.png" MapID="50" Mount="raptor, springer, skimmer, jackal, griffon, rollerbeetle, warclaw, skyscale, skiff, seigeturtle" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" IconFile="texture.png" MapID="50" Mount="raptor,springer" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" IconFile="texture.png" MapID="50" Mount="raptor,springer" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" IconFile="texture.png" MapID="50" Mount="raptor,springer,skimmer,jackal,griffon,rollerbeetle,warclaw,skyscale,skiff,seigeturtle" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
 </POIs>
 </OverlayData>

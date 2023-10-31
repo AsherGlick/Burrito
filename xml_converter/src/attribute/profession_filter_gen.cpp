@@ -92,7 +92,7 @@ string profession_filter_to_xml_attribute(const std::string& attribute_name, con
     if (value->revenant == true) {
         flag_values.push_back("revenant");
     }
-    string output = join(flag_values, ", ");
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

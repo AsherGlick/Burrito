@@ -614,7 +614,7 @@ string specialization_filter_to_xml_attribute(const std::string& attribute_name,
     if (value->warrior_tactics == true) {
         flag_values.push_back("11");
     }
-    string output = join(flag_values, ", ");
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

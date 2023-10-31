@@ -64,7 +64,7 @@ string species_filter_to_xml_attribute(const std::string& attribute_name, const 
     if (value->sylvari == true) {
         flag_values.push_back("sylvari");
     }
-    string output = join(flag_values, ", ");
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

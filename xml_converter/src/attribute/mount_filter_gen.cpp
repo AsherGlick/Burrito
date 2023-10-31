@@ -99,7 +99,7 @@ string mount_filter_to_xml_attribute(const std::string& attribute_name, const Mo
     if (value->seige_turtle == true) {
         flag_values.push_back("seigeturtle");
     }
-    string output = join(flag_values, ", ");
+    string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
