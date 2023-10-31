@@ -33,4 +33,28 @@ testcases: List[Testcase] = [
             "  |               ^^^"
         ]
     ),
+    Testcase(
+        name="mountfilter_valid",
+        xml_input_paths=["./inputs/xml_mount_filter_valid"],
+        expected_output_xml_path="./expected_outputs/xml_mount_filter_valid",
+    ),
+    Testcase(
+        name="mountfilter_invalid",
+        xml_input_paths=["./inputs/xml_mount_filter_invalid"],
+        expected_output_xml_path="./expected_outputs/xml_mount_filter_invalid",
+        expected_stdout=[
+            'Error: Invalid Filter for MountFilter. Found ',
+            './inputs/xml_mount_filter_invalid/xml_file.xml',
+            '6 |<POI Mount="" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>',
+            '  |            ',
+            'Error: Invalid Filter for MountFilter. Found Dragon',
+            './inputs/xml_mount_filter_invalid/xml_file.xml',
+            '7 |<POI Mount="Dragon" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>',
+            '  |            ^^^^^^',
+            'Error: Invalid Filter for MountFilter. Found ',
+            './inputs/xml_mount_filter_invalid/xml_file.xml',
+            '8 |<POI Mount="Raptor,Springer," Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" Type="mycategory"/>',
+            '  |            ^^^^^^^^^^^^^^^^',
+            ]
+    ),
 ]

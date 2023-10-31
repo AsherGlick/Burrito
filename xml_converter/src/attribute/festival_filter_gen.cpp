@@ -81,13 +81,7 @@ string festival_filter_to_xml_attribute(const std::string& attribute_name, const
     if (value->none == true) {
         flag_values.push_back("none");
     }
-    string output = "";
-    for (size_t i = 0; i < flag_values.size(); ++i) {
-        output += flag_values[i];
-        if (i < flag_values.size() - 1) {
-            output += ",";
-        }
-    }
+    string output = join(flag_values, ", ");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

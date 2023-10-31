@@ -50,13 +50,7 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
             flag_values.push_back("{{attribute_variable.xml_fields[0]}}");
         }
     {% endfor %}
-    string output = "";
-    for (size_t i = 0; i < flag_values.size(); ++i) {
-        output += flag_values[i];
-        if (i < flag_values.size() - 1) {
-            output += ",";
-        }
-    }
+    string output = join(flag_values, ", ");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 

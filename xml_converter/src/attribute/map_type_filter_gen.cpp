@@ -197,13 +197,7 @@ string map_type_filter_to_xml_attribute(const std::string& attribute_name, const
     if (value->wvw_lounge_map == true) {
         flag_values.push_back("wvwlounge");
     }
-    string output = "";
-    for (size_t i = 0; i < flag_values.size(); ++i) {
-        output += flag_values[i];
-        if (i < flag_values.size() - 1) {
-            output += ",";
-        }
-    }
+    string output = join(flag_values, ", ");
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
