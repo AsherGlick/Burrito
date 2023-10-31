@@ -58,30 +58,30 @@ FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XM
     return festival_filter;
 }
 
-string stringify_festival_filter(FestivalFilter attribute_value) {
+string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value) {
     string output = "";
-    if (attribute_value.dragonbash == true) {
+    if (value->dragonbash == true) {
         output = output + "dragonbash";
     }
-    if (attribute_value.festival_of_the_four_winds == true) {
+    if (value->festival_of_the_four_winds == true) {
         output = output + "festivalofthefourwinds";
     }
-    if (attribute_value.halloween == true) {
+    if (value->halloween == true) {
         output = output + "halloween";
     }
-    if (attribute_value.lunar_new_year == true) {
+    if (value->lunar_new_year == true) {
         output = output + "lunarnewyear";
     }
-    if (attribute_value.super_adventure_festival == true) {
+    if (value->super_adventure_festival == true) {
         output = output + "superadventurefestival";
     }
-    if (attribute_value.wintersday == true) {
+    if (value->wintersday == true) {
         output = output + "wintersday";
     }
-    if (attribute_value.none == true) {
+    if (value->none == true) {
         output = output + "none";
     }
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {

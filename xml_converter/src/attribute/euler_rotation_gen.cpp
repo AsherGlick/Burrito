@@ -27,13 +27,12 @@ EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, vector<XMLE
     }
     return euler_rotation;
 }
-
-string stringify_euler_rotation(EulerRotation attribute_value) {
+string euler_rotation_to_xml_attribute(const std::string& attribute_name, const EulerRotation* value) {
     string output;
-    output = to_string(attribute_value.x_rotation);
-    output = output + "," + to_string(attribute_value.y_rotation);
-    output = output + "," + to_string(attribute_value.z_rotation);
-    return output;
+    output = to_string(value->x_rotation);
+    output = output + "," + to_string(value->y_rotation);
+    output = output + "," + to_string(value->z_rotation);
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::EulerRotation* to_proto_euler_rotation(EulerRotation attribute_value) {

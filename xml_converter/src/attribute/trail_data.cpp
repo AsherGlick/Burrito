@@ -71,13 +71,14 @@ TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_trail_data
+// trail_data_to_xml_attribute
 //
-// Returns the relative path of the trail_data to the xml files
+// Converts a traildata into a fully qualified xml attribute string.
 // TODO: Write ".trl" files from data
+// TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_trail_data(TrailData attribute_value) {
-    return "temp_name_of_trail.trl";
+string trail_data_to_xml_attribute(const string& attribute_name, const TrailData* value) {
+    return " " + attribute_name + "=\"" + "temp_name_of_trail.trl" + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

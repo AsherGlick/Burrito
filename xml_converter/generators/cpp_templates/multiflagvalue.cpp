@@ -43,14 +43,14 @@ using namespace std;
     return {{attribute_name}};
 }
 
-string stringify_{{attribute_name}}({{class_name}} attribute_value) {
+string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value) {
     string output = "";
     {% for n, attribute_variable in enumerate(attribute_variables)%}
-        if (attribute_value.{{attribute_variable.attribute_name}} == true) {
+        if (value->{{attribute_variable.attribute_name}} == true) {
             output = output + "{{attribute_variable.xml_fields[0]}}";
         }
     {% endfor %}
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {

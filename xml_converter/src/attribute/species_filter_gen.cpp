@@ -47,24 +47,24 @@ SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLE
     return species_filter;
 }
 
-string stringify_species_filter(SpeciesFilter attribute_value) {
+string species_filter_to_xml_attribute(const std::string& attribute_name, const SpeciesFilter* value) {
     string output = "";
-    if (attribute_value.asura == true) {
+    if (value->asura == true) {
         output = output + "asura";
     }
-    if (attribute_value.charr == true) {
+    if (value->charr == true) {
         output = output + "charr";
     }
-    if (attribute_value.human == true) {
+    if (value->human == true) {
         output = output + "human";
     }
-    if (attribute_value.norn == true) {
+    if (value->norn == true) {
         output = output + "norn";
     }
-    if (attribute_value.sylvari == true) {
+    if (value->sylvari == true) {
         output = output + "sylvari";
     }
-    return output;
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value) {

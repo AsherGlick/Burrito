@@ -70,7 +70,7 @@ vector<string> {{cpp_class}}::as_xml() const {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.write_to_xml == true %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                xml_node_contents.push_back(" {{attribute_variable.default_xml_field}}=\"" + stringify_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}) + "\"");
+                xml_node_contents.push_back({{attribute_variable.class_name}}_to_xml_attribute("{{attribute_variable.default_xml_field}}", &this->{{attribute_variable.attribute_name}}));
             }
         {% endif %}
     {% endfor %}
