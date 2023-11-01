@@ -91,8 +91,8 @@ void move_supplementary_files(string input_directory, string output_directory) {
 }
 
 void read_taco_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    if (!filesystem::exists(input_path)){
-        cout << "Error: " << input_path << " is not an existing directory or file";
+    if (!filesystem::exists(input_path)) {
+        cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
@@ -108,13 +108,32 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
 void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     string xml_filepath;
-    if (filesystem::is_directory(output_path)) {
-        if (!has_suffix(output_path, "/"))
-            output_path += "/";
-        xml_filepath = output_path + "/xml_file.xml";
+    // If the file path leads to a directory or file, use that path
+    // This will overwrite files
+    if (filesystem::exists(output_path)) {
+        if (filesystem::is_directory(output_path)) {
+            if (!has_suffix(output_path, "/"))
+                output_path += "/";
+            xml_filepath = output_path + "xml_file.xml";
+        }
+        else {
+            xml_filepath = output_path;
+        }
     }
+    // If the file path does not exist, assumes it is a directory path
+    // unless it ends in .xml, in which it is assumed to be a file path
     else {
-        xml_filepath = output_path;
+        if (has_suffix(output_path, ".xml")) {
+            xml_filepath = output_path;
+        }
+        else if (filesystem::create_directory(output_path)) {
+            if (!has_suffix(output_path, "/"))
+                output_path += "/";
+            xml_filepath = output_path + "xml_file.xml";
+        }
+        else {
+            cout << "Error: " << output_path << "is not a valid directory path" << endl;
+        }
     }
     write_xml_file(xml_filepath, marker_categories, parsed_pois);
 }
