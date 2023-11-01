@@ -48,15 +48,15 @@ void xml_attribute_to_{{attribute_name}}(
     }
 {% endif %}
 
-waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
-    waypoint::{{class_name}}* proto_{{attribute_name}} = new waypoint::{{class_name}}();
+{{proto_field_cpp_type}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
+    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
     {% for attribute_variable in attribute_variables %}
         proto_{{attribute_name}}->set_{{attribute_variable.protobuf_field}}(attribute_value.{{attribute_variable.attribute_name}});
     {% endfor %}
     return proto_{{attribute_name}};
 }
 
-{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}}) {
+{{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
     {{class_name}} {{attribute_name}};
     {% for attribute_variable in attribute_variables: %}
         {{attribute_name}}.{{attribute_variable.attribute_name}} = proto_{{attribute_name}}.{{attribute_variable.protobuf_field}}();

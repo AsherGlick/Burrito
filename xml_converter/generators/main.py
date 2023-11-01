@@ -69,7 +69,6 @@ schema = union_t({
         optional={
             "side_effects": array_t(string_t()),
             "uses_file_path": boolean_t(),
-            "protobuf_type": enum_t(["Int32", "Fixed32", "Float32", "String"]),
         }
     ),
 })

@@ -16,9 +16,7 @@
     };
 {% else: %}
     class XMLError;
-    namespace waypoint {
-    class {{class_name}};
-    }
+    {{proto_field_cpp_type_prototype}}
 
     class {{class_name}} {
      public:
@@ -38,8 +36,8 @@ void xml_attribute_to_{{attribute_name}}(
     bool* is_set);
 std::string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value);
 {% if type == "Enum":%}
-    waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_value);
+    {{proto_field_cpp_type}} to_proto_{{attribute_name}}({{class_name}} attribute_value);
 {% else: %}
-    waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value);
+    {{proto_field_cpp_type}}* to_proto_{{attribute_name}}({{class_name}} attribute_value);
 {% endif %}
-{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}});
+{{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}});

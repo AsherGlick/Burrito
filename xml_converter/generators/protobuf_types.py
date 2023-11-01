@@ -1,6 +1,6 @@
 from lark import Lark, Transformer
 from lark.lexer import Token
-from typing import List
+from typing import List, Dict, Optional
 
 ################################################################################
 # This module parses a proto definition file with the goal of identifying the
@@ -52,7 +52,17 @@ class ProtoDictTransformer(Transformer):  # type: ignore
         messages = {}
         for item in items:
             if type(item) is dict:
-                messages.update(item)
+                for key, value in item.items():
+                    if key in messages:
+                        # The enum organization is kinda a super hack. But we
+                        # don't want to invest too much time here. Future us
+                        # will make this better.
+                        if key == "_enums_":
+                            messages[key] |= value
+                        else:
+                            print("Duplicate Key", key)
+                    else:
+                        messages[key] = value
             elif item is None:
                 pass
             else:
@@ -60,7 +70,7 @@ class ProtoDictTransformer(Transformer):  # type: ignore
         return messages
 
     def package_directive(self, items):  # type: ignore
-        return {"__package__": items[0]}
+        return {"_package_": items[0]}
 
     def dotted_identifier(self, items):  # type: ignore
         return items
@@ -70,8 +80,9 @@ class ProtoDictTransformer(Transformer):  # type: ignore
         return None
 
     # Ignore enums
-    def enum(self, items) -> None:  # type: ignore
-        return None
+    def enum(self, items):  # type: ignore
+        name, body = items
+        return {"_enums_": {name}}
 
     def declaration(self, items):  # type: ignore
         if len(items) == 0:
@@ -136,3 +147,56 @@ def get_proto_field_type(message: str, field: str) -> str:
         field_type = proto_field_types[field_type][field]
 
     return field_type
+
+
+PROTO_TO_CPP_TYPES: Dict[str, str] = {
+    "double": "double",
+    "float": "float",
+    "int32": "int",
+    "int64": "long",
+    "uint32": "int",
+    "uint64": "long",
+    "sint32": "int",
+    "sint64": "long",
+    "fixed32": "int",
+    "fixed64": "long",
+    "sfixed32": "int",
+    "sfixed64": "long",
+    "bool": "bool",
+    "string": "std::string",
+    "bytes": "std::string",
+}
+
+def get_proto_field_cpp_type(message: str, field: str) -> str:
+    value = get_proto_field_type(message, field)
+
+    # If this is a scalar type then return the cpp version of the scalar types
+    if value in PROTO_TO_CPP_TYPES:
+        return PROTO_TO_CPP_TYPES[value]
+
+    # Otherwise assume this is a message or enum and return the qualified path to that instead.
+    return "waypoint::" + value
+
+
+def get_proto_field_cpp_prototype(message: str, field: str) -> Optional[str]:
+    value = get_proto_field_type(message, field)
+
+    if value in PROTO_TO_CPP_TYPES:
+        return None
+
+    return "namespace {package} {{\nclass {proto_field_type};\n}}".format(
+        package="waypoint",
+        proto_field_type=value,
+    )
+
+def is_proto_field_scalar(message: str, field: str) -> bool:
+    value = get_proto_field_type(message, field)
+
+    if value in PROTO_TO_CPP_TYPES:
+        return True
+
+    if value in proto_field_types["_enums_"]:
+        return True
+
+
+    return False
