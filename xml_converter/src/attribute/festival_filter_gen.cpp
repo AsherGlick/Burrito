@@ -12,7 +12,11 @@
 
 using namespace std;
 
-FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_festival_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    FestivalFilter* value,
+    bool* is_set) {
     FestivalFilter festival_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -55,33 +59,35 @@ FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XM
             continue;
         }
     }
-    return festival_filter;
+    *value = festival_filter;
+    *is_set = true;
 }
 
-string stringify_festival_filter(FestivalFilter attribute_value) {
-    string output = "";
-    if (attribute_value.dragonbash == true) {
-        output = output + "dragonbash";
+string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value) {
+    vector<string> flag_values;
+    if (value->dragonbash == true) {
+        flag_values.push_back("dragonbash");
     }
-    if (attribute_value.festival_of_the_four_winds == true) {
-        output = output + "festivalofthefourwinds";
+    if (value->festival_of_the_four_winds == true) {
+        flag_values.push_back("festivalofthefourwinds");
     }
-    if (attribute_value.halloween == true) {
-        output = output + "halloween";
+    if (value->halloween == true) {
+        flag_values.push_back("halloween");
     }
-    if (attribute_value.lunar_new_year == true) {
-        output = output + "lunarnewyear";
+    if (value->lunar_new_year == true) {
+        flag_values.push_back("lunarnewyear");
     }
-    if (attribute_value.super_adventure_festival == true) {
-        output = output + "superadventurefestival";
+    if (value->super_adventure_festival == true) {
+        flag_values.push_back("superadventurefestival");
     }
-    if (attribute_value.wintersday == true) {
-        output = output + "wintersday";
+    if (value->wintersday == true) {
+        flag_values.push_back("wintersday");
     }
-    if (attribute_value.none == true) {
-        output = output + "none";
+    if (value->none == true) {
+        flag_values.push_back("none");
     }
-    return output;
+    string output = join(flag_values, ",");
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {

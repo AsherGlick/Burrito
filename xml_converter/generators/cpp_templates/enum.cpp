@@ -12,7 +12,11 @@
 
 using namespace std;
 
-{{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_{{attribute_name}}(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    {{class_name}}* value,
+    bool* is_set) {
     {{class_name}} {{attribute_name}};
     string normalized_value = normalize(get_attribute_value(input));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
@@ -32,25 +36,24 @@ using namespace std;
         errors->push_back(new XMLAttributeValueError("Found an invalid value that was not in the Enum {{class_name}}", input));
         {{attribute_name}} = {{class_name}}::{{attribute_variables[0].attribute_name}};
     }
-    return {{attribute_name}};
+    *value = {{attribute_name}};
+    *is_set = true;
 }
 
-string stringify_{{attribute_name}}({{class_name}} attribute_value) {
+string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value) {
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_fields) %}
             {%-if i == 0 and n == 0:%}
-                if (attribute_value == {{class_name}}::{{attribute_variable.attribute_name}}) {
-                    return "{{value}}";
-                }
-            {% else: %}
-                else if (attribute_value == {{class_name}}::{{attribute_variable.attribute_name}}) {
-                    return "{{value}}";
-                }
+                if (*value == {{class_name}}::{{attribute_variable.attribute_name}}) {
+            {% else %}
+                else if (*value == {{class_name}}::{{attribute_variable.attribute_name}}) {
             {%  endif %}
+                return " " + attribute_name + "=\"" + "{{value}}" + "\"";
+            }
         {%  endfor %}
     {%  endfor %}
     else {
-        return "{{class_name}}::{{attribute_variables[0].xml_fields[0]}}";
+        return " " + attribute_name + "=\"" + "{{class_name}}::{{attribute_variables[0].xml_fields[0]}}" + "\"";
     }
 }
 

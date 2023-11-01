@@ -7,9 +7,13 @@
 
 class XMLError;
 
-std::string parse_string(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_string(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    std::string* value,
+    bool* is_set);
 
-std::string stringify_string(std::string attribute_value);
+std::string string_to_xml_attribute(const std::string& attribute_name, const std::string* value);
 
 // Zero Cost Abstraction identity functions to make parsing and writing protobufs more uniform
 inline std::string const& from_proto_string(const std::string& x) {
