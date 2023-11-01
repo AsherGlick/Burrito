@@ -120,13 +120,9 @@ void write_taco_directory(string output_path, map<string, Category>* marker_cate
             xml_filepath = output_path;
         }
     }
-    // If the file path does not exist, assumes it is a directory path
-    // unless it ends in .xml, in which it is assumed to be a file path
+    // If the file path does not exist, assume it is a directory path
     else {
-        if (has_suffix(output_path, ".xml")) {
-            xml_filepath = output_path;
-        }
-        else if (filesystem::create_directory(output_path)) {
+        if (filesystem::create_directory(output_path)) {
             if (!has_suffix(output_path, "/"))
                 output_path += "/";
             xml_filepath = output_path + "xml_file.xml";
