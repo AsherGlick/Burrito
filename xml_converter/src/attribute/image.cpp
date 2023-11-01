@@ -15,19 +15,22 @@ using namespace std;
 //
 // Parses the path to an image from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
-    Image image;
-    image.path = get_attribute_value(input);
-    return image;
+void xml_attribute_to_image(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Image* value,
+    bool* is_set) {
+    value->path = get_attribute_value(input);
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_image
+// image_to_xml_attribute
 //
-// Converts an Image into a stringy value representing the path to the image.
+// Converts an image into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_image(Image attribute_value) {
-    return attribute_value.path;
+string image_to_xml_attribute(const string& attribute_name, const Image* value) {
+    return " " + attribute_name + "=\"" + value->path + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

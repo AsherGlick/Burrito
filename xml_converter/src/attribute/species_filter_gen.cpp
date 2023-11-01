@@ -12,7 +12,11 @@
 
 using namespace std;
 
-SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_species_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    SpeciesFilter* value,
+    bool* is_set) {
     SpeciesFilter species_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -44,27 +48,29 @@ SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLE
             continue;
         }
     }
-    return species_filter;
+    *value = species_filter;
+    *is_set = true;
 }
 
-string stringify_species_filter(SpeciesFilter attribute_value) {
-    string output = "";
-    if (attribute_value.asura == true) {
-        output = output + "asura";
+string species_filter_to_xml_attribute(const std::string& attribute_name, const SpeciesFilter* value) {
+    vector<string> flag_values;
+    if (value->asura == true) {
+        flag_values.push_back("asura");
     }
-    if (attribute_value.charr == true) {
-        output = output + "charr";
+    if (value->charr == true) {
+        flag_values.push_back("charr");
     }
-    if (attribute_value.human == true) {
-        output = output + "human";
+    if (value->human == true) {
+        flag_values.push_back("human");
     }
-    if (attribute_value.norn == true) {
-        output = output + "norn";
+    if (value->norn == true) {
+        flag_values.push_back("norn");
     }
-    if (attribute_value.sylvari == true) {
-        output = output + "sylvari";
+    if (value->sylvari == true) {
+        flag_values.push_back("sylvari");
     }
-    return output;
+    string output = join(flag_values, ",");
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value) {

@@ -10,21 +10,24 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_string
+// xml_attribute_to_string
 //
 // Parses a string from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-string parse_string(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
-    return get_attribute_value(input);
+void xml_attribute_to_string(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    string* value,
+    bool* is_set) {
+    *value = get_attribute_value(input);
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_string
+// string_to_xml_attribute
 //
-// Returns the same string that was passed in which is encoded directly into
-// xml. This function exists for stylistic convenience with all the other
-// attribute stringify functions.
+// Converts a string into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_string(string attribute_value) {
-    return attribute_value;
+string string_to_xml_attribute(const string& attribute_name, const string* value) {
+    return " " + attribute_name + "=\"" + *value + "\"";
 }

@@ -14,7 +14,7 @@ _global_script_classes=[ {
 "language": "NativeScript",
 "path": "res://tacoparser.gdns"
 }, {
-"base": "",
+"base": "Node",
 "class": "X11_FG",
 "language": "NativeScript",
 "path": "res://Spatial.gdns"

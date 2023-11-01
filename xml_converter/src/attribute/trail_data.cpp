@@ -18,7 +18,12 @@ using namespace std;
 //
 // Parses a TrailData from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors, string base_dir) {
+void xml_attribute_to_trail_data(
+    rapidxml::xml_attribute<>* input,
+    vector<XMLError*>* errors,
+    string base_dir,
+    TrailData* value,
+    bool* is_set) {
     TrailData trail_data;
     string trail_data_relative_path = get_attribute_value(input);
     if (base_dir == "") {
@@ -26,7 +31,7 @@ TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* 
     }
     if (trail_data_relative_path == "") {
         errors->push_back(new XMLAttributeValueError("Path to trail file is empty", input));
-        return trail_data;
+        return;
     }
 
     ifstream trail_data_file;
@@ -34,14 +39,14 @@ TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* 
     trail_data_file.open(trail_path, ios::in | ios::binary);
     if (!trail_data_file.good()) {
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
-        return trail_data;
+        return;
     }
     char version[4];
     trail_data_file.read(version, 4);
     // Validate the version number. Currently supports versions [0]
     if (!(*reinterpret_cast<uint32_t*>(version) == 0)) {
         errors->push_back(new XMLAttributeValueError("Unsupported version for trail data at " + trail_path, input));
-        return trail_data;
+        return;
     }
 
     char map_id_char[4];
@@ -67,17 +72,19 @@ TrailData parse_trail_data(rapidxml::xml_attribute<>* input, vector<XMLError*>* 
 
     trail_data_file.close();
 
-    return trail_data;
+    *value = trail_data;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_trail_data
+// trail_data_to_xml_attribute
 //
-// Returns the relative path of the trail_data to the xml files
+// Converts a traildata into a fully qualified xml attribute string.
 // TODO: Write ".trl" files from data
+// TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_trail_data(TrailData attribute_value) {
-    return "temp_name_of_trail.trl";
+string trail_data_to_xml_attribute(const string& attribute_name, const TrailData* value) {
+    return " " + attribute_name + "=\"" + "temp_name_of_trail.trl" + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

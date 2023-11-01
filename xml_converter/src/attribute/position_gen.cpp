@@ -11,7 +11,11 @@
 
 using namespace std;
 
-Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+void xml_attribute_to_position(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Position* value,
+    bool* is_set) {
     Position position;
     vector<string> compound_values;
     string attributename;
@@ -25,7 +29,8 @@ Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
         position.y_position = std::stof(compound_values[1]);
         position.z_position = std::stof(compound_values[2]);
     }
-    return position;
+    *value = position;
+    *is_set = true;
 }
 
 waypoint::Position* to_proto_position(Position attribute_value) {

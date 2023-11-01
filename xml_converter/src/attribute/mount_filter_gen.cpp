@@ -12,7 +12,11 @@
 
 using namespace std;
 
-MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_mount_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    MountFilter* value,
+    bool* is_set) {
     MountFilter mount_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -64,42 +68,44 @@ MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError
             continue;
         }
     }
-    return mount_filter;
+    *value = mount_filter;
+    *is_set = true;
 }
 
-string stringify_mount_filter(MountFilter attribute_value) {
-    string output = "";
-    if (attribute_value.raptor == true) {
-        output = output + "raptor";
+string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value) {
+    vector<string> flag_values;
+    if (value->raptor == true) {
+        flag_values.push_back("raptor");
     }
-    if (attribute_value.springer == true) {
-        output = output + "springer";
+    if (value->springer == true) {
+        flag_values.push_back("springer");
     }
-    if (attribute_value.skimmer == true) {
-        output = output + "skimmer";
+    if (value->skimmer == true) {
+        flag_values.push_back("skimmer");
     }
-    if (attribute_value.jackal == true) {
-        output = output + "jackal";
+    if (value->jackal == true) {
+        flag_values.push_back("jackal");
     }
-    if (attribute_value.griffon == true) {
-        output = output + "griffon";
+    if (value->griffon == true) {
+        flag_values.push_back("griffon");
     }
-    if (attribute_value.roller_beetle == true) {
-        output = output + "rollerbeetle";
+    if (value->roller_beetle == true) {
+        flag_values.push_back("rollerbeetle");
     }
-    if (attribute_value.warclaw == true) {
-        output = output + "warclaw";
+    if (value->warclaw == true) {
+        flag_values.push_back("warclaw");
     }
-    if (attribute_value.skyscale == true) {
-        output = output + "skyscale";
+    if (value->skyscale == true) {
+        flag_values.push_back("skyscale");
     }
-    if (attribute_value.skiff == true) {
-        output = output + "skiff";
+    if (value->skiff == true) {
+        flag_values.push_back("skiff");
     }
-    if (attribute_value.seige_turtle == true) {
-        output = output + "seigeturtle";
+    if (value->seige_turtle == true) {
+        flag_values.push_back("seigeturtle");
     }
-    return output;
+    string output = join(flag_values, ",");
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
 waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value) {

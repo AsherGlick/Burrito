@@ -12,17 +12,25 @@
 
 using namespace std;
 
-UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
-    UniqueId unique_id;
+void xml_attribute_to_unique_id(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    UniqueId* value,
+    bool* is_set) {
     string base64;
     base64 = get_attribute_value(input);
     std::vector<uint8_t> guid = base64_decode(base64);
-    unique_id.guid = guid;
-    return unique_id;
+    value->guid = guid;
+    *is_set = true;
 }
 
-string stringify_unique_id(UniqueId attribute_value) {
-    return base64_encode(&attribute_value.guid[0], attribute_value.guid.size());
+////////////////////////////////////////////////////////////////////////////////
+// unique_id_to_xml_attribute
+//
+// Converts a unique id into a fully qualified xml attribute string.
+////////////////////////////////////////////////////////////////////////////////
+string unique_id_to_xml_attribute(const string& attribute_name, const UniqueId* value) {
+    return " " + attribute_name + "=\"" + base64_encode(&(value->guid[0]), value->guid.size()) + "\"";
 }
 
 string to_proto_unique_id(UniqueId attribute_value) {

@@ -28,7 +28,7 @@ var map_was_open = false
 var player_position := Vector3(0,0,0)
 
 # Player Position as accurate to Godot (z value sign is flipped)
-var correct_player_position := Vector3(0,0,0) 
+var correct_player_position := Vector3(0,0,0)
 
 var compass_height: int = 0;
 var compass_width: int = 0;
@@ -36,7 +36,7 @@ var compass_width: int = 0;
 
 # A temporary setting able to be configured by the user. It is used to allow
 # for faster trail mesh generation. The higher the value the fewer samples are
-# taken for the MeshCSG leading to an overall lower number of polygons. 
+# taken for the MeshCSG leading to an overall lower number of polygons.
 var path_resolution = 1
 
 # Variables that store opposit corners of the compass
@@ -56,20 +56,78 @@ func _ready():
 	x11_window_id_burrito = OS.get_native_handle(OS.WINDOW_HANDLE)
 	OS.window_maximized = false
 	# Start off with a small size before GW2 client is up
-	OS.window_size = Vector2(800, 600)
+
+	if Settings.override_size_enabled:
+		OS.window_size = Vector2(Settings.override_size_width, Settings.override_size_height)
+	else:
+		OS.window_size = Vector2(Settings.minimum_width, Settings.minimum_height)
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
 	server.listen(4242)
 
+	if (Settings.burrito_link_auto_launch_enabled):
+		launch_burrito_link()
+
+
+################################################################################
+# show_error
+#
+# This function prints a user error out. Currently it prints to stdout but may
+# one day be shown to the user.
+################################################################################
+func show_user_error(error_string: String):
+	print(error_string)
+
+
+# The process id of burrito link if it is launched automatically by burrito
+var burrito_link_process_id = 0
+
+################################################################################
+# launch_burrito_link
+#
+# This function launches the burrito link binary using the values for it that
+# are saved in "settings".
+################################################################################
+func launch_burrito_link():
+		for env_arg in Settings.burrito_link_env_args.split("\n"):
+			env_arg = env_arg.trim_prefix("export ")
+			var key_values = env_arg.split('=', true, 1)
+
+			if len(key_values) != 2:
+				show_user_error("Invalid burrito_link environment arg: " + env_arg)
+				return
+
+			var key = key_values[0]
+			var value = key_values[1].trim_prefix('"').trim_suffix('"')
+			OS.set_environment(key, value)
+
+		# Launch burrito link with a 2 hour timeout
+		# If burrito crashes then burrito_link will automatically exit at the timeout.
+		# If burrito does not crash and the timeout expires then burrito will relaunch burrito_link automatically
+		burrito_link_process_id = OS.execute(Settings.burrito_link_wine_path, ["burrito_link/burrito_link.exe", "--timeout", "7200"], false)
+
+func close_burrito_link():
+	if (burrito_link_process_id != 0):
+		OS.kill(burrito_link_process_id)
+		burrito_link_process_id = 0
+
+
+func exit_burrito():
+	if Settings.burrito_link_auto_launch_enabled:
+		close_burrito_link()
+	get_tree().quit()
+
+
 func set_minimal_mouse_block():
-	var top_corner := Vector2(287, 0)
-	var bottom_corner := Vector2(314, 32)
-	
+	var menu_button = $Control/GlobalMenuButton
+	var top_corner = menu_button.get_position()
+	var bottom_corner = menu_button.get_position() + menu_button.get_size()
+
 	if self.edit_panel_open:
-		bottom_corner.y = 49
-		bottom_corner.x = 314+377
-	
+		var editor_panel = $Control/GlobalMenuButton/EditorQuckPanel
+		bottom_corner = menu_button.get_position() + editor_panel.get_position() + editor_panel.get_size()
+
 	var clickthrough: PoolVector2Array = [
 		Vector2(top_corner.x ,top_corner.y),
 		Vector2(bottom_corner.x, top_corner.y),
@@ -85,7 +143,7 @@ func set_maximal_mouse_block():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	#OS.window_position = Vector2(1920, 0) # TODO: This does not seem to work	
+	#OS.window_position = Vector2(1920, 0) # TODO: This does not seem to work
 	#OS.set_window_position(Vector2(1920,0))
 	#print(OS.window_position)
 	server.poll() # Important
@@ -106,7 +164,9 @@ func _process(delta):
 			if packet_type == 1:
 				decode_frame_packet(spb)
 			elif packet_type == 2:
-				decode_context_packet(spb)	
+				decode_context_packet(spb)
+			elif packet_type == 3:
+				decode_timeout_packet(spb)
 	return
 
 
@@ -117,14 +177,14 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 		spb.get_float(),
 		spb.get_float()
 	)
-	
+
 	# Extract the rotation of the camera in the form of a normal vector
 	var camera_facing = Vector3(
 		spb.get_float(),
 		spb.get_float(),
 		spb.get_float()
 	)
-	
+
 	# Extract the position of the player's foot
 	self.player_position = Vector3(
 		spb.get_float(),
@@ -132,10 +192,10 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 		spb.get_float()
 	)
 	self.correct_player_position = Vector3(player_position.x, player_position.y, -player_position.z)
-	
+
 	if $Control/Position.visible:
 		$Control/Position.text = "X " + str(player_position.x) + "   Y " + str(player_position.y) + "   Z " + str(-player_position.z)
-	
+
 	var map_offset = Vector2(
 		spb.get_float(),
 		spb.get_float()
@@ -145,7 +205,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 		map_scale = 0.000001
 	var map_rotation: float = spb.get_float()
 	var ui_flags: int = spb.get_32()
-	
+
 	map_is_open = (ui_flags & 0x01) == 0x01;
 	compass_is_top_right = (ui_flags & 0x02) == 0x02;
 	var compass_rotation_is_enabled: bool = (ui_flags & 0x04) == 0x04;
@@ -168,7 +228,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	$CameraMount.translation.x = camera_position.x
 	$CameraMount.translation.y = camera_position.y
 	$CameraMount.translation.z = -camera_position.z
-	
+
 	# Orent the camera in the same rotation as it is facing in game
 	$CameraMount/Camera.rotation.x = asin(camera_facing.y)
 	$CameraMount.rotation.y = -atan2(camera_facing.x, camera_facing.z)
@@ -184,7 +244,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 
 	var map_size = get_viewport().size
 	var map_corner = Vector2(0, 0)
-	
+
 	if (!map_is_open):
 		map_size = Vector2(compass_width, compass_height)
 		if !compass_is_top_right:
@@ -204,16 +264,16 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 
 		var x = (cosTheta * (player_map_position.x - pivot.x) - sinTheta * (player_map_position.y - pivot.y) + pivot.x);
 		var y = (sinTheta * (player_map_position.x - pivot.x) + cosTheta * (player_map_position.y - pivot.y) + pivot.y);
-		
+
 		delta_position = player_map_position - Vector2(x, y);
-		
+
 		#print(map_rotation)
 		$Control/MiniMap.rotation = map_rotation
 	else:
 		$Control/MiniMap.rotation = 0
-	
+
 	var map_midpoint = map_size/2 + map_corner;
-	
+
 	$Control/MiniMap.scale=Vector2(map_object_scaling, map_object_scaling)
 	var map_translation = map_offset
 	$Control/MiniMap.position = (map_translation / map_scale) + map_midpoint - player_map_position + delta_position
@@ -231,7 +291,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if !is_transient:
 		is_transient = x11_fg.set_transient_for(x11_window_id_burrito, x11_window_id_gw2)
 
-	var size = Vector2(800, 600)
+	var size = Vector2(Settings.minimum_width, Settings.minimum_height)
 	if Settings.override_size_enabled:
 		size.x = Settings.override_size_width
 		size.y = Settings.override_size_height
@@ -239,11 +299,17 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		var size_tuple = x11_fg.get_window_geometry(x11_window_id_gw2)
 		size.x = size_tuple[0]
 		size.y = size_tuple[1]
+
+		if size.x < Settings.minimum_width:
+			size.x = Settings.minimum_width
+		if size.y < Settings.minimum_height:
+			size.y = Settings.minimum_height
+
 	OS.window_size = size
 	var identity_length: int = spb.get_32()
 	var identity_str = spb.get_utf8_string(identity_length)
 	var identity = JSON.parse(identity_str).result
-	
+
 	# FOV Calculations
 	# The minimum value on the FOV slider gives a float value in this field of 0.436
 	# The maximum value on the FOV slider gives a float value in this field of 1.222
@@ -255,6 +321,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
+		print("New Map")
+
+		print("Saving Old Map")
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 		gen_map_markers()
@@ -269,6 +338,14 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	reset_minimap_masks()
 
+
+func decode_timeout_packet(spb: StreamPeerBuffer):
+	if Settings.burrito_link_auto_launch_enabled:
+		print("Link Timeout Reached, should restart link if started by burrito automatically")
+		close_burrito_link()
+		launch_burrito_link()
+
+
 func reset_minimap_masks():
 	var viewport_size = get_viewport().size
 	compass_corner1 = Vector2(0, 0)
@@ -279,7 +356,7 @@ func reset_minimap_masks():
 	elif !map_is_open && compass_is_top_right:
 		compass_corner1 = viewport_size - Vector2(compass_width, compass_height)
 		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
-	
+
 	for minimap_path in $Control/MiniMap.get_children():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
@@ -377,8 +454,8 @@ func _unhandled_input(event):
 			if is_instance_valid(self.last_hover) and self.last_hover.has_method("unhover"):
 				self.last_hover.unhover()
 			self.last_hover = null
-			
-			
+
+
 ################################################################################
 #
 ################################################################################
@@ -447,6 +524,7 @@ func search_category_tree(split_name: PoolStringArray, category_item: TreeItem, 
 		child_item = child_item.get_next()
 	print("No category found for ", split_name)
 	return null
+
 
 func build_category_tree():
 	var root = self.marker_packs.create_item()
@@ -528,7 +606,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
-	# TODO: We want to have two copies of each texture in memory one for 2D 
+	# TODO: We want to have two copies of each texture in memory one for 2D
 	# which does not use srgb to render properly, and one for 3D which forces
 	# srgb to render properly. Issue #23.
 	var texture_file = File.new()
@@ -545,11 +623,11 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 
 	var new_route = route_scene.instance()
 	new_route.texture_path = texture_path # Save the location of the image for later
-	
+
 	var points_3d := PoolVector3Array()
 	for point in points:
 		points_3d.append(Vector3(point[0], point[1], -point[2]))
-	
+
 	new_route.create_mesh(points_3d)
 	new_route.set_texture(texture)
 	new_route.waypoint = waypoint_trail
@@ -559,7 +637,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 		new_route.visible = false
 	
 	paths.add_child(new_route)
-	
+
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
 	var points_2d := PoolVector2Array()
@@ -569,6 +647,9 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_2d_path.texture = texture
 	new_2d_path.visible = new_route.visible
 	minimap.add_child(new_2d_path)
+
+	self.currently_active_path = new_route
+	self.currently_active_path_2d = new_2d_path
 
 
 ################################################################################
@@ -591,13 +672,13 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 func data_from_renderview():
 	var icons_data = []
 	var paths_data = []
-	
+
 	for icon in $Icons.get_children():
 		icons_data.append({
 			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
 			"texture": icon.texture_path
 		})
-	
+
 	for path in $Paths.get_children():
 		#print(path)
 		var points = []
@@ -825,14 +906,14 @@ func _on_NewNodeAfter_pressed():
 		if path.get_point_count() > index+1:
 			var end = path.get_point_position(index+1)
 			midpoint = ((start-end)/2) + end
-		
+
 		path.add_point(midpoint, index+1)
 		path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
 
 		clear_adjustment_nodes()
 		gen_adjustment_nodes()
 		on_gizmo_deselected(self.currently_selected_node)
-		
+
 func _on_XZSnapToPlayer_pressed():
 	self.currently_selected_node.translation.x = self.player_position.x
 	self.currently_selected_node.translation.z = -self.player_position.z
@@ -860,7 +941,7 @@ func _on_ReversePathDirection_pressed():
 
 
 func _on_ExitButton_pressed():
-	get_tree().quit()
+	exit_burrito()
 
 
 func _on_Settings_pressed():
