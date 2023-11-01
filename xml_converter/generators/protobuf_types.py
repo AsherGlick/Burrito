@@ -49,7 +49,7 @@ parser = Lark(
 # Define transformer
 class ProtoDictTransformer(Transformer):  # type: ignore
     def start(self, items: List):  # type: ignore
-        messages = {}
+        messages = {}  # type: ignore
         for item in items:
             if type(item) is dict:
                 for key, value in item.items():
@@ -167,6 +167,7 @@ PROTO_TO_CPP_TYPES: Dict[str, str] = {
     "bytes": "std::string",
 }
 
+
 def get_proto_field_cpp_type(message: str, field: str) -> str:
     value = get_proto_field_type(message, field)
 
@@ -189,6 +190,7 @@ def get_proto_field_cpp_prototype(message: str, field: str) -> Optional[str]:
         proto_field_type=value,
     )
 
+
 def is_proto_field_scalar(message: str, field: str) -> bool:
     value = get_proto_field_type(message, field)
 
@@ -197,6 +199,5 @@ def is_proto_field_scalar(message: str, field: str) -> bool:
 
     if value in proto_field_types["_enums_"]:
         return True
-
 
     return False

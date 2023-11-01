@@ -368,7 +368,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
             proto_field_type = new_type
 
             new_prototype = get_proto_field_cpp_prototype(marker_type, metadata[filepath]["protobuf_field"])
-            if proto_field_prototype != None and proto_field_prototype != new_prototype:
+            if proto_field_prototype is not None and proto_field_prototype != new_prototype:
                 print("Proto Field prototype differes between different marker types for ", metadata[filepath]["protobuf_field"])
             proto_field_prototype = new_prototype
 
