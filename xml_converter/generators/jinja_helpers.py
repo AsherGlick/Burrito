@@ -117,12 +117,18 @@ class UnindentBlocks(Extension):
     # but does not end on a line by itself
     ############################################################################
     def indent_flow(self, line: str) -> Tuple[IndentFlow, str]:
-        tag_match = re.match(tag_regex, line)
+        matched_tags = parse_out_tags(line)
 
-        if tag_match is None:
+        if len(matched_tags) == 0:
             return IndentFlow.keep, ""
 
-        parsed_tag_line = tag_match.groups()[0].strip()
+        if len(matched_tags) > 1:
+            # This is maybe wrong, but we will assume for now that if there are
+            # multiple tags on a single line then the entire "block" of those
+            # tags is on the line and no indentation stuff should be changed.
+            return IndentFlow.keep, ""
+
+        parsed_tag_line = matched_tags[0].strip('- ')
 
         if parsed_tag_line.startswith("for"):
             return IndentFlow.push, "for"
@@ -152,7 +158,8 @@ class UnindentBlocks(Extension):
         #     return IndentFlow.pop, "filter"
 
         # # TODO: Do more testing to branch between set and blockset
-        # elif parsed_tag_line.startswith("set"):
+        elif parsed_tag_line.startswith("set"):
+            return IndentFlow.keep, ""
         #     return IndentFlow.push, "set" # or maybe `IndentFlow.keep, ""` if not a block set
         # elif parsed_tag_line.startswith("endset"):
         #     return IndentFlow.pop, "set"
@@ -210,3 +217,26 @@ def unindent_block(block: List[str]) -> List[str]:
         next_indent = None
 
     return [line[index:] for line in block]
+
+
+################################################################################
+# parse_out_tags
+#
+# This function parses out jinja control flow tags from a string of text.
+################################################################################
+def parse_out_tags(line: str) -> List[str]:
+    tags = []
+
+    while True:
+        start_index = line.find("{%")
+
+        if start_index == -1:
+            return tags
+
+        end_index = line.find("%}")
+
+        if end_index == -1:
+            return tags
+
+        tags.append(line[start_index + 2:end_index])
+        line = line[end_index + 2:]
