@@ -59,15 +59,15 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
-    waypoint::{{class_name}}* proto_{{attribute_name}} = new waypoint::{{class_name}}();
+{{proto_field_cpp_type}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
+    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
     {% for n, attribute_variable in enumerate(attribute_variables)%}
         proto_{{attribute_name}}->set_{{attribute_variable.attribute_name}}(attribute_value.{{attribute_variable.attribute_name}});
     {% endfor %}
     return proto_{{attribute_name}};
 }
 
-{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}}) {
+{{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
     {{class_name}} {{attribute_name}};
     {% for n, attribute_variable in enumerate(attribute_variables)%}
         {{attribute_name}}.{{attribute_variable.attribute_name}} = proto_{{attribute_name}}.{{attribute_variable.attribute_name}}();

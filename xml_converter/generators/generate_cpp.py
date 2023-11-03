@@ -4,6 +4,7 @@ from jinja2 import FileSystemLoader, Environment, Template
 from jinja_helpers import UnindentBlocks
 from util import lowercase, capitalize, normalize, Document, SchemaType
 import os
+from protobuf_types import is_proto_field_scalar, get_proto_field_cpp_type, get_proto_field_cpp_prototype
 
 
 XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
@@ -53,7 +54,16 @@ class AttributeVariable:
     cpp_type: str
     class_name: str
     xml_fields: List[str]
+
+    # The name of the field in the protobuf that this attribute corresponds to.
     protobuf_field: str
+
+    # A the cpp type the protobuf library expects to receive.
+    protobuf_cpp_type: str
+
+    # Protoc cares if a field is scalar or not in the case of "set" vs "set allocated".
+    is_proto_field_scalar: bool
+
     args: List[str] = field(default_factory=list)
     default_xml_field: str = ""
     side_effects: List[str] = field(default_factory=list)
@@ -71,13 +81,6 @@ class AttributeVariable:
 
     uses_file_path: bool = False
     is_component: bool = False
-
-    # A flag to override the type that should be used when writing or reading from a protobuf
-    protobuf_type: str = ""
-
-    def __post_init__(self) -> None:
-        if self.protobuf_type == "":
-            self.protobuf_type = self.attribute_type
 
 
 ################################################################################
@@ -284,6 +287,8 @@ def generate_cpp_variable_data(
                         xml_fields=component_xml_fields,
                         default_xml_field=component_default_xml_field,
                         protobuf_field=component["protobuf_field"],
+                        protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval["protobuf_field"] + "." + component["protobuf_field"]),
+                        is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval["protobuf_field"] + "." + component["protobuf_field"]),
                         attribute_flag_name=attribute_name + "_is_set",
                         write_to_xml=write_to_xml,
                         is_component=True,
@@ -294,10 +299,6 @@ def generate_cpp_variable_data(
                 if fieldval['xml_bundled_components'] == []:
                     write_to_xml = False
 
-            protobuf_type = ""
-            if "protobuf_type" in fieldval:
-                protobuf_type = fieldval["protobuf_type"]
-
             attribute_variable = AttributeVariable(
                 attribute_name=attribute_name,
                 attribute_type=fieldval["type"],
@@ -306,13 +307,14 @@ def generate_cpp_variable_data(
                 xml_fields=xml_fields,
                 default_xml_field=default_xml_field,
                 protobuf_field=protobuf_field,
+                protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval["protobuf_field"]),
+                is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval["protobuf_field"]),
                 proto_drilldown_calls=proto_drilldown_calls,
                 mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
                 args=args,
                 write_to_xml=write_to_xml,
                 attribute_flag_name=attribute_name + "_is_set",
                 side_effects=side_effects,
-                protobuf_type=protobuf_type
             )
             attribute_variables.append(attribute_variable)
 
@@ -357,6 +359,19 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
         metadata[filepath] = data[filepath].metadata
         attribute_name = attribute_name_from_markdown_data(metadata[filepath]['name'])
 
+        proto_field_type: str = ""
+        proto_field_prototype: Optional[str] = None
+        for marker_type in metadata[filepath]["applies_to"]:
+            new_type = get_proto_field_cpp_type(marker_type, metadata[filepath]["protobuf_field"])
+            if proto_field_type != "" and proto_field_type != new_type:
+                print("Proto Field type differes between different marker types for ", metadata[filepath]["protobuf_field"])
+            proto_field_type = new_type
+
+            new_prototype = get_proto_field_cpp_prototype(marker_type, metadata[filepath]["protobuf_field"])
+            if proto_field_prototype is not None and proto_field_prototype != new_prototype:
+                print("Proto Field prototype differes between different marker types for ", metadata[filepath]["protobuf_field"])
+            proto_field_prototype = new_prototype
+
         proto_drilldown_calls: str
         mutable_proto_drilldown_calls: str
         protobuf_field: str
@@ -368,6 +383,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                 for item in metadata[filepath]['flags'][flag]:
                     xml_fields.append(normalize(item))
 
+                # TODO: Replace AttributeVariable with a more fitting dataclass
                 attribute_variable = AttributeVariable(
                     attribute_name=flag,
                     attribute_type=metadata[filepath]['type'],
@@ -376,7 +392,9 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     xml_fields=xml_fields,
                     protobuf_field=protobuf_field,
                     proto_drilldown_calls=proto_drilldown_calls,
-                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls
+                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
+                    protobuf_cpp_type="",
+                    is_proto_field_scalar=False
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -392,6 +410,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     xml_fields.append(normalize(item))
                 if component['name'] in metadata[filepath]['xml_bundled_components']:
                     xml_bundled_components.append(component_attribute_name)
+                # TODO: Replace AttributeVariable with a more fitting dataclass
                 attribute_variable = AttributeVariable(
                     attribute_name=component_attribute_name,
                     attribute_type=metadata[filepath]['type'],
@@ -400,7 +419,9 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     xml_fields=xml_fields,
                     protobuf_field=component["protobuf_field"],
                     proto_drilldown_calls=proto_drilldown_calls,
-                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls
+                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
+                    protobuf_cpp_type="",
+                    is_proto_field_scalar=False,
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -409,6 +430,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                 xml_fields = []
                 for item in metadata[filepath]['values'][value]:
                     xml_fields.append(normalize(item))
+                # TODO: Replace AttributeVariable with a more fitting dataclass
                 attribute_variable = AttributeVariable(
                     attribute_name=value,
                     attribute_type=metadata[filepath]['type'],
@@ -417,7 +439,9 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     xml_fields=xml_fields,
                     protobuf_field=protobuf_field,
                     proto_drilldown_calls=proto_drilldown_calls,
-                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls
+                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
+                    protobuf_cpp_type="",
+                    is_proto_field_scalar=False,
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -430,15 +454,20 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                 attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                 class_name=capitalize(attribute_name, delimiter=""),
                 type=metadata[filepath]['type'],
+                proto_field_cpp_type=proto_field_type,
+                proto_field_cpp_type_prototype=proto_field_prototype,
             ))
 
         with open(os.path.join(output_directory, attribute_name + "_gen.cpp"), 'w') as f:
             f.write(template[metadata[filepath]['type']].render(
                 attribute_name=attribute_name,
+                # TODO: Should this attribute_variables list be sorted? The hpp one is.
                 attribute_variables=attribute_variables,
                 class_name=capitalize(attribute_name, delimiter=""),
                 enumerate=enumerate,
-                xml_bundled_components=xml_bundled_components
+                xml_bundled_components=xml_bundled_components,
+                proto_field_cpp_type=proto_field_type,
+                proto_field_cpp_type_prototype=proto_field_prototype,
             ))
 
 

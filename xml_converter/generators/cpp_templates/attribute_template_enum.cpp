@@ -57,21 +57,21 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
     }
 }
 
-waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_value) {
+{{proto_field_cpp_type}} to_proto_{{attribute_name}}({{class_name}} attribute_value) {
     switch (attribute_value) {
         {% for attribute_variable in attribute_variables %}
             case {{class_name}}::{{attribute_variable.attribute_name}}:
-                return waypoint::{{class_name}}::{{attribute_variable.attribute_name}};
+                return {{proto_field_cpp_type}}::{{attribute_variable.attribute_name}};
         {% endfor %}
         default:
-            return waypoint::{{class_name}}::{{attribute_variables[0].attribute_name}};
+            return {{proto_field_cpp_type}}::{{attribute_variables[0].attribute_name}};
     }
 }
 
-{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}}) {
+{{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
     switch (proto_{{attribute_name}}) {
         {% for attribute_variable in attribute_variables %}
-            case waypoint::{{class_name}}::{{attribute_variable.attribute_name}}:
+            case {{proto_field_cpp_type}}::{{attribute_variable.attribute_name}}:
                 return {{class_name}}::{{attribute_variable.attribute_name}};
         {% endfor %}
         default:
