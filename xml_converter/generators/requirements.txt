@@ -16,3 +16,4 @@ tomli==2.0.1
 types-Markdown==3.4.0
 types-PyYAML==6.0.10
 typing_extensions==4.3.0
+lark==1.1.8
