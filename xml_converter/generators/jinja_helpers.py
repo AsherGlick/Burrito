@@ -225,7 +225,7 @@ def unindent_block(block: List[str]) -> List[str]:
 # This function parses out jinja control flow tags from a string of text.
 ################################################################################
 def parse_out_tags(line: str) -> List[str]:
-    tags = []
+    tags: List[str] = []
 
     while True:
         start_index = line.find("{%")
