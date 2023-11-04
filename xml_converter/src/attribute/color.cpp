@@ -113,7 +113,6 @@ string color_to_xml_attribute(const string& attribute_name, const Color* value) 
     return " " + attribute_name + "=\"" + rgb + "\"";
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // from_proto_color
 //
@@ -132,7 +131,6 @@ Color from_proto_color(waypoint::RGBAColor attribute_value) {
     return color;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // color_to_proto
 //
@@ -148,11 +146,11 @@ void color_to_proto(Color value, std::function<void(waypoint::RGBAColor*)> sette
         int_alpha = convert_color_channel_float_to_int(value.alpha);
     }
 
-    uint32_t rgba = 
-        ((convert_color_channel_float_to_int(value.red) & 0xff) << 24)
-        + ((convert_color_channel_float_to_int(value.green) & 0xff) << 16)
-        + ((convert_color_channel_float_to_int(value.blue) & 0xff) << 8)
-        + (int_alpha & 0xff);
+    uint32_t r = ((convert_color_channel_float_to_int(value.red) & 0xff) << 24);
+    uint32_t g = ((convert_color_channel_float_to_int(value.green) & 0xff) << 16);
+    uint32_t b = ((convert_color_channel_float_to_int(value.blue) & 0xff) << 8);
+    uint32_t a = (int_alpha & 0xff);
+    uint32_t rgba = r | g | b | a;
 
     color->set_rgba_color(rgba);
     setter(color);

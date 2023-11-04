@@ -33,7 +33,6 @@ string unique_id_to_xml_attribute(const string& attribute_name, const UniqueId* 
     return " " + attribute_name + "=\"" + base64_encode(&(value->guid[0]), value->guid.size()) + "\"";
 }
 
-
 UniqueId from_proto_unique_id(string attribute_value) {
     UniqueId unique_id;
     std::vector<uint8_t> guid(attribute_value.begin(), attribute_value.end());

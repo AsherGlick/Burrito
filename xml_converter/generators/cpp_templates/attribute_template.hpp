@@ -1,8 +1,8 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
-#include <functional>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
 {% if type == "Enum" %}

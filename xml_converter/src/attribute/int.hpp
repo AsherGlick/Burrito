@@ -1,8 +1,8 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
-#include <functional>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
 
@@ -22,4 +22,3 @@ inline int const& from_proto_int(const int& x) {
 }
 
 void int_to_proto(int value, std::function<void(int&)> setter);
-
