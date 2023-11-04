@@ -55,7 +55,7 @@ string join(const vector<string>& input, const string& delimiter) {
         size += input[i].size() + delimiter.size();
     }
 
-    result.resize(size);
+    result.reserve(size);
 
     for (size_t i = 0; i < input.size(); i++) {
         result += input[i];
