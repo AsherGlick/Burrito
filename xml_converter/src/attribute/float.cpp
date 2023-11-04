@@ -29,3 +29,12 @@ void xml_attribute_to_float(
 string float_to_xml_attribute(const string& attribute_name, const float* value) {
     return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// float_to_proto
+//
+// Writes a float to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void float_to_proto(float value, std::function<void(float&)> setter) {
+    setter(value);
+}

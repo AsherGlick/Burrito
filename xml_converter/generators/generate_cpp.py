@@ -324,7 +324,7 @@ def generate_cpp_variable_data(
             serialize_xml_side_effects: List[str] = []
             deserialize_xml_function: str = "xml_attribute_to_" + class_name
             deserialize_xml_side_effects: List[str] = []
-            serialize_proto_function: str = "to_proto_" + class_name
+            serialize_proto_function: str = class_name + "_to_proto"
             serialize_proto_side_effects: List[str] = []
             deserialize_proto_function: str = "from_proto_" + class_name
             deserialize_proto_side_effects: List[str] = []

@@ -409,145 +409,192 @@ vector<string> Icon::as_xml() const {
 waypoint::Icon Icon::as_protobuf() const {
     waypoint::Icon proto_icon;
     if (this->achievement_bitmask_is_set) {
-        proto_icon.set_achievement_bit(to_proto_int(this->achievement_bitmask));
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_bit(val); };
+        int_to_proto(this->achievement_bitmask, setter);
     }
     if (this->achievement_id_is_set) {
-        proto_icon.set_achievement_id(to_proto_int(this->achievement_id));
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_id(val); };
+        int_to_proto(this->achievement_id, setter);
     }
     if (this->auto_trigger_is_set) {
-        proto_icon.mutable_trigger()->set_auto_trigger(to_proto_bool(this->auto_trigger));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_auto_trigger(val); };
+        bool_to_proto(this->auto_trigger, setter);
     }
     if (this->bounce_delay_is_set) {
-        proto_icon.mutable_trigger()->set_bounce_delay(to_proto_float(this->bounce_delay));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_delay(val); };
+        float_to_proto(this->bounce_delay, setter);
     }
     if (this->bounce_duration_is_set) {
-        proto_icon.mutable_trigger()->set_bounce_duration(to_proto_float(this->bounce_duration));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_duration(val); };
+        float_to_proto(this->bounce_duration, setter);
     }
     if (this->bounce_height_is_set) {
-        proto_icon.mutable_trigger()->set_bounce_height(to_proto_float(this->bounce_height));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_height(val); };
+        float_to_proto(this->bounce_height, setter);
     }
     if (this->can_fade_is_set) {
-        proto_icon.set_can_fade(to_proto_bool(this->can_fade));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_can_fade(val); };
+        bool_to_proto(this->can_fade, setter);
     }
     if (this->category_is_set) {
-        proto_icon.set_allocated_category(to_proto_marker_category(this->category));
+        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.set_allocated_category(val); };
+        marker_category_to_proto(this->category, setter);
     }
     if (this->color_is_set) {
-        proto_icon.set_allocated_rgba_color(to_proto_color(this->color));
+        std::function<void(waypoint::RGBAColor*)> setter = [&proto_icon](waypoint::RGBAColor* val) { proto_icon.set_allocated_rgba_color(val); };
+        color_to_proto(this->color, setter);
     }
     if (this->copy_clipboard_is_set) {
-        proto_icon.mutable_trigger()->set_action_copy_clipboard(to_proto_string(this->copy_clipboard));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_copy_clipboard(val); };
+        string_to_proto(this->copy_clipboard, setter);
     }
     if (this->copy_message_is_set) {
-        proto_icon.mutable_trigger()->set_action_copy_message(to_proto_string(this->copy_message));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_copy_message(val); };
+        string_to_proto(this->copy_message, setter);
     }
     if (this->cull_chirality_is_set) {
-        proto_icon.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
+        std::function<void(waypoint::CullChirality)> setter = [&proto_icon](waypoint::CullChirality val) { proto_icon.set_cull_chirality(val); };
+        cull_chirality_to_proto(this->cull_chirality, setter);
     }
     if (this->distance_fade_end_is_set) {
-        proto_icon.set_distance_fade_end(to_proto_float(this->distance_fade_end));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_distance_fade_end(val); };
+        float_to_proto(this->distance_fade_end, setter);
     }
     if (this->distance_fade_start_is_set) {
-        proto_icon.set_distance_fade_start(to_proto_float(this->distance_fade_start));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_distance_fade_start(val); };
+        float_to_proto(this->distance_fade_start, setter);
     }
     if (this->euler_rotation_is_set) {
-        proto_icon.set_allocated_euler_rotation(to_proto_euler_rotation(this->euler_rotation));
+        std::function<void(waypoint::EulerRotation*)> setter = [&proto_icon](waypoint::EulerRotation* val) { proto_icon.set_allocated_euler_rotation(val); };
+        euler_rotation_to_proto(this->euler_rotation, setter);
     }
     if (this->festival_filter_is_set) {
-        proto_icon.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
+        std::function<void(waypoint::FestivalFilter*)> setter = [&proto_icon](waypoint::FestivalFilter* val) { proto_icon.set_allocated_festival_filter(val); };
+        festival_filter_to_proto(this->festival_filter, setter);
     }
     if (this->guid_is_set) {
-        proto_icon.set_guid(to_proto_unique_id(this->guid));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_guid(val); };
+        unique_id_to_proto(this->guid, setter);
     }
     if (this->has_countdown_is_set) {
-        proto_icon.mutable_trigger()->set_has_countdown(to_proto_bool(this->has_countdown));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_has_countdown(val); };
+        bool_to_proto(this->has_countdown, setter);
     }
     if (this->height_offset_is_set) {
-        proto_icon.set_height_offset(to_proto_float(this->height_offset));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_height_offset(val); };
+        float_to_proto(this->height_offset, setter);
     }
     if (this->hide_category_is_set) {
-        proto_icon.mutable_trigger()->set_allocated_action_hide_category(to_proto_marker_category(this->hide_category));
+        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_hide_category(val); };
+        marker_category_to_proto(this->hide_category, setter);
     }
     if (this->icon_is_set) {
-        proto_icon.set_allocated_texture_path(to_proto_image(this->icon));
+        std::function<void(waypoint::TexturePath*)> setter = [&proto_icon](waypoint::TexturePath* val) { proto_icon.set_allocated_texture_path(val); };
+        image_to_proto(this->icon, setter);
     }
     if (this->icon_size_is_set) {
-        proto_icon.set_tentative__scale(to_proto_float(this->icon_size));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_tentative__scale(val); };
+        float_to_proto(this->icon_size, setter);
     }
     if (this->info_message_is_set) {
-        proto_icon.mutable_trigger()->set_action_info_message(to_proto_string(this->info_message));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_info_message(val); };
+        string_to_proto(this->info_message, setter);
     }
     if (this->invert_visibility_is_set) {
-        proto_icon.mutable_trigger()->set_invert_display(to_proto_bool(this->invert_visibility));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_invert_display(val); };
+        bool_to_proto(this->invert_visibility, setter);
     }
     if (this->map_display_size_is_set) {
-        proto_icon.set_map_display_size(to_proto_int(this->map_display_size));
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_map_display_size(val); };
+        int_to_proto(this->map_display_size, setter);
     }
     if (this->map_id_is_set) {
-        proto_icon.set_map_id(to_proto_int(this->map_id));
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_map_id(val); };
+        int_to_proto(this->map_id, setter);
     }
     if (this->map_type_filter_is_set) {
-        proto_icon.set_allocated_map_type_filter(to_proto_map_type_filter(this->map_type_filter));
+        std::function<void(waypoint::MapTypeFilter*)> setter = [&proto_icon](waypoint::MapTypeFilter* val) { proto_icon.set_allocated_map_type_filter(val); };
+        map_type_filter_to_proto(this->map_type_filter, setter);
     }
     if (this->maximum_size_on_screen_is_set) {
-        proto_icon.set_maximum_size_on_screen(to_proto_int(this->maximum_size_on_screen));
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_maximum_size_on_screen(val); };
+        int_to_proto(this->maximum_size_on_screen, setter);
     }
     if (this->minimum_size_on_screen_is_set) {
-        proto_icon.set_minimum_size_on_screen(to_proto_int(this->minimum_size_on_screen));
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_minimum_size_on_screen(val); };
+        int_to_proto(this->minimum_size_on_screen, setter);
     }
     if (this->mount_filter_is_set) {
-        proto_icon.set_allocated_mount_filter(to_proto_mount_filter(this->mount_filter));
+        std::function<void(waypoint::MountFilter*)> setter = [&proto_icon](waypoint::MountFilter* val) { proto_icon.set_allocated_mount_filter(val); };
+        mount_filter_to_proto(this->mount_filter, setter);
     }
     if (this->position_is_set) {
-        proto_icon.set_allocated_position(to_proto_position(this->position));
+        std::function<void(waypoint::Position*)> setter = [&proto_icon](waypoint::Position* val) { proto_icon.set_allocated_position(val); };
+        position_to_proto(this->position, setter);
     }
     if (this->profession_filter_is_set) {
-        proto_icon.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
+        std::function<void(waypoint::ProfessionFilter*)> setter = [&proto_icon](waypoint::ProfessionFilter* val) { proto_icon.set_allocated_profession_filter(val); };
+        profession_filter_to_proto(this->profession_filter, setter);
     }
     if (this->render_ingame_is_set) {
-        proto_icon.set_tentative__render_ingame(to_proto_bool(this->render_ingame));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_tentative__render_ingame(val); };
+        bool_to_proto(this->render_ingame, setter);
     }
     if (this->render_on_map_is_set) {
-        proto_icon.set_tentative__render_on_map(to_proto_bool(this->render_on_map));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_tentative__render_on_map(val); };
+        bool_to_proto(this->render_on_map, setter);
     }
     if (this->render_on_minimap_is_set) {
-        proto_icon.set_tentative__render_on_minimap(to_proto_bool(this->render_on_minimap));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_tentative__render_on_minimap(val); };
+        bool_to_proto(this->render_on_minimap, setter);
     }
     if (this->reset_behavior_is_set) {
-        proto_icon.mutable_trigger()->set_reset_behavior(to_proto_reset_behavior(this->reset_behavior));
+        std::function<void(waypoint::ResetBehavior)> setter = [&proto_icon](waypoint::ResetBehavior val) { proto_icon.mutable_trigger()->set_reset_behavior(val); };
+        reset_behavior_to_proto(this->reset_behavior, setter);
     }
     if (this->reset_length_is_set) {
-        proto_icon.mutable_trigger()->set_reset_length(to_proto_float(this->reset_length));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_reset_length(val); };
+        float_to_proto(this->reset_length, setter);
     }
     if (this->scale_on_map_with_zoom_is_set) {
-        proto_icon.set_scale_on_map_with_zoom(to_proto_bool(this->scale_on_map_with_zoom));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_scale_on_map_with_zoom(val); };
+        bool_to_proto(this->scale_on_map_with_zoom, setter);
     }
     if (this->schedule_is_set) {
-        proto_icon.set_bhdraft__schedule(to_proto_string(this->schedule));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_bhdraft__schedule(val); };
+        string_to_proto(this->schedule, setter);
     }
     if (this->schedule_duration_is_set) {
-        proto_icon.set_bhdraft__schedule_duration(to_proto_float(this->schedule_duration));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_bhdraft__schedule_duration(val); };
+        float_to_proto(this->schedule_duration, setter);
     }
     if (this->show_category_is_set) {
-        proto_icon.mutable_trigger()->set_allocated_action_show_category(to_proto_marker_category(this->show_category));
+        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_show_category(val); };
+        marker_category_to_proto(this->show_category, setter);
     }
     if (this->specialization_filter_is_set) {
-        proto_icon.set_allocated_specialization_filter(to_proto_specialization_filter(this->specialization_filter));
+        std::function<void(waypoint::SpecializationFilter*)> setter = [&proto_icon](waypoint::SpecializationFilter* val) { proto_icon.set_allocated_specialization_filter(val); };
+        specialization_filter_to_proto(this->specialization_filter, setter);
     }
     if (this->species_filter_is_set) {
-        proto_icon.set_allocated_species_filter(to_proto_species_filter(this->species_filter));
+        std::function<void(waypoint::SpeciesFilter*)> setter = [&proto_icon](waypoint::SpeciesFilter* val) { proto_icon.set_allocated_species_filter(val); };
+        species_filter_to_proto(this->species_filter, setter);
     }
     if (this->toggle_category_is_set) {
-        proto_icon.mutable_trigger()->set_allocated_action_toggle_category(to_proto_marker_category(this->toggle_category));
+        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_toggle_category(val); };
+        marker_category_to_proto(this->toggle_category, setter);
     }
     if (this->tooltip_description_is_set) {
-        proto_icon.set_tip_description(to_proto_string(this->tooltip_description));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_tip_description(val); };
+        string_to_proto(this->tooltip_description, setter);
     }
     if (this->tooltip_name_is_set) {
-        proto_icon.set_tip_name(to_proto_string(this->tooltip_name));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_tip_name(val); };
+        string_to_proto(this->tooltip_name, setter);
     }
     if (this->trigger_range_is_set) {
-        proto_icon.mutable_trigger()->set_range(to_proto_float(this->trigger_range));
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_range(val); };
+        float_to_proto(this->trigger_range, setter);
     }
     return proto_icon;
 }

@@ -33,18 +33,18 @@ void xml_attribute_to_position(
     *is_set = true;
 }
 
-waypoint::Position* to_proto_position(Position attribute_value) {
-    waypoint::Position* proto_position = new waypoint::Position();
-    proto_position->set_x(attribute_value.x_position);
-    proto_position->set_y(attribute_value.y_position);
-    proto_position->set_z(attribute_value.z_position);
-    return proto_position;
-}
-
 Position from_proto_position(waypoint::Position proto_position) {
     Position position;
     position.x_position = proto_position.x();
     position.y_position = proto_position.y();
     position.z_position = proto_position.z();
     return position;
+}
+
+void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter) {
+    waypoint::Position* proto_position = new waypoint::Position();
+    proto_position->set_x(value.x_position);
+    proto_position->set_y(value.y_position);
+    proto_position->set_z(value.z_position);
+    setter(proto_position);
 }

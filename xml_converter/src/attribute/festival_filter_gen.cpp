@@ -90,18 +90,6 @@ string festival_filter_to_xml_attribute(const std::string& attribute_name, const
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {
-    waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
-    proto_festival_filter->set_dragonbash(attribute_value.dragonbash);
-    proto_festival_filter->set_festival_of_the_four_winds(attribute_value.festival_of_the_four_winds);
-    proto_festival_filter->set_halloween(attribute_value.halloween);
-    proto_festival_filter->set_lunar_new_year(attribute_value.lunar_new_year);
-    proto_festival_filter->set_super_adventure_festival(attribute_value.super_adventure_festival);
-    proto_festival_filter->set_wintersday(attribute_value.wintersday);
-    proto_festival_filter->set_none(attribute_value.none);
-    return proto_festival_filter;
-}
-
 FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter) {
     FestivalFilter festival_filter;
     festival_filter.dragonbash = proto_festival_filter.dragonbash();
@@ -112,4 +100,16 @@ FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festiva
     festival_filter.wintersday = proto_festival_filter.wintersday();
     festival_filter.none = proto_festival_filter.none();
     return festival_filter;
+}
+
+void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter) {
+    waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
+    proto_festival_filter->set_dragonbash(value.dragonbash);
+    proto_festival_filter->set_festival_of_the_four_winds(value.festival_of_the_four_winds);
+    proto_festival_filter->set_halloween(value.halloween);
+    proto_festival_filter->set_lunar_new_year(value.lunar_new_year);
+    proto_festival_filter->set_super_adventure_festival(value.super_adventure_festival);
+    proto_festival_filter->set_wintersday(value.wintersday);
+    proto_festival_filter->set_none(value.none);
+    setter(proto_festival_filter);
 }

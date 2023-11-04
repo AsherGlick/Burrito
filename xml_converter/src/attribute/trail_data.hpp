@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
 
@@ -28,6 +29,6 @@ void xml_attribute_to_trail_data(
 
 std::string trail_data_to_xml_attribute(const std::string& attribute_name, const TrailData* value);
 
-waypoint::TrailData* to_proto_trail_data(TrailData attribute_value);
-
 TrailData from_proto_trail_data(waypoint::TrailData attribute_value);
+
+void trail_data_to_proto(TrailData value, std::function<void(waypoint::TrailData*)> setter);

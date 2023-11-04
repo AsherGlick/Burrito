@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
 
@@ -19,6 +20,6 @@ std::string int_to_xml_attribute(const std::string& attribute_name, const int* v
 inline int const& from_proto_int(const int& x) {
     return x;
 }
-inline int const& to_proto_int(const int& x) {
-    return x;
-}
+
+void int_to_proto(int value, std::function<void(int&)> setter);
+

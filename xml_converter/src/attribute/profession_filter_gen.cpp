@@ -101,20 +101,6 @@ string profession_filter_to_xml_attribute(const std::string& attribute_name, con
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::ProfessionFilter* to_proto_profession_filter(ProfessionFilter attribute_value) {
-    waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
-    proto_profession_filter->set_guardian(attribute_value.guardian);
-    proto_profession_filter->set_warrior(attribute_value.warrior);
-    proto_profession_filter->set_engineer(attribute_value.engineer);
-    proto_profession_filter->set_ranger(attribute_value.ranger);
-    proto_profession_filter->set_thief(attribute_value.thief);
-    proto_profession_filter->set_elementalist(attribute_value.elementalist);
-    proto_profession_filter->set_mesmer(attribute_value.mesmer);
-    proto_profession_filter->set_necromancer(attribute_value.necromancer);
-    proto_profession_filter->set_revenant(attribute_value.revenant);
-    return proto_profession_filter;
-}
-
 ProfessionFilter from_proto_profession_filter(waypoint::ProfessionFilter proto_profession_filter) {
     ProfessionFilter profession_filter;
     profession_filter.guardian = proto_profession_filter.guardian();
@@ -127,4 +113,18 @@ ProfessionFilter from_proto_profession_filter(waypoint::ProfessionFilter proto_p
     profession_filter.necromancer = proto_profession_filter.necromancer();
     profession_filter.revenant = proto_profession_filter.revenant();
     return profession_filter;
+}
+
+void profession_filter_to_proto(ProfessionFilter value, std::function<void(waypoint::ProfessionFilter*)> setter) {
+    waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
+    proto_profession_filter->set_guardian(value.guardian);
+    proto_profession_filter->set_warrior(value.warrior);
+    proto_profession_filter->set_engineer(value.engineer);
+    proto_profession_filter->set_ranger(value.ranger);
+    proto_profession_filter->set_thief(value.thief);
+    proto_profession_filter->set_elementalist(value.elementalist);
+    proto_profession_filter->set_mesmer(value.mesmer);
+    proto_profession_filter->set_necromancer(value.necromancer);
+    proto_profession_filter->set_revenant(value.revenant);
+    setter(proto_profession_filter);
 }

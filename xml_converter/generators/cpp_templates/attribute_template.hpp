@@ -2,9 +2,10 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
-{% if type == "Enum":%}
+{% if type == "Enum" %}
     #include "waypoint.pb.h"
 
     class XMLError;
@@ -14,7 +15,7 @@
         {{attribute_variable.attribute_name}},
         {% endfor %}
     };
-{% else: %}
+{% else %}
     class XMLError;
     {{proto_field_cpp_type_prototype}}
 
@@ -35,9 +36,11 @@ void xml_attribute_to_{{attribute_name}}(
     {{class_name}}* value,
     bool* is_set);
 std::string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value);
-{% if type == "Enum":%}
-    {{proto_field_cpp_type}} to_proto_{{attribute_name}}({{class_name}} attribute_value);
-{% else: %}
-    {{proto_field_cpp_type}}* to_proto_{{attribute_name}}({{class_name}} attribute_value);
-{% endif %}
+
 {{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}});
+
+{% if type == "Enum" %}
+    void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}})> setter);
+{% else %}
+    void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}}*)> setter);
+{% endif %}

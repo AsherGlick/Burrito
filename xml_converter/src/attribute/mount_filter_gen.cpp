@@ -108,21 +108,6 @@ string mount_filter_to_xml_attribute(const std::string& attribute_name, const Mo
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value) {
-    waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
-    proto_mount_filter->set_raptor(attribute_value.raptor);
-    proto_mount_filter->set_springer(attribute_value.springer);
-    proto_mount_filter->set_skimmer(attribute_value.skimmer);
-    proto_mount_filter->set_jackal(attribute_value.jackal);
-    proto_mount_filter->set_griffon(attribute_value.griffon);
-    proto_mount_filter->set_roller_beetle(attribute_value.roller_beetle);
-    proto_mount_filter->set_warclaw(attribute_value.warclaw);
-    proto_mount_filter->set_skyscale(attribute_value.skyscale);
-    proto_mount_filter->set_skiff(attribute_value.skiff);
-    proto_mount_filter->set_seige_turtle(attribute_value.seige_turtle);
-    return proto_mount_filter;
-}
-
 MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter) {
     MountFilter mount_filter;
     mount_filter.raptor = proto_mount_filter.raptor();
@@ -136,4 +121,19 @@ MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter) {
     mount_filter.skiff = proto_mount_filter.skiff();
     mount_filter.seige_turtle = proto_mount_filter.seige_turtle();
     return mount_filter;
+}
+
+void mount_filter_to_proto(MountFilter value, std::function<void(waypoint::MountFilter*)> setter) {
+    waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
+    proto_mount_filter->set_raptor(value.raptor);
+    proto_mount_filter->set_springer(value.springer);
+    proto_mount_filter->set_skimmer(value.skimmer);
+    proto_mount_filter->set_jackal(value.jackal);
+    proto_mount_filter->set_griffon(value.griffon);
+    proto_mount_filter->set_roller_beetle(value.roller_beetle);
+    proto_mount_filter->set_warclaw(value.warclaw);
+    proto_mount_filter->set_skyscale(value.skyscale);
+    proto_mount_filter->set_skiff(value.skiff);
+    proto_mount_filter->set_seige_turtle(value.seige_turtle);
+    setter(proto_mount_filter);
 }

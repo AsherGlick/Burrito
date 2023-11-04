@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
 class XMLError;
@@ -25,5 +26,7 @@ void xml_attribute_to_position(
     Position* value,
     bool* is_set);
 std::string position_to_xml_attribute(const std::string& attribute_name, const Position* value);
-waypoint::Position* to_proto_position(Position attribute_value);
+
 Position from_proto_position(waypoint::Position proto_position);
+
+void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter);

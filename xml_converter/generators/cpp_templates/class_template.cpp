@@ -94,10 +94,11 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
         {% if attribute_variable.is_component == false %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
                 {% if not attribute_variable.is_proto_field_scalar %}
-                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}({{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}));
+                    std::function<void({{attribute_variable.protobuf_cpp_type}}*)> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.protobuf_cpp_type}}* val) { proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}(val); };
                 {% else %}
-                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}({{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}));
+                    std::function<void({{attribute_variable.protobuf_cpp_type}})> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.protobuf_cpp_type}} val) { proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(val); };
                 {% endif %}
+                {{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}, setter);
             }
         {% endif %}
     {% endfor %}
