@@ -90,16 +90,17 @@ string festival_filter_to_xml_attribute(const std::string& attribute_name, const
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter) {
+void proto_to_festival_filter(waypoint::FestivalFilter input, FestivalFilter* value, bool* is_set) {
     FestivalFilter festival_filter;
-    festival_filter.dragonbash = proto_festival_filter.dragonbash();
-    festival_filter.festival_of_the_four_winds = proto_festival_filter.festival_of_the_four_winds();
-    festival_filter.halloween = proto_festival_filter.halloween();
-    festival_filter.lunar_new_year = proto_festival_filter.lunar_new_year();
-    festival_filter.super_adventure_festival = proto_festival_filter.super_adventure_festival();
-    festival_filter.wintersday = proto_festival_filter.wintersday();
-    festival_filter.none = proto_festival_filter.none();
-    return festival_filter;
+    festival_filter.dragonbash = input.dragonbash();
+    festival_filter.festival_of_the_four_winds = input.festival_of_the_four_winds();
+    festival_filter.halloween = input.halloween();
+    festival_filter.lunar_new_year = input.lunar_new_year();
+    festival_filter.super_adventure_festival = input.super_adventure_festival();
+    festival_filter.wintersday = input.wintersday();
+    festival_filter.none = input.none();
+    *value = festival_filter;
+    *is_set = true;
 }
 
 void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter) {

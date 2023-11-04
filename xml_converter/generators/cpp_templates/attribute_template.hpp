@@ -35,9 +35,10 @@ void xml_attribute_to_{{attribute_name}}(
     std::vector<XMLError*>* errors,
     {{class_name}}* value,
     bool* is_set);
+
 std::string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value);
 
-{{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}});
+void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}* value, bool* is_set);
 
 {% if type == "Enum" %}
     void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}})> setter);

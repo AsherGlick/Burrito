@@ -24,6 +24,6 @@ void xml_attribute_to_marker_category(
 
 std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value);
 
-MarkerCategory from_proto_marker_category(waypoint::Category attribute_value);
+void proto_to_marker_category(waypoint::Category input, MarkerCategory* value, bool* is_set);
 
 void marker_category_to_proto(MarkerCategory value, std::function<void(waypoint::Category*)> setter);

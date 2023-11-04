@@ -66,7 +66,7 @@ class AttributeVariable:
 
     # The function name and additional side effect pointers for proto deserialization.
     deserialize_proto_function: str
-    # deserialize_proto_side_effects: List[str]
+    deserialize_proto_side_effects: List[str]
 
     # The name of the field in the protobuf that this attribute corresponds to.
     protobuf_field: str
@@ -313,7 +313,7 @@ def generate_cpp_variable_data(
                         serialize_proto_function="to_proto_" + component_class_name,
                         # serialize_proto_side_effects=[],
                         deserialize_proto_function="from_proto_" + component_class_name,
-                        # deserialize_proto_side_effects=[],
+                        deserialize_proto_side_effects=[],
                     )
                     attribute_variables.append(component_attribute_variable)
                 # If there aren't any components to bundle, we don't want to render the attribute
@@ -326,7 +326,7 @@ def generate_cpp_variable_data(
             deserialize_xml_side_effects: List[str] = []
             serialize_proto_function: str = class_name + "_to_proto"
             serialize_proto_side_effects: List[str] = []
-            deserialize_proto_function: str = "from_proto_" + class_name
+            deserialize_proto_function: str = "proto_to_" + class_name
             deserialize_proto_side_effects: List[str] = []
             if "custom_functions" in fieldval:
                 # Overwrite defaults with xml/proto read/write functions
@@ -335,11 +335,11 @@ def generate_cpp_variable_data(
                         deserialize_xml_function, deserialize_xml_side_effects = build_custom_function_data(
                             fieldval["custom_functions"][custom_function]
                         )
-                    elif custom_function == "read.proto":
+                    elif custom_function == "write.xml":
                         serialize_xml_function, serialize_xml_side_effects = build_custom_function_data(
                             fieldval["custom_functions"][custom_function]
                         )
-                    elif custom_function == "write.xml":
+                    elif custom_function == "read.proto":
                         deserialize_proto_function, deserialize_proto_side_effects = build_custom_function_data(
                             fieldval["custom_functions"][custom_function]
                         )
@@ -353,11 +353,11 @@ def generate_cpp_variable_data(
                         deserialize_xml_function, deserialize_xml_side_effects = build_custom_function_data(
                             fieldval["custom_functions"][custom_function]
                         )
-                    elif custom_function == "read.proto." + doc_type:
+                    elif custom_function == "write.xml." + doc_type:
                         serialize_xml_function, serialize_xml_side_effects = build_custom_function_data(
                             fieldval["custom_functions"][custom_function]
                         )
-                    elif custom_function == "write.xml." + doc_type:
+                    elif custom_function == "read.proto." + doc_type:
                         deserialize_proto_function, deserialize_proto_side_effects = build_custom_function_data(
                             fieldval["custom_functions"][custom_function]
                         )
@@ -390,7 +390,7 @@ def generate_cpp_variable_data(
                 serialize_proto_function=serialize_proto_function,
                 # serialize_proto_side_effects=serialize_proto_side_effects,
                 deserialize_proto_function=deserialize_proto_function,
-                # deserialize_proto_side_effects=deserialize_proto_side_effects,
+                deserialize_proto_side_effects=deserialize_proto_side_effects,
 
                 uses_file_path=fieldval.get("uses_file_path", False)
             )
@@ -480,7 +480,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     # serialize_xml_side_effects=[],
                     deserialize_xml_side_effects=[],
                     # serialize_proto_side_effects=[],
-                    # deserialize_proto_side_effects=[],
+                    deserialize_proto_side_effects=[],
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -515,7 +515,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     # serialize_xml_side_effects=[],
                     deserialize_xml_side_effects=[],
                     # serialize_proto_side_effects=[],
-                    # deserialize_proto_side_effects=[],
+                    deserialize_proto_side_effects=[],
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -543,7 +543,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     # serialize_xml_side_effects=[],
                     deserialize_xml_side_effects=[],
                     # serialize_proto_side_effects=[],
-                    # deserialize_proto_side_effects=[],
+                    deserialize_proto_side_effects=[],
                 )
                 attribute_variables.append(attribute_variable)
 

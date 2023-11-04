@@ -114,21 +114,22 @@ string color_to_xml_attribute(const string& attribute_name, const Color* value) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// from_proto_color
+// proto_to_color
 //
-// Converts a proto message into a Color
+// Parses a Color from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-Color from_proto_color(waypoint::RGBAColor attribute_value) {
+void proto_to_color(waypoint::RGBAColor input, Color* value, bool* is_set) {
     Color color;
     std::stringstream stream;
-    uint32_t rgba = attribute_value.rgba_color();
+    uint32_t rgba = input.rgba_color();
 
     color.red = convert_color_channel_int_to_float((rgba >> 24) & 0xff);
     color.green = convert_color_channel_int_to_float((rgba >> 16) & 0xff);
     color.blue = convert_color_channel_int_to_float((rgba >> 8) & 0xff);
     color.alpha = convert_color_channel_int_to_float(rgba & 0xff);
 
-    return color;
+    *value = color;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

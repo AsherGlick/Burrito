@@ -24,6 +24,6 @@ void xml_attribute_to_image(
 
 std::string image_to_xml_attribute(const std::string& attribute_name, const Image* value);
 
-Image from_proto_image(waypoint::TexturePath attribute_value);
+void proto_to_image(waypoint::TexturePath input, Image* value, bool* is_set);
 
 void image_to_proto(Image value, std::function<void(waypoint::TexturePath*)> setter);

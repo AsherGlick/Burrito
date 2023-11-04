@@ -46,8 +46,9 @@ void xml_attribute_to_map_type_filter(
     std::vector<XMLError*>* errors,
     MapTypeFilter* value,
     bool* is_set);
+
 std::string map_type_filter_to_xml_attribute(const std::string& attribute_name, const MapTypeFilter* value);
 
-MapTypeFilter from_proto_map_type_filter(waypoint::MapTypeFilter proto_map_type_filter);
+void proto_to_map_type_filter(waypoint::MapTypeFilter input, MapTypeFilter* value, bool* is_set);
 
 void map_type_filter_to_proto(MapTypeFilter value, std::function<void(waypoint::MapTypeFilter*)> setter);

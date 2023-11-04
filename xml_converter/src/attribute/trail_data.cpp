@@ -90,16 +90,17 @@ string trail_data_to_xml_attribute(const string& attribute_name, const TrailData
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// from_proto_trail_data
+// proto_to_trail_data
 //
-// Returns a TrailData parsed from proto.
+// Parses a TrailData from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-TrailData from_proto_trail_data(waypoint::TrailData attribute_value) {
+void proto_to_trail_data(waypoint::TrailData input, TrailData* value, bool* is_set) {
     TrailData trail_data;
-    trail_data.points_x = {attribute_value.points_x().begin(), attribute_value.points_x().end()};
-    trail_data.points_y = {attribute_value.points_y().begin(), attribute_value.points_y().end()};
-    trail_data.points_z = {attribute_value.points_z().begin(), attribute_value.points_z().end()};
-    return trail_data;
+    trail_data.points_x = {input.points_x().begin(), input.points_x().end()};
+    trail_data.points_y = {input.points_y().begin(), input.points_y().end()};
+    trail_data.points_z = {input.points_z().begin(), input.points_z().end()};
+    *value = trail_data;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

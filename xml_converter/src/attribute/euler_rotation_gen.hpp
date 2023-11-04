@@ -25,8 +25,9 @@ void xml_attribute_to_euler_rotation(
     std::vector<XMLError*>* errors,
     EulerRotation* value,
     bool* is_set);
+
 std::string euler_rotation_to_xml_attribute(const std::string& attribute_name, const EulerRotation* value);
 
-EulerRotation from_proto_euler_rotation(waypoint::EulerRotation proto_euler_rotation);
+void proto_to_euler_rotation(waypoint::EulerRotation input, EulerRotation* value, bool* is_set);
 
 void euler_rotation_to_proto(EulerRotation value, std::function<void(waypoint::EulerRotation*)> setter);

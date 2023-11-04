@@ -31,14 +31,15 @@ std::string marker_category_to_xml_attribute(const std::string& attribute_name, 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// from_proto_marker_category
+// proto_to_marker_category
 //
-// Parses a waypoint::Category and returns a MarkerCategory
-///////////////////////////////////////////////////////////////////////////////
-MarkerCategory from_proto_marker_category(waypoint::Category attribute_value) {
+// Parses a marker category from a proto field.
+////////////////////////////////////////////////////////////////////////////////
+void proto_to_marker_category(waypoint::Category input, MarkerCategory* value, bool* is_set) {
     MarkerCategory marker_category;
-    marker_category.category = attribute_value.name();
-    return marker_category;
+    marker_category.category = input.name();
+    *value = marker_category;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

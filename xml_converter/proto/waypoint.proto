@@ -7,14 +7,13 @@ message Waypoint {
 }
 
 message Category {
-    bool default_visibility = 1;
-    string display_name = 2;
-    bool is_separator = 3;
-    string name = 4;
-    string tip_description = 5;
-    repeated Category children = 6;
-    repeated Icon icon = 7;
-    repeated Trail trail = 8;
+    string name = 1;
+    repeated Category children = 2;
+    repeated Icon icon = 3;
+    repeated Trail trail = 4;
+    bool is_separator = 5;
+    bool default_visibility = 6;
+    string tip_description = 7;
 }
 
 message Icon {

@@ -16,9 +16,6 @@ void xml_attribute_to_float(
 
 std::string float_to_xml_attribute(const std::string& attribute_name, const float* value);
 
-// Zero Cost Abstraction identity functions to make parsing and writing protobufs more uniform
-inline float const& from_proto_float(const float& x) {
-    return x;
-}
+void proto_to_float(float input, float* value, bool* is_set);
 
 void float_to_proto(float value, std::function<void(float&)> setter);

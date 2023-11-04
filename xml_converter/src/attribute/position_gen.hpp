@@ -25,8 +25,9 @@ void xml_attribute_to_position(
     std::vector<XMLError*>* errors,
     Position* value,
     bool* is_set);
+
 std::string position_to_xml_attribute(const std::string& attribute_name, const Position* value);
 
-Position from_proto_position(waypoint::Position proto_position);
+void proto_to_position(waypoint::Position input, Position* value, bool* is_set);
 
 void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter);

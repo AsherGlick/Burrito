@@ -34,14 +34,15 @@ string image_to_xml_attribute(const string& attribute_name, const Image* value) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// from_proto_image
+// proto_to_image
 //
-// Parses a waypoint::Image from proto
+// Parses an Image from proto
 ////////////////////////////////////////////////////////////////////////////////
-Image from_proto_image(waypoint::TexturePath attribute_value) {
+void proto_to_image(waypoint::TexturePath input, Image* value, bool* is_set) {
     Image image;
-    image.path = attribute_value.path();
-    return image;
+    image.path = input.path();
+    *value = image;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -33,12 +33,13 @@ void xml_attribute_to_position(
     *is_set = true;
 }
 
-Position from_proto_position(waypoint::Position proto_position) {
+void proto_to_position(waypoint::Position input, Position* value, bool* is_set) {
     Position position;
-    position.x_position = proto_position.x();
-    position.y_position = proto_position.y();
-    position.z_position = proto_position.z();
-    return position;
+    position.x_position = input.x();
+    position.y_position = input.y();
+    position.z_position = input.z();
+    *value = position;
+    *is_set = true;
 }
 
 void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter) {

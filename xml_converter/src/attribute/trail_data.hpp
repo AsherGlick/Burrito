@@ -29,6 +29,6 @@ void xml_attribute_to_trail_data(
 
 std::string trail_data_to_xml_attribute(const std::string& attribute_name, const TrailData* value);
 
-TrailData from_proto_trail_data(waypoint::TrailData attribute_value);
+void proto_to_trail_data(waypoint::TrailData input, TrailData* value, bool* is_set);
 
 void trail_data_to_proto(TrailData value, std::function<void(waypoint::TrailData*)> setter);

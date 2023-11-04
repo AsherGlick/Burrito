@@ -16,9 +16,6 @@ void xml_attribute_to_int(
 
 std::string int_to_xml_attribute(const std::string& attribute_name, const int* value);
 
-// Zero Cost Abstraction identity functions to make parsing and writing protobufs more uniform
-inline int const& from_proto_int(const int& x) {
-    return x;
-}
+void proto_to_int(int input, int* value, bool* is_set);
 
 void int_to_proto(int value, std::function<void(int&)> setter);

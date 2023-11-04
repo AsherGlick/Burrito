@@ -27,6 +27,6 @@ void xml_attribute_to_color(
 
 std::string color_to_xml_attribute(const std::string& attribute_name, const Color* value);
 
-Color from_proto_color(waypoint::RGBAColor attribute_value);
+void proto_to_color(waypoint::RGBAColor input, Color* value, bool* is_set);
 
 void color_to_proto(Color value, std::function<void(waypoint::RGBAColor*)> setter);
