@@ -70,8 +70,12 @@ void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}*
 
 void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}}*)> setter) {
     {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
+    bool should_write = false;
     {% for n, attribute_variable in enumerate(attribute_variables)%}
         proto_{{attribute_name}}->set_{{attribute_variable.attribute_name}}(value.{{attribute_variable.attribute_name}});
+        should_write |= value.{{attribute_variable.attribute_name}};
     {% endfor %}
-    setter(proto_{{attribute_name}});
+    if (should_write) {
+        setter(proto_{{attribute_name}});
+    }
 }

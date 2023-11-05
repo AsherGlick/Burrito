@@ -238,29 +238,56 @@ void proto_to_map_type_filter(waypoint::MapTypeFilter input, MapTypeFilter* valu
 
 void map_type_filter_to_proto(MapTypeFilter value, std::function<void(waypoint::MapTypeFilter*)> setter) {
     waypoint::MapTypeFilter* proto_map_type_filter = new waypoint::MapTypeFilter();
+    bool should_write = false;
     proto_map_type_filter->set_unknown_map(value.unknown_map);
+    should_write |= value.unknown_map;
     proto_map_type_filter->set_redirect_map(value.redirect_map);
+    should_write |= value.redirect_map;
     proto_map_type_filter->set_character_create_map(value.character_create_map);
+    should_write |= value.character_create_map;
     proto_map_type_filter->set_pvp_map(value.pvp_map);
+    should_write |= value.pvp_map;
     proto_map_type_filter->set_gvg_map(value.gvg_map);
+    should_write |= value.gvg_map;
     proto_map_type_filter->set_instance_map(value.instance_map);
+    should_write |= value.instance_map;
     proto_map_type_filter->set_public_map(value.public_map);
+    should_write |= value.public_map;
     proto_map_type_filter->set_tournament_map(value.tournament_map);
+    should_write |= value.tournament_map;
     proto_map_type_filter->set_tutorial_map(value.tutorial_map);
+    should_write |= value.tutorial_map;
     proto_map_type_filter->set_user_tournament_map(value.user_tournament_map);
+    should_write |= value.user_tournament_map;
     proto_map_type_filter->set_center_map(value.center_map);
+    should_write |= value.center_map;
     proto_map_type_filter->set_eternal_battlegrounds_map(value.eternal_battlegrounds_map);
+    should_write |= value.eternal_battlegrounds_map;
     proto_map_type_filter->set_bluehome_map(value.bluehome_map);
+    should_write |= value.bluehome_map;
     proto_map_type_filter->set_blue_borderlands_map(value.blue_borderlands_map);
+    should_write |= value.blue_borderlands_map;
     proto_map_type_filter->set_green_home_map(value.green_home_map);
+    should_write |= value.green_home_map;
     proto_map_type_filter->set_green_borderlands_map(value.green_borderlands_map);
+    should_write |= value.green_borderlands_map;
     proto_map_type_filter->set_red_home_map(value.red_home_map);
+    should_write |= value.red_home_map;
     proto_map_type_filter->set_red_borderlands_map(value.red_borderlands_map);
+    should_write |= value.red_borderlands_map;
     proto_map_type_filter->set_fortunes_vale_map(value.fortunes_vale_map);
+    should_write |= value.fortunes_vale_map;
     proto_map_type_filter->set_jump_puzzle_map(value.jump_puzzle_map);
+    should_write |= value.jump_puzzle_map;
     proto_map_type_filter->set_obsidian_sanctum_map(value.obsidian_sanctum_map);
+    should_write |= value.obsidian_sanctum_map;
     proto_map_type_filter->set_edge_of_the_mists_map(value.edge_of_the_mists_map);
+    should_write |= value.edge_of_the_mists_map;
     proto_map_type_filter->set_public_mini_map(value.public_mini_map);
+    should_write |= value.public_mini_map;
     proto_map_type_filter->set_wvw_lounge_map(value.wvw_lounge_map);
-    setter(proto_map_type_filter);
+    should_write |= value.wvw_lounge_map;
+    if (should_write) {
+        setter(proto_map_type_filter);
+    }
 }
