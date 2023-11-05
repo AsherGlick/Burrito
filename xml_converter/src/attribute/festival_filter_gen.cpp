@@ -105,12 +105,22 @@ void proto_to_festival_filter(waypoint::FestivalFilter input, FestivalFilter* va
 
 void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter) {
     waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
+    bool should_write = false;
     proto_festival_filter->set_dragonbash(value.dragonbash);
+    should_write |= value.dragonbash;
     proto_festival_filter->set_festival_of_the_four_winds(value.festival_of_the_four_winds);
+    should_write |= value.festival_of_the_four_winds;
     proto_festival_filter->set_halloween(value.halloween);
+    should_write |= value.halloween;
     proto_festival_filter->set_lunar_new_year(value.lunar_new_year);
+    should_write |= value.lunar_new_year;
     proto_festival_filter->set_super_adventure_festival(value.super_adventure_festival);
+    should_write |= value.super_adventure_festival;
     proto_festival_filter->set_wintersday(value.wintersday);
+    should_write |= value.wintersday;
     proto_festival_filter->set_none(value.none);
-    setter(proto_festival_filter);
+    should_write |= value.none;
+    if (should_write) {
+        setter(proto_festival_filter);
+    }
 }

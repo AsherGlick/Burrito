@@ -86,10 +86,18 @@ void proto_to_species_filter(waypoint::SpeciesFilter input, SpeciesFilter* value
 
 void species_filter_to_proto(SpeciesFilter value, std::function<void(waypoint::SpeciesFilter*)> setter) {
     waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
+    bool should_write = false;
     proto_species_filter->set_asura(value.asura);
+    should_write |= value.asura;
     proto_species_filter->set_charr(value.charr);
+    should_write |= value.charr;
     proto_species_filter->set_human(value.human);
+    should_write |= value.human;
     proto_species_filter->set_norn(value.norn);
+    should_write |= value.norn;
     proto_species_filter->set_sylvari(value.sylvari);
-    setter(proto_species_filter);
+    should_write |= value.sylvari;
+    if (should_write) {
+        setter(proto_species_filter);
+    }
 }

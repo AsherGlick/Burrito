@@ -118,14 +118,26 @@ void proto_to_profession_filter(waypoint::ProfessionFilter input, ProfessionFilt
 
 void profession_filter_to_proto(ProfessionFilter value, std::function<void(waypoint::ProfessionFilter*)> setter) {
     waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
+    bool should_write = false;
     proto_profession_filter->set_guardian(value.guardian);
+    should_write |= value.guardian;
     proto_profession_filter->set_warrior(value.warrior);
+    should_write |= value.warrior;
     proto_profession_filter->set_engineer(value.engineer);
+    should_write |= value.engineer;
     proto_profession_filter->set_ranger(value.ranger);
+    should_write |= value.ranger;
     proto_profession_filter->set_thief(value.thief);
+    should_write |= value.thief;
     proto_profession_filter->set_elementalist(value.elementalist);
+    should_write |= value.elementalist;
     proto_profession_filter->set_mesmer(value.mesmer);
+    should_write |= value.mesmer;
     proto_profession_filter->set_necromancer(value.necromancer);
+    should_write |= value.necromancer;
     proto_profession_filter->set_revenant(value.revenant);
-    setter(proto_profession_filter);
+    should_write |= value.revenant;
+    if (should_write) {
+        setter(proto_profession_filter);
+    }
 }

@@ -126,15 +126,28 @@ void proto_to_mount_filter(waypoint::MountFilter input, MountFilter* value, bool
 
 void mount_filter_to_proto(MountFilter value, std::function<void(waypoint::MountFilter*)> setter) {
     waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
+    bool should_write = false;
     proto_mount_filter->set_raptor(value.raptor);
+    should_write |= value.raptor;
     proto_mount_filter->set_springer(value.springer);
+    should_write |= value.springer;
     proto_mount_filter->set_skimmer(value.skimmer);
+    should_write |= value.skimmer;
     proto_mount_filter->set_jackal(value.jackal);
+    should_write |= value.jackal;
     proto_mount_filter->set_griffon(value.griffon);
+    should_write |= value.griffon;
     proto_mount_filter->set_roller_beetle(value.roller_beetle);
+    should_write |= value.roller_beetle;
     proto_mount_filter->set_warclaw(value.warclaw);
+    should_write |= value.warclaw;
     proto_mount_filter->set_skyscale(value.skyscale);
+    should_write |= value.skyscale;
     proto_mount_filter->set_skiff(value.skiff);
+    should_write |= value.skiff;
     proto_mount_filter->set_seige_turtle(value.seige_turtle);
-    setter(proto_mount_filter);
+    should_write |= value.seige_turtle;
+    if (should_write) {
+        setter(proto_mount_filter);
+    }
 }
