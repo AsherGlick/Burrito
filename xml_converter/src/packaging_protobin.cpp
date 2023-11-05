@@ -150,6 +150,10 @@ void _write_protobuf_file(
     ofstream outfile;
     outfile.open(filepath, ios::out | ios::binary);
 
+    if (!outfile.is_open()) {
+        cout << "Unable to open " << filepath << endl;
+    }
+
     waypoint::Waypoint output_message;
 
     for (map<string, Category>::const_iterator it = marker_categories->begin(); it != marker_categories->end(); it++) {
@@ -195,7 +199,7 @@ void write_protobuf_file(
     }
 
     _write_protobuf_file(
-        filepath,
+        filepath + "/markers.bin",
         category_filter,
         marker_categories,
         category_to_pois);
