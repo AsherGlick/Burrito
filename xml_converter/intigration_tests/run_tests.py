@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import difflib
 import json
@@ -7,6 +9,7 @@ import os
 from typing import List, Optional, Final, Tuple
 from testcases import testcases
 import shutil
+from proto_utils import compare_protos
 
 # Path to compiled C++ executable
 xml_converter_binary_path: str = "../build/xml_converter"
@@ -46,13 +49,13 @@ def run_xml_converter(
     return (result.stdout, result.stderr, result.returncode)
 
 
-def compare_files(file_path1: str, file_path2: str) -> List[str]:
+def compare_text_files(file_path1: str, file_path2: str) -> List[str]:
     with open(file_path1, 'r') as file1:
         content1 = file1.readlines()
     with open(file_path2, 'r') as file2:
         content2 = file2.readlines()
 
-    diff = list(difflib.Differ().compare(content1, content2))
+    diff = list(difflib.unified_diff(content1, content2, fromfile=file_path1, tofile=file_path2, lineterm=""))
 
     return diff
 
@@ -61,7 +64,7 @@ def len_diff(lines: List[str]) -> int:
     diffcount = 0
 
     for line in lines:
-        if line.startswith("  "):
+        if line.startswith(" "):
             continue
         diffcount += 1
     return diffcount
@@ -149,14 +152,14 @@ def main() -> None:
 
         all_tests_passed: bool = True
         
-        stdout_diff: List[str] = list(difflib.Differ().compare(testcase.expected_stdout, stdout))
+        stdout_diff: List[str] = list(difflib.unified_diff(testcase.expected_stdout, stdout, fromfile="Expected stdout", tofile="Actual stdout", lineterm=""))
         if len_diff(stdout_diff) != 0:
             print(f"Standard output did not match for test {testcase.name}")
             for line in stdout_diff:
                 print(line)
             all_tests_passed = False
 
-        stderr_diff: List[str] = list(difflib.Differ().compare(testcase.expected_stderr, stderr))
+        stderr_diff: List[str] = list(difflib.unified_diff(testcase.expected_stderr, stderr, fromfile="Expected stderr", tofile="Actual stderr", lineterm=""))
         if len_diff(stderr_diff) != 0:
             print(f"Standard error did not match for test {testcase.name}")
             for line in stderr_diff:
@@ -173,13 +176,21 @@ def main() -> None:
             output_xml_filepath = os.path.join(xml_output_dir_path, "xml_file.xml")
             expected_output_xml_filepath = os.path.join(testcase.expected_output_xml_path, "xml_file.xml")
 
-            xml_diff = compare_files(expected_output_xml_filepath , output_xml_filepath)
+            xml_diff = compare_text_files(expected_output_xml_filepath , output_xml_filepath)
 
             if len_diff(xml_diff) != 0:
                 print(f"XML output was incorrect for test {testcase.name}")
                 for line in xml_diff:
                     print(line, end="")
                 all_tests_passed = False
+
+        if testcase.expected_output_proto_path is not None:
+            protos_are_equal = compare_protos(
+                outputs_directory=proto_output_dir_path,
+                expected_outputs_directory=testcase.expected_output_proto_path,
+            )
+
+            all_tests_passed &= protos_are_equal
 
         if all_tests_passed:
             print(f"Success: test {testcase.name}")

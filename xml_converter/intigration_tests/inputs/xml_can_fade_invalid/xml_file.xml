@@ -1,8 +1,8 @@
 <OverlayData>
-<MarkerCategory  Name="mycategory">
-</MarkerCategory>
+	<MarkerCategory DisplayName="My Category" Name="mycategory">
+	</MarkerCategory>
 
-<POIs>
-<POI  CanFade="yes" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" IconFile="texture.png" />
-</POIs>
+	<POIs>
+		<POI CanFade="yes" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+	</POIs>
 </OverlayData>
