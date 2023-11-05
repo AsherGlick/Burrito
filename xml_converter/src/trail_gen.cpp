@@ -137,10 +137,7 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         xml_attribute_to_image(attribute, errors, &(this->texture), &(this->texture_is_set));
     }
     else if (attributename == "traildata") {
-        xml_attribute_to_trail_data(attribute, errors, base_dir, &(this->trail_data), &(this->trail_data_is_set));
-        // TOOD: this side effects should be passed into the parse function
-        this->map_id = this->trail_data.side_effect_map_id;
-        this->map_id_is_set = true;
+        xml_attribute_to_trail_data(attribute, errors, base_dir, &(this->trail_data), &(this->trail_data_is_set), &(this->map_id), &(this->map_id_is_set));
     }
     else if (attributename == "trailscale") {
         xml_attribute_to_float(attribute, errors, &(this->trail_scale), &(this->trail_scale_is_set));

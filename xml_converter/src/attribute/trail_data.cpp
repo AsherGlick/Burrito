@@ -23,7 +23,9 @@ void xml_attribute_to_trail_data(
     vector<XMLError*>* errors,
     string base_dir,
     TrailData* value,
-    bool* is_set) {
+    bool* is_set,
+    int* map_id_value,
+    bool* is_map_id_set) {
     TrailData trail_data;
     string trail_data_relative_path = get_attribute_value(input);
     if (base_dir == "") {
@@ -50,9 +52,9 @@ void xml_attribute_to_trail_data(
     }
 
     char map_id_char[4];
-
     trail_data_file.read(map_id_char, 4);
-    trail_data.side_effect_map_id = *reinterpret_cast<uint32_t*>(map_id_char);
+    *map_id_value = *reinterpret_cast<uint32_t*>(map_id_char);
+    *is_map_id_set = true;
 
     while (trail_data_file.tellg() > 0) {
         char point_x[4];

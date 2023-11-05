@@ -12,7 +12,6 @@ class TrailData;
 
 class TrailData {
  public:
-    int side_effect_map_id;
     std::vector<float> points_x;
     std::vector<float> points_y;
     std::vector<float> points_z;
@@ -23,7 +22,9 @@ void xml_attribute_to_trail_data(
     std::vector<XMLError*>* errors,
     std::string base_dir,
     TrailData* value,
-    bool* is_set);
+    bool* is_set,
+    int* map_id_value,
+    bool* is_map_id_set);
 
 std::string trail_data_to_xml_attribute(const std::string& attribute_name, const TrailData* value);
 

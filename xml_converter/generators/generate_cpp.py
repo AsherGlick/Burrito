@@ -1,13 +1,10 @@
 from dataclasses import dataclass, field
-from typing import Set, List, Dict, Optional, Tuple, Final, TypedDict
+from typing import Set, List, Dict, Optional, Tuple, TypedDict, Any
 from jinja2 import FileSystemLoader, Environment, Template
 from jinja_helpers import UnindentBlocks
 from util import lowercase, capitalize, normalize, Document, SchemaType
 import os
 from protobuf_types import is_proto_field_scalar, get_proto_field_cpp_type, get_proto_field_cpp_prototype
-
-
-XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS: Final[List[str]] = ["attribute", "errors"]
 
 
 ################################################################################
@@ -55,6 +52,22 @@ class AttributeVariable:
     class_name: str
     xml_fields: List[str]
 
+    # The function name and additional side effect pointers for xml serialization.
+    serialize_xml_function: str
+    # serialize_xml_side_effects: List[str]
+
+    # The function name and additional side effect pointers for xml deserialization.
+    deserialize_xml_function: str
+    deserialize_xml_side_effects: List[str]
+
+    # The function name and additional side effect pointers for proto serialization.
+    serialize_proto_function: str
+    # serialize_proto_side_effects: List[str]
+
+    # The function name and additional side effect pointers for proto deserialization.
+    deserialize_proto_function: str
+    # deserialize_proto_side_effects: List[str]
+
     # The name of the field in the protobuf that this attribute corresponds to.
     protobuf_field: str
 
@@ -64,7 +77,6 @@ class AttributeVariable:
     # Protoc cares if a field is scalar or not in the case of "set" vs "set allocated".
     is_proto_field_scalar: bool
 
-    args: List[str] = field(default_factory=list)
     default_xml_field: str = ""
     side_effects: List[str] = field(default_factory=list)
     xml_bundled_components: List[str] = field(default_factory=list)
@@ -176,6 +188,16 @@ def write_cpp_classes(
             ))
 
 
+def build_custom_function_data(config: Dict[str, Any]) -> Tuple[str, List[str]]:
+    function = config["function"]
+    side_effects = []
+    for side_effect in config["side_effects"]:
+        side_effects.append(attribute_name_from_markdown_data(side_effect))
+        side_effects.append(attribute_name_from_markdown_data(side_effect) + "_is_set")
+
+    return function, side_effects
+
+
 ############################################################################
 # generate_cpp_variable_data
 #
@@ -224,8 +246,6 @@ def generate_cpp_variable_data(
             write_to_xml: bool = True
             default_xml_field: str = ""
 
-            args: List[str] = XML_ATTRIBUTE_PARSER_DEFAULT_ARGUMENTS.copy()
-
             if fieldval['type'] in documentation_type_data:
                 cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
                 class_name = documentation_type_data[fieldval['type']]["class_name"]
@@ -257,13 +277,6 @@ def generate_cpp_variable_data(
             protobuf_field: str
             proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval["protobuf_field"])
 
-            if fieldval.get("uses_file_path", False):
-                args.append("base_dir")
-
-            if "side_effects" in fieldval:
-                for side_effect in fieldval['side_effects']:
-                    side_effects.append(attribute_name_from_markdown_data(side_effect))
-
             # Compound Values are unique in that the components have xml fields in addition to the compound variable
             if fieldval['type'] in ["CompoundValue", "CompoundCustomClass"]:
                 for component in fieldval['components']:
@@ -292,12 +305,66 @@ def generate_cpp_variable_data(
                         attribute_flag_name=attribute_name + "_is_set",
                         write_to_xml=write_to_xml,
                         is_component=True,
-                        args=args,
+
+                        serialize_xml_function=component_class_name + "_to_xml_attribute",
+                        # serialize_xml_side_effects=[],
+                        deserialize_xml_function="xml_attribute_to_" + component_class_name,
+                        deserialize_xml_side_effects=[],
+                        serialize_proto_function="to_proto_" + component_class_name,
+                        # serialize_proto_side_effects=[],
+                        deserialize_proto_function="from_proto_" + component_class_name,
+                        # deserialize_proto_side_effects=[],
                     )
                     attribute_variables.append(component_attribute_variable)
                 # If there aren't any components to bundle, we don't want to render the attribute
                 if fieldval['xml_bundled_components'] == []:
                     write_to_xml = False
+
+            serialize_xml_function: str = class_name + "_to_xml_attribute"
+            serialize_xml_side_effects: List[str] = []
+            deserialize_xml_function: str = "xml_attribute_to_" + class_name
+            deserialize_xml_side_effects: List[str] = []
+            serialize_proto_function: str = "to_proto_" + class_name
+            serialize_proto_side_effects: List[str] = []
+            deserialize_proto_function: str = "from_proto_" + class_name
+            deserialize_proto_side_effects: List[str] = []
+            if "custom_functions" in fieldval:
+                # Overwrite defaults with xml/proto read/write functions
+                for custom_function in fieldval["custom_functions"]:
+                    if custom_function == "read.xml":
+                        deserialize_xml_function, deserialize_xml_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
+                    elif custom_function == "read.proto":
+                        serialize_xml_function, serialize_xml_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
+                    elif custom_function == "write.xml":
+                        deserialize_proto_function, deserialize_proto_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
+                    elif custom_function == "write.proto":
+                        serialize_proto_function, serialize_proto_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
+                # Overwrite with marker type specific functions
+                for custom_function in fieldval["custom_functions"]:
+                    if custom_function == "read.xml." + doc_type:
+                        deserialize_xml_function, deserialize_xml_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
+                    elif custom_function == "read.proto." + doc_type:
+                        serialize_xml_function, serialize_xml_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
+                    elif custom_function == "write.xml." + doc_type:
+                        deserialize_proto_function, deserialize_proto_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
+                    elif custom_function == "write.proto." + doc_type:
+                        serialize_proto_function, serialize_proto_side_effects = build_custom_function_data(
+                            fieldval["custom_functions"][custom_function]
+                        )
 
             attribute_variable = AttributeVariable(
                 attribute_name=attribute_name,
@@ -311,10 +378,21 @@ def generate_cpp_variable_data(
                 is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval["protobuf_field"]),
                 proto_drilldown_calls=proto_drilldown_calls,
                 mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
-                args=args,
+
                 write_to_xml=write_to_xml,
                 attribute_flag_name=attribute_name + "_is_set",
                 side_effects=side_effects,
+
+                serialize_xml_function=serialize_xml_function,
+                # serialize_xml_side_effects=serialize_xml_side_effects,
+                deserialize_xml_function=deserialize_xml_function,
+                deserialize_xml_side_effects=deserialize_xml_side_effects,
+                serialize_proto_function=serialize_proto_function,
+                # serialize_proto_side_effects=serialize_proto_side_effects,
+                deserialize_proto_function=deserialize_proto_function,
+                # deserialize_proto_side_effects=deserialize_proto_side_effects,
+
+                uses_file_path=fieldval.get("uses_file_path", False)
             )
             attribute_variables.append(attribute_variable)
 
@@ -394,7 +472,15 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     proto_drilldown_calls=proto_drilldown_calls,
                     mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
                     protobuf_cpp_type="",
-                    is_proto_field_scalar=False
+                    is_proto_field_scalar=False,
+                    serialize_xml_function="",
+                    deserialize_xml_function="",
+                    serialize_proto_function="",
+                    deserialize_proto_function="",
+                    # serialize_xml_side_effects=[],
+                    deserialize_xml_side_effects=[],
+                    # serialize_proto_side_effects=[],
+                    # deserialize_proto_side_effects=[],
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -422,6 +508,14 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
                     protobuf_cpp_type="",
                     is_proto_field_scalar=False,
+                    serialize_xml_function="",
+                    deserialize_xml_function="",
+                    serialize_proto_function="",
+                    deserialize_proto_function="",
+                    # serialize_xml_side_effects=[],
+                    deserialize_xml_side_effects=[],
+                    # serialize_proto_side_effects=[],
+                    # deserialize_proto_side_effects=[],
                 )
                 attribute_variables.append(attribute_variable)
 
@@ -442,6 +536,14 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                     mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
                     protobuf_cpp_type="",
                     is_proto_field_scalar=False,
+                    serialize_xml_function="",
+                    deserialize_xml_function="",
+                    serialize_proto_function="",
+                    deserialize_proto_function="",
+                    # serialize_xml_side_effects=[],
+                    deserialize_xml_side_effects=[],
+                    # serialize_proto_side_effects=[],
+                    # deserialize_proto_side_effects=[],
                 )
                 attribute_variables.append(attribute_variable)
 

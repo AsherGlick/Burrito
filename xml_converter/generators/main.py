@@ -14,30 +14,41 @@ from generate_cpp import write_cpp_classes, write_attribute
 XML_ATTRIBUTE_REGEX: Final[str] = "^[A-Za-z]+$"
 PROTO_FIELD_REGEX: Final[str] = "^[a-z_.]+$"
 INTERNAL_VARIABLE_REGEX: Final[str] = "^[a-z_]+$"
+ATTRIBUTE_NAME_REGEX: Final[str] = "^[A-Za-z ]+$"
+CUSTOM_SERIALIZER_REGEX: Final[str] = r"^(?:read|write)(?:\.xml|\.proto)(?:\.icon|\.trail)?$"
 
 shared_field_properties: Dict[str, DefType] = {
     "type": string_t(),
-    "name": string_t(),
+    "name": string_t(pattern=ATTRIBUTE_NAME_REGEX),
     "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
     "xml_fields": array_t(string_t(pattern=XML_ATTRIBUTE_REGEX)),
     "protobuf_field": string_t(pattern=PROTO_FIELD_REGEX),
 }
 
+custom_serial_functions: Dict[str, DefType] = {
+    "custom_functions": pattern_dictionary_t({CUSTOM_SERIALIZER_REGEX: object_t({
+        "function": string_t(),
+        "side_effects": array_t(string_t()),
+    })}),
+}
+
 schema = union_t({
-    "Int32": union_partial_t(required=shared_field_properties),
-    "Fixed32": union_partial_t(required=shared_field_properties),
-    "Float32": union_partial_t(required=shared_field_properties),
-    "String": union_partial_t(required=shared_field_properties),
-    "Boolean": union_partial_t(required=shared_field_properties),
+    "Int32": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
+    "Fixed32": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
+    "Float32": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
+    "String": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
+    "Boolean": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
     "MultiflagValue": union_partial_t(
         required={**shared_field_properties, **{
             "flags": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())}),
         }},
+        optional=custom_serial_functions,
     ),
     "Enum": union_partial_t(
         required={**shared_field_properties, **{
             "values": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())})
-        }}
+        }},
+        optional=custom_serial_functions,
     ),
     "CompoundValue": union_partial_t(
         required={**shared_field_properties, **{
@@ -49,7 +60,8 @@ schema = union_t({
                 "xml_fields": array_t(string_t(XML_ATTRIBUTE_REGEX)),
                 "protobuf_field": string_t(PROTO_FIELD_REGEX),
             })),
-        }}
+        }},
+        optional=custom_serial_functions,
     ),
     "CompoundCustomClass": union_partial_t(
         required={**shared_field_properties, **{
@@ -62,13 +74,14 @@ schema = union_t({
                 "xml_fields": array_t(string_t(XML_ATTRIBUTE_REGEX)),
                 "protobuf_field": string_t(PROTO_FIELD_REGEX),
             })),
-        }}
+        }},
+        optional=custom_serial_functions,
     ),
     "Custom": union_partial_t(
         required={**shared_field_properties, **{"class": string_t()}},
         optional={
-            "side_effects": array_t(string_t()),
-            "uses_file_path": boolean_t(),
+            **custom_serial_functions,
+            "uses_file_path": boolean_t(),  # This will eventually be part of a struct that is passed into everything
         }
     ),
 })
@@ -157,7 +170,7 @@ class Generator:
             # Resets the content and metadata to empty for each loop
 
             for subpage in categories[page]:
-                content[subpage] = markdown.markdown(self.data[subpage].content)
+                content[subpage] = markdown.markdown(self.data[subpage].content, extensions=['extra', 'codehilite'])
                 metadata[subpage] = self.data[subpage].metadata
 
             generated_doc, field_rows = self.generate_auto_docs(metadata, content)

@@ -40,12 +40,7 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_fields) %}
             {{ "if" if i == n == 0 else "else if" }} (attributename == "{{value}}") {
-                xml_attribute_to_{{attribute_variable.class_name}}({{", ".join(attribute_variable.args)}}, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}));
-                {% for side_effect in attribute_variable.side_effects %}
-                    // TOOD: this side effects should be passed into the parse function
-                    this->{{side_effect}} = this->{{attribute_variable.class_name}}.side_effect_{{side_effect}};
-                    this->{{side_effect}}_is_set = true;
-                {% endfor %}
+                {{attribute_variable.deserialize_xml_function}}(attribute, errors, {% if attribute_variable.uses_file_path %}base_dir, {% endif %}&(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endfor %}
     {% endfor %}
@@ -70,7 +65,7 @@ vector<string> {{cpp_class}}::as_xml() const {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.write_to_xml == true %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                xml_node_contents.push_back({{attribute_variable.class_name}}_to_xml_attribute("{{attribute_variable.default_xml_field}}", &this->{{attribute_variable.attribute_name}}));
+                xml_node_contents.push_back({{attribute_variable.serialize_xml_function}}("{{attribute_variable.default_xml_field}}", &this->{{attribute_variable.attribute_name}}));
             }
         {% endif %}
     {% endfor %}
@@ -99,9 +94,9 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
         {% if attribute_variable.is_component == false %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
                 {% if not attribute_variable.is_proto_field_scalar %}
-                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}({{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}));
                 {% else %}
-                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(to_proto_{{attribute_variable.class_name}}(this->{{attribute_variable.attribute_name}}));
+                    proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}({{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}));
                 {% endif %}
             }
         {% endif %}
@@ -119,7 +114,7 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
             {% else %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
             {% endif %}
-                this->{{attribute_variable.attribute_name}} = from_proto_{{attribute_variable.class_name}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
+                this->{{attribute_variable.attribute_name}} = {{attribute_variable.deserialize_proto_function}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
                 this->{{attribute_variable.attribute_flag_name}} = true;
             }
         {% endif %}
