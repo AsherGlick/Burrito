@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -29,5 +30,7 @@ void xml_attribute_to_festival_filter(
     FestivalFilter* value,
     bool* is_set);
 std::string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value);
-waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value);
+
 FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter);
+
+void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter);

@@ -57,17 +57,6 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
     }
 }
 
-{{proto_field_cpp_type}} to_proto_{{attribute_name}}({{class_name}} attribute_value) {
-    switch (attribute_value) {
-        {% for attribute_variable in attribute_variables %}
-            case {{class_name}}::{{attribute_variable.attribute_name}}:
-                return {{proto_field_cpp_type}}::{{attribute_variable.attribute_name}};
-        {% endfor %}
-        default:
-            return {{proto_field_cpp_type}}::{{attribute_variables[0].attribute_name}};
-    }
-}
-
 {{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
     switch (proto_{{attribute_name}}) {
         {% for attribute_variable in attribute_variables %}
@@ -76,5 +65,18 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
         {% endfor %}
         default:
             return {{class_name}}::{{attribute_variables[0].attribute_name}};
+    }
+}
+
+void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}})> setter) {
+    switch (value) {
+        {% for attribute_variable in attribute_variables %}
+            case {{class_name}}::{{attribute_variable.attribute_name}}:
+                setter({{proto_field_cpp_type}}::{{attribute_variable.attribute_name}});
+                break;
+        {% endfor %}
+        default:
+            setter({{proto_field_cpp_type}}::{{attribute_variables[0].attribute_name}});
+            break;
     }
 }

@@ -44,3 +44,12 @@ void xml_attribute_to_int(
 string int_to_xml_attribute(const string& attribute_name, const int* value) {
     return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// int_to_proto
+//
+// Writes a int to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void int_to_proto(int value, std::function<void(int&)> setter) {
+    setter(value);
+}

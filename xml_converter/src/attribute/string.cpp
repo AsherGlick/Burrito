@@ -31,3 +31,12 @@ void xml_attribute_to_string(
 string string_to_xml_attribute(const string& attribute_name, const string* value) {
     return " " + attribute_name + "=\"" + *value + "\"";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// string_to_proto
+//
+// Writes a string to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void string_to_proto(std::string value, std::function<void(std::string)> setter) {
+    setter(value);
+}

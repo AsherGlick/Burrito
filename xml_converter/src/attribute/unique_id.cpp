@@ -33,13 +33,18 @@ string unique_id_to_xml_attribute(const string& attribute_name, const UniqueId* 
     return " " + attribute_name + "=\"" + base64_encode(&(value->guid[0]), value->guid.size()) + "\"";
 }
 
-string to_proto_unique_id(UniqueId attribute_value) {
-    return std::string(attribute_value.guid.begin(), attribute_value.guid.end());
-}
-
 UniqueId from_proto_unique_id(string attribute_value) {
     UniqueId unique_id;
     std::vector<uint8_t> guid(attribute_value.begin(), attribute_value.end());
     unique_id.guid = guid;
     return unique_id;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// unique_id_to_proto
+//
+// Writes a bool to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void unique_id_to_proto(UniqueId value, std::function<void(std::string)> setter) {
+    setter(std::string(value.guid.begin(), value.guid.end()));
 }

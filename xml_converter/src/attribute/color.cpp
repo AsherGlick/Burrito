@@ -114,26 +114,6 @@ string color_to_xml_attribute(const string& attribute_name, const Color* value) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// to_proto_color
-//
-// Converts a Color into a proto message
-////////////////////////////////////////////////////////////////////////////////
-waypoint::RGBAColor* to_proto_color(Color attribute_value) {
-    waypoint::RGBAColor* color = new waypoint::RGBAColor();
-    // The default RGB in burrito will be 000000 (i.e. black)
-    // Default value of alpha in Burrito is 1.0 (i.e. 255)
-    int int_alpha = 255;
-    // If alpha (float) is not the default value, convert to int
-    if (attribute_value.alpha != 0) {
-        int_alpha = convert_color_channel_float_to_int(attribute_value.alpha);
-    }
-
-    uint32_t rgba = ((convert_color_channel_float_to_int(attribute_value.red) & 0xff) << 24) + ((convert_color_channel_float_to_int(attribute_value.green) & 0xff) << 16) + ((convert_color_channel_float_to_int(attribute_value.blue) & 0xff) << 8) + (int_alpha & 0xff);
-    color->set_rgba_color(rgba);
-    return color;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // from_proto_color
 //
 // Converts a proto message into a Color
@@ -149,4 +129,29 @@ Color from_proto_color(waypoint::RGBAColor attribute_value) {
     color.alpha = convert_color_channel_int_to_float(rgba & 0xff);
 
     return color;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// color_to_proto
+//
+// Writes a Color to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void color_to_proto(Color value, std::function<void(waypoint::RGBAColor*)> setter) {
+    waypoint::RGBAColor* color = new waypoint::RGBAColor();
+    // The default RGB in burrito will be 000000 (i.e. black)
+    // Default value of alpha in Burrito is 1.0 (i.e. 255)
+    int int_alpha = 255;
+    // If alpha (float) is not the default value, convert to int
+    if (value.alpha != 0) {
+        int_alpha = convert_color_channel_float_to_int(value.alpha);
+    }
+
+    uint32_t r = ((convert_color_channel_float_to_int(value.red) & 0xff) << 24);
+    uint32_t g = ((convert_color_channel_float_to_int(value.green) & 0xff) << 16);
+    uint32_t b = ((convert_color_channel_float_to_int(value.blue) & 0xff) << 8);
+    uint32_t a = (int_alpha & 0xff);
+    uint32_t rgba = r | g | b | a;
+
+    color->set_rgba_color(rgba);
+    setter(color);
 }

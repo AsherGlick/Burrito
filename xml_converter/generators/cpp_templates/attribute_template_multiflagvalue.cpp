@@ -59,18 +59,18 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-{{proto_field_cpp_type}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
-    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
-    {% for n, attribute_variable in enumerate(attribute_variables)%}
-        proto_{{attribute_name}}->set_{{attribute_variable.attribute_name}}(attribute_value.{{attribute_variable.attribute_name}});
-    {% endfor %}
-    return proto_{{attribute_name}};
-}
-
 {{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
     {{class_name}} {{attribute_name}};
     {% for n, attribute_variable in enumerate(attribute_variables)%}
         {{attribute_name}}.{{attribute_variable.attribute_name}} = proto_{{attribute_name}}.{{attribute_variable.attribute_name}}();
     {% endfor %}
     return {{attribute_name}};
+}
+
+void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}}*)> setter) {
+    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
+    {% for n, attribute_variable in enumerate(attribute_variables)%}
+        proto_{{attribute_name}}->set_{{attribute_variable.attribute_name}}(value.{{attribute_variable.attribute_name}});
+    {% endfor %}
+    setter(proto_{{attribute_name}});
 }

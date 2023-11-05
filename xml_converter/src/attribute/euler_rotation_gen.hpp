@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -25,5 +26,7 @@ void xml_attribute_to_euler_rotation(
     EulerRotation* value,
     bool* is_set);
 std::string euler_rotation_to_xml_attribute(const std::string& attribute_name, const EulerRotation* value);
-waypoint::EulerRotation* to_proto_euler_rotation(EulerRotation attribute_value);
+
 EulerRotation from_proto_euler_rotation(waypoint::EulerRotation proto_euler_rotation);
+
+void euler_rotation_to_proto(EulerRotation value, std::function<void(waypoint::EulerRotation*)> setter);

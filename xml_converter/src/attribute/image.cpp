@@ -34,17 +34,6 @@ string image_to_xml_attribute(const string& attribute_name, const Image* value) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// to_proto_image
-//
-// Converts an Image into a waypoint::Image pointer to save to proto.
-////////////////////////////////////////////////////////////////////////////////
-waypoint::TexturePath* to_proto_image(Image attribute_value) {
-    waypoint::TexturePath* texture = new waypoint::TexturePath();
-    texture->set_path(attribute_value.path);
-    return texture;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // from_proto_image
 //
 // Parses a waypoint::Image from proto
@@ -53,4 +42,15 @@ Image from_proto_image(waypoint::TexturePath attribute_value) {
     Image image;
     image.path = attribute_value.path();
     return image;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// image_to_proto
+//
+// Writes a string filepath to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void image_to_proto(Image value, std::function<void(waypoint::TexturePath*)> setter) {
+    waypoint::TexturePath* texture = new waypoint::TexturePath();
+    texture->set_path(value.path);
+    setter(texture);
 }

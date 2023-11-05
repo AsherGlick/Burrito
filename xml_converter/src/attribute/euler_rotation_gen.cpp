@@ -40,18 +40,18 @@ string euler_rotation_to_xml_attribute(const std::string& attribute_name, const 
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::EulerRotation* to_proto_euler_rotation(EulerRotation attribute_value) {
-    waypoint::EulerRotation* proto_euler_rotation = new waypoint::EulerRotation();
-    proto_euler_rotation->set_x(attribute_value.x_rotation);
-    proto_euler_rotation->set_y(attribute_value.y_rotation);
-    proto_euler_rotation->set_z(attribute_value.z_rotation);
-    return proto_euler_rotation;
-}
-
 EulerRotation from_proto_euler_rotation(waypoint::EulerRotation proto_euler_rotation) {
     EulerRotation euler_rotation;
     euler_rotation.x_rotation = proto_euler_rotation.x();
     euler_rotation.y_rotation = proto_euler_rotation.y();
     euler_rotation.z_rotation = proto_euler_rotation.z();
     return euler_rotation;
+}
+
+void euler_rotation_to_proto(EulerRotation value, std::function<void(waypoint::EulerRotation*)> setter) {
+    waypoint::EulerRotation* proto_euler_rotation = new waypoint::EulerRotation();
+    proto_euler_rotation->set_x(value.x_rotation);
+    proto_euler_rotation->set_y(value.y_rotation);
+    proto_euler_rotation->set_z(value.z_rotation);
+    setter(proto_euler_rotation);
 }

@@ -93,19 +93,24 @@ vector<string> Category::as_xml() const {
 waypoint::Category Category::as_protobuf() const {
     waypoint::Category proto_category;
     if (this->default_visibility_is_set) {
-        proto_category.set_default_visibility(to_proto_bool(this->default_visibility));
+        std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_default_visibility(val); };
+        bool_to_proto(this->default_visibility, setter);
     }
     if (this->display_name_is_set) {
-        proto_category.set_display_name(to_proto_string(this->display_name));
+        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_display_name(val); };
+        string_to_proto(this->display_name, setter);
     }
     if (this->is_separator_is_set) {
-        proto_category.set_is_separator(to_proto_bool(this->is_separator));
+        std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_is_separator(val); };
+        bool_to_proto(this->is_separator, setter);
     }
     if (this->name_is_set) {
-        proto_category.set_name(to_proto_string(this->name));
+        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
+        string_to_proto(this->name, setter);
     }
     if (this->tooltip_description_is_set) {
-        proto_category.set_tip_description(to_proto_string(this->tooltip_description));
+        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_tip_description(val); };
+        string_to_proto(this->tooltip_description, setter);
     }
     return proto_category;
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -32,5 +33,7 @@ void xml_attribute_to_mount_filter(
     MountFilter* value,
     bool* is_set);
 std::string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value);
-waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value);
+
 MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter);
+
+void mount_filter_to_proto(MountFilter value, std::function<void(waypoint::MountFilter*)> setter);

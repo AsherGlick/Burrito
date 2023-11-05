@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,5 @@ std::string float_to_xml_attribute(const std::string& attribute_name, const floa
 inline float const& from_proto_float(const float& x) {
     return x;
 }
-inline float const& to_proto_float(const float& x) {
-    return x;
-}
+
+void float_to_proto(float value, std::function<void(float&)> setter);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -46,5 +47,7 @@ void xml_attribute_to_map_type_filter(
     MapTypeFilter* value,
     bool* is_set);
 std::string map_type_filter_to_xml_attribute(const std::string& attribute_name, const MapTypeFilter* value);
-waypoint::MapTypeFilter* to_proto_map_type_filter(MapTypeFilter attribute_value);
+
 MapTypeFilter from_proto_map_type_filter(waypoint::MapTypeFilter proto_map_type_filter);
+
+void map_type_filter_to_proto(MapTypeFilter value, std::function<void(waypoint::MapTypeFilter*)> setter);

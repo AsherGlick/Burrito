@@ -73,16 +73,6 @@ string species_filter_to_xml_attribute(const std::string& attribute_name, const 
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value) {
-    waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
-    proto_species_filter->set_asura(attribute_value.asura);
-    proto_species_filter->set_charr(attribute_value.charr);
-    proto_species_filter->set_human(attribute_value.human);
-    proto_species_filter->set_norn(attribute_value.norn);
-    proto_species_filter->set_sylvari(attribute_value.sylvari);
-    return proto_species_filter;
-}
-
 SpeciesFilter from_proto_species_filter(waypoint::SpeciesFilter proto_species_filter) {
     SpeciesFilter species_filter;
     species_filter.asura = proto_species_filter.asura();
@@ -91,4 +81,14 @@ SpeciesFilter from_proto_species_filter(waypoint::SpeciesFilter proto_species_fi
     species_filter.norn = proto_species_filter.norn();
     species_filter.sylvari = proto_species_filter.sylvari();
     return species_filter;
+}
+
+void species_filter_to_proto(SpeciesFilter value, std::function<void(waypoint::SpeciesFilter*)> setter) {
+    waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
+    proto_species_filter->set_asura(value.asura);
+    proto_species_filter->set_charr(value.charr);
+    proto_species_filter->set_human(value.human);
+    proto_species_filter->set_norn(value.norn);
+    proto_species_filter->set_sylvari(value.sylvari);
+    setter(proto_species_filter);
 }

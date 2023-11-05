@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -23,6 +24,6 @@ void xml_attribute_to_image(
 
 std::string image_to_xml_attribute(const std::string& attribute_name, const Image* value);
 
-waypoint::TexturePath* to_proto_image(Image attribute_value);
-
 Image from_proto_image(waypoint::TexturePath attribute_value);
+
+void image_to_proto(Image value, std::function<void(waypoint::TexturePath*)> setter);

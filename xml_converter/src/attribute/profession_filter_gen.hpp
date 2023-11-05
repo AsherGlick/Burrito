@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -31,5 +32,7 @@ void xml_attribute_to_profession_filter(
     ProfessionFilter* value,
     bool* is_set);
 std::string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value);
-waypoint::ProfessionFilter* to_proto_profession_filter(ProfessionFilter attribute_value);
+
 ProfessionFilter from_proto_profession_filter(waypoint::ProfessionFilter proto_profession_filter);
+
+void profession_filter_to_proto(ProfessionFilter value, std::function<void(waypoint::ProfessionFilter*)> setter);

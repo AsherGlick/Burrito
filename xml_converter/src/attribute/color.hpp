@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -26,6 +27,6 @@ void xml_attribute_to_color(
 
 std::string color_to_xml_attribute(const std::string& attribute_name, const Color* value);
 
-waypoint::RGBAColor* to_proto_color(Color attribute_value);
-
 Color from_proto_color(waypoint::RGBAColor attribute_value);
+
+void color_to_proto(Color value, std::function<void(waypoint::RGBAColor*)> setter);

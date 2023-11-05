@@ -47,3 +47,12 @@ string bool_to_xml_attribute(const string& attribute_name, const bool* value) {
         return " " + attribute_name + "=\"false\"";
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// bool_to_proto
+//
+// Writes a bool to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void bool_to_proto(bool value, std::function<void(bool)> setter) {
+    setter(value);
+}

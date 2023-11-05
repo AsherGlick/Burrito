@@ -48,18 +48,18 @@ void xml_attribute_to_{{attribute_name}}(
     }
 {% endif %}
 
-{{proto_field_cpp_type}}* to_proto_{{attribute_name}}({{class_name}} attribute_value) {
-    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
-    {% for attribute_variable in attribute_variables %}
-        proto_{{attribute_name}}->set_{{attribute_variable.protobuf_field}}(attribute_value.{{attribute_variable.attribute_name}});
-    {% endfor %}
-    return proto_{{attribute_name}};
-}
-
 {{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
     {{class_name}} {{attribute_name}};
     {% for attribute_variable in attribute_variables: %}
         {{attribute_name}}.{{attribute_variable.attribute_name}} = proto_{{attribute_name}}.{{attribute_variable.protobuf_field}}();
     {% endfor %}
     return {{attribute_name}};
+}
+
+void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}}*)> setter) {
+    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
+    {% for attribute_variable in attribute_variables %}
+        proto_{{attribute_name}}->set_{{attribute_variable.protobuf_field}}(value.{{attribute_variable.attribute_name}});
+    {% endfor %}
+    setter(proto_{{attribute_name}});
 }

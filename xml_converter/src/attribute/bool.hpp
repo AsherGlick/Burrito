@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,5 @@ std::string bool_to_xml_attribute(const std::string& attribute_name, const bool*
 inline bool const& from_proto_bool(const bool& x) {
     return x;
 }
-inline bool const& to_proto_bool(const bool& x) {
-    return x;
-}
+
+void bool_to_proto(bool value, std::function<void(bool)> setter);

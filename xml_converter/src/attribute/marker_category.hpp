@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -23,6 +24,6 @@ void xml_attribute_to_marker_category(
 
 std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value);
 
-waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value);
-
 MarkerCategory from_proto_marker_category(waypoint::Category attribute_value);
+
+void marker_category_to_proto(MarkerCategory value, std::function<void(waypoint::Category*)> setter);

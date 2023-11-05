@@ -51,19 +51,6 @@ string cull_chirality_to_xml_attribute(const std::string& attribute_name, const 
     }
 }
 
-waypoint::CullChirality to_proto_cull_chirality(CullChirality attribute_value) {
-    switch (attribute_value) {
-        case CullChirality::none:
-            return waypoint::CullChirality::none;
-        case CullChirality::clockwise:
-            return waypoint::CullChirality::clockwise;
-        case CullChirality::counter_clockwise:
-            return waypoint::CullChirality::counter_clockwise;
-        default:
-            return waypoint::CullChirality::none;
-    }
-}
-
 CullChirality from_proto_cull_chirality(waypoint::CullChirality proto_cull_chirality) {
     switch (proto_cull_chirality) {
         case waypoint::CullChirality::none:
@@ -74,5 +61,22 @@ CullChirality from_proto_cull_chirality(waypoint::CullChirality proto_cull_chira
             return CullChirality::counter_clockwise;
         default:
             return CullChirality::none;
+    }
+}
+
+void cull_chirality_to_proto(CullChirality value, std::function<void(waypoint::CullChirality)> setter) {
+    switch (value) {
+        case CullChirality::none:
+            setter(waypoint::CullChirality::none);
+            break;
+        case CullChirality::clockwise:
+            setter(waypoint::CullChirality::clockwise);
+            break;
+        case CullChirality::counter_clockwise:
+            setter(waypoint::CullChirality::counter_clockwise);
+            break;
+        default:
+            setter(waypoint::CullChirality::none);
+            break;
     }
 }

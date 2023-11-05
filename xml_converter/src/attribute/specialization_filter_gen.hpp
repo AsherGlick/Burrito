@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -94,5 +95,7 @@ void xml_attribute_to_specialization_filter(
     SpecializationFilter* value,
     bool* is_set);
 std::string specialization_filter_to_xml_attribute(const std::string& attribute_name, const SpecializationFilter* value);
-waypoint::SpecializationFilter* to_proto_specialization_filter(SpecializationFilter attribute_value);
+
 SpecializationFilter from_proto_specialization_filter(waypoint::SpecializationFilter proto_specialization_filter);
+
+void specialization_filter_to_proto(SpecializationFilter value, std::function<void(waypoint::SpecializationFilter*)> setter);

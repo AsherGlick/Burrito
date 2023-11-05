@@ -247,85 +247,112 @@ vector<string> Trail::as_xml() const {
 waypoint::Trail Trail::as_protobuf() const {
     waypoint::Trail proto_trail;
     if (this->achievement_bitmask_is_set) {
-        proto_trail.set_achievement_bit(to_proto_int(this->achievement_bitmask));
+        std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_achievement_bit(val); };
+        int_to_proto(this->achievement_bitmask, setter);
     }
     if (this->achievement_id_is_set) {
-        proto_trail.set_achievement_id(to_proto_int(this->achievement_id));
+        std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_achievement_id(val); };
+        int_to_proto(this->achievement_id, setter);
     }
     if (this->animation_speed_is_set) {
-        proto_trail.set_animation_speed(to_proto_float(this->animation_speed));
+        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_animation_speed(val); };
+        float_to_proto(this->animation_speed, setter);
     }
     if (this->can_fade_is_set) {
-        proto_trail.set_can_fade(to_proto_bool(this->can_fade));
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_can_fade(val); };
+        bool_to_proto(this->can_fade, setter);
     }
     if (this->category_is_set) {
-        proto_trail.set_allocated_category(to_proto_marker_category(this->category));
+        std::function<void(waypoint::Category*)> setter = [&proto_trail](waypoint::Category* val) { proto_trail.set_allocated_category(val); };
+        marker_category_to_proto(this->category, setter);
     }
     if (this->color_is_set) {
-        proto_trail.set_allocated_rgba_color(to_proto_color(this->color));
+        std::function<void(waypoint::RGBAColor*)> setter = [&proto_trail](waypoint::RGBAColor* val) { proto_trail.set_allocated_rgba_color(val); };
+        color_to_proto(this->color, setter);
     }
     if (this->cull_chirality_is_set) {
-        proto_trail.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
+        std::function<void(waypoint::CullChirality)> setter = [&proto_trail](waypoint::CullChirality val) { proto_trail.set_cull_chirality(val); };
+        cull_chirality_to_proto(this->cull_chirality, setter);
     }
     if (this->distance_fade_end_is_set) {
-        proto_trail.set_distance_fade_end(to_proto_float(this->distance_fade_end));
+        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_distance_fade_end(val); };
+        float_to_proto(this->distance_fade_end, setter);
     }
     if (this->distance_fade_start_is_set) {
-        proto_trail.set_distance_fade_start(to_proto_float(this->distance_fade_start));
+        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_distance_fade_start(val); };
+        float_to_proto(this->distance_fade_start, setter);
     }
     if (this->festival_filter_is_set) {
-        proto_trail.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
+        std::function<void(waypoint::FestivalFilter*)> setter = [&proto_trail](waypoint::FestivalFilter* val) { proto_trail.set_allocated_festival_filter(val); };
+        festival_filter_to_proto(this->festival_filter, setter);
     }
     if (this->guid_is_set) {
-        proto_trail.set_guid(to_proto_unique_id(this->guid));
+        std::function<void(std::string)> setter = [&proto_trail](std::string val) { proto_trail.set_guid(val); };
+        unique_id_to_proto(this->guid, setter);
     }
     if (this->is_wall_is_set) {
-        proto_trail.set_is_wall(to_proto_bool(this->is_wall));
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_is_wall(val); };
+        bool_to_proto(this->is_wall, setter);
     }
     if (this->map_display_size_is_set) {
-        proto_trail.set_map_display_size(to_proto_int(this->map_display_size));
+        std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_map_display_size(val); };
+        int_to_proto(this->map_display_size, setter);
     }
     if (this->map_id_is_set) {
-        proto_trail.set_map_id(to_proto_int(this->map_id));
+        std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_map_id(val); };
+        int_to_proto(this->map_id, setter);
     }
     if (this->map_type_filter_is_set) {
-        proto_trail.set_allocated_map_type_filter(to_proto_map_type_filter(this->map_type_filter));
+        std::function<void(waypoint::MapTypeFilter*)> setter = [&proto_trail](waypoint::MapTypeFilter* val) { proto_trail.set_allocated_map_type_filter(val); };
+        map_type_filter_to_proto(this->map_type_filter, setter);
     }
     if (this->mount_filter_is_set) {
-        proto_trail.set_allocated_mount_filter(to_proto_mount_filter(this->mount_filter));
+        std::function<void(waypoint::MountFilter*)> setter = [&proto_trail](waypoint::MountFilter* val) { proto_trail.set_allocated_mount_filter(val); };
+        mount_filter_to_proto(this->mount_filter, setter);
     }
     if (this->profession_filter_is_set) {
-        proto_trail.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
+        std::function<void(waypoint::ProfessionFilter*)> setter = [&proto_trail](waypoint::ProfessionFilter* val) { proto_trail.set_allocated_profession_filter(val); };
+        profession_filter_to_proto(this->profession_filter, setter);
     }
     if (this->render_ingame_is_set) {
-        proto_trail.set_tentative__render_ingame(to_proto_bool(this->render_ingame));
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_tentative__render_ingame(val); };
+        bool_to_proto(this->render_ingame, setter);
     }
     if (this->render_on_map_is_set) {
-        proto_trail.set_tentative__render_on_map(to_proto_bool(this->render_on_map));
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_tentative__render_on_map(val); };
+        bool_to_proto(this->render_on_map, setter);
     }
     if (this->render_on_minimap_is_set) {
-        proto_trail.set_tentative__render_on_minimap(to_proto_bool(this->render_on_minimap));
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_tentative__render_on_minimap(val); };
+        bool_to_proto(this->render_on_minimap, setter);
     }
     if (this->schedule_is_set) {
-        proto_trail.set_bhdraft__schedule(to_proto_string(this->schedule));
+        std::function<void(std::string)> setter = [&proto_trail](std::string val) { proto_trail.set_bhdraft__schedule(val); };
+        string_to_proto(this->schedule, setter);
     }
     if (this->schedule_duration_is_set) {
-        proto_trail.set_bhdraft__schedule_duration(to_proto_float(this->schedule_duration));
+        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_bhdraft__schedule_duration(val); };
+        float_to_proto(this->schedule_duration, setter);
     }
     if (this->specialization_filter_is_set) {
-        proto_trail.set_allocated_specialization_filter(to_proto_specialization_filter(this->specialization_filter));
+        std::function<void(waypoint::SpecializationFilter*)> setter = [&proto_trail](waypoint::SpecializationFilter* val) { proto_trail.set_allocated_specialization_filter(val); };
+        specialization_filter_to_proto(this->specialization_filter, setter);
     }
     if (this->species_filter_is_set) {
-        proto_trail.set_allocated_species_filter(to_proto_species_filter(this->species_filter));
+        std::function<void(waypoint::SpeciesFilter*)> setter = [&proto_trail](waypoint::SpeciesFilter* val) { proto_trail.set_allocated_species_filter(val); };
+        species_filter_to_proto(this->species_filter, setter);
     }
     if (this->texture_is_set) {
-        proto_trail.set_allocated_texture_path(to_proto_image(this->texture));
+        std::function<void(waypoint::TexturePath*)> setter = [&proto_trail](waypoint::TexturePath* val) { proto_trail.set_allocated_texture_path(val); };
+        image_to_proto(this->texture, setter);
     }
     if (this->trail_data_is_set) {
-        proto_trail.set_allocated_trail_data(to_proto_trail_data(this->trail_data));
+        std::function<void(waypoint::TrailData*)> setter = [&proto_trail](waypoint::TrailData* val) { proto_trail.set_allocated_trail_data(val); };
+        trail_data_to_proto(this->trail_data, setter);
     }
     if (this->trail_scale_is_set) {
-        proto_trail.set_scale(to_proto_float(this->trail_scale));
+        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_scale(val); };
+        float_to_proto(this->trail_scale, setter);
     }
     return proto_trail;
 }
