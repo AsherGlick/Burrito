@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -89,17 +90,32 @@ void move_supplementary_files(string input_directory, string output_directory) {
     }
 }
 
-void read_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    vector<string> xml_files = get_files_by_suffix(directory, ".xml");
-    for (const string& path : xml_files) {
-        parse_xml_file(path, marker_categories, parsed_pois);
+void read_taco_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    if (!filesystem::exists(input_path)) {
+        cout << "Error: " << input_path << " is not an existing directory or file" << endl;
+    }
+    else if (filesystem::is_directory(input_path)) {
+        vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
+        for (const string& path : xml_files) {
+            parse_xml_file(path, marker_categories, parsed_pois);
+        }
+    }
+    else if (filesystem::is_regular_file(input_path)) {
+        parse_xml_file(input_path, marker_categories, parsed_pois);
     }
 }
 
-void write_taco_directory(string directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
-    string xml_filepath = directory + "/xml_file.xml";
-    write_xml_file(xml_filepath, marker_categories, parsed_pois);
+    if (!has_suffix(output_path, "/")) {
+        output_path += "/";
+    }
+    if (!filesystem::is_directory(output_path)) {
+        if (!filesystem::create_directory(output_path)) {
+            cout << "Error: " << output_path << "is not a valid directory path" << endl;
+        }
+    }
+    write_xml_file(output_path + "xml_file.xml", marker_categories, parsed_pois);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
