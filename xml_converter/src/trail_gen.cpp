@@ -263,8 +263,8 @@ waypoint::Trail Trail::as_protobuf() const {
         bool_to_proto(this->can_fade, setter);
     }
     if (this->category_is_set) {
-        std::function<void(waypoint::Category*)> setter = [&proto_trail](waypoint::Category* val) { proto_trail.set_allocated_category(val); };
-        marker_category_to_proto(this->category, setter);
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_category(val); };
+        do_nothing(this->category, setter);
     }
     if (this->color_is_set) {
         std::function<void(waypoint::RGBAColor*)> setter = [&proto_trail](waypoint::RGBAColor* val) { proto_trail.set_allocated_rgba_color(val); };
@@ -370,8 +370,8 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
     if (proto_trail.can_fade() != 0) {
         proto_to_bool(proto_trail.can_fade(), &(this->can_fade), &(this->can_fade_is_set));
     }
-    if (proto_trail.has_category()) {
-        proto_to_marker_category(proto_trail.category(), &(this->category), &(this->category_is_set));
+    if (proto_trail.category() != 0) {
+        do_nothing(proto_trail.category(), &(this->category), &(this->category_is_set));
     }
     if (proto_trail.has_rgba_color()) {
         proto_to_color(proto_trail.rgba_color(), &(this->color), &(this->color_is_set));

@@ -437,8 +437,8 @@ waypoint::Icon Icon::as_protobuf() const {
         bool_to_proto(this->can_fade, setter);
     }
     if (this->category_is_set) {
-        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.set_allocated_category(val); };
-        marker_category_to_proto(this->category, setter);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_category(val); };
+        do_nothing(this->category, setter);
     }
     if (this->color_is_set) {
         std::function<void(waypoint::RGBAColor*)> setter = [&proto_icon](waypoint::RGBAColor* val) { proto_icon.set_allocated_rgba_color(val); };
@@ -621,8 +621,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
     if (proto_icon.can_fade() != 0) {
         proto_to_bool(proto_icon.can_fade(), &(this->can_fade), &(this->can_fade_is_set));
     }
-    if (proto_icon.has_category()) {
-        proto_to_marker_category(proto_icon.category(), &(this->category), &(this->category_is_set));
+    if (proto_icon.category() != 0) {
+        do_nothing(proto_icon.category(), &(this->category), &(this->category_is_set));
     }
     if (proto_icon.has_rgba_color()) {
         proto_to_color(proto_icon.rgba_color(), &(this->color), &(this->color_is_set));

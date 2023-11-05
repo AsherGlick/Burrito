@@ -51,7 +51,9 @@ message Icon {
     bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
-    Category category = 2054;
+
+    // TODO: Delete this when we can parse data per marker instead of per field
+    bool category = 2054;
 }
 
 message Trail {
@@ -83,7 +85,9 @@ message Trail {
     bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
-    Category category = 2054;
+
+    // TODO: Delete this when we can parse data per marker instead of per field
+    bool category = 2054;
 }
     
 message TexturePath {
