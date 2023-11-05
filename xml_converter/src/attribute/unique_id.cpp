@@ -33,11 +33,17 @@ string unique_id_to_xml_attribute(const string& attribute_name, const UniqueId* 
     return " " + attribute_name + "=\"" + base64_encode(&(value->guid[0]), value->guid.size()) + "\"";
 }
 
-UniqueId from_proto_unique_id(string attribute_value) {
+////////////////////////////////////////////////////////////////////////////////
+// proto_to_unique_id
+//
+// Parses a UniqueId from a proto field.
+////////////////////////////////////////////////////////////////////////////////
+void proto_to_unique_id(std::string input, UniqueId* value, bool* is_set) {
     UniqueId unique_id;
-    std::vector<uint8_t> guid(attribute_value.begin(), attribute_value.end());
+    std::vector<uint8_t> guid(input.begin(), input.end());
     unique_id.guid = guid;
-    return unique_id;
+    *value = unique_id;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

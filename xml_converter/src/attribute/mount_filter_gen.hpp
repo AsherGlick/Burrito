@@ -32,8 +32,9 @@ void xml_attribute_to_mount_filter(
     std::vector<XMLError*>* errors,
     MountFilter* value,
     bool* is_set);
+
 std::string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value);
 
-MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter);
+void proto_to_mount_filter(waypoint::MountFilter input, MountFilter* value, bool* is_set);
 
 void mount_filter_to_proto(MountFilter value, std::function<void(waypoint::MountFilter*)> setter);

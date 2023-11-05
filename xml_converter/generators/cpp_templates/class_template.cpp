@@ -115,8 +115,7 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
             {% else %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
             {% endif %}
-                this->{{attribute_variable.attribute_name}} = {{attribute_variable.deserialize_proto_function}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}());
-                this->{{attribute_variable.attribute_flag_name}} = true;
+                {{attribute_variable.deserialize_proto_function}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}(), &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endif %}
     {% endfor %}

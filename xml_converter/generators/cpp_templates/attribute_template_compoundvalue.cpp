@@ -48,12 +48,13 @@ void xml_attribute_to_{{attribute_name}}(
     }
 {% endif %}
 
-{{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
+void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}* value, bool* is_set) {
     {{class_name}} {{attribute_name}};
     {% for attribute_variable in attribute_variables: %}
-        {{attribute_name}}.{{attribute_variable.attribute_name}} = proto_{{attribute_name}}.{{attribute_variable.protobuf_field}}();
+        {{attribute_name}}.{{attribute_variable.attribute_name}} = input.{{attribute_variable.protobuf_field}}();
     {% endfor %}
-    return {{attribute_name}};
+    *value = {{attribute_name}};
+    *is_set = true;
 }
 
 void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}}*)> setter) {

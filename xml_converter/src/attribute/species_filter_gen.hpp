@@ -27,8 +27,9 @@ void xml_attribute_to_species_filter(
     std::vector<XMLError*>* errors,
     SpeciesFilter* value,
     bool* is_set);
+
 std::string species_filter_to_xml_attribute(const std::string& attribute_name, const SpeciesFilter* value);
 
-SpeciesFilter from_proto_species_filter(waypoint::SpeciesFilter proto_species_filter);
+void proto_to_species_filter(waypoint::SpeciesFilter input, SpeciesFilter* value, bool* is_set);
 
 void species_filter_to_proto(SpeciesFilter value, std::function<void(waypoint::SpeciesFilter*)> setter);

@@ -25,6 +25,6 @@ void xml_attribute_to_unique_id(
 
 std::string unique_id_to_xml_attribute(const std::string& attribute_name, const UniqueId* value);
 
-UniqueId from_proto_unique_id(std::string attribute_value);
+void proto_to_unique_id(std::string input, UniqueId* value, bool* is_set);
 
 void unique_id_to_proto(UniqueId value, std::function<void(std::string)> setter);

@@ -29,8 +29,9 @@ void xml_attribute_to_festival_filter(
     std::vector<XMLError*>* errors,
     FestivalFilter* value,
     bool* is_set);
+
 std::string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value);
 
-FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter);
+void proto_to_festival_filter(waypoint::FestivalFilter input, FestivalFilter* value, bool* is_set);
 
 void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter);

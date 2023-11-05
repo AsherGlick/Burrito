@@ -108,19 +108,20 @@ string mount_filter_to_xml_attribute(const std::string& attribute_name, const Mo
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter) {
+void proto_to_mount_filter(waypoint::MountFilter input, MountFilter* value, bool* is_set) {
     MountFilter mount_filter;
-    mount_filter.raptor = proto_mount_filter.raptor();
-    mount_filter.springer = proto_mount_filter.springer();
-    mount_filter.skimmer = proto_mount_filter.skimmer();
-    mount_filter.jackal = proto_mount_filter.jackal();
-    mount_filter.griffon = proto_mount_filter.griffon();
-    mount_filter.roller_beetle = proto_mount_filter.roller_beetle();
-    mount_filter.warclaw = proto_mount_filter.warclaw();
-    mount_filter.skyscale = proto_mount_filter.skyscale();
-    mount_filter.skiff = proto_mount_filter.skiff();
-    mount_filter.seige_turtle = proto_mount_filter.seige_turtle();
-    return mount_filter;
+    mount_filter.raptor = input.raptor();
+    mount_filter.springer = input.springer();
+    mount_filter.skimmer = input.skimmer();
+    mount_filter.jackal = input.jackal();
+    mount_filter.griffon = input.griffon();
+    mount_filter.roller_beetle = input.roller_beetle();
+    mount_filter.warclaw = input.warclaw();
+    mount_filter.skyscale = input.skyscale();
+    mount_filter.skiff = input.skiff();
+    mount_filter.seige_turtle = input.seige_turtle();
+    *value = mount_filter;
+    *is_set = true;
 }
 
 void mount_filter_to_proto(MountFilter value, std::function<void(waypoint::MountFilter*)> setter) {

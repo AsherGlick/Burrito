@@ -16,9 +16,6 @@ void xml_attribute_to_bool(
 
 std::string bool_to_xml_attribute(const std::string& attribute_name, const bool* value);
 
-// Zero Cost Abstraction identity functions to make parsing and writing protobufs more uniform
-inline bool const& from_proto_bool(const bool& x) {
-    return x;
-}
+void proto_to_bool(bool input, bool* value, bool* is_set);
 
 void bool_to_proto(bool value, std::function<void(bool)> setter);

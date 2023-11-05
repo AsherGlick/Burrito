@@ -73,14 +73,15 @@ string species_filter_to_xml_attribute(const std::string& attribute_name, const 
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-SpeciesFilter from_proto_species_filter(waypoint::SpeciesFilter proto_species_filter) {
+void proto_to_species_filter(waypoint::SpeciesFilter input, SpeciesFilter* value, bool* is_set) {
     SpeciesFilter species_filter;
-    species_filter.asura = proto_species_filter.asura();
-    species_filter.charr = proto_species_filter.charr();
-    species_filter.human = proto_species_filter.human();
-    species_filter.norn = proto_species_filter.norn();
-    species_filter.sylvari = proto_species_filter.sylvari();
-    return species_filter;
+    species_filter.asura = input.asura();
+    species_filter.charr = input.charr();
+    species_filter.human = input.human();
+    species_filter.norn = input.norn();
+    species_filter.sylvari = input.sylvari();
+    *value = species_filter;
+    *is_set = true;
 }
 
 void species_filter_to_proto(SpeciesFilter value, std::function<void(waypoint::SpeciesFilter*)> setter) {

@@ -57,14 +57,18 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
     }
 }
 
-{{class_name}} from_proto_{{attribute_name}}({{proto_field_cpp_type}} proto_{{attribute_name}}) {
-    switch (proto_{{attribute_name}}) {
+void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}* value, bool* is_set) {
+    switch (input) {
         {% for attribute_variable in attribute_variables %}
             case {{proto_field_cpp_type}}::{{attribute_variable.attribute_name}}:
-                return {{class_name}}::{{attribute_variable.attribute_name}};
+                *value = {{class_name}}::{{attribute_variable.attribute_name}};
+                *is_set = true;
+                break;
         {% endfor %}
         default:
-            return {{class_name}}::{{attribute_variables[0].attribute_name}};
+            *value = {{class_name}}::{{attribute_variables[0].attribute_name}};
+            *is_set = true;
+            break;
     }
 }
 

@@ -101,18 +101,19 @@ string profession_filter_to_xml_attribute(const std::string& attribute_name, con
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-ProfessionFilter from_proto_profession_filter(waypoint::ProfessionFilter proto_profession_filter) {
+void proto_to_profession_filter(waypoint::ProfessionFilter input, ProfessionFilter* value, bool* is_set) {
     ProfessionFilter profession_filter;
-    profession_filter.guardian = proto_profession_filter.guardian();
-    profession_filter.warrior = proto_profession_filter.warrior();
-    profession_filter.engineer = proto_profession_filter.engineer();
-    profession_filter.ranger = proto_profession_filter.ranger();
-    profession_filter.thief = proto_profession_filter.thief();
-    profession_filter.elementalist = proto_profession_filter.elementalist();
-    profession_filter.mesmer = proto_profession_filter.mesmer();
-    profession_filter.necromancer = proto_profession_filter.necromancer();
-    profession_filter.revenant = proto_profession_filter.revenant();
-    return profession_filter;
+    profession_filter.guardian = input.guardian();
+    profession_filter.warrior = input.warrior();
+    profession_filter.engineer = input.engineer();
+    profession_filter.ranger = input.ranger();
+    profession_filter.thief = input.thief();
+    profession_filter.elementalist = input.elementalist();
+    profession_filter.mesmer = input.mesmer();
+    profession_filter.necromancer = input.necromancer();
+    profession_filter.revenant = input.revenant();
+    *value = profession_filter;
+    *is_set = true;
 }
 
 void profession_filter_to_proto(ProfessionFilter value, std::function<void(waypoint::ProfessionFilter*)> setter) {

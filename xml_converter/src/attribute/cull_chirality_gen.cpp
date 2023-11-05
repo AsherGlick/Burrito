@@ -51,16 +51,24 @@ string cull_chirality_to_xml_attribute(const std::string& attribute_name, const 
     }
 }
 
-CullChirality from_proto_cull_chirality(waypoint::CullChirality proto_cull_chirality) {
-    switch (proto_cull_chirality) {
+void proto_to_cull_chirality(waypoint::CullChirality input, CullChirality* value, bool* is_set) {
+    switch (input) {
         case waypoint::CullChirality::none:
-            return CullChirality::none;
+            *value = CullChirality::none;
+            *is_set = true;
+            break;
         case waypoint::CullChirality::clockwise:
-            return CullChirality::clockwise;
+            *value = CullChirality::clockwise;
+            *is_set = true;
+            break;
         case waypoint::CullChirality::counter_clockwise:
-            return CullChirality::counter_clockwise;
+            *value = CullChirality::counter_clockwise;
+            *is_set = true;
+            break;
         default:
-            return CullChirality::none;
+            *value = CullChirality::none;
+            *is_set = true;
+            break;
     }
 }
 

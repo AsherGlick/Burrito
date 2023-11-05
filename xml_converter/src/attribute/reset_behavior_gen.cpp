@@ -141,28 +141,48 @@ string reset_behavior_to_xml_attribute(const std::string& attribute_name, const 
     }
 }
 
-ResetBehavior from_proto_reset_behavior(waypoint::ResetBehavior proto_reset_behavior) {
-    switch (proto_reset_behavior) {
+void proto_to_reset_behavior(waypoint::ResetBehavior input, ResetBehavior* value, bool* is_set) {
+    switch (input) {
         case waypoint::ResetBehavior::always_visible:
-            return ResetBehavior::always_visible;
+            *value = ResetBehavior::always_visible;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::map_change:
-            return ResetBehavior::map_change;
+            *value = ResetBehavior::map_change;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::daily_reset:
-            return ResetBehavior::daily_reset;
+            *value = ResetBehavior::daily_reset;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::never:
-            return ResetBehavior::never;
+            *value = ResetBehavior::never;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::timer:
-            return ResetBehavior::timer;
+            *value = ResetBehavior::timer;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::map_reset:
-            return ResetBehavior::map_reset;
+            *value = ResetBehavior::map_reset;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::instance_change:
-            return ResetBehavior::instance_change;
+            *value = ResetBehavior::instance_change;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::daily_reset_per_character:
-            return ResetBehavior::daily_reset_per_character;
+            *value = ResetBehavior::daily_reset_per_character;
+            *is_set = true;
+            break;
         case waypoint::ResetBehavior::weekly_reset:
-            return ResetBehavior::weekly_reset;
+            *value = ResetBehavior::weekly_reset;
+            *is_set = true;
+            break;
         default:
-            return ResetBehavior::always_visible;
+            *value = ResetBehavior::always_visible;
+            *is_set = true;
+            break;
     }
 }
 
