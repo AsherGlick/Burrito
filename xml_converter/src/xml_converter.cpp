@@ -108,13 +108,13 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
 void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     string xml_filepath;
-    if (!has_suffix(output_path, "/")){
+    if (!has_suffix(output_path, "/")) {
         output_path += "/";
         xml_filepath = output_path + "xml_file.xml";
     }
     else {
-            xml_filepath = output_path;
-        }
+        xml_filepath = output_path;
+    }
 
     if (!filesystem::is_directory(output_path)) {
         if (!filesystem::create_directory(output_path)) {
