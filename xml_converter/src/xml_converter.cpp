@@ -108,26 +108,16 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
 void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     string xml_filepath;
-    // If the file path leads to a directory or file, use that path
-    // This will overwrite files
-    if (filesystem::exists(output_path)) {
-        if (filesystem::is_directory(output_path)) {
-            if (!has_suffix(output_path, "/"))
-                output_path += "/";
-            xml_filepath = output_path + "xml_file.xml";
-        }
-        else {
+    if (!has_suffix(output_path, "/")){
+        output_path += "/";
+        xml_filepath = output_path + "xml_file.xml";
+    }
+    else {
             xml_filepath = output_path;
         }
-    }
-    // If the file path does not exist, assume it is a directory path
-    else {
-        if (filesystem::create_directory(output_path)) {
-            if (!has_suffix(output_path, "/"))
-                output_path += "/";
-            xml_filepath = output_path + "xml_file.xml";
-        }
-        else {
+
+    if (!filesystem::is_directory(output_path)) {
+        if (!filesystem::create_directory(output_path)) {
             cout << "Error: " << output_path << "is not a valid directory path" << endl;
         }
     }
