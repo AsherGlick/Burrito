@@ -11,18 +11,22 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_int
+// xml_attribute_to_int
 //
 // Parses an int from the value of a rapidxml::xml_attribute. Adds an error
 // if the value cannot be parsed properly.
 ////////////////////////////////////////////////////////////////////////////////
-int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_int(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    int* value,
+    bool* is_set) {
     try {
-        return stoi(get_attribute_value(input));
+        *value = stoi(get_attribute_value(input));
+        *is_set = true;
     }
     catch (std::invalid_argument const& exception) {
         errors->push_back(new XMLAttributeValueError("Invalid integer value", input));
-        return 0;
     }
     // TODO(#99): Do we need an out_of_range exception catch when parsing integers?
     // catch(std::out_of_range const& exception) {
@@ -33,10 +37,29 @@ int parse_int(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_int
+// int_to_xml_attribute
 //
-// Converts an int into a stringy value so that it can be saved to xml.
+// Converts an int a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_int(int attribute_value) {
-    return to_string(attribute_value);
+string int_to_xml_attribute(const string& attribute_name, const int* value) {
+    return " " + attribute_name + "=\"" + to_string(*value) + "\"";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// proto_to_int
+//
+// Parses an int from a proto field.
+////////////////////////////////////////////////////////////////////////////////
+void proto_to_int(int input, int* value, bool* is_set) {
+    *value = input;
+    *is_set = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// int_to_proto
+//
+// Writes a int to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void int_to_proto(int value, std::function<void(int&)> setter) {
+    setter(value);
 }

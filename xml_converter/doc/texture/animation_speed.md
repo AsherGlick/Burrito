@@ -4,7 +4,6 @@ type: Float32
 applies_to: [Trail]
 xml_fields: ["AnimSpeed", "AnimationSpeed"]
 protobuf_field: animation_speed
-compatability: [TacO, BlishHUD, Burrito]
 ---
 The speed which the texture should be moving across the object.
 

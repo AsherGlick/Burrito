@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -15,10 +16,14 @@ class MarkerCategory {
     std::string category;
 };
 
-MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_marker_category(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    MarkerCategory* value,
+    bool* is_set);
 
-std::string stringify_marker_category(MarkerCategory attribute_value);
+std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value);
 
-waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value);
+void proto_to_marker_category(waypoint::Category input, MarkerCategory* value, bool* is_set);
 
-MarkerCategory from_proto_marker_category(waypoint::Category attribute_value);
+void marker_category_to_proto(MarkerCategory value, std::function<void(waypoint::Category*)> setter);

@@ -2,7 +2,6 @@
 name: Achievement ID
 type: Int32
 applies_to: [Icon, Trail]
-compatability: [TacO, BlishHUD, Burrito]
 xml_fields: ["AchievementId"]
 protobuf_field: achievement_id
 ---

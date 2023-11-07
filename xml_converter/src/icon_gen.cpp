@@ -23,292 +23,220 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
-        this->achievement_bitmask = parse_int(attribute, errors);
-        this->achievement_bitmask_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->achievement_bitmask), &(this->achievement_bitmask_is_set));
     }
     else if (attributename == "achievementid") {
-        this->achievement_id = parse_int(attribute, errors);
-        this->achievement_id_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->achievement_id), &(this->achievement_id_is_set));
     }
     else if (attributename == "autotrigger") {
-        this->auto_trigger = parse_bool(attribute, errors);
-        this->auto_trigger_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->auto_trigger), &(this->auto_trigger_is_set));
     }
     else if (attributename == "bouncedelay") {
-        this->bounce_delay = parse_float(attribute, errors);
-        this->bounce_delay_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->bounce_delay), &(this->bounce_delay_is_set));
     }
     else if (attributename == "bounceduration") {
-        this->bounce_duration = parse_float(attribute, errors);
-        this->bounce_duration_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->bounce_duration), &(this->bounce_duration_is_set));
     }
     else if (attributename == "bounceheight") {
-        this->bounce_height = parse_float(attribute, errors);
-        this->bounce_height_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->bounce_height), &(this->bounce_height_is_set));
     }
     else if (attributename == "canfade") {
-        this->can_fade = parse_bool(attribute, errors);
-        this->can_fade_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->can_fade), &(this->can_fade_is_set));
     }
     else if (attributename == "type") {
-        this->category = parse_marker_category(attribute, errors);
-        this->category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
     }
     else if (attributename == "category") {
-        this->category = parse_marker_category(attribute, errors);
-        this->category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
     }
     else if (attributename == "color") {
-        this->color = parse_color(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_color(attribute, errors, &(this->color), &(this->color_is_set));
     }
     else if (attributename == "bhcolor") {
-        this->color = parse_color(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_color(attribute, errors, &(this->color), &(this->color_is_set));
     }
     else if (attributename == "alpha") {
-        this->color.alpha = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.alpha), &(this->color_is_set));
     }
     else if (attributename == "blue") {
-        this->color.blue = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.blue), &(this->color_is_set));
     }
     else if (attributename == "green") {
-        this->color.green = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.green), &(this->color_is_set));
     }
     else if (attributename == "red") {
-        this->color.red = parse_float(attribute, errors);
-        this->color_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->color.red), &(this->color_is_set));
     }
     else if (attributename == "copy") {
-        this->copy_clipboard = parse_string(attribute, errors);
-        this->copy_clipboard_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->copy_clipboard), &(this->copy_clipboard_is_set));
     }
     else if (attributename == "copyclipboard") {
-        this->copy_clipboard = parse_string(attribute, errors);
-        this->copy_clipboard_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->copy_clipboard), &(this->copy_clipboard_is_set));
     }
     else if (attributename == "copymessage") {
-        this->copy_message = parse_string(attribute, errors);
-        this->copy_message_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->copy_message), &(this->copy_message_is_set));
     }
     else if (attributename == "cull") {
-        this->cull_chirality = parse_cull_chirality(attribute, errors);
-        this->cull_chirality_is_set = true;
+        xml_attribute_to_cull_chirality(attribute, errors, &(this->cull_chirality), &(this->cull_chirality_is_set));
     }
     else if (attributename == "fadefar") {
-        this->distance_fade_end = parse_float(attribute, errors);
-        this->distance_fade_end_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
     }
     else if (attributename == "distancefadeend") {
-        this->distance_fade_end = parse_float(attribute, errors);
-        this->distance_fade_end_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
     }
     else if (attributename == "fadenear") {
-        this->distance_fade_start = parse_float(attribute, errors);
-        this->distance_fade_start_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
     }
     else if (attributename == "distancefadestart") {
-        this->distance_fade_start = parse_float(attribute, errors);
-        this->distance_fade_start_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
     }
     else if (attributename == "rotate") {
-        this->euler_rotation = parse_euler_rotation(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_euler_rotation(attribute, errors, &(this->euler_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "rotatex") {
-        this->euler_rotation.x_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->euler_rotation.x_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "rotatey") {
-        this->euler_rotation.y_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->euler_rotation.y_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "rotatez") {
-        this->euler_rotation.z_rotation = parse_float(attribute, errors);
-        this->euler_rotation_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->euler_rotation.z_rotation), &(this->euler_rotation_is_set));
     }
     else if (attributename == "festival") {
-        this->festival_filter = parse_festival_filter(attribute, errors);
-        this->festival_filter_is_set = true;
+        xml_attribute_to_festival_filter(attribute, errors, &(this->festival_filter), &(this->festival_filter_is_set));
     }
     else if (attributename == "guid") {
-        this->guid = parse_unique_id(attribute, errors);
-        this->guid_is_set = true;
+        xml_attribute_to_unique_id(attribute, errors, &(this->guid), &(this->guid_is_set));
     }
     else if (attributename == "hascountdown") {
-        this->has_countdown = parse_bool(attribute, errors);
-        this->has_countdown_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->has_countdown), &(this->has_countdown_is_set));
     }
     else if (attributename == "heightoffset") {
-        this->height_offset = parse_float(attribute, errors);
-        this->height_offset_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->height_offset), &(this->height_offset_is_set));
     }
     else if (attributename == "bhheightoffset") {
-        this->height_offset = parse_float(attribute, errors);
-        this->height_offset_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->height_offset), &(this->height_offset_is_set));
     }
     else if (attributename == "hide") {
-        this->hide_category = parse_marker_category(attribute, errors);
-        this->hide_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->hide_category), &(this->hide_category_is_set));
     }
     else if (attributename == "iconfile") {
-        this->icon = parse_image(attribute, errors);
-        this->icon_is_set = true;
+        xml_attribute_to_image(attribute, errors, &(this->icon), &(this->icon_is_set));
     }
     else if (attributename == "iconsize") {
-        this->icon_size = parse_float(attribute, errors);
-        this->icon_size_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->icon_size), &(this->icon_size_is_set));
     }
     else if (attributename == "info") {
-        this->info_message = parse_string(attribute, errors);
-        this->info_message_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->info_message), &(this->info_message_is_set));
     }
     else if (attributename == "invertbehavior") {
-        this->invert_visibility = parse_bool(attribute, errors);
-        this->invert_visibility_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->invert_visibility), &(this->invert_visibility_is_set));
     }
     else if (attributename == "mapdisplaysize") {
-        this->map_display_size = parse_int(attribute, errors);
-        this->map_display_size_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->map_display_size), &(this->map_display_size_is_set));
     }
     else if (attributename == "mapid") {
-        this->map_id = parse_int(attribute, errors);
-        this->map_id_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->map_id), &(this->map_id_is_set));
     }
     else if (attributename == "maptype") {
-        this->map_type_filter = parse_map_type_filter(attribute, errors);
-        this->map_type_filter_is_set = true;
+        xml_attribute_to_map_type_filter(attribute, errors, &(this->map_type_filter), &(this->map_type_filter_is_set));
     }
     else if (attributename == "maxsize") {
-        this->maximum_size_on_screen = parse_int(attribute, errors);
-        this->maximum_size_on_screen_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->maximum_size_on_screen), &(this->maximum_size_on_screen_is_set));
     }
     else if (attributename == "minsize") {
-        this->minimum_size_on_screen = parse_int(attribute, errors);
-        this->minimum_size_on_screen_is_set = true;
+        xml_attribute_to_int(attribute, errors, &(this->minimum_size_on_screen), &(this->minimum_size_on_screen_is_set));
     }
     else if (attributename == "mount") {
-        this->mount_filter = parse_mount_filter(attribute, errors);
-        this->mount_filter_is_set = true;
+        xml_attribute_to_mount_filter(attribute, errors, &(this->mount_filter), &(this->mount_filter_is_set));
     }
     else if (attributename == "position") {
-        this->position = parse_position(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_position(attribute, errors, &(this->position), &(this->position_is_set));
     }
     else if (attributename == "xpos") {
-        this->position.x_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.x_position), &(this->position_is_set));
     }
     else if (attributename == "positionx") {
-        this->position.x_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.x_position), &(this->position_is_set));
     }
     else if (attributename == "ypos") {
-        this->position.y_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.y_position), &(this->position_is_set));
     }
     else if (attributename == "positiony") {
-        this->position.y_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.y_position), &(this->position_is_set));
     }
     else if (attributename == "zpos") {
-        this->position.z_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.z_position), &(this->position_is_set));
     }
     else if (attributename == "positionz") {
-        this->position.z_position = parse_float(attribute, errors);
-        this->position_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->position.z_position), &(this->position_is_set));
     }
     else if (attributename == "profession") {
-        this->profession_filter = parse_profession_filter(attribute, errors);
-        this->profession_filter_is_set = true;
+        xml_attribute_to_profession_filter(attribute, errors, &(this->profession_filter), &(this->profession_filter_is_set));
     }
     else if (attributename == "ingamevisibility") {
-        this->render_ingame = parse_bool(attribute, errors);
-        this->render_ingame_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_ingame), &(this->render_ingame_is_set));
     }
     else if (attributename == "bhingamevisibility") {
-        this->render_ingame = parse_bool(attribute, errors);
-        this->render_ingame_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_ingame), &(this->render_ingame_is_set));
     }
     else if (attributename == "mapvisibility") {
-        this->render_on_map = parse_bool(attribute, errors);
-        this->render_on_map_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "bhmapvisibility") {
-        this->render_on_map = parse_bool(attribute, errors);
-        this->render_on_map_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "minimapvisibility") {
-        this->render_on_minimap = parse_bool(attribute, errors);
-        this->render_on_minimap_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "bhminimapvisibility") {
-        this->render_on_minimap = parse_bool(attribute, errors);
-        this->render_on_minimap_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "behavior") {
-        this->reset_behavior = parse_reset_behavior(attribute, errors);
-        this->reset_behavior_is_set = true;
+        xml_attribute_to_reset_behavior(attribute, errors, &(this->reset_behavior), &(this->reset_behavior_is_set));
     }
     else if (attributename == "resetlength") {
-        this->reset_length = parse_float(attribute, errors);
-        this->reset_length_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->reset_length), &(this->reset_length_is_set));
     }
     else if (attributename == "scaleonmapwithzoom") {
-        this->scale_on_map_with_zoom = parse_bool(attribute, errors);
-        this->scale_on_map_with_zoom_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->scale_on_map_with_zoom), &(this->scale_on_map_with_zoom_is_set));
     }
     else if (attributename == "schedule") {
-        this->schedule = parse_string(attribute, errors);
-        this->schedule_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->schedule), &(this->schedule_is_set));
     }
     else if (attributename == "scheduleduration") {
-        this->schedule_duration = parse_float(attribute, errors);
-        this->schedule_duration_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->schedule_duration), &(this->schedule_duration_is_set));
     }
     else if (attributename == "show") {
-        this->show_category = parse_marker_category(attribute, errors);
-        this->show_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->show_category), &(this->show_category_is_set));
     }
     else if (attributename == "specialization") {
-        this->specialization_filter = parse_specialization_filter(attribute, errors);
-        this->specialization_filter_is_set = true;
+        xml_attribute_to_specialization_filter(attribute, errors, &(this->specialization_filter), &(this->specialization_filter_is_set));
     }
     else if (attributename == "race") {
-        this->species_filter = parse_species_filter(attribute, errors);
-        this->species_filter_is_set = true;
+        xml_attribute_to_species_filter(attribute, errors, &(this->species_filter), &(this->species_filter_is_set));
     }
     else if (attributename == "species") {
-        this->species_filter = parse_species_filter(attribute, errors);
-        this->species_filter_is_set = true;
+        xml_attribute_to_species_filter(attribute, errors, &(this->species_filter), &(this->species_filter_is_set));
     }
     else if (attributename == "toggle") {
-        this->toggle_category = parse_marker_category(attribute, errors);
-        this->toggle_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->toggle_category), &(this->toggle_category_is_set));
     }
     else if (attributename == "togglecategory") {
-        this->toggle_category = parse_marker_category(attribute, errors);
-        this->toggle_category_is_set = true;
+        xml_attribute_to_marker_category(attribute, errors, &(this->toggle_category), &(this->toggle_category_is_set));
     }
     else if (attributename == "tipdescription") {
-        this->tooltip_description = parse_string(attribute, errors);
-        this->tooltip_description_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
     else if (attributename == "tipname") {
-        this->tooltip_name = parse_string(attribute, errors);
-        this->tooltip_name_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->tooltip_name), &(this->tooltip_name_is_set));
     }
     else if (attributename == "triggerrange") {
-        this->trigger_range = parse_float(attribute, errors);
-        this->trigger_range_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->trigger_range), &(this->trigger_range_is_set));
     }
     else if (attributename == "inforange") {
-        this->trigger_range = parse_float(attribute, errors);
-        this->trigger_range_is_set = true;
+        xml_attribute_to_float(attribute, errors, &(this->trigger_range), &(this->trigger_range_is_set));
     }
     else {
         return false;
@@ -328,151 +256,151 @@ vector<string> Icon::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<POI ");
     if (this->achievement_bitmask_is_set) {
-        xml_node_contents.push_back(" AchievementBit=\"" + stringify_int(this->achievement_bitmask) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("AchievementBit", &this->achievement_bitmask));
     }
     if (this->achievement_id_is_set) {
-        xml_node_contents.push_back(" AchievementId=\"" + stringify_int(this->achievement_id) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("AchievementId", &this->achievement_id));
     }
     if (this->auto_trigger_is_set) {
-        xml_node_contents.push_back(" AutoTrigger=\"" + stringify_bool(this->auto_trigger) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("AutoTrigger", &this->auto_trigger));
     }
     if (this->bounce_delay_is_set) {
-        xml_node_contents.push_back(" BounceDelay=\"" + stringify_float(this->bounce_delay) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("BounceDelay", &this->bounce_delay));
     }
     if (this->bounce_duration_is_set) {
-        xml_node_contents.push_back(" BounceDuration=\"" + stringify_float(this->bounce_duration) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("BounceDuration", &this->bounce_duration));
     }
     if (this->bounce_height_is_set) {
-        xml_node_contents.push_back(" BounceHeight=\"" + stringify_float(this->bounce_height) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("BounceHeight", &this->bounce_height));
     }
     if (this->can_fade_is_set) {
-        xml_node_contents.push_back(" CanFade=\"" + stringify_bool(this->can_fade) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("CanFade", &this->can_fade));
     }
     if (this->category_is_set) {
-        xml_node_contents.push_back(" Type=\"" + stringify_marker_category(this->category) + "\"");
+        xml_node_contents.push_back(marker_category_to_xml_attribute("Type", &this->category));
     }
     if (this->color_is_set) {
-        xml_node_contents.push_back(" Color=\"" + stringify_color(this->color) + "\"");
+        xml_node_contents.push_back(color_to_xml_attribute("Color", &this->color));
     }
     if (this->color_is_set) {
-        xml_node_contents.push_back(" Alpha=\"" + stringify_float(this->color.alpha) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("Alpha", &this->color.alpha));
     }
     if (this->copy_clipboard_is_set) {
-        xml_node_contents.push_back(" Copy=\"" + stringify_string(this->copy_clipboard) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("Copy", &this->copy_clipboard));
     }
     if (this->copy_message_is_set) {
-        xml_node_contents.push_back(" CopyMessage=\"" + stringify_string(this->copy_message) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("CopyMessage", &this->copy_message));
     }
     if (this->cull_chirality_is_set) {
-        xml_node_contents.push_back(" Cull=\"" + stringify_cull_chirality(this->cull_chirality) + "\"");
+        xml_node_contents.push_back(cull_chirality_to_xml_attribute("Cull", &this->cull_chirality));
     }
     if (this->distance_fade_end_is_set) {
-        xml_node_contents.push_back(" FadeFar=\"" + stringify_float(this->distance_fade_end) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("FadeFar", &this->distance_fade_end));
     }
     if (this->distance_fade_start_is_set) {
-        xml_node_contents.push_back(" FadeNear=\"" + stringify_float(this->distance_fade_start) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("FadeNear", &this->distance_fade_start));
     }
     if (this->festival_filter_is_set) {
-        xml_node_contents.push_back(" Festival=\"" + stringify_festival_filter(this->festival_filter) + "\"");
+        xml_node_contents.push_back(festival_filter_to_xml_attribute("Festival", &this->festival_filter));
     }
     if (this->guid_is_set) {
-        xml_node_contents.push_back(" GUID=\"" + stringify_unique_id(this->guid) + "\"");
+        xml_node_contents.push_back(unique_id_to_xml_attribute("GUID", &this->guid));
     }
     if (this->has_countdown_is_set) {
-        xml_node_contents.push_back(" HasCountdown=\"" + stringify_bool(this->has_countdown) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("HasCountdown", &this->has_countdown));
     }
     if (this->height_offset_is_set) {
-        xml_node_contents.push_back(" HeightOffset=\"" + stringify_float(this->height_offset) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("HeightOffset", &this->height_offset));
     }
     if (this->hide_category_is_set) {
-        xml_node_contents.push_back(" Hide=\"" + stringify_marker_category(this->hide_category) + "\"");
+        xml_node_contents.push_back(marker_category_to_xml_attribute("Hide", &this->hide_category));
     }
     if (this->icon_is_set) {
-        xml_node_contents.push_back(" IconFile=\"" + stringify_image(this->icon) + "\"");
+        xml_node_contents.push_back(image_to_xml_attribute("IconFile", &this->icon));
     }
     if (this->icon_size_is_set) {
-        xml_node_contents.push_back(" IconSize=\"" + stringify_float(this->icon_size) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("IconSize", &this->icon_size));
     }
     if (this->info_message_is_set) {
-        xml_node_contents.push_back(" Info=\"" + stringify_string(this->info_message) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("Info", &this->info_message));
     }
     if (this->invert_visibility_is_set) {
-        xml_node_contents.push_back(" InvertBehavior=\"" + stringify_bool(this->invert_visibility) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("InvertBehavior", &this->invert_visibility));
     }
     if (this->map_display_size_is_set) {
-        xml_node_contents.push_back(" MapDisplaySize=\"" + stringify_int(this->map_display_size) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("MapDisplaySize", &this->map_display_size));
     }
     if (this->map_id_is_set) {
-        xml_node_contents.push_back(" MapID=\"" + stringify_int(this->map_id) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("MapID", &this->map_id));
     }
     if (this->map_type_filter_is_set) {
-        xml_node_contents.push_back(" MapType=\"" + stringify_map_type_filter(this->map_type_filter) + "\"");
+        xml_node_contents.push_back(map_type_filter_to_xml_attribute("MapType", &this->map_type_filter));
     }
     if (this->maximum_size_on_screen_is_set) {
-        xml_node_contents.push_back(" MaxSize=\"" + stringify_int(this->maximum_size_on_screen) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("MaxSize", &this->maximum_size_on_screen));
     }
     if (this->minimum_size_on_screen_is_set) {
-        xml_node_contents.push_back(" MinSize=\"" + stringify_int(this->minimum_size_on_screen) + "\"");
+        xml_node_contents.push_back(int_to_xml_attribute("MinSize", &this->minimum_size_on_screen));
     }
     if (this->mount_filter_is_set) {
-        xml_node_contents.push_back(" Mount=\"" + stringify_mount_filter(this->mount_filter) + "\"");
+        xml_node_contents.push_back(mount_filter_to_xml_attribute("Mount", &this->mount_filter));
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" XPos=\"" + stringify_float(this->position.x_position) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("XPos", &this->position.x_position));
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" YPos=\"" + stringify_float(this->position.y_position) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("YPos", &this->position.y_position));
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(" ZPos=\"" + stringify_float(this->position.z_position) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("ZPos", &this->position.z_position));
     }
     if (this->profession_filter_is_set) {
-        xml_node_contents.push_back(" Profession=\"" + stringify_profession_filter(this->profession_filter) + "\"");
+        xml_node_contents.push_back(profession_filter_to_xml_attribute("Profession", &this->profession_filter));
     }
     if (this->render_ingame_is_set) {
-        xml_node_contents.push_back(" IngameVisibility=\"" + stringify_bool(this->render_ingame) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("IngameVisibility", &this->render_ingame));
     }
     if (this->render_on_map_is_set) {
-        xml_node_contents.push_back(" MapVisibility=\"" + stringify_bool(this->render_on_map) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("MapVisibility", &this->render_on_map));
     }
     if (this->render_on_minimap_is_set) {
-        xml_node_contents.push_back(" MinimapVisibility=\"" + stringify_bool(this->render_on_minimap) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("MinimapVisibility", &this->render_on_minimap));
     }
     if (this->reset_behavior_is_set) {
-        xml_node_contents.push_back(" Behavior=\"" + stringify_reset_behavior(this->reset_behavior) + "\"");
+        xml_node_contents.push_back(reset_behavior_to_xml_attribute("Behavior", &this->reset_behavior));
     }
     if (this->reset_length_is_set) {
-        xml_node_contents.push_back(" ResetLength=\"" + stringify_float(this->reset_length) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("ResetLength", &this->reset_length));
     }
     if (this->scale_on_map_with_zoom_is_set) {
-        xml_node_contents.push_back(" ScaleOnMapWithZoom=\"" + stringify_bool(this->scale_on_map_with_zoom) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("ScaleOnMapWithZoom", &this->scale_on_map_with_zoom));
     }
     if (this->schedule_is_set) {
-        xml_node_contents.push_back(" Schedule=\"" + stringify_string(this->schedule) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("Schedule", &this->schedule));
     }
     if (this->schedule_duration_is_set) {
-        xml_node_contents.push_back(" ScheduleDuration=\"" + stringify_float(this->schedule_duration) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("ScheduleDuration", &this->schedule_duration));
     }
     if (this->show_category_is_set) {
-        xml_node_contents.push_back(" Show=\"" + stringify_marker_category(this->show_category) + "\"");
+        xml_node_contents.push_back(marker_category_to_xml_attribute("Show", &this->show_category));
     }
     if (this->specialization_filter_is_set) {
-        xml_node_contents.push_back(" Specialization=\"" + stringify_specialization_filter(this->specialization_filter) + "\"");
+        xml_node_contents.push_back(specialization_filter_to_xml_attribute("Specialization", &this->specialization_filter));
     }
     if (this->species_filter_is_set) {
-        xml_node_contents.push_back(" Race=\"" + stringify_species_filter(this->species_filter) + "\"");
+        xml_node_contents.push_back(species_filter_to_xml_attribute("Race", &this->species_filter));
     }
     if (this->toggle_category_is_set) {
-        xml_node_contents.push_back(" Toggle=\"" + stringify_marker_category(this->toggle_category) + "\"");
+        xml_node_contents.push_back(marker_category_to_xml_attribute("Toggle", &this->toggle_category));
     }
     if (this->tooltip_description_is_set) {
-        xml_node_contents.push_back(" TipDescription=\"" + stringify_string(this->tooltip_description) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("TipDescription", &this->tooltip_description));
     }
     if (this->tooltip_name_is_set) {
-        xml_node_contents.push_back(" TipName=\"" + stringify_string(this->tooltip_name) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("TipName", &this->tooltip_name));
     }
     if (this->trigger_range_is_set) {
-        xml_node_contents.push_back(" TriggerRange=\"" + stringify_float(this->trigger_range) + "\"");
+        xml_node_contents.push_back(float_to_xml_attribute("TriggerRange", &this->trigger_range));
     }
     xml_node_contents.push_back("/>");
     return xml_node_contents;
@@ -480,387 +408,337 @@ vector<string> Icon::as_xml() const {
 
 waypoint::Icon Icon::as_protobuf() const {
     waypoint::Icon proto_icon;
-    waypoint::Trigger* trigger = nullptr;
     if (this->achievement_bitmask_is_set) {
-        proto_icon.set_achievement_bit(this->achievement_bitmask);
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_bit(val); };
+        int_to_proto(this->achievement_bitmask, setter);
     }
     if (this->achievement_id_is_set) {
-        proto_icon.set_achievement_id(this->achievement_id);
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_id(val); };
+        int_to_proto(this->achievement_id, setter);
     }
     if (this->auto_trigger_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_auto_trigger(this->auto_trigger);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_auto_trigger(val); };
+        bool_to_proto(this->auto_trigger, setter);
     }
     if (this->bounce_delay_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_bounce_delay(this->bounce_delay);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_delay(val); };
+        float_to_proto(this->bounce_delay, setter);
     }
     if (this->bounce_duration_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_bounce_duration(this->bounce_duration);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_duration(val); };
+        float_to_proto(this->bounce_duration, setter);
     }
     if (this->bounce_height_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_bounce_height(this->bounce_height);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_height(val); };
+        float_to_proto(this->bounce_height, setter);
     }
     if (this->can_fade_is_set) {
-        proto_icon.set_can_fade(this->can_fade);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_can_fade(val); };
+        bool_to_proto(this->can_fade, setter);
     }
     if (this->category_is_set) {
-        proto_icon.set_allocated_category(to_proto_marker_category(this->category));
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_category(val); };
+        do_nothing(this->category, setter);
     }
     if (this->color_is_set) {
-        proto_icon.set_allocated_rgba_color(to_proto_color(this->color));
+        std::function<void(waypoint::RGBAColor*)> setter = [&proto_icon](waypoint::RGBAColor* val) { proto_icon.set_allocated_rgba_color(val); };
+        color_to_proto(this->color, setter);
     }
     if (this->copy_clipboard_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_action_copy_clipboard(this->copy_clipboard);
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_copy_clipboard(val); };
+        string_to_proto(this->copy_clipboard, setter);
     }
     if (this->copy_message_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_action_copy_message(this->copy_message);
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_copy_message(val); };
+        string_to_proto(this->copy_message, setter);
     }
     if (this->cull_chirality_is_set) {
-        proto_icon.set_cull_chirality(to_proto_cull_chirality(this->cull_chirality));
+        std::function<void(waypoint::CullChirality)> setter = [&proto_icon](waypoint::CullChirality val) { proto_icon.set_cull_chirality(val); };
+        cull_chirality_to_proto(this->cull_chirality, setter);
     }
     if (this->distance_fade_end_is_set) {
-        proto_icon.set_distance_fade_end(this->distance_fade_end);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_distance_fade_end(val); };
+        float_to_proto(this->distance_fade_end, setter);
     }
     if (this->distance_fade_start_is_set) {
-        proto_icon.set_distance_fade_start(this->distance_fade_start);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_distance_fade_start(val); };
+        float_to_proto(this->distance_fade_start, setter);
     }
     if (this->euler_rotation_is_set) {
-        proto_icon.set_allocated_euler_rotation(to_proto_euler_rotation(this->euler_rotation));
+        std::function<void(waypoint::EulerRotation*)> setter = [&proto_icon](waypoint::EulerRotation* val) { proto_icon.set_allocated_euler_rotation(val); };
+        euler_rotation_to_proto(this->euler_rotation, setter);
     }
     if (this->festival_filter_is_set) {
-        proto_icon.set_allocated_festival_filter(to_proto_festival_filter(this->festival_filter));
+        std::function<void(waypoint::FestivalFilter*)> setter = [&proto_icon](waypoint::FestivalFilter* val) { proto_icon.set_allocated_festival_filter(val); };
+        festival_filter_to_proto(this->festival_filter, setter);
     }
     if (this->guid_is_set) {
-        proto_icon.set_allocated_guid(to_proto_unique_id(this->guid));
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_guid(val); };
+        unique_id_to_proto(this->guid, setter);
     }
     if (this->has_countdown_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_has_countdown(this->has_countdown);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_has_countdown(val); };
+        bool_to_proto(this->has_countdown, setter);
     }
     if (this->height_offset_is_set) {
-        proto_icon.set_height_offset(this->height_offset);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_height_offset(val); };
+        float_to_proto(this->height_offset, setter);
     }
     if (this->hide_category_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_allocated_action_hide_category(to_proto_marker_category(this->hide_category));
+        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_hide_category(val); };
+        marker_category_to_proto(this->hide_category, setter);
     }
     if (this->icon_is_set) {
-        proto_icon.set_allocated_texture_path(to_proto_image(this->icon));
+        std::function<void(waypoint::TexturePath*)> setter = [&proto_icon](waypoint::TexturePath* val) { proto_icon.set_allocated_texture_path(val); };
+        image_to_proto(this->icon, setter);
     }
     if (this->icon_size_is_set) {
-        proto_icon.set_tentative__scale(this->icon_size);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_tentative__scale(val); };
+        float_to_proto(this->icon_size, setter);
     }
     if (this->info_message_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_action_info_message(this->info_message);
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_info_message(val); };
+        string_to_proto(this->info_message, setter);
     }
     if (this->invert_visibility_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_invert_display(this->invert_visibility);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_invert_display(val); };
+        bool_to_proto(this->invert_visibility, setter);
     }
     if (this->map_display_size_is_set) {
-        proto_icon.set_map_display_size(this->map_display_size);
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_map_display_size(val); };
+        int_to_proto(this->map_display_size, setter);
     }
     if (this->map_id_is_set) {
-        proto_icon.set_map_id(this->map_id);
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_map_id(val); };
+        int_to_proto(this->map_id, setter);
     }
     if (this->map_type_filter_is_set) {
-        proto_icon.set_allocated_map_type_filter(to_proto_map_type_filter(this->map_type_filter));
+        std::function<void(waypoint::MapTypeFilter*)> setter = [&proto_icon](waypoint::MapTypeFilter* val) { proto_icon.set_allocated_map_type_filter(val); };
+        map_type_filter_to_proto(this->map_type_filter, setter);
     }
     if (this->maximum_size_on_screen_is_set) {
-        proto_icon.set_maximum_size_on_screen(this->maximum_size_on_screen);
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_maximum_size_on_screen(val); };
+        int_to_proto(this->maximum_size_on_screen, setter);
     }
     if (this->minimum_size_on_screen_is_set) {
-        proto_icon.set_minimum_size_on_screen(this->minimum_size_on_screen);
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_minimum_size_on_screen(val); };
+        int_to_proto(this->minimum_size_on_screen, setter);
     }
     if (this->mount_filter_is_set) {
-        proto_icon.set_allocated_mount_filter(to_proto_mount_filter(this->mount_filter));
+        std::function<void(waypoint::MountFilter*)> setter = [&proto_icon](waypoint::MountFilter* val) { proto_icon.set_allocated_mount_filter(val); };
+        mount_filter_to_proto(this->mount_filter, setter);
     }
     if (this->position_is_set) {
-        proto_icon.set_allocated_position(to_proto_position(this->position));
+        std::function<void(waypoint::Position*)> setter = [&proto_icon](waypoint::Position* val) { proto_icon.set_allocated_position(val); };
+        position_to_proto(this->position, setter);
     }
     if (this->profession_filter_is_set) {
-        proto_icon.set_allocated_profession_filter(to_proto_profession_filter(this->profession_filter));
+        std::function<void(waypoint::ProfessionFilter*)> setter = [&proto_icon](waypoint::ProfessionFilter* val) { proto_icon.set_allocated_profession_filter(val); };
+        profession_filter_to_proto(this->profession_filter, setter);
     }
     if (this->render_ingame_is_set) {
-        proto_icon.set_tentative__render_ingame(this->render_ingame);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_tentative__render_ingame(val); };
+        bool_to_proto(this->render_ingame, setter);
     }
     if (this->render_on_map_is_set) {
-        proto_icon.set_tentative__render_on_map(this->render_on_map);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_tentative__render_on_map(val); };
+        bool_to_proto(this->render_on_map, setter);
     }
     if (this->render_on_minimap_is_set) {
-        proto_icon.set_tentative__render_on_minimap(this->render_on_minimap);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_tentative__render_on_minimap(val); };
+        bool_to_proto(this->render_on_minimap, setter);
     }
     if (this->reset_behavior_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_reset_behavior(to_proto_reset_behavior(this->reset_behavior));
+        std::function<void(waypoint::ResetBehavior)> setter = [&proto_icon](waypoint::ResetBehavior val) { proto_icon.mutable_trigger()->set_reset_behavior(val); };
+        reset_behavior_to_proto(this->reset_behavior, setter);
     }
     if (this->reset_length_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_reset_length(this->reset_length);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_reset_length(val); };
+        float_to_proto(this->reset_length, setter);
     }
     if (this->scale_on_map_with_zoom_is_set) {
-        proto_icon.set_scale_on_map_with_zoom(this->scale_on_map_with_zoom);
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_scale_on_map_with_zoom(val); };
+        bool_to_proto(this->scale_on_map_with_zoom, setter);
     }
     if (this->schedule_is_set) {
-        proto_icon.set_bhdraft__schedule(this->schedule);
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_bhdraft__schedule(val); };
+        string_to_proto(this->schedule, setter);
     }
     if (this->schedule_duration_is_set) {
-        proto_icon.set_bhdraft__schedule_duration(this->schedule_duration);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_bhdraft__schedule_duration(val); };
+        float_to_proto(this->schedule_duration, setter);
     }
     if (this->show_category_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_allocated_action_show_category(to_proto_marker_category(this->show_category));
+        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_show_category(val); };
+        marker_category_to_proto(this->show_category, setter);
     }
     if (this->specialization_filter_is_set) {
-        proto_icon.set_allocated_specialization_filter(to_proto_specialization_filter(this->specialization_filter));
+        std::function<void(waypoint::SpecializationFilter*)> setter = [&proto_icon](waypoint::SpecializationFilter* val) { proto_icon.set_allocated_specialization_filter(val); };
+        specialization_filter_to_proto(this->specialization_filter, setter);
     }
     if (this->species_filter_is_set) {
-        proto_icon.set_allocated_species_filter(to_proto_species_filter(this->species_filter));
+        std::function<void(waypoint::SpeciesFilter*)> setter = [&proto_icon](waypoint::SpeciesFilter* val) { proto_icon.set_allocated_species_filter(val); };
+        species_filter_to_proto(this->species_filter, setter);
     }
     if (this->toggle_category_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_allocated_action_toggle_category(to_proto_marker_category(this->toggle_category));
+        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_toggle_category(val); };
+        marker_category_to_proto(this->toggle_category, setter);
     }
     if (this->tooltip_description_is_set) {
-        proto_icon.set_tip_description(this->tooltip_description);
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_tip_description(val); };
+        string_to_proto(this->tooltip_description, setter);
     }
     if (this->tooltip_name_is_set) {
-        proto_icon.set_tip_name(this->tooltip_name);
+        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_tip_name(val); };
+        string_to_proto(this->tooltip_name, setter);
     }
     if (this->trigger_range_is_set) {
-        if (trigger == nullptr) {
-            trigger = new waypoint::Trigger();
-        }
-        trigger->set_range(this->trigger_range);
-    }
-    if (trigger != nullptr) {
-        proto_icon.set_allocated_trigger(trigger);
+        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_range(val); };
+        float_to_proto(this->trigger_range, setter);
     }
     return proto_icon;
 }
 
 void Icon::parse_protobuf(waypoint::Icon proto_icon) {
-    waypoint::Trigger trigger = proto_icon.trigger();
     if (proto_icon.achievement_bit() != 0) {
-        this->achievement_bitmask = proto_icon.achievement_bit();
-        this->achievement_bitmask_is_set = true;
+        proto_to_int(proto_icon.achievement_bit(), &(this->achievement_bitmask), &(this->achievement_bitmask_is_set));
     }
     if (proto_icon.achievement_id() != 0) {
-        this->achievement_id = proto_icon.achievement_id();
-        this->achievement_id_is_set = true;
+        proto_to_int(proto_icon.achievement_id(), &(this->achievement_id), &(this->achievement_id_is_set));
     }
-    if (trigger.auto_trigger() != 0) {
-        this->auto_trigger = trigger.auto_trigger();
-        this->auto_trigger_is_set = true;
+    if (proto_icon.trigger().auto_trigger() != 0) {
+        proto_to_bool(proto_icon.trigger().auto_trigger(), &(this->auto_trigger), &(this->auto_trigger_is_set));
     }
-    if (trigger.bounce_delay() != 0) {
-        this->bounce_delay = trigger.bounce_delay();
-        this->bounce_delay_is_set = true;
+    if (proto_icon.trigger().bounce_delay() != 0) {
+        proto_to_float(proto_icon.trigger().bounce_delay(), &(this->bounce_delay), &(this->bounce_delay_is_set));
     }
-    if (trigger.bounce_duration() != 0) {
-        this->bounce_duration = trigger.bounce_duration();
-        this->bounce_duration_is_set = true;
+    if (proto_icon.trigger().bounce_duration() != 0) {
+        proto_to_float(proto_icon.trigger().bounce_duration(), &(this->bounce_duration), &(this->bounce_duration_is_set));
     }
-    if (trigger.bounce_height() != 0) {
-        this->bounce_height = trigger.bounce_height();
-        this->bounce_height_is_set = true;
+    if (proto_icon.trigger().bounce_height() != 0) {
+        proto_to_float(proto_icon.trigger().bounce_height(), &(this->bounce_height), &(this->bounce_height_is_set));
     }
     if (proto_icon.can_fade() != 0) {
-        this->can_fade = proto_icon.can_fade();
-        this->can_fade_is_set = true;
+        proto_to_bool(proto_icon.can_fade(), &(this->can_fade), &(this->can_fade_is_set));
     }
-    if (proto_icon.has_category()) {
-        this->category = from_proto_marker_category(proto_icon.category());
-        this->category_is_set = true;
+    if (proto_icon.category() != 0) {
+        do_nothing(proto_icon.category(), &(this->category), &(this->category_is_set));
     }
     if (proto_icon.has_rgba_color()) {
-        this->color = from_proto_color(proto_icon.rgba_color());
-        this->color_is_set = true;
+        proto_to_color(proto_icon.rgba_color(), &(this->color), &(this->color_is_set));
     }
-    if (trigger.action_copy_clipboard() != "") {
-        this->copy_clipboard = trigger.action_copy_clipboard();
-        this->copy_clipboard_is_set = true;
+    if (proto_icon.trigger().action_copy_clipboard() != "") {
+        proto_to_string(proto_icon.trigger().action_copy_clipboard(), &(this->copy_clipboard), &(this->copy_clipboard_is_set));
     }
-    if (trigger.action_copy_message() != "") {
-        this->copy_message = trigger.action_copy_message();
-        this->copy_message_is_set = true;
+    if (proto_icon.trigger().action_copy_message() != "") {
+        proto_to_string(proto_icon.trigger().action_copy_message(), &(this->copy_message), &(this->copy_message_is_set));
     }
     if (proto_icon.cull_chirality() != 0) {
-        this->cull_chirality = from_proto_cull_chirality(proto_icon.cull_chirality());
-        this->cull_chirality_is_set = true;
+        proto_to_cull_chirality(proto_icon.cull_chirality(), &(this->cull_chirality), &(this->cull_chirality_is_set));
     }
     if (proto_icon.distance_fade_end() != 0) {
-        this->distance_fade_end = proto_icon.distance_fade_end();
-        this->distance_fade_end_is_set = true;
+        proto_to_float(proto_icon.distance_fade_end(), &(this->distance_fade_end), &(this->distance_fade_end_is_set));
     }
     if (proto_icon.distance_fade_start() != 0) {
-        this->distance_fade_start = proto_icon.distance_fade_start();
-        this->distance_fade_start_is_set = true;
+        proto_to_float(proto_icon.distance_fade_start(), &(this->distance_fade_start), &(this->distance_fade_start_is_set));
     }
     if (proto_icon.has_euler_rotation()) {
-        this->euler_rotation = from_proto_euler_rotation(proto_icon.euler_rotation());
-        this->euler_rotation_is_set = true;
+        proto_to_euler_rotation(proto_icon.euler_rotation(), &(this->euler_rotation), &(this->euler_rotation_is_set));
     }
     if (proto_icon.has_festival_filter()) {
-        this->festival_filter = from_proto_festival_filter(proto_icon.festival_filter());
-        this->festival_filter_is_set = true;
+        proto_to_festival_filter(proto_icon.festival_filter(), &(this->festival_filter), &(this->festival_filter_is_set));
     }
-    if (proto_icon.has_guid()) {
-        this->guid = from_proto_unique_id(proto_icon.guid());
-        this->guid_is_set = true;
+    if (proto_icon.guid() != "") {
+        proto_to_unique_id(proto_icon.guid(), &(this->guid), &(this->guid_is_set));
     }
-    if (trigger.has_countdown() != 0) {
-        this->has_countdown = trigger.has_countdown();
-        this->has_countdown_is_set = true;
+    if (proto_icon.trigger().has_countdown() != 0) {
+        proto_to_bool(proto_icon.trigger().has_countdown(), &(this->has_countdown), &(this->has_countdown_is_set));
     }
     if (proto_icon.height_offset() != 0) {
-        this->height_offset = proto_icon.height_offset();
-        this->height_offset_is_set = true;
+        proto_to_float(proto_icon.height_offset(), &(this->height_offset), &(this->height_offset_is_set));
     }
-    if (trigger.has_action_hide_category()) {
-        this->hide_category = from_proto_marker_category(trigger.action_hide_category());
-        this->hide_category_is_set = true;
+    if (proto_icon.trigger().has_action_hide_category()) {
+        proto_to_marker_category(proto_icon.trigger().action_hide_category(), &(this->hide_category), &(this->hide_category_is_set));
     }
     if (proto_icon.has_texture_path()) {
-        this->icon = from_proto_image(proto_icon.texture_path());
-        this->icon_is_set = true;
+        proto_to_image(proto_icon.texture_path(), &(this->icon), &(this->icon_is_set));
     }
     if (proto_icon.tentative__scale() != 0) {
-        this->icon_size = proto_icon.tentative__scale();
-        this->icon_size_is_set = true;
+        proto_to_float(proto_icon.tentative__scale(), &(this->icon_size), &(this->icon_size_is_set));
     }
-    if (trigger.action_info_message() != "") {
-        this->info_message = trigger.action_info_message();
-        this->info_message_is_set = true;
+    if (proto_icon.trigger().action_info_message() != "") {
+        proto_to_string(proto_icon.trigger().action_info_message(), &(this->info_message), &(this->info_message_is_set));
     }
-    if (trigger.invert_display() != 0) {
-        this->invert_visibility = trigger.invert_display();
-        this->invert_visibility_is_set = true;
+    if (proto_icon.trigger().invert_display() != 0) {
+        proto_to_bool(proto_icon.trigger().invert_display(), &(this->invert_visibility), &(this->invert_visibility_is_set));
     }
     if (proto_icon.map_display_size() != 0) {
-        this->map_display_size = proto_icon.map_display_size();
-        this->map_display_size_is_set = true;
+        proto_to_int(proto_icon.map_display_size(), &(this->map_display_size), &(this->map_display_size_is_set));
     }
     if (proto_icon.map_id() != 0) {
-        this->map_id = proto_icon.map_id();
-        this->map_id_is_set = true;
+        proto_to_int(proto_icon.map_id(), &(this->map_id), &(this->map_id_is_set));
     }
     if (proto_icon.has_map_type_filter()) {
-        this->map_type_filter = from_proto_map_type_filter(proto_icon.map_type_filter());
-        this->map_type_filter_is_set = true;
+        proto_to_map_type_filter(proto_icon.map_type_filter(), &(this->map_type_filter), &(this->map_type_filter_is_set));
     }
     if (proto_icon.maximum_size_on_screen() != 0) {
-        this->maximum_size_on_screen = proto_icon.maximum_size_on_screen();
-        this->maximum_size_on_screen_is_set = true;
+        proto_to_int(proto_icon.maximum_size_on_screen(), &(this->maximum_size_on_screen), &(this->maximum_size_on_screen_is_set));
     }
     if (proto_icon.minimum_size_on_screen() != 0) {
-        this->minimum_size_on_screen = proto_icon.minimum_size_on_screen();
-        this->minimum_size_on_screen_is_set = true;
+        proto_to_int(proto_icon.minimum_size_on_screen(), &(this->minimum_size_on_screen), &(this->minimum_size_on_screen_is_set));
     }
     if (proto_icon.has_mount_filter()) {
-        this->mount_filter = from_proto_mount_filter(proto_icon.mount_filter());
-        this->mount_filter_is_set = true;
+        proto_to_mount_filter(proto_icon.mount_filter(), &(this->mount_filter), &(this->mount_filter_is_set));
     }
     if (proto_icon.has_position()) {
-        this->position = from_proto_position(proto_icon.position());
-        this->position_is_set = true;
+        proto_to_position(proto_icon.position(), &(this->position), &(this->position_is_set));
     }
     if (proto_icon.has_profession_filter()) {
-        this->profession_filter = from_proto_profession_filter(proto_icon.profession_filter());
-        this->profession_filter_is_set = true;
+        proto_to_profession_filter(proto_icon.profession_filter(), &(this->profession_filter), &(this->profession_filter_is_set));
     }
     if (proto_icon.tentative__render_ingame() != 0) {
-        this->render_ingame = proto_icon.tentative__render_ingame();
-        this->render_ingame_is_set = true;
+        proto_to_bool(proto_icon.tentative__render_ingame(), &(this->render_ingame), &(this->render_ingame_is_set));
     }
     if (proto_icon.tentative__render_on_map() != 0) {
-        this->render_on_map = proto_icon.tentative__render_on_map();
-        this->render_on_map_is_set = true;
+        proto_to_bool(proto_icon.tentative__render_on_map(), &(this->render_on_map), &(this->render_on_map_is_set));
     }
     if (proto_icon.tentative__render_on_minimap() != 0) {
-        this->render_on_minimap = proto_icon.tentative__render_on_minimap();
-        this->render_on_minimap_is_set = true;
+        proto_to_bool(proto_icon.tentative__render_on_minimap(), &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
-    if (trigger.reset_behavior() != 0) {
-        this->reset_behavior = from_proto_reset_behavior(trigger.reset_behavior());
-        this->reset_behavior_is_set = true;
+    if (proto_icon.trigger().reset_behavior() != 0) {
+        proto_to_reset_behavior(proto_icon.trigger().reset_behavior(), &(this->reset_behavior), &(this->reset_behavior_is_set));
     }
-    if (trigger.reset_length() != 0) {
-        this->reset_length = trigger.reset_length();
-        this->reset_length_is_set = true;
+    if (proto_icon.trigger().reset_length() != 0) {
+        proto_to_float(proto_icon.trigger().reset_length(), &(this->reset_length), &(this->reset_length_is_set));
     }
     if (proto_icon.scale_on_map_with_zoom() != 0) {
-        this->scale_on_map_with_zoom = proto_icon.scale_on_map_with_zoom();
-        this->scale_on_map_with_zoom_is_set = true;
+        proto_to_bool(proto_icon.scale_on_map_with_zoom(), &(this->scale_on_map_with_zoom), &(this->scale_on_map_with_zoom_is_set));
     }
     if (proto_icon.bhdraft__schedule() != "") {
-        this->schedule = proto_icon.bhdraft__schedule();
-        this->schedule_is_set = true;
+        proto_to_string(proto_icon.bhdraft__schedule(), &(this->schedule), &(this->schedule_is_set));
     }
     if (proto_icon.bhdraft__schedule_duration() != 0) {
-        this->schedule_duration = proto_icon.bhdraft__schedule_duration();
-        this->schedule_duration_is_set = true;
+        proto_to_float(proto_icon.bhdraft__schedule_duration(), &(this->schedule_duration), &(this->schedule_duration_is_set));
     }
-    if (trigger.has_action_show_category()) {
-        this->show_category = from_proto_marker_category(trigger.action_show_category());
-        this->show_category_is_set = true;
+    if (proto_icon.trigger().has_action_show_category()) {
+        proto_to_marker_category(proto_icon.trigger().action_show_category(), &(this->show_category), &(this->show_category_is_set));
     }
     if (proto_icon.has_specialization_filter()) {
-        this->specialization_filter = from_proto_specialization_filter(proto_icon.specialization_filter());
-        this->specialization_filter_is_set = true;
+        proto_to_specialization_filter(proto_icon.specialization_filter(), &(this->specialization_filter), &(this->specialization_filter_is_set));
     }
     if (proto_icon.has_species_filter()) {
-        this->species_filter = from_proto_species_filter(proto_icon.species_filter());
-        this->species_filter_is_set = true;
+        proto_to_species_filter(proto_icon.species_filter(), &(this->species_filter), &(this->species_filter_is_set));
     }
-    if (trigger.has_action_toggle_category()) {
-        this->toggle_category = from_proto_marker_category(trigger.action_toggle_category());
-        this->toggle_category_is_set = true;
+    if (proto_icon.trigger().has_action_toggle_category()) {
+        proto_to_marker_category(proto_icon.trigger().action_toggle_category(), &(this->toggle_category), &(this->toggle_category_is_set));
     }
     if (proto_icon.tip_description() != "") {
-        this->tooltip_description = proto_icon.tip_description();
-        this->tooltip_description_is_set = true;
+        proto_to_string(proto_icon.tip_description(), &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
     if (proto_icon.tip_name() != "") {
-        this->tooltip_name = proto_icon.tip_name();
-        this->tooltip_name_is_set = true;
+        proto_to_string(proto_icon.tip_name(), &(this->tooltip_name), &(this->tooltip_name_is_set));
     }
-    if (trigger.range() != 0) {
-        this->trigger_range = trigger.range();
-        this->trigger_range_is_set = true;
+    if (proto_icon.trigger().range() != 0) {
+        proto_to_float(proto_icon.trigger().range(), &(this->trigger_range), &(this->trigger_range_is_set));
     }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -16,10 +17,14 @@ class UniqueId {
     std::vector<uint8_t> guid;
 };
 
-UniqueId parse_unique_id(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_unique_id(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    UniqueId* value,
+    bool* is_set);
 
-std::string stringify_unique_id(UniqueId attribute_value);
+std::string unique_id_to_xml_attribute(const std::string& attribute_name, const UniqueId* value);
 
-waypoint::GUID* to_proto_unique_id(UniqueId attribute_value);
+void proto_to_unique_id(std::string input, UniqueId* value, bool* is_set);
 
-UniqueId from_proto_unique_id(waypoint::GUID attribute_value);
+void unique_id_to_proto(UniqueId value, std::function<void(std::string)> setter);

@@ -4,7 +4,6 @@ type: Float32
 applies_to: [Icon]
 xml_fields: [BounceDuration]
 protobuf_field: trigger.bounce_duration
-compatability: [TacO, BlishHUD, Burrito]
 ---
 How long should the icon bounce for when triggered.
 

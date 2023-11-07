@@ -2,7 +2,6 @@
 name: Festival Filter
 type: MultiflagValue
 applies_to: [Icon, Trail]
-compatability: [TacO, BlishHUD, Burrito]
 xml_fields: [Festival]
 protobuf_field: festival_filter
 flags:

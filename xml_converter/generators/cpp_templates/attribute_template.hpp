@@ -1,10 +1,11 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
-{% if type == "Enum":%}
+{% if type == "Enum" %}
     #include "waypoint.pb.h"
 
     class XMLError;
@@ -14,11 +15,9 @@
         {{attribute_variable.attribute_name}},
         {% endfor %}
     };
-{% else: %}
+{% else %}
     class XMLError;
-    namespace waypoint {
-    class {{class_name}};
-    }
+    {{proto_field_cpp_type_prototype}}
 
     class {{class_name}} {
      public:
@@ -31,11 +30,18 @@
         }
     };
 {% endif %}
-{{class_name}} parse_{{attribute_name}}(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_{{attribute_name}}({{class_name}} attribute_value);
-{% if type == "Enum":%}
-    waypoint::{{class_name}} to_proto_{{attribute_name}}({{class_name}} attribute_value);
-{% else: %}
-    waypoint::{{class_name}}* to_proto_{{attribute_name}}({{class_name}} attribute_value);
+void xml_attribute_to_{{attribute_name}}(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    {{class_name}}* value,
+    bool* is_set);
+
+std::string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value);
+
+void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}* value, bool* is_set);
+
+{% if type == "Enum" %}
+    void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}})> setter);
+{% else %}
+    void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}}*)> setter);
 {% endif %}
-{{class_name}} from_proto_{{attribute_name}}(waypoint::{{class_name}} proto_{{attribute_name}});

@@ -5,7 +5,6 @@ class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Hide]
 protobuf_field: trigger.action_hide_category
-compatability: [TacO, BlishHUD, Burrito]
 ---
 Hide the specified category when triggered.
 

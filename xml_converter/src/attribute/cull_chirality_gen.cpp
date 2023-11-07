@@ -12,7 +12,11 @@
 
 using namespace std;
 
-CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_cull_chirality(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    CullChirality* value,
+    bool* is_set) {
     CullChirality cull_chirality;
     string normalized_value = normalize(get_attribute_value(input));
     if (normalized_value == "none") {
@@ -28,46 +32,59 @@ CullChirality parse_cull_chirality(rapidxml::xml_attribute<>* input, vector<XMLE
         errors->push_back(new XMLAttributeValueError("Found an invalid value that was not in the Enum CullChirality", input));
         cull_chirality = CullChirality::none;
     }
-    return cull_chirality;
+    *value = cull_chirality;
+    *is_set = true;
 }
 
-string stringify_cull_chirality(CullChirality attribute_value) {
-    if (attribute_value == CullChirality::none) {
-        return "none";
+string cull_chirality_to_xml_attribute(const std::string& attribute_name, const CullChirality* value) {
+    if (*value == CullChirality::none) {
+        return " " + attribute_name + "=\"" + "none" + "\"";
     }
-    else if (attribute_value == CullChirality::clockwise) {
-        return "clockwise";
+    else if (*value == CullChirality::clockwise) {
+        return " " + attribute_name + "=\"" + "clockwise" + "\"";
     }
-    else if (attribute_value == CullChirality::counter_clockwise) {
-        return "counterclockwise";
+    else if (*value == CullChirality::counter_clockwise) {
+        return " " + attribute_name + "=\"" + "counterclockwise" + "\"";
     }
     else {
-        return "CullChirality::none";
+        return " " + attribute_name + "=\"" + "CullChirality::none" + "\"";
     }
 }
 
-waypoint::CullChirality to_proto_cull_chirality(CullChirality attribute_value) {
-    switch (attribute_value) {
-        case CullChirality::none:
-            return waypoint::CullChirality::none;
-        case CullChirality::clockwise:
-            return waypoint::CullChirality::clockwise;
-        case CullChirality::counter_clockwise:
-            return waypoint::CullChirality::counter_clockwise;
-        default:
-            return waypoint::CullChirality::none;
-    }
-}
-
-CullChirality from_proto_cull_chirality(waypoint::CullChirality proto_cull_chirality) {
-    switch (proto_cull_chirality) {
+void proto_to_cull_chirality(waypoint::CullChirality input, CullChirality* value, bool* is_set) {
+    switch (input) {
         case waypoint::CullChirality::none:
-            return CullChirality::none;
+            *value = CullChirality::none;
+            *is_set = true;
+            break;
         case waypoint::CullChirality::clockwise:
-            return CullChirality::clockwise;
+            *value = CullChirality::clockwise;
+            *is_set = true;
+            break;
         case waypoint::CullChirality::counter_clockwise:
-            return CullChirality::counter_clockwise;
+            *value = CullChirality::counter_clockwise;
+            *is_set = true;
+            break;
         default:
-            return CullChirality::none;
+            *value = CullChirality::none;
+            *is_set = true;
+            break;
+    }
+}
+
+void cull_chirality_to_proto(CullChirality value, std::function<void(waypoint::CullChirality)> setter) {
+    switch (value) {
+        case CullChirality::none:
+            setter(waypoint::CullChirality::none);
+            break;
+        case CullChirality::clockwise:
+            setter(waypoint::CullChirality::clockwise);
+            break;
+        case CullChirality::counter_clockwise:
+            setter(waypoint::CullChirality::counter_clockwise);
+            break;
+        default:
+            setter(waypoint::CullChirality::none);
+            break;
     }
 }

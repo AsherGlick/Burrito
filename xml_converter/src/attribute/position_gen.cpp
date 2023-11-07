@@ -11,7 +11,11 @@
 
 using namespace std;
 
-Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+void xml_attribute_to_position(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Position* value,
+    bool* is_set) {
     Position position;
     vector<string> compound_values;
     string attributename;
@@ -25,21 +29,23 @@ Position parse_position(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
         position.y_position = std::stof(compound_values[1]);
         position.z_position = std::stof(compound_values[2]);
     }
-    return position;
+    *value = position;
+    *is_set = true;
 }
 
-waypoint::Position* to_proto_position(Position attribute_value) {
-    waypoint::Position* proto_position = new waypoint::Position();
-    proto_position->set_x(attribute_value.x_position);
-    proto_position->set_y(attribute_value.y_position);
-    proto_position->set_z(attribute_value.z_position);
-    return proto_position;
-}
-
-Position from_proto_position(waypoint::Position proto_position) {
+void proto_to_position(waypoint::Position input, Position* value, bool* is_set) {
     Position position;
-    position.x_position = proto_position.x();
-    position.y_position = proto_position.y();
-    position.z_position = proto_position.z();
-    return position;
+    position.x_position = input.x();
+    position.y_position = input.y();
+    position.z_position = input.z();
+    *value = position;
+    *is_set = true;
+}
+
+void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter) {
+    waypoint::Position* proto_position = new waypoint::Position();
+    proto_position->set_x(value.x_position);
+    proto_position->set_y(value.y_position);
+    proto_position->set_z(value.z_position);
+    setter(proto_position);
 }

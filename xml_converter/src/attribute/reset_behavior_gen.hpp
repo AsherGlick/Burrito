@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -19,7 +20,14 @@ enum ResetBehavior {
     timer,
     weekly_reset,
 };
-ResetBehavior parse_reset_behavior(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_reset_behavior(ResetBehavior attribute_value);
-waypoint::ResetBehavior to_proto_reset_behavior(ResetBehavior attribute_value);
-ResetBehavior from_proto_reset_behavior(waypoint::ResetBehavior proto_reset_behavior);
+void xml_attribute_to_reset_behavior(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    ResetBehavior* value,
+    bool* is_set);
+
+std::string reset_behavior_to_xml_attribute(const std::string& attribute_name, const ResetBehavior* value);
+
+void proto_to_reset_behavior(waypoint::ResetBehavior input, ResetBehavior* value, bool* is_set);
+
+void reset_behavior_to_proto(ResetBehavior value, std::function<void(waypoint::ResetBehavior)> setter);

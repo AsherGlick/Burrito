@@ -12,7 +12,11 @@
 
 using namespace std;
 
-MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_mount_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    MountFilter* value,
+    bool* is_set) {
     MountFilter mount_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -64,70 +68,86 @@ MountFilter parse_mount_filter(rapidxml::xml_attribute<>* input, vector<XMLError
             continue;
         }
     }
-    return mount_filter;
+    *value = mount_filter;
+    *is_set = true;
 }
 
-string stringify_mount_filter(MountFilter attribute_value) {
-    string output = "";
-    if (attribute_value.raptor == true) {
-        output = output + "raptor";
+string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value) {
+    vector<string> flag_values;
+    if (value->raptor == true) {
+        flag_values.push_back("raptor");
     }
-    if (attribute_value.springer == true) {
-        output = output + "springer";
+    if (value->springer == true) {
+        flag_values.push_back("springer");
     }
-    if (attribute_value.skimmer == true) {
-        output = output + "skimmer";
+    if (value->skimmer == true) {
+        flag_values.push_back("skimmer");
     }
-    if (attribute_value.jackal == true) {
-        output = output + "jackal";
+    if (value->jackal == true) {
+        flag_values.push_back("jackal");
     }
-    if (attribute_value.griffon == true) {
-        output = output + "griffon";
+    if (value->griffon == true) {
+        flag_values.push_back("griffon");
     }
-    if (attribute_value.roller_beetle == true) {
-        output = output + "rollerbeetle";
+    if (value->roller_beetle == true) {
+        flag_values.push_back("rollerbeetle");
     }
-    if (attribute_value.warclaw == true) {
-        output = output + "warclaw";
+    if (value->warclaw == true) {
+        flag_values.push_back("warclaw");
     }
-    if (attribute_value.skyscale == true) {
-        output = output + "skyscale";
+    if (value->skyscale == true) {
+        flag_values.push_back("skyscale");
     }
-    if (attribute_value.skiff == true) {
-        output = output + "skiff";
+    if (value->skiff == true) {
+        flag_values.push_back("skiff");
     }
-    if (attribute_value.seige_turtle == true) {
-        output = output + "seigeturtle";
+    if (value->seige_turtle == true) {
+        flag_values.push_back("seigeturtle");
     }
-    return output;
+    string output = join(flag_values, ",");
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::MountFilter* to_proto_mount_filter(MountFilter attribute_value) {
-    waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
-    proto_mount_filter->set_raptor(attribute_value.raptor);
-    proto_mount_filter->set_springer(attribute_value.springer);
-    proto_mount_filter->set_skimmer(attribute_value.skimmer);
-    proto_mount_filter->set_jackal(attribute_value.jackal);
-    proto_mount_filter->set_griffon(attribute_value.griffon);
-    proto_mount_filter->set_roller_beetle(attribute_value.roller_beetle);
-    proto_mount_filter->set_warclaw(attribute_value.warclaw);
-    proto_mount_filter->set_skyscale(attribute_value.skyscale);
-    proto_mount_filter->set_skiff(attribute_value.skiff);
-    proto_mount_filter->set_seige_turtle(attribute_value.seige_turtle);
-    return proto_mount_filter;
-}
-
-MountFilter from_proto_mount_filter(waypoint::MountFilter proto_mount_filter) {
+void proto_to_mount_filter(waypoint::MountFilter input, MountFilter* value, bool* is_set) {
     MountFilter mount_filter;
-    mount_filter.raptor = proto_mount_filter.raptor();
-    mount_filter.springer = proto_mount_filter.springer();
-    mount_filter.skimmer = proto_mount_filter.skimmer();
-    mount_filter.jackal = proto_mount_filter.jackal();
-    mount_filter.griffon = proto_mount_filter.griffon();
-    mount_filter.roller_beetle = proto_mount_filter.roller_beetle();
-    mount_filter.warclaw = proto_mount_filter.warclaw();
-    mount_filter.skyscale = proto_mount_filter.skyscale();
-    mount_filter.skiff = proto_mount_filter.skiff();
-    mount_filter.seige_turtle = proto_mount_filter.seige_turtle();
-    return mount_filter;
+    mount_filter.raptor = input.raptor();
+    mount_filter.springer = input.springer();
+    mount_filter.skimmer = input.skimmer();
+    mount_filter.jackal = input.jackal();
+    mount_filter.griffon = input.griffon();
+    mount_filter.roller_beetle = input.roller_beetle();
+    mount_filter.warclaw = input.warclaw();
+    mount_filter.skyscale = input.skyscale();
+    mount_filter.skiff = input.skiff();
+    mount_filter.seige_turtle = input.seige_turtle();
+    *value = mount_filter;
+    *is_set = true;
+}
+
+void mount_filter_to_proto(MountFilter value, std::function<void(waypoint::MountFilter*)> setter) {
+    waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
+    bool should_write = false;
+    proto_mount_filter->set_raptor(value.raptor);
+    should_write |= value.raptor;
+    proto_mount_filter->set_springer(value.springer);
+    should_write |= value.springer;
+    proto_mount_filter->set_skimmer(value.skimmer);
+    should_write |= value.skimmer;
+    proto_mount_filter->set_jackal(value.jackal);
+    should_write |= value.jackal;
+    proto_mount_filter->set_griffon(value.griffon);
+    should_write |= value.griffon;
+    proto_mount_filter->set_roller_beetle(value.roller_beetle);
+    should_write |= value.roller_beetle;
+    proto_mount_filter->set_warclaw(value.warclaw);
+    should_write |= value.warclaw;
+    proto_mount_filter->set_skyscale(value.skyscale);
+    should_write |= value.skyscale;
+    proto_mount_filter->set_skiff(value.skiff);
+    should_write |= value.skiff;
+    proto_mount_filter->set_seige_turtle(value.seige_turtle);
+    should_write |= value.seige_turtle;
+    if (should_write) {
+        setter(proto_mount_filter);
+    }
 }

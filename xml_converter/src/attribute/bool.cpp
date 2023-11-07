@@ -16,29 +16,53 @@ using namespace std;
 // evaluated as `true`. 'false' or '0' are evaluated as `false`. Everything is
 // is also evaluated as false but appends an error to the errors vector.
 ////////////////////////////////////////////////////////////////////////////////
-bool parse_bool(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_bool(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    bool* value,
+    bool* is_set) {
     if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
-        return false;
+        *value = false;
+        *is_set = true;
     }
     else if (get_attribute_value(input) == "1" || get_attribute_value(input) == "true") {
-        return true;
+        *value = true;
+        *is_set = true;
     }
     else {
         errors->push_back(new XMLAttributeValueError("Found a boolean value that was not a '1', '0', 'true', or 'false'", input));
-        return false;
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_bool
+// bool_to_xml_attribute
 //
-// Converts a bool into a stringy value so that it can be saved to xml.
+// Converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_bool(bool attribute_value) {
-    if (attribute_value) {
-        return "true";
+string bool_to_xml_attribute(const string& attribute_name, const bool* value) {
+    if (*value) {
+        return " " + attribute_name + "=\"true\"";
     }
     else {
-        return "false";
+        return " " + attribute_name + "=\"false\"";
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// proto_to_bool
+//
+// Parses a bool from a proto field.
+////////////////////////////////////////////////////////////////////////////////
+void proto_to_bool(bool input, bool* value, bool* is_set) {
+    *value = input;
+    *is_set = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// bool_to_proto
+//
+// Writes a bool to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
+void bool_to_proto(bool value, std::function<void(bool)> setter) {
+    setter(value);
 }

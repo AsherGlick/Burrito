@@ -4,7 +4,6 @@ type: Boolean
 applies_to: [Icon, Trail]
 xml_fields: [IngameVisibility, BHIngameVisibility]
 protobuf_field: tentative__render_ingame
-compatability: [TacO, BlishHUD, Burrito]
 
 ---
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -12,16 +13,22 @@ class TrailData;
 
 class TrailData {
  public:
-    int side_effect_map_id;
     std::vector<float> points_x;
     std::vector<float> points_y;
     std::vector<float> points_z;
 };
 
-TrailData parse_trail_data(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors, std::string base_dir);
+void xml_attribute_to_trail_data(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    std::string base_dir,
+    TrailData* value,
+    bool* is_set,
+    int* map_id_value,
+    bool* is_map_id_set);
 
-std::string stringify_trail_data(TrailData attribute_value);
+std::string trail_data_to_xml_attribute(const std::string& attribute_name, const TrailData* value);
 
-waypoint::TrailData* to_proto_trail_data(TrailData attribute_value);
+void proto_to_trail_data(waypoint::TrailData input, TrailData* value, bool* is_set);
 
-TrailData from_proto_trail_data(waypoint::TrailData attribute_value);
+void trail_data_to_proto(TrailData value, std::function<void(waypoint::TrailData*)> setter);

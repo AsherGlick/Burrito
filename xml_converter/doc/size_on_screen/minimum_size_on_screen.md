@@ -4,7 +4,6 @@ type: Int32
 applies_to: [Icon]
 xml_fields: [MinSize]
 protobuf_field: minimum_size_on_screen
-compatability: [TacO, BlishHUD, Burrito]
 ---
 The smallest width/height of this icon on the screen.
 

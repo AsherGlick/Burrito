@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -25,7 +26,14 @@ class ProfessionFilter {
         return "ProfessionFilter";
     }
 };
-ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_profession_filter(ProfessionFilter attribute_value);
-waypoint::ProfessionFilter* to_proto_profession_filter(ProfessionFilter attribute_value);
-ProfessionFilter from_proto_profession_filter(waypoint::ProfessionFilter proto_profession_filter);
+void xml_attribute_to_profession_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    ProfessionFilter* value,
+    bool* is_set);
+
+std::string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value);
+
+void proto_to_profession_filter(waypoint::ProfessionFilter input, ProfessionFilter* value, bool* is_set);
+
+void profession_filter_to_proto(ProfessionFilter value, std::function<void(waypoint::ProfessionFilter*)> setter);
