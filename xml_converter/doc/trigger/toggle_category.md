@@ -5,7 +5,6 @@ class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Toggle, ToggleCategory]
 protobuf_field: trigger.action_toggle_category
-compatability: [TacO, BlishHUD, Burrito]
 ---
 Show if hidden or Hide if shown the specified category when triggered.
 

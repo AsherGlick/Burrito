@@ -37,24 +37,19 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "defaulttoggle") {
-        this->default_visibility = parse_bool(attribute, errors);
-        this->default_visibility_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->default_visibility), &(this->default_visibility_is_set));
     }
     else if (attributename == "displayname") {
-        this->display_name = parse_string(attribute, errors);
-        this->display_name_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->display_name), &(this->display_name_is_set));
     }
     else if (attributename == "isseparator") {
-        this->is_separator = parse_bool(attribute, errors);
-        this->is_separator_is_set = true;
+        xml_attribute_to_bool(attribute, errors, &(this->is_separator), &(this->is_separator_is_set));
     }
     else if (attributename == "name") {
-        this->name = parse_string(attribute, errors);
-        this->name_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->name), &(this->name_is_set));
     }
     else if (attributename == "tipdescription") {
-        this->tooltip_description = parse_string(attribute, errors);
-        this->tooltip_description_is_set = true;
+        xml_attribute_to_string(attribute, errors, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
     else {
         return false;
@@ -66,19 +61,19 @@ vector<string> Category::as_xml() const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<MarkerCategory ");
     if (this->default_visibility_is_set) {
-        xml_node_contents.push_back(" DefaultToggle=\"" + stringify_bool(this->default_visibility) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("DefaultToggle", &this->default_visibility));
     }
     if (this->display_name_is_set) {
-        xml_node_contents.push_back(" DisplayName=\"" + stringify_string(this->display_name) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("DisplayName", &this->display_name));
     }
     if (this->is_separator_is_set) {
-        xml_node_contents.push_back(" IsSeparator=\"" + stringify_bool(this->is_separator) + "\"");
+        xml_node_contents.push_back(bool_to_xml_attribute("IsSeparator", &this->is_separator));
     }
     if (this->name_is_set) {
-        xml_node_contents.push_back(" Name=\"" + stringify_string(this->name) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("Name", &this->name));
     }
     if (this->tooltip_description_is_set) {
-        xml_node_contents.push_back(" TipDescription=\"" + stringify_string(this->tooltip_description) + "\"");
+        xml_node_contents.push_back(string_to_xml_attribute("TipDescription", &this->tooltip_description));
     }
     xml_node_contents.push_back(">\n");
 
@@ -95,66 +90,45 @@ vector<string> Category::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::Category Category::as_protobuf(string full_category_name, map<string, vector<Parseable*>>* parsed_pois) const {
-    full_category_name += this->name;
+waypoint::Category Category::as_protobuf() const {
     waypoint::Category proto_category;
     if (this->default_visibility_is_set) {
-        proto_category.set_default_visibility(this->default_visibility);
+        std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_default_visibility(val); };
+        bool_to_proto(this->default_visibility, setter);
     }
     if (this->display_name_is_set) {
-        proto_category.set_display_name(this->display_name);
+        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
+        string_to_proto(this->display_name, setter);
     }
     if (this->is_separator_is_set) {
-        proto_category.set_is_separator(this->is_separator);
+        std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_is_separator(val); };
+        bool_to_proto(this->is_separator, setter);
     }
     if (this->name_is_set) {
-        proto_category.set_name(this->name);
+        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
+        do_nothing(this->name, setter);
     }
     if (this->tooltip_description_is_set) {
-        proto_category.set_tip_description(this->tooltip_description);
-    }
-
-    auto pois = parsed_pois->find(full_category_name);
-
-    if (pois != parsed_pois->end()) {
-        for (unsigned int i = 0; i < pois->second.size(); i++) {
-            if (pois->second[i]->classname() == "POI") {
-                Icon* icon = dynamic_cast<Icon*>(pois->second[i]);
-                proto_category.add_icon()->MergeFrom(icon->as_protobuf());
-            }
-            else if (pois->second[i]->classname() == "Trail") {
-                Trail* trail = dynamic_cast<Trail*>(pois->second[i]);
-                proto_category.add_trail()->MergeFrom(trail->as_protobuf());
-            }
-        }
-    }
-
-    for (const auto& [key, val] : this->children) {
-        waypoint::Category proto_category_child = val.as_protobuf(full_category_name + ".", parsed_pois);
-        proto_category.add_children()->CopyFrom(proto_category_child);
+        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_tip_description(val); };
+        string_to_proto(this->tooltip_description, setter);
     }
     return proto_category;
 }
 
 void Category::parse_protobuf(waypoint::Category proto_category) {
     if (proto_category.default_visibility() != 0) {
-        this->default_visibility = proto_category.default_visibility();
-        this->default_visibility_is_set = true;
-    }
-    if (proto_category.display_name() != "") {
-        this->display_name = proto_category.display_name();
-        this->display_name_is_set = true;
-    }
-    if (proto_category.is_separator() != 0) {
-        this->is_separator = proto_category.is_separator();
-        this->is_separator_is_set = true;
+        proto_to_bool(proto_category.default_visibility(), &(this->default_visibility), &(this->default_visibility_is_set));
     }
     if (proto_category.name() != "") {
-        this->name = proto_category.name();
-        this->name_is_set = true;
+        proto_display_name_to_display_name_and_name(proto_category.name(), &(this->display_name), &(this->display_name_is_set), &(this->name), &(this->name_is_set));
+    }
+    if (proto_category.is_separator() != 0) {
+        proto_to_bool(proto_category.is_separator(), &(this->is_separator), &(this->is_separator_is_set));
+    }
+    if (proto_category.name() != "") {
+        do_nothing(proto_category.name(), &(this->name), &(this->name_is_set));
     }
     if (proto_category.tip_description() != "") {
-        this->tooltip_description = proto_category.tip_description();
-        this->tooltip_description_is_set = true;
+        proto_to_string(proto_category.tip_description(), &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
 }

@@ -15,39 +15,43 @@ using namespace std;
 //
 // Parses the path to an image from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-Image parse_image(rapidxml::xml_attribute<>* input, vector<XMLError*>*) {
+void xml_attribute_to_image(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Image* value,
+    bool* is_set) {
+    value->path = get_attribute_value(input);
+    *is_set = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// image_to_xml_attribute
+//
+// Converts an image into a fully qualified xml attribute string.
+////////////////////////////////////////////////////////////////////////////////
+string image_to_xml_attribute(const string& attribute_name, const Image* value) {
+    return " " + attribute_name + "=\"" + value->path + "\"";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// proto_to_image
+//
+// Parses an Image from proto
+////////////////////////////////////////////////////////////////////////////////
+void proto_to_image(waypoint::TexturePath input, Image* value, bool* is_set) {
     Image image;
-    image.path = get_attribute_value(input);
-    return image;
+    image.path = input.path();
+    *value = image;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_image
+// image_to_proto
 //
-// Converts an Image into a stringy value representing the path to the image.
+// Writes a string filepath to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-string stringify_image(Image attribute_value) {
-    return attribute_value.path;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// to_proto_image
-//
-// Converts an Image into a waypoint::Image pointer to save to proto.
-////////////////////////////////////////////////////////////////////////////////
-waypoint::TexturePath* to_proto_image(Image attribute_value) {
+void image_to_proto(Image value, std::function<void(waypoint::TexturePath*)> setter) {
     waypoint::TexturePath* texture = new waypoint::TexturePath();
-    texture->set_path(attribute_value.path);
-    return texture;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// from_proto_image
-//
-// Parses a waypoint::Image from proto
-////////////////////////////////////////////////////////////////////////////////
-Image from_proto_image(waypoint::TexturePath attribute_value) {
-    Image image;
-    image.path = attribute_value.path();
-    return image;
+    texture->set_path(value.path);
+    setter(texture);
 }

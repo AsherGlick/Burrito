@@ -12,7 +12,11 @@
 
 using namespace std;
 
-FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_festival_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    FestivalFilter* value,
+    bool* is_set) {
     FestivalFilter festival_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -55,55 +59,68 @@ FestivalFilter parse_festival_filter(rapidxml::xml_attribute<>* input, vector<XM
             continue;
         }
     }
-    return festival_filter;
+    *value = festival_filter;
+    *is_set = true;
 }
 
-string stringify_festival_filter(FestivalFilter attribute_value) {
-    string output = "";
-    if (attribute_value.dragonbash == true) {
-        output = output + "dragonbash";
+string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value) {
+    vector<string> flag_values;
+    if (value->dragonbash == true) {
+        flag_values.push_back("dragonbash");
     }
-    if (attribute_value.festival_of_the_four_winds == true) {
-        output = output + "festivalofthefourwinds";
+    if (value->festival_of_the_four_winds == true) {
+        flag_values.push_back("festivalofthefourwinds");
     }
-    if (attribute_value.halloween == true) {
-        output = output + "halloween";
+    if (value->halloween == true) {
+        flag_values.push_back("halloween");
     }
-    if (attribute_value.lunar_new_year == true) {
-        output = output + "lunarnewyear";
+    if (value->lunar_new_year == true) {
+        flag_values.push_back("lunarnewyear");
     }
-    if (attribute_value.super_adventure_festival == true) {
-        output = output + "superadventurefestival";
+    if (value->super_adventure_festival == true) {
+        flag_values.push_back("superadventurefestival");
     }
-    if (attribute_value.wintersday == true) {
-        output = output + "wintersday";
+    if (value->wintersday == true) {
+        flag_values.push_back("wintersday");
     }
-    if (attribute_value.none == true) {
-        output = output + "none";
+    if (value->none == true) {
+        flag_values.push_back("none");
     }
-    return output;
+    string output = join(flag_values, ",");
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::FestivalFilter* to_proto_festival_filter(FestivalFilter attribute_value) {
-    waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
-    proto_festival_filter->set_dragonbash(attribute_value.dragonbash);
-    proto_festival_filter->set_festival_of_the_four_winds(attribute_value.festival_of_the_four_winds);
-    proto_festival_filter->set_halloween(attribute_value.halloween);
-    proto_festival_filter->set_lunar_new_year(attribute_value.lunar_new_year);
-    proto_festival_filter->set_super_adventure_festival(attribute_value.super_adventure_festival);
-    proto_festival_filter->set_wintersday(attribute_value.wintersday);
-    proto_festival_filter->set_none(attribute_value.none);
-    return proto_festival_filter;
-}
-
-FestivalFilter from_proto_festival_filter(waypoint::FestivalFilter proto_festival_filter) {
+void proto_to_festival_filter(waypoint::FestivalFilter input, FestivalFilter* value, bool* is_set) {
     FestivalFilter festival_filter;
-    festival_filter.dragonbash = proto_festival_filter.dragonbash();
-    festival_filter.festival_of_the_four_winds = proto_festival_filter.festival_of_the_four_winds();
-    festival_filter.halloween = proto_festival_filter.halloween();
-    festival_filter.lunar_new_year = proto_festival_filter.lunar_new_year();
-    festival_filter.super_adventure_festival = proto_festival_filter.super_adventure_festival();
-    festival_filter.wintersday = proto_festival_filter.wintersday();
-    festival_filter.none = proto_festival_filter.none();
-    return festival_filter;
+    festival_filter.dragonbash = input.dragonbash();
+    festival_filter.festival_of_the_four_winds = input.festival_of_the_four_winds();
+    festival_filter.halloween = input.halloween();
+    festival_filter.lunar_new_year = input.lunar_new_year();
+    festival_filter.super_adventure_festival = input.super_adventure_festival();
+    festival_filter.wintersday = input.wintersday();
+    festival_filter.none = input.none();
+    *value = festival_filter;
+    *is_set = true;
+}
+
+void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter) {
+    waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
+    bool should_write = false;
+    proto_festival_filter->set_dragonbash(value.dragonbash);
+    should_write |= value.dragonbash;
+    proto_festival_filter->set_festival_of_the_four_winds(value.festival_of_the_four_winds);
+    should_write |= value.festival_of_the_four_winds;
+    proto_festival_filter->set_halloween(value.halloween);
+    should_write |= value.halloween;
+    proto_festival_filter->set_lunar_new_year(value.lunar_new_year);
+    should_write |= value.lunar_new_year;
+    proto_festival_filter->set_super_adventure_festival(value.super_adventure_festival);
+    should_write |= value.super_adventure_festival;
+    proto_festival_filter->set_wintersday(value.wintersday);
+    should_write |= value.wintersday;
+    proto_festival_filter->set_none(value.none);
+    should_write |= value.none;
+    if (should_write) {
+        setter(proto_festival_filter);
+    }
 }

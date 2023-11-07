@@ -4,7 +4,6 @@ type: Float32
 applies_to: [Icon]
 xml_fields: [BounceHeight]
 protobuf_field: trigger.bounce_height
-compatability: [TacO, BlishHUD, Burrito]
 ---
 How high should the icon bounce when triggered.
 

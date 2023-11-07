@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -19,7 +20,14 @@ class Position {
         return "Position";
     }
 };
-Position parse_position(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_position(Position attribute_value);
-waypoint::Position* to_proto_position(Position attribute_value);
-Position from_proto_position(waypoint::Position proto_position);
+void xml_attribute_to_position(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Position* value,
+    bool* is_set);
+
+std::string position_to_xml_attribute(const std::string& attribute_name, const Position* value);
+
+void proto_to_position(waypoint::Position input, Position* value, bool* is_set);
+
+void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter);

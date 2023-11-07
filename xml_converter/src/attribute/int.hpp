@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -7,6 +8,14 @@
 
 class XMLError;
 
-int parse_int(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_int(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    int* value,
+    bool* is_set);
 
-std::string stringify_int(int attribute_value);
+std::string int_to_xml_attribute(const std::string& attribute_name, const int* value);
+
+void proto_to_int(int input, int* value, bool* is_set);
+
+void int_to_proto(int value, std::function<void(int&)> setter);

@@ -4,7 +4,6 @@ type: String
 applies_to: [Icon]
 xml_fields: [CopyMessage]
 protobuf_field: trigger.action_copy_message
-compatability: [TacO, BlishHUD, Burrito]
 ---
  A message that is displayed to the user when an item is copied to the clipboard.
 

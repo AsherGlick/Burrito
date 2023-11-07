@@ -4,7 +4,6 @@ type: String
 applies_to: [Icon]
 xml_fields: [TipName]
 protobuf_field: tip_name
-compatability: [TacO, BlishHUD, Burrito]
 ---
 The name of the tooltip when hovering over the minimap.
 

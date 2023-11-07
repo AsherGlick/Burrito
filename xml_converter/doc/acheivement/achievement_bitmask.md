@@ -2,7 +2,6 @@
 name: Achievement Bitmask
 type: Fixed32
 applies_to: [Icon, Trail]
-compatability: [TacO, BlishHUD, Burrito]
 xml_fields: ["AchievementBit"]
 protobuf_field: achievement_bit
 ---

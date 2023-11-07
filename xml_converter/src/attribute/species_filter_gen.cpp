@@ -12,7 +12,11 @@
 
 using namespace std;
 
-SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_species_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    SpeciesFilter* value,
+    bool* is_set) {
     SpeciesFilter species_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -44,45 +48,56 @@ SpeciesFilter parse_species_filter(rapidxml::xml_attribute<>* input, vector<XMLE
             continue;
         }
     }
-    return species_filter;
+    *value = species_filter;
+    *is_set = true;
 }
 
-string stringify_species_filter(SpeciesFilter attribute_value) {
-    string output = "";
-    if (attribute_value.asura == true) {
-        output = output + "asura";
+string species_filter_to_xml_attribute(const std::string& attribute_name, const SpeciesFilter* value) {
+    vector<string> flag_values;
+    if (value->asura == true) {
+        flag_values.push_back("asura");
     }
-    if (attribute_value.charr == true) {
-        output = output + "charr";
+    if (value->charr == true) {
+        flag_values.push_back("charr");
     }
-    if (attribute_value.human == true) {
-        output = output + "human";
+    if (value->human == true) {
+        flag_values.push_back("human");
     }
-    if (attribute_value.norn == true) {
-        output = output + "norn";
+    if (value->norn == true) {
+        flag_values.push_back("norn");
     }
-    if (attribute_value.sylvari == true) {
-        output = output + "sylvari";
+    if (value->sylvari == true) {
+        flag_values.push_back("sylvari");
     }
-    return output;
+    string output = join(flag_values, ",");
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::SpeciesFilter* to_proto_species_filter(SpeciesFilter attribute_value) {
-    waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
-    proto_species_filter->set_asura(attribute_value.asura);
-    proto_species_filter->set_charr(attribute_value.charr);
-    proto_species_filter->set_human(attribute_value.human);
-    proto_species_filter->set_norn(attribute_value.norn);
-    proto_species_filter->set_sylvari(attribute_value.sylvari);
-    return proto_species_filter;
-}
-
-SpeciesFilter from_proto_species_filter(waypoint::SpeciesFilter proto_species_filter) {
+void proto_to_species_filter(waypoint::SpeciesFilter input, SpeciesFilter* value, bool* is_set) {
     SpeciesFilter species_filter;
-    species_filter.asura = proto_species_filter.asura();
-    species_filter.charr = proto_species_filter.charr();
-    species_filter.human = proto_species_filter.human();
-    species_filter.norn = proto_species_filter.norn();
-    species_filter.sylvari = proto_species_filter.sylvari();
-    return species_filter;
+    species_filter.asura = input.asura();
+    species_filter.charr = input.charr();
+    species_filter.human = input.human();
+    species_filter.norn = input.norn();
+    species_filter.sylvari = input.sylvari();
+    *value = species_filter;
+    *is_set = true;
+}
+
+void species_filter_to_proto(SpeciesFilter value, std::function<void(waypoint::SpeciesFilter*)> setter) {
+    waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
+    bool should_write = false;
+    proto_species_filter->set_asura(value.asura);
+    should_write |= value.asura;
+    proto_species_filter->set_charr(value.charr);
+    should_write |= value.charr;
+    proto_species_filter->set_human(value.human);
+    should_write |= value.human;
+    proto_species_filter->set_norn(value.norn);
+    should_write |= value.norn;
+    proto_species_filter->set_sylvari(value.sylvari);
+    should_write |= value.sylvari;
+    if (should_write) {
+        setter(proto_species_filter);
+    }
 }

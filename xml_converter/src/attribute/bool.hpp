@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -7,6 +8,14 @@
 
 class XMLError;
 
-bool parse_bool(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_bool(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    bool* value,
+    bool* is_set);
 
-std::string stringify_bool(bool attribute_value);
+std::string bool_to_xml_attribute(const std::string& attribute_name, const bool* value);
+
+void proto_to_bool(bool input, bool* value, bool* is_set);
+
+void bool_to_proto(bool value, std::function<void(bool)> setter);

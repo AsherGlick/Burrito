@@ -12,7 +12,11 @@
 
 using namespace std;
 
-ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vector<XMLError*>* errors) {
+void xml_attribute_to_profession_filter(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    ProfessionFilter* value,
+    bool* is_set) {
     ProfessionFilter profession_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -60,65 +64,80 @@ ProfessionFilter parse_profession_filter(rapidxml::xml_attribute<>* input, vecto
             continue;
         }
     }
-    return profession_filter;
+    *value = profession_filter;
+    *is_set = true;
 }
 
-string stringify_profession_filter(ProfessionFilter attribute_value) {
-    string output = "";
-    if (attribute_value.guardian == true) {
-        output = output + "guardian";
+string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value) {
+    vector<string> flag_values;
+    if (value->guardian == true) {
+        flag_values.push_back("guardian");
     }
-    if (attribute_value.warrior == true) {
-        output = output + "warrior";
+    if (value->warrior == true) {
+        flag_values.push_back("warrior");
     }
-    if (attribute_value.engineer == true) {
-        output = output + "engineer";
+    if (value->engineer == true) {
+        flag_values.push_back("engineer");
     }
-    if (attribute_value.ranger == true) {
-        output = output + "ranger";
+    if (value->ranger == true) {
+        flag_values.push_back("ranger");
     }
-    if (attribute_value.thief == true) {
-        output = output + "thief";
+    if (value->thief == true) {
+        flag_values.push_back("thief");
     }
-    if (attribute_value.elementalist == true) {
-        output = output + "elementalist";
+    if (value->elementalist == true) {
+        flag_values.push_back("elementalist");
     }
-    if (attribute_value.mesmer == true) {
-        output = output + "mesmer";
+    if (value->mesmer == true) {
+        flag_values.push_back("mesmer");
     }
-    if (attribute_value.necromancer == true) {
-        output = output + "necromancer";
+    if (value->necromancer == true) {
+        flag_values.push_back("necromancer");
     }
-    if (attribute_value.revenant == true) {
-        output = output + "revenant";
+    if (value->revenant == true) {
+        flag_values.push_back("revenant");
     }
-    return output;
+    string output = join(flag_values, ",");
+    return " " + attribute_name + "=\"" + output + "\"";
 }
 
-waypoint::ProfessionFilter* to_proto_profession_filter(ProfessionFilter attribute_value) {
-    waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
-    proto_profession_filter->set_guardian(attribute_value.guardian);
-    proto_profession_filter->set_warrior(attribute_value.warrior);
-    proto_profession_filter->set_engineer(attribute_value.engineer);
-    proto_profession_filter->set_ranger(attribute_value.ranger);
-    proto_profession_filter->set_thief(attribute_value.thief);
-    proto_profession_filter->set_elementalist(attribute_value.elementalist);
-    proto_profession_filter->set_mesmer(attribute_value.mesmer);
-    proto_profession_filter->set_necromancer(attribute_value.necromancer);
-    proto_profession_filter->set_revenant(attribute_value.revenant);
-    return proto_profession_filter;
-}
-
-ProfessionFilter from_proto_profession_filter(waypoint::ProfessionFilter proto_profession_filter) {
+void proto_to_profession_filter(waypoint::ProfessionFilter input, ProfessionFilter* value, bool* is_set) {
     ProfessionFilter profession_filter;
-    profession_filter.guardian = proto_profession_filter.guardian();
-    profession_filter.warrior = proto_profession_filter.warrior();
-    profession_filter.engineer = proto_profession_filter.engineer();
-    profession_filter.ranger = proto_profession_filter.ranger();
-    profession_filter.thief = proto_profession_filter.thief();
-    profession_filter.elementalist = proto_profession_filter.elementalist();
-    profession_filter.mesmer = proto_profession_filter.mesmer();
-    profession_filter.necromancer = proto_profession_filter.necromancer();
-    profession_filter.revenant = proto_profession_filter.revenant();
-    return profession_filter;
+    profession_filter.guardian = input.guardian();
+    profession_filter.warrior = input.warrior();
+    profession_filter.engineer = input.engineer();
+    profession_filter.ranger = input.ranger();
+    profession_filter.thief = input.thief();
+    profession_filter.elementalist = input.elementalist();
+    profession_filter.mesmer = input.mesmer();
+    profession_filter.necromancer = input.necromancer();
+    profession_filter.revenant = input.revenant();
+    *value = profession_filter;
+    *is_set = true;
+}
+
+void profession_filter_to_proto(ProfessionFilter value, std::function<void(waypoint::ProfessionFilter*)> setter) {
+    waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
+    bool should_write = false;
+    proto_profession_filter->set_guardian(value.guardian);
+    should_write |= value.guardian;
+    proto_profession_filter->set_warrior(value.warrior);
+    should_write |= value.warrior;
+    proto_profession_filter->set_engineer(value.engineer);
+    should_write |= value.engineer;
+    proto_profession_filter->set_ranger(value.ranger);
+    should_write |= value.ranger;
+    proto_profession_filter->set_thief(value.thief);
+    should_write |= value.thief;
+    proto_profession_filter->set_elementalist(value.elementalist);
+    should_write |= value.elementalist;
+    proto_profession_filter->set_mesmer(value.mesmer);
+    should_write |= value.mesmer;
+    proto_profession_filter->set_necromancer(value.necromancer);
+    should_write |= value.necromancer;
+    proto_profession_filter->set_revenant(value.revenant);
+    should_write |= value.revenant;
+    if (should_write) {
+        setter(proto_profession_filter);
+    }
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -18,10 +19,14 @@ class Color {
     float alpha;
 };
 
-Color parse_color(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_color(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Color* value,
+    bool* is_set);
 
-std::string stringify_color(Color attribute_value);
+std::string color_to_xml_attribute(const std::string& attribute_name, const Color* value);
 
-waypoint::RGBAColor* to_proto_color(Color attribute_value);
+void proto_to_color(waypoint::RGBAColor input, Color* value, bool* is_set);
 
-Color from_proto_color(waypoint::RGBAColor attribute_value);
+void color_to_proto(Color value, std::function<void(waypoint::RGBAColor*)> setter);

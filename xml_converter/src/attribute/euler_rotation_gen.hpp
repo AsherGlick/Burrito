@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -19,7 +20,14 @@ class EulerRotation {
         return "EulerRotation";
     }
 };
-EulerRotation parse_euler_rotation(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
-std::string stringify_euler_rotation(EulerRotation attribute_value);
-waypoint::EulerRotation* to_proto_euler_rotation(EulerRotation attribute_value);
-EulerRotation from_proto_euler_rotation(waypoint::EulerRotation proto_euler_rotation);
+void xml_attribute_to_euler_rotation(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    EulerRotation* value,
+    bool* is_set);
+
+std::string euler_rotation_to_xml_attribute(const std::string& attribute_name, const EulerRotation* value);
+
+void proto_to_euler_rotation(waypoint::EulerRotation input, EulerRotation* value, bool* is_set);
+
+void euler_rotation_to_proto(EulerRotation value, std::function<void(waypoint::EulerRotation*)> setter);

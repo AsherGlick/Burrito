@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -15,10 +16,14 @@ class Image {
     std::string path;
 };
 
-Image parse_image(rapidxml::xml_attribute<>* input, std::vector<XMLError*>* errors);
+void xml_attribute_to_image(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    Image* value,
+    bool* is_set);
 
-std::string stringify_image(Image attribute_value);
+std::string image_to_xml_attribute(const std::string& attribute_name, const Image* value);
 
-waypoint::TexturePath* to_proto_image(Image attribute_value);
+void proto_to_image(waypoint::TexturePath input, Image* value, bool* is_set);
 
-Image from_proto_image(waypoint::TexturePath attribute_value);
+void image_to_proto(Image value, std::function<void(waypoint::TexturePath*)> setter);

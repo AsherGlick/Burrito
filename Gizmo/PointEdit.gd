@@ -71,5 +71,5 @@ func _process(delta):
 		)
 		$Plane.scale = new_scale
 		$Pillar.scale = new_scale
-		
+
 		update_point()

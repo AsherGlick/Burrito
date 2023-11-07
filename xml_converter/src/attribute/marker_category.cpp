@@ -12,20 +12,34 @@
 //
 // Parses a MarkerCategory from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-MarkerCategory parse_marker_category(rapidxml::xml_attribute<>* input, std::vector<XMLError*>*) {
-    MarkerCategory marker_category;
-    marker_category.category = get_attribute_value(input);
-    return marker_category;
+void xml_attribute_to_marker_category(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    MarkerCategory* value,
+    bool* is_set) {
+    value->category = get_attribute_value(input);
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// stringify_marker_category
+// marker_category_to_xml_attribute
 //
-// Converts a MarkerCategory into a stringy value so that it can be saved to
-// xml. The stringy value is a full hierarchical path to the MarkerCategory.
+// Converts a marker category a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string stringify_marker_category(MarkerCategory attribute_value) {
-    return attribute_value.category;
+std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value) {
+    return " " + attribute_name + "=\"" + value->category + "\"";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// proto_to_marker_category
+//
+// Parses a marker category from a proto field.
+////////////////////////////////////////////////////////////////////////////////
+void proto_to_marker_category(waypoint::Category input, MarkerCategory* value, bool* is_set) {
+    MarkerCategory marker_category;
+    marker_category.category = input.name();
+    *value = marker_category;
+    *is_set = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,19 +47,8 @@ std::string stringify_marker_category(MarkerCategory attribute_value) {
 //
 // Returns a waypoint::Category so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
-waypoint::Category* to_proto_marker_category(MarkerCategory attribute_value) {
+void marker_category_to_proto(MarkerCategory value, std::function<void(waypoint::Category*)> setter) {
     waypoint::Category* category = new waypoint::Category();
-    category->set_name(attribute_value.category);
-    return category;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// to_proto_marker_category
-//
-// Parses a waypoint::Category and returns a MarkerCategory
-///////////////////////////////////////////////////////////////////////////////
-MarkerCategory from_proto_marker_category(waypoint::Category attribute_value) {
-    MarkerCategory marker_category;
-    marker_category.category = attribute_value.name();
-    return marker_category;
+    category->set_name(value.category);
+    setter(category);
 }

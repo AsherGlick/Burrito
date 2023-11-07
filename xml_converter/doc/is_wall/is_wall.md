@@ -4,7 +4,6 @@ type: Boolean
 applies_to: [Trail]
 xml_fields: [IsWall]
 protobuf_field: is_wall
-compatability: [BlishHUD]
 ---
 Rotate the trail 90 degrees so it is vertical instead of horizontal to represent a wall.
 
