@@ -49,15 +49,14 @@ var x11_window_id_burrito: int
 var is_transient:bool = false
 
 # Scenes used throughout this scene
-var route_scene = load("res://Route.tscn")
-var icon_scene = load("res://Icon.tscn")
-var path2d_scene = load("res://Route2D.tscn")
-var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
+const route_scene = preload("res://Route.tscn")
+const icon_scene = preload("res://Icon.tscn")
+const path2d_scene = preload("res://Route2D.tscn")
+const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 
 ##########Node Connections###########
 onready var marker_packs := $Control/Dialogs/MarkerPacks/MarkerPacks as Tree
 onready var unsaved_data_icon := $Control/GlobalMenuButton/BurritoIcon/UnsavedData
-onready var root := self.marker_packs.create_item() as TreeItem
 onready var icons := $Icons as Spatial
 onready var paths := $Paths as Spatial
 onready var minimap := $Control/MiniMap as Node2D
@@ -79,8 +78,6 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
-	init_category_tree()
-	marker_file_dir.open("user://protobins/")
 	server.listen(4242)
 
 	if (Settings.burrito_link_auto_launch_enabled):
@@ -374,14 +371,11 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
-
 var waypoint_data = Waypoint.Waypoint.new()
 var marker_file_dir = Directory.new().open("user://protobins/")
 var auto_save_file_path = ""
 var marker_file_path = ""
 var auto_save_file_path = ""
-var root: TreeItem
-
 
 func load_waypoint_markers(map_id):
 	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
@@ -492,7 +486,9 @@ func clear_map_markers():
 
 
 func init_category_tree():
-	self.root = self.marker_packs.create_item()
+	self.marker_packs.clear()
+	var root : TreeItem
+	root = self.marker_packs.create_item()
 	root.set_text(0, "Markers available on current map")
 	root.set_selectable(0, false)
 	root.set_text(1, "Visible")
@@ -500,7 +496,7 @@ func init_category_tree():
 
 func waypoint_categories_to_godot_nodes():
 	for category in self.waypoint_data.get_category():
-		_Waypoint_categories_to_godot_nodes(root, category, category.get_name(), false)
+		_waypoint_categories_to_godot_nodes(null, category, category.get_name(), false)
 
 
 func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
@@ -547,7 +543,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 	
 	for category_child in category.get_children():
-		_Waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
+		_waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
@@ -681,7 +677,6 @@ func manual_save():
 		if self.marker_file_dir.file_exists(self.auto_save_file_path):
 			self.marker_file_dir.remove(self.auto_save_file_path)
 		unsaved_data_icon.visible = false
-
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -964,3 +959,4 @@ func _on_UnsavedData_visibility_changed():
 		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
 	else:
 		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""
+
