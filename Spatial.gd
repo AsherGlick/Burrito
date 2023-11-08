@@ -48,6 +48,19 @@ var taco_parser: TacoParser
 var x11_window_id_burrito: int
 var is_transient:bool = false
 
+# Scenes used throughout this scene
+const route_scene = preload("res://Route.tscn")
+const icon_scene = preload("res://Icon.tscn")
+const path2d_scene = preload("res://Route2D.tscn")
+const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
+
+##########Node Connections###########
+onready var marker_packs := $Control/Dialogs/MarkerPacks/MarkerPacks as Tree
+onready var icons := $Icons as Spatial
+onready var paths := $Paths as Spatial
+onready var minimap := $Control/MiniMap as Node2D
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
@@ -64,6 +77,7 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
+
 	server.listen(4242)
 
 	if (Settings.burrito_link_auto_launch_enabled):
@@ -326,7 +340,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		print("Saving Old Map")
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
-		gen_map_markers()
 
 	# TODO move this to reset_minimap_masks
 	for child in $Paths.get_children():
@@ -361,32 +374,26 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
-var markerdata = Waypoint.Waypoint.new()
+var waypoint_data = Waypoint.Waypoint.new()
 var marker_file_dir = "user://protobins/"
 var marker_file_path = ""
-var marker_packs_array = Array()
-onready var marker_packs = $Control/Dialogs/MarkerPacks/MarkerPacks
 
 func load_waypoint_markers(map_id):
 	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
-	print("Loading protobuf file from path ", self.marker_file_path)
-	self.markerdata.clear_category()
-	self.markerdata.clear_icon()
-	self.markerdata.clear_trail()
+	self.waypoint_data.clear_category()
+	clear_map_markers()
+	init_category_tree()
 	var file = File.new()
+	print("Loading protobuf file from path ", self.marker_file_path)
 	file.open(self.marker_file_path, file.READ)
 	var data = file.get_buffer(file.get_len())
-	self.markerdata.from_bytes(data)
+	self.waypoint_data.from_bytes(data)
 	if !Waypoint.PB_ERR.NO_ERRORS:
 		print("OK")
 	else:
 		print(Waypoint.PB_ERR)
+	waypoint_categories_to_godot_nodes()
 
-
-var route_scene = load("res://Route.tscn")
-var icon_scene = load("res://Icon.tscn")
-var path2d_scene = load("res://Route2D.tscn")
-var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
 
 ##########Gizmo Stuff###########
 # How long the ray to search for 3D clickable object should be.
@@ -459,11 +466,7 @@ func _unhandled_input(event):
 ################################################################################
 #
 ################################################################################
-onready var icons = $Icons
-onready var paths = $Paths
-onready var minimap = $Control/MiniMap
-
-func gen_map_markers():
+func clear_map_markers():
 	# Clear all the rendered assets to make way for the new ones
 	for path in paths.get_children():
 		path.queue_free()
@@ -474,70 +477,22 @@ func gen_map_markers():
 	for icon in icons.get_children():
 		icon.queue_free()
 
+
+func init_category_tree():
 	self.marker_packs.clear()
-	build_category_tree()
-
-	# Load the data from the markers
-	for path in self.markerdata.get_trail():
-		var path_points := PoolVector3Array()
-		var trail_data = path.get_trail_data()
-		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
-			print("Warning: Trail ", path.get_category.get_name(), " does not have equal number of X, Y, and Z coordinates.")
-		for index in range(0, trail_data.get_points_z().size()):
-			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
-		var texture_path = path.get_texture_path()
-		if texture_path == null:
-			print("Warning: No texture found in " , path.get_category().name())
-			continue
-		var full_texture_path = self.marker_file_dir + texture_path.get_path()
-		#TODO This tree look up is unnescary if we make path a child of Category in protobuf
-		var split_name = path.get_category().get_name().split(".")
-		var category_item = search_category_tree(split_name, self.marker_packs.get_root())
-		gen_new_path(path_points, full_texture_path, path, category_item)
-	for icon in self.markerdata.get_icon():
-		var position = icon.get_position()
-		if position == null:
-			print("Warning: No position found for icon ", icon.get_category().name())
-			continue
-		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
-		var texture_path = icon.get_texture_path()
-		if texture_path == null:
-			print("Warning: No texture found in " , icon.get_category().name())
-			continue
-		var full_texture_path = self.marker_file_dir + texture_path.get_path()
-		#TODO This tree look up is unnescary if we make path a child of Category in protobuf
-		var split_name = icon.get_category().get_name().split(".")
-		var category_item = search_category_tree(split_name, self.marker_packs.get_root())
-		gen_new_icon(position_vector, full_texture_path, icon, category_item)
-
-
-func search_category_tree(split_name: PoolStringArray, category_item: TreeItem, index: int = 0):
-	if index == split_name.size():
-		return category_item
-	var child_item = category_item.get_children()
-	while child_item != null:
-		var joined_name = ""
-		for i in range(index):
-			joined_name += split_name[i]
-		if child_item.get_metadata(0) == joined_name:
-			return search_category_tree(split_name, child_item, index + 1)
-		child_item = child_item.get_next()
-	print("No category found for ", split_name)
-	return null
-
-
-func build_category_tree():
-	var root = self.marker_packs.create_item()
+	var root : TreeItem
+	root = self.marker_packs.create_item()
 	root.set_text(0, "Markers available on current map")
 	root.set_selectable(0, false)
 	root.set_text(1, "Visible")
-	
-	for category in self.markerdata.get_category():
-		self.marker_packs_array.append(category.get_name())
-		add_category(root, category, category.get_name(), false)
 
 
-func add_category(item: TreeItem, category, full_category_name: String, collapsed: bool):
+func waypoint_categories_to_godot_nodes():
+	for category in self.waypoint_data.get_category():
+		_waypoint_categories_to_godot_nodes(null, category, category.get_name(), false)
+
+
+func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
 	var category_item = self.marker_packs.create_item(item)
 	if category.get_name() == "": 
 		# If this is called, there is an error in the Waypoint data
@@ -552,8 +507,36 @@ func add_category(item: TreeItem, category, full_category_name: String, collapse
 	category_item.set_tooltip(1, "Show/Hide")
 	category_item.set_editable(1, true)
 	category_item.set_collapsed(collapsed)
+
+	for path in category.get_trail():
+		var path_points := PoolVector3Array()
+		var trail_data = path.get_trail_data()
+		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
+			print("Warning: Trail ", full_category_name, " does not have equal number of X, Y, and Z coordinates.")
+		for index in range(0, trail_data.get_points_z().size()):
+			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
+		var texture_path = path.get_texture_path()
+		if texture_path == null:
+			print("Warning: No texture found in " , full_category_name)
+			continue
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		gen_new_path(path_points, full_texture_path, path, category_item)
+
+	for icon in category.get_icon():
+		var position = icon.get_position()
+		if position == null:
+			print("Warning: No position found for icon ", full_category_name)
+			continue
+		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
+		var texture_path = icon.get_texture_path()
+		if texture_path == null:
+			print("Warning: No texture found in " , full_category_name)
+			continue
+		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		gen_new_icon(position_vector, full_texture_path, icon, category_item)
+	
 	for category_child in category.get_children():
-		add_category(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
+		_waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
@@ -602,7 +585,6 @@ func is_category_visible(category_item: TreeItem) -> bool:
 
 
 func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem):
-
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
@@ -652,9 +634,6 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	self.currently_active_path_2d = new_2d_path
 
 
-################################################################################
-#
-################################################################################
 func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem): 
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
@@ -693,13 +672,8 @@ func data_from_renderview():
 	var data_out = {"icons": icons_data, "paths": paths_data}
 	return data_out
 
-func _on_main_menu_toggle_pressed():
-	$Control/Dialogs/MainMenu.show()
-	set_maximal_mouse_block()
-
-func _on_FileDialog_file_selected(path):
-	pass
-
+################################################################################
+# Adjustment and gizmo functions
 ################################################################################
 # The adjust nodes button creates handles at all the node points to allow for
 # editing of them via in-game interface. (Nodes can only be edited if the input
@@ -713,6 +687,10 @@ func _on_AdjustNodesButton_pressed():
 
 
 func gen_adjustment_nodes():
+	if self.currently_active_category == null:
+		print("No category selected")
+		return
+
 	for index in range(self.paths.get_child_count()):
 		var route = self.paths.get_child(index)
 		var path2d = self.minimap.get_child(index)
@@ -773,6 +751,15 @@ func clear_adjustment_nodes():
 		$Gizmos.remove_child(child)
 		child.queue_free()
 
+################################################################################
+# Signal Functions
+################################################################################
+func _on_main_menu_toggle_pressed():
+	$Control/Dialogs/MainMenu.show()
+	set_maximal_mouse_block()
+
+func _on_FileDialog_file_selected(path):
+	pass
 
 func _on_Dialog_hide():
 	for dialog in $Control/Dialogs.get_children():
@@ -852,22 +839,19 @@ func _on_NewPathPoint_pressed():
 
 
 ################################################################################
-# open the save dialog window. When a path is selected
-# _on_SaveDialog_file_selected() will be called with the user specified path.
+# 
 ################################################################################
 func _on_SavePath_pressed():
 	$Control/Dialogs/SaveDialog.show()
 
 ################################################################################
-# Save the current markers to a file, this includes all markers in memory not
-# just the markers on the current map.
+# TODO: This function will be used when exporting packs
 ################################################################################
 func _on_SaveDialog_file_selected(path):
 	self.markerdata[str(self.map_id)] = data_from_renderview()
 	var save_game = File.new()
 	save_game.open(path, File.WRITE)
 	save_game.store_string(JSON.print(self.markerdata))
-
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
@@ -958,5 +942,3 @@ func _on_MarkerPacks_cell_selected():
 func _on_MarkerPacks_item_edited():
 	var category_item = self.marker_packs.get_edited()
 	apply_category_visibility_to_nodes(category_item)
-
-
