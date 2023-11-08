@@ -49,14 +49,13 @@ var x11_window_id_burrito: int
 var is_transient:bool = false
 
 # Scenes used throughout this scene
-var route_scene = load("res://Route.tscn")
-var icon_scene = load("res://Icon.tscn")
-var path2d_scene = load("res://Route2D.tscn")
-var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
+const route_scene = preload("res://Route.tscn")
+const icon_scene = preload("res://Icon.tscn")
+const path2d_scene = preload("res://Route2D.tscn")
+const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 
 ##########Node Connections###########
 onready var marker_packs := $Control/Dialogs/MarkerPacks/MarkerPacks as Tree
-onready var root := self.marker_packs.create_item() as TreeItem
 onready var icons := $Icons as Spatial
 onready var paths := $Paths as Spatial
 onready var minimap := $Control/MiniMap as Node2D
@@ -480,7 +479,9 @@ func clear_map_markers():
 
 
 func init_category_tree():
-	self.root = self.marker_packs.create_item()
+	self.marker_packs.clear()
+	var root : TreeItem
+	root = self.marker_packs.create_item()
 	root.set_text(0, "Markers available on current map")
 	root.set_selectable(0, false)
 	root.set_text(1, "Visible")
@@ -488,7 +489,7 @@ func init_category_tree():
 
 func waypoint_categories_to_godot_nodes():
 	for category in self.waypoint_data.get_category():
-		_waypoint_categories_to_godot_nodes(root, category, category.get_name(), false)
+		_waypoint_categories_to_godot_nodes(null, category, category.get_name(), false)
 
 
 func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
