@@ -335,6 +335,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		if unsaved_data_icon.visible:
+			auto_saving()
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 
@@ -372,13 +373,14 @@ func reset_minimap_masks():
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
 
 var waypoint_data = Waypoint.Waypoint.new()
-var marker_file_dir = Directory.new().open("user://protobins/")
+var marker_file_dir = Directory.new()
+var marker_file_dir_name = "user://protobins/"
 var auto_save_file_path = ""
 var marker_file_path = ""
-var auto_save_file_path = ""
 
 func load_waypoint_markers(map_id):
-	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
+	self.marker_file_dir.open(marker_file_dir_name)
+	self.marker_file_path = self.marker_file_dir.get_current_dir() + String(map_id) + ".data"
 	self.waypoint_data.clear_category()
 	clear_map_markers()
 	init_category_tree()
@@ -526,7 +528,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 		if texture_path == null:
 			print("Warning: No texture found in " , full_category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		var full_texture_path = self.marker_file_dir.get_current_dir() + texture_path.get_path()
 		gen_new_path(path_points, full_texture_path, path, category_item)
 
 	for icon in category.get_icon():
@@ -539,7 +541,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 		if texture_path == null:
 			print("Warning: No texture found in " , full_category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		var full_texture_path = self.marker_file_dir.get_current_dir() + texture_path.get_path()
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 	
 	for category_child in category.get_children():
@@ -661,7 +663,7 @@ func on_change_made():
 
 func auto_saving():
 	print("Auto save")
-	var packed_bytes = self.Waypoint_data.to_bytes()
+	var packed_bytes = self.waypoint_data.to_bytes()
 	if packed_bytes.size() > 0:
 		var file = File.new()
 		file.open(self.auto_save_file_path, file.WRITE)
@@ -669,7 +671,7 @@ func auto_saving():
 
 func manual_save():
 	print("Saving")
-	var packed_bytes = self.Waypoint_data.to_bytes()
+	var packed_bytes = self.waypoint_data.to_bytes()
 	if packed_bytes.size() > 0:
 		var file = File.new()
 		file.open(self.marker_file_path, file.WRITE)
@@ -855,10 +857,7 @@ func _on_SavePath_pressed():
 # TODO: This function will be used when exporting packs
 ################################################################################
 func _on_SaveDialog_file_selected(path):
-	self.markerdata[str(self.map_id)] = data_from_renderview()
-	var save_game = File.new()
-	save_game.open(path, File.WRITE)
-	save_game.store_string(JSON.print(self.markerdata))
+	pass
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
