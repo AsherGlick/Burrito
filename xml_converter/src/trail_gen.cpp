@@ -34,9 +34,6 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     else if (attributename == "animationspeed") {
         xml_attribute_to_float(attribute, errors, &(this->animation_speed), &(this->animation_speed_is_set));
     }
-    else if (attributename == "canfade") {
-        xml_attribute_to_bool(attribute, errors, &(this->can_fade), &(this->can_fade_is_set));
-    }
     else if (attributename == "type") {
         xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
     }
@@ -63,6 +60,9 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
     }
     else if (attributename == "cull") {
         xml_attribute_to_cull_chirality(attribute, errors, &(this->cull_chirality), &(this->cull_chirality_is_set));
+    }
+    else if (attributename == "canfade") {
+        inverted_xml_attribute_to_bool(attribute, errors, &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
     else if (attributename == "fadefar") {
         xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
@@ -165,9 +165,6 @@ vector<string> Trail::as_xml() const {
     if (this->animation_speed_is_set) {
         xml_node_contents.push_back(float_to_xml_attribute("AnimSpeed", &this->animation_speed));
     }
-    if (this->can_fade_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("CanFade", &this->can_fade));
-    }
     if (this->category_is_set) {
         xml_node_contents.push_back(marker_category_to_xml_attribute("Type", &this->category));
     }
@@ -179,6 +176,9 @@ vector<string> Trail::as_xml() const {
     }
     if (this->cull_chirality_is_set) {
         xml_node_contents.push_back(cull_chirality_to_xml_attribute("Cull", &this->cull_chirality));
+    }
+    if (this->disable_player_cutout_is_set) {
+        xml_node_contents.push_back(bool_to_inverted_xml_attribute("CanFade", &this->disable_player_cutout));
     }
     if (this->distance_fade_end_is_set) {
         xml_node_contents.push_back(float_to_xml_attribute("FadeFar", &this->distance_fade_end));
@@ -258,10 +258,6 @@ waypoint::Trail Trail::as_protobuf() const {
         std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_animation_speed(val); };
         float_to_proto(this->animation_speed, setter);
     }
-    if (this->can_fade_is_set) {
-        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_can_fade(val); };
-        bool_to_proto(this->can_fade, setter);
-    }
     if (this->category_is_set) {
         std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_category(val); };
         do_nothing(this->category, setter);
@@ -273,6 +269,10 @@ waypoint::Trail Trail::as_protobuf() const {
     if (this->cull_chirality_is_set) {
         std::function<void(waypoint::CullChirality)> setter = [&proto_trail](waypoint::CullChirality val) { proto_trail.set_cull_chirality(val); };
         cull_chirality_to_proto(this->cull_chirality, setter);
+    }
+    if (this->disable_player_cutout_is_set) {
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_disable_player_cutout(val); };
+        bool_to_proto(this->disable_player_cutout, setter);
     }
     if (this->distance_fade_end_is_set) {
         std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_distance_fade_end(val); };
@@ -367,9 +367,6 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
     if (proto_trail.animation_speed() != 0) {
         proto_to_float(proto_trail.animation_speed(), &(this->animation_speed), &(this->animation_speed_is_set));
     }
-    if (proto_trail.can_fade() != 0) {
-        proto_to_bool(proto_trail.can_fade(), &(this->can_fade), &(this->can_fade_is_set));
-    }
     if (proto_trail.category() != 0) {
         do_nothing(proto_trail.category(), &(this->category), &(this->category_is_set));
     }
@@ -378,6 +375,9 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail) {
     }
     if (proto_trail.cull_chirality() != 0) {
         proto_to_cull_chirality(proto_trail.cull_chirality(), &(this->cull_chirality), &(this->cull_chirality_is_set));
+    }
+    if (proto_trail.disable_player_cutout() != 0) {
+        proto_to_bool(proto_trail.disable_player_cutout(), &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
     if (proto_trail.distance_fade_end() != 0) {
         proto_to_float(proto_trail.distance_fade_end(), &(this->distance_fade_end), &(this->distance_fade_end_is_set));

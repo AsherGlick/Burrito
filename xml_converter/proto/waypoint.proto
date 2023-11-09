@@ -29,7 +29,7 @@ message Icon {
 
     fixed32 achievement_bit = 16;
     int32 achievement_id = 17;
-    bool can_fade = 19;
+    bool disable_player_cutout = 19;
     int32 minimum_size_on_screen = 20;
     int32 map_display_size = 21;
     int32 maximum_size_on_screen = 22;
@@ -67,7 +67,7 @@ message Trail {
 
     fixed32 achievement_bit = 16;
     int32 achievement_id = 17;
-    bool can_fade = 19; 
+    bool disable_player_cutout = 19;
     bool is_wall = 20;
     float scale = 21;
     RGBAColor rgba_color = 22;

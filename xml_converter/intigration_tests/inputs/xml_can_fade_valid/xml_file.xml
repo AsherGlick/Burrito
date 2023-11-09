@@ -5,9 +5,7 @@
 	<POIs>
 		<POI CanFade="false" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
 		<POI CanFade="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
-		<!-- TODO: This value should be elided in the output, but it is not currently
-		so we are ignoring the test instead of wriitng a bad test
-		<POI CanFade="true" Type="mycategory"/>
-		<POI CanFade="1" Type="mycategory"/> -->
+		<POI CanFade="true" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI CanFade="1" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
 	</POIs>
 </OverlayData>
