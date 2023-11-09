@@ -1,7 +1,7 @@
 from jsonschema import validate  # type:ignore
 from jsonschema.exceptions import ValidationError  # type:ignore
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple, Final
+from typing import Any, Dict, List, Tuple, Final, Set
 import os
 import markdown
 from dataclasses import dataclass
@@ -114,10 +114,11 @@ class FieldRow:
 class Generator:
     data: Dict[str, Document] = {}
 
-    def delete_generated_docs(self, dir_path: str) -> None:
+    def delete_generated_docs(self, dir_path: str, skip: List[str] = []) -> None:
+        excluded_files: Set[str] = set(skip)
         for filepath in os.listdir(dir_path):
             filepath = os.path.join(dir_path, filepath)
-            if filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith(".html"):
+            if (filepath.endswith("_gen.hpp") or filepath.endswith("_gen.cpp") or filepath.endswith(".html")) and filepath not in excluded_files:
                 os.remove(filepath)
 
     def load_input_doc(self, dir_path: str) -> None:
@@ -373,10 +374,11 @@ def main() -> None:
 
     generator.delete_generated_docs("../web_docs")
     generator.delete_generated_docs("../src/")
-    generator.delete_generated_docs("../src/attribute")
     generator.write_webdocs("../web_docs/")
     write_cpp_classes("../src/", generator.data)
-    write_attribute("../src/attribute", generator.data)
+
+    written_attributes = write_attribute("../src/attribute", generator.data)
+    generator.delete_generated_docs("../src/attribute", skip=written_attributes)
 
 
 main()
