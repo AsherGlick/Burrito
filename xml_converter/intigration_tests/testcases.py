@@ -72,4 +72,10 @@ testcases: List[Testcase] = [
         expected_output_xml_path="./expected_outputs/xml_achievement_bitmask_valid",
         expected_output_proto_path="./expected_outputs/proto_achievement_bitmask_valid",
     ),
+    Testcase(
+        name="achievement_id",
+        xml_input_paths=["./inputs/xml_achievement_id"],
+        expected_output_xml_path="./expected_outputs/xml_achievement_id",
+        expected_output_proto_path="./expected_outputs/proto_achievement_id",
+    ),
 ]
