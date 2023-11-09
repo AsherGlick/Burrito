@@ -63,6 +63,13 @@ testcases: List[Testcase] = [
             './inputs/xml_mount_filter_invalid/xml_file.xml',
             '9 |        <POI Mount="Raptor,NotAMount,Springer" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />',
             '  |                    ^^^^^^^^^^^^^^^^^^^^^^^^^',
-            ]
+        ]
+    ),
+
+    Testcase(
+        name="achievement_bitmask",
+        xml_input_paths=["./inputs/xml_achievement_bitmask_valid"],
+        expected_output_xml_path="./expected_outputs/xml_achievement_bitmask_valid",
+        expected_output_proto_path="./expected_outputs/proto_achievement_bitmask_valid",
     ),
 ]
