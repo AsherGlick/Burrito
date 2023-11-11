@@ -7,7 +7,6 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
 
-
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////

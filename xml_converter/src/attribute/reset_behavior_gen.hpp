@@ -6,7 +6,6 @@
 
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../state_structs/xml_parse_state.hpp"
-
 #include "waypoint.pb.h"
 
 class XMLError;

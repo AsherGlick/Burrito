@@ -7,10 +7,10 @@
 #include <string>
 #include <vector>
 
+#include "../packaging_xml.hpp"
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "waypoint.pb.h"
-#include "../packaging_xml.hpp"
 
 using namespace std;
 
@@ -29,7 +29,7 @@ void xml_attribute_to_trail_data(
     bool* is_map_id_set) {
     TrailData trail_data;
     string trail_data_relative_path = get_attribute_value(input);
-    if (state->xml_filedir  == "") {
+    if (state->xml_filedir == "") {
         throw "Error: Marker pack base directory is an empty string";
     }
     if (trail_data_relative_path == "") {
