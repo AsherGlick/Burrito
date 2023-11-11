@@ -10,6 +10,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "waypoint.pb.h"
+#include "../packaging_xml.hpp"
 
 using namespace std;
 
@@ -21,14 +22,14 @@ using namespace std;
 void xml_attribute_to_trail_data(
     rapidxml::xml_attribute<>* input,
     vector<XMLError*>* errors,
-    string base_dir,
+    XMLParseState* state,
     TrailData* value,
     bool* is_set,
     int* map_id_value,
     bool* is_map_id_set) {
     TrailData trail_data;
     string trail_data_relative_path = get_attribute_value(input);
-    if (base_dir == "") {
+    if (state->xml_filedir  == "") {
         throw "Error: Marker pack base directory is an empty string";
     }
     if (trail_data_relative_path == "") {
@@ -37,7 +38,7 @@ void xml_attribute_to_trail_data(
     }
 
     ifstream trail_data_file;
-    string trail_path = base_dir + "/" + trail_data_relative_path;
+    string trail_path = state->xml_filedir + "/" + trail_data_relative_path;
     trail_data_file.open(trail_path, ios::in | ios::binary);
     if (!trail_data_file.good()) {
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));

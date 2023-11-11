@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/xml_parse_state.hpp"
+
 class XMLError;
 namespace waypoint {
 class EulerRotation;
@@ -23,6 +25,7 @@ class EulerRotation {
 void xml_attribute_to_euler_rotation(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     EulerRotation* value,
     bool* is_set);
 

@@ -7,20 +7,26 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
 
+
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// SERIALIZE ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, int depth = 0) {
+void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, string base_dir, int depth = 0) {
     if (get_node_name(node) == "MarkerCategory") {
         string name = lowercase(find_attribute_value(node, "name"));
 
+        XMLParseState state = {
+            base_dir,
+            marker_categories,
+        };
+
         Category* this_category = &(*marker_categories)[name];
-        this_category->init_from_xml(node, errors);
+        this_category->init_from_xml(node, errors, &state);
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
-            parse_marker_categories(child_node, &(this_category->children), errors, depth + 1);
+            parse_marker_categories(child_node, &(this_category->children), errors, base_dir, depth + 1);
         }
     }
     else {
@@ -74,6 +80,11 @@ Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker
 vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors, string base_dir) {
     vector<Parseable*> markers;
 
+    XMLParseState state = {
+        base_dir,
+        marker_categories,
+    };
+
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "POI") {
             Category* default_category = get_category(node, marker_categories, errors);
@@ -84,7 +95,7 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
                 *icon = default_category->default_icon;
             }
 
-            icon->init_from_xml(node, errors);
+            icon->init_from_xml(node, errors, &state);
             markers.push_back(icon);
         }
         else if (get_node_name(node) == "Trail") {
@@ -96,7 +107,7 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
                 *trail = default_category->default_trail;
             }
 
-            trail->init_from_xml(node, errors, base_dir);
+            trail->init_from_xml(node, errors, &state);
             markers.push_back(trail);
         }
         else {
@@ -131,7 +142,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
-            parse_marker_categories(node, marker_categories, &errors);
+            parse_marker_categories(node, marker_categories, &errors, base_dir);
         }
         else if (get_node_name(node) == "POIs") {
             vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors, base_dir);

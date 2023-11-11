@@ -19,6 +19,7 @@ using namespace std;
 void xml_attribute_to_int(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     int* value,
     bool* is_set) {
     try {

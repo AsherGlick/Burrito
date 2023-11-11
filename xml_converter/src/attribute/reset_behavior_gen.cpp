@@ -15,6 +15,7 @@ using namespace std;
 void xml_attribute_to_reset_behavior(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     ResetBehavior* value,
     bool* is_set) {
     ResetBehavior reset_behavior;

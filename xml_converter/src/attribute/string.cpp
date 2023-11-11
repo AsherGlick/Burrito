@@ -18,6 +18,7 @@ using namespace std;
 void xml_attribute_to_string(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     string* value,
     bool* is_set) {
     *value = get_attribute_value(input);

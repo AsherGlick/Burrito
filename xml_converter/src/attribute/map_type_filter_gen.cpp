@@ -15,6 +15,7 @@ using namespace std;
 void xml_attribute_to_map_type_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     MapTypeFilter* value,
     bool* is_set) {
     MapTypeFilter map_type_filter;

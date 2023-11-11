@@ -15,6 +15,7 @@ using namespace std;
 void xml_attribute_to_unique_id(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     UniqueId* value,
     bool* is_set) {
     string base64;
