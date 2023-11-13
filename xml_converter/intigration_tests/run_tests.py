@@ -51,9 +51,9 @@ def run_xml_converter(
 
 def compare_text_files(file_path1: str, file_path2: str) -> List[str]:
     with open(file_path1, 'r') as file1:
-        content1 = file1.readlines()
+        content1 = file1.read().split("\n")
     with open(file_path2, 'r') as file2:
-        content2 = file2.readlines()
+        content2 = file2.read().split("\n")
 
     diff = list(difflib.unified_diff(content1, content2, fromfile=file_path1, tofile=file_path2, lineterm=""))
 
@@ -181,7 +181,7 @@ def main() -> None:
             if len_diff(xml_diff) != 0:
                 print(f"XML output was incorrect for test {testcase.name}")
                 for line in xml_diff:
-                    print(line, end="")
+                    print(line)
                 all_tests_passed = False
 
         if testcase.expected_output_proto_path is not None:
