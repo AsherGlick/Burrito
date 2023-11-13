@@ -8,7 +8,7 @@
 #include "icon_gen.hpp"
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
-#include "state_structs/xml_parse_state.hpp"
+#include "state_structs/xml_reader_state.hpp"
 #include "trail_gen.hpp"
 #include "waypoint.pb.h"
 
@@ -30,10 +30,10 @@ class Category : public Parseable {
     Icon default_icon;
     Trail default_trail;
 
-    void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLParseState* state);
+    void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLReaderState* state);
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
-    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLParseState* state);
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
     waypoint::Category as_protobuf() const;
     void parse_protobuf(waypoint::Category proto_category);
 };

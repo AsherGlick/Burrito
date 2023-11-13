@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_cull_chirality(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     CullChirality* value,
     bool* is_set) {
     CullChirality cull_chirality;

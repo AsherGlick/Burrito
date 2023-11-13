@@ -18,7 +18,7 @@ using namespace std;
 string Category::classname() {
     return "MarkerCategory";
 }
-void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLParseState* state) {
+void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLReaderState* state) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
         bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
         bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors, state);
@@ -33,7 +33,7 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* erro
     }
 }
 
-bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLParseState* state) {
+bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLReaderState* state) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "defaulttoggle") {

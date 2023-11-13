@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_mount_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     MountFilter* value,
     bool* is_set) {
     MountFilter mount_filter;
