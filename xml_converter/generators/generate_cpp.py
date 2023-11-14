@@ -405,8 +405,9 @@ def generate_cpp_variable_data(
 #
 # Creates the attribute files for attributes that contain multiple values
 ############################################################################
-def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
+def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[str]:
     print("Writing attributes")
+    files_written: List[str] = []
     os.makedirs(output_directory, exist_ok=True)
 
     file_loader = FileSystemLoader('cpp_templates')
@@ -551,18 +552,24 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
         else:
             continue
 
-        with open(os.path.join(output_directory, attribute_name + "_gen.hpp"), 'w') as f:
-            f.write(env.get_template("attribute_template.hpp").render(
+        hpp_filepath = os.path.join(output_directory, attribute_name + "_gen.hpp")
+        write_if_different(
+            hpp_filepath,
+            env.get_template("attribute_template.hpp").render(
                 attribute_name=attribute_name,
                 attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
                 class_name=capitalize(attribute_name, delimiter=""),
                 type=metadata[filepath]['type'],
                 proto_field_cpp_type=proto_field_type,
                 proto_field_cpp_type_prototype=proto_field_prototype,
-            ))
+            )
+        )
+        files_written.append(hpp_filepath)
 
-        with open(os.path.join(output_directory, attribute_name + "_gen.cpp"), 'w') as f:
-            f.write(template[metadata[filepath]['type']].render(
+        cpp_filepath = os.path.join(output_directory, attribute_name + "_gen.cpp")
+        write_if_different(
+            cpp_filepath,
+            template[metadata[filepath]['type']].render(
                 attribute_name=attribute_name,
                 # TODO: Should this attribute_variables list be sorted? The hpp one is.
                 attribute_variables=attribute_variables,
@@ -571,7 +578,29 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> None:
                 xml_bundled_components=xml_bundled_components,
                 proto_field_cpp_type=proto_field_type,
                 proto_field_cpp_type_prototype=proto_field_prototype,
-            ))
+            )
+        )
+        files_written.append(cpp_filepath)
+
+    return files_written
+
+
+################################################################################
+# write_if_different
+#
+# Writes a file, but only writes it if the file contents is different so that
+# no modified timestamps get updated on files that are not changed.
+################################################################################
+def write_if_different(path: str, contents: str) -> None:
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            data = f.read()
+    else:
+        data = ""
+
+    if data != contents:
+        with open(path, "w") as f:
+            f.write(contents)
 
 
 def get_attribute_variable_key(attribute_variable: AttributeVariable) -> str:
