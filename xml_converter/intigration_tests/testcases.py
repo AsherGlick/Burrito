@@ -84,4 +84,10 @@ testcases: List[Testcase] = [
         expected_output_xml_path="./expected_outputs/xml_is_wall",
         expected_output_proto_path="./expected_outputs/proto_is_wall",
     ),
+    Testcase(
+        name="festival_filter",
+        xml_input_paths=["./inputs/xml_festival_filter"],
+        expected_output_xml_path="./expected_outputs/xml_festival_filter",
+        expected_output_proto_path="./expected_outputs/proto_festival_filter",
+    ),
 ]
