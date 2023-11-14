@@ -48,8 +48,11 @@ var x11_window_id_burrito: int
 var is_transient:bool = false
 
 # Variables that store informations about ui scaling
+# This array holds the width of one menue item for every ui-scale
 var icon_size_preset = [26.5, 29.5, 33.0, 36.0] # 0=small; 1=normal; 2=large; 3=larger
-var button_position = 11 # Place the main menue button on 11th position
+# The position indicates how many buttons will be there.
+# e.g. if the native ui has 10 buttons we want to be on position 11.
+var button_position = 11 # Place the main menue button on n..th position
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -324,8 +327,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	# Calculations to dynamically place the main menue button
-	# First we will calculate how much space every button needs depending on the actual ui scale.
-	# Then we can calculate how many buttons could fit on the screen and place our button at given position.
+	# The left- and right-margin can be calculated from the ui-scale combined with the preset icon width and the desired position.
+	# set_minimal_mouse_block() should be called only once, if it is called while any burrito windows is open it will become unclickable.
+	# TODO: Check if the calculated position is inside the window.
 	if $Control/GlobalMenuButton.margin_left != icon_size_preset[identity["uisz"]] * button_position:
 		$Control/GlobalMenuButton.margin_left = icon_size_preset[identity["uisz"]] * button_position
 		$Control/GlobalMenuButton.margin_right = (icon_size_preset[identity["uisz"]] * (button_position + 1))
