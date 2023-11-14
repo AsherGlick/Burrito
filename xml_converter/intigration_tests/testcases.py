@@ -107,5 +107,11 @@ testcases: List[Testcase] = [
         xml_input_paths=["./inputs/xml_map_type_filter"],
         expected_output_xml_path="./expected_outputs/xml_map_type_filter",
         expected_output_proto_path="./expected_outputs/proto_map_type_filter",
-    )
+    ),
+    Testcase(
+        name="profession_filter",
+        xml_input_paths=["./inputs/xml_profession_filter"],
+        expected_output_xml_path="./expected_outputs/xml_profession_filter",
+        expected_output_proto_path="./expected_outputs/proto_profession_filter",
+    ),
 ]
