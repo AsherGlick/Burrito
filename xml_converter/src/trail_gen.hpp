@@ -27,10 +27,10 @@ class Trail : public Parseable {
     int achievement_bitmask;
     int achievement_id;
     float animation_speed;
-    bool can_fade;
     MarkerCategory category;
     Color color;
     CullChirality cull_chirality;
+    bool disable_player_cutout;
     float distance_fade_end;
     float distance_fade_start;
     FestivalFilter festival_filter;
@@ -54,10 +54,10 @@ class Trail : public Parseable {
     bool achievement_bitmask_is_set = false;
     bool achievement_id_is_set = false;
     bool animation_speed_is_set = false;
-    bool can_fade_is_set = false;
     bool category_is_set = false;
     bool color_is_set = false;
     bool cull_chirality_is_set = false;
+    bool disable_player_cutout_is_set = false;
     bool distance_fade_end_is_set = false;
     bool distance_fade_start_is_set = false;
     bool festival_filter_is_set = false;

@@ -40,9 +40,6 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "bounceheight") {
         xml_attribute_to_float(attribute, errors, &(this->bounce_height), &(this->bounce_height_is_set));
     }
-    else if (attributename == "canfade") {
-        xml_attribute_to_bool(attribute, errors, &(this->can_fade), &(this->can_fade_is_set));
-    }
     else if (attributename == "type") {
         xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
     }
@@ -78,6 +75,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     }
     else if (attributename == "cull") {
         xml_attribute_to_cull_chirality(attribute, errors, &(this->cull_chirality), &(this->cull_chirality_is_set));
+    }
+    else if (attributename == "canfade") {
+        inverted_xml_attribute_to_bool(attribute, errors, &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
     else if (attributename == "fadefar") {
         xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
@@ -273,9 +273,6 @@ vector<string> Icon::as_xml() const {
     if (this->bounce_height_is_set) {
         xml_node_contents.push_back(float_to_xml_attribute("BounceHeight", &this->bounce_height));
     }
-    if (this->can_fade_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("CanFade", &this->can_fade));
-    }
     if (this->category_is_set) {
         xml_node_contents.push_back(marker_category_to_xml_attribute("Type", &this->category));
     }
@@ -293,6 +290,9 @@ vector<string> Icon::as_xml() const {
     }
     if (this->cull_chirality_is_set) {
         xml_node_contents.push_back(cull_chirality_to_xml_attribute("Cull", &this->cull_chirality));
+    }
+    if (this->disable_player_cutout_is_set) {
+        xml_node_contents.push_back(bool_to_inverted_xml_attribute("CanFade", &this->disable_player_cutout));
     }
     if (this->distance_fade_end_is_set) {
         xml_node_contents.push_back(float_to_xml_attribute("FadeFar", &this->distance_fade_end));
@@ -432,10 +432,6 @@ waypoint::Icon Icon::as_protobuf() const {
         std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_height(val); };
         float_to_proto(this->bounce_height, setter);
     }
-    if (this->can_fade_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_can_fade(val); };
-        bool_to_proto(this->can_fade, setter);
-    }
     if (this->category_is_set) {
         std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_category(val); };
         do_nothing(this->category, setter);
@@ -455,6 +451,10 @@ waypoint::Icon Icon::as_protobuf() const {
     if (this->cull_chirality_is_set) {
         std::function<void(waypoint::CullChirality)> setter = [&proto_icon](waypoint::CullChirality val) { proto_icon.set_cull_chirality(val); };
         cull_chirality_to_proto(this->cull_chirality, setter);
+    }
+    if (this->disable_player_cutout_is_set) {
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_disable_player_cutout(val); };
+        bool_to_proto(this->disable_player_cutout, setter);
     }
     if (this->distance_fade_end_is_set) {
         std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_distance_fade_end(val); };
@@ -618,9 +618,6 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
     if (proto_icon.trigger().bounce_height() != 0) {
         proto_to_float(proto_icon.trigger().bounce_height(), &(this->bounce_height), &(this->bounce_height_is_set));
     }
-    if (proto_icon.can_fade() != 0) {
-        proto_to_bool(proto_icon.can_fade(), &(this->can_fade), &(this->can_fade_is_set));
-    }
     if (proto_icon.category() != 0) {
         do_nothing(proto_icon.category(), &(this->category), &(this->category_is_set));
     }
@@ -635,6 +632,9 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon) {
     }
     if (proto_icon.cull_chirality() != 0) {
         proto_to_cull_chirality(proto_icon.cull_chirality(), &(this->cull_chirality), &(this->cull_chirality_is_set));
+    }
+    if (proto_icon.disable_player_cutout() != 0) {
+        proto_to_bool(proto_icon.disable_player_cutout(), &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
     if (proto_icon.distance_fade_end() != 0) {
         proto_to_float(proto_icon.distance_fade_end(), &(this->distance_fade_end), &(this->distance_fade_end_is_set));

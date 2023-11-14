@@ -3,7 +3,9 @@
 </MarkerCategory>
 
 <POIs>
-<POI  CanFade="false" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
-<POI  CanFade="false" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" CanFade="false" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" CanFade="false" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" CanFade="true" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" CanFade="true" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
 </POIs>
 </OverlayData>

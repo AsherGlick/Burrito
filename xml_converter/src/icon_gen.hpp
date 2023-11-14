@@ -32,12 +32,12 @@ class Icon : public Parseable {
     float bounce_delay;
     float bounce_duration;
     float bounce_height;
-    bool can_fade;
     MarkerCategory category;
     Color color;
     std::string copy_clipboard;
     std::string copy_message;
     CullChirality cull_chirality;
+    bool disable_player_cutout;
     float distance_fade_end;
     float distance_fade_start;
     EulerRotation euler_rotation;
@@ -79,12 +79,12 @@ class Icon : public Parseable {
     bool bounce_delay_is_set = false;
     bool bounce_duration_is_set = false;
     bool bounce_height_is_set = false;
-    bool can_fade_is_set = false;
     bool category_is_set = false;
     bool color_is_set = false;
     bool copy_clipboard_is_set = false;
     bool copy_message_is_set = false;
     bool cull_chirality_is_set = false;
+    bool disable_player_cutout_is_set = false;
     bool distance_fade_end_is_set = false;
     bool distance_fade_start_is_set = false;
     bool euler_rotation_is_set = false;
