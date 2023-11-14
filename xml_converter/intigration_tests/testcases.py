@@ -85,10 +85,28 @@ testcases: List[Testcase] = [
         expected_output_proto_path="./expected_outputs/proto_is_wall",
     ),
     Testcase(
+        name="fade",
+        xml_input_paths=["./inputs/xml_fade"],
+        expected_output_xml_path="./expected_outputs/xml_fade",
+        expected_output_proto_path="./expected_outputs/proto_fade",
+    ),
+    Testcase(
         name="festival_filter",
         xml_input_paths=["./inputs/xml_festival_filter"],
         expected_output_xml_path="./expected_outputs/xml_festival_filter",
         expected_output_proto_path="./expected_outputs/proto_festival_filter",
+    ),
+    Testcase(
+        name="map_id",
+        xml_input_paths=["./inputs/xml_map_id"],
+        expected_output_xml_path="./expected_outputs/xml_map_id",
+        expected_output_proto_path="./expected_outputs/proto_map_id",
+    ),
+    Testcase(        
+        name="map_type_filter",
+        xml_input_paths=["./inputs/xml_map_type_filter"],
+        expected_output_xml_path="./expected_outputs/xml_map_type_filter",
+        expected_output_proto_path="./expected_outputs/proto_map_type_filter",
     ),
     Testcase(
         name="profession_filter",
