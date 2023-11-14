@@ -47,6 +47,10 @@ var taco_parser: TacoParser
 var x11_window_id_burrito: int
 var is_transient:bool = false
 
+# Variables that store informations about ui scaling
+var icon_size_preset = [26.5, 29.5, 33.0, 36.0] # 0=small; 1=normal; 2=large; 3=larger
+var button_position = 11 # Place the main menue button on 11th position
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
@@ -318,6 +322,14 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# TODO: after looking back at this it has become obvious this is just degrees
 	# vs radians. 70deg = 1.22173rad and 25deg = 0.4363323rad. We should redo
 	# this to just be a radian to degree conversion.
+
+	# Calculations to dynamically place the main menue button
+	# First we will calculate how much space every button needs depending on the actual ui scale.
+	# Then we can calculate how many buttons could fit on the screen and place our button at given position.
+	if $Control/GlobalMenuButton.margin_left != icon_size_preset[identity["uisz"]] * button_position:
+		$Control/GlobalMenuButton.margin_left = icon_size_preset[identity["uisz"]] * button_position
+		$Control/GlobalMenuButton.margin_right = (icon_size_preset[identity["uisz"]] * (button_position + 1))
+		set_minimal_mouse_block()
 
 	if self.map_id != old_map_id:
 		print("New Map")
