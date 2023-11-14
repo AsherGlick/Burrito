@@ -19,128 +19,128 @@ string Trail::classname() {
     return "Trail";
 }
 
-bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
+bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLParseState* state) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
-        xml_attribute_to_int(attribute, errors, &(this->achievement_bitmask), &(this->achievement_bitmask_is_set));
+        xml_attribute_to_int(attribute, errors, state, &(this->achievement_bitmask), &(this->achievement_bitmask_is_set));
     }
     else if (attributename == "achievementid") {
-        xml_attribute_to_int(attribute, errors, &(this->achievement_id), &(this->achievement_id_is_set));
+        xml_attribute_to_int(attribute, errors, state, &(this->achievement_id), &(this->achievement_id_is_set));
     }
     else if (attributename == "animspeed") {
-        xml_attribute_to_float(attribute, errors, &(this->animation_speed), &(this->animation_speed_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->animation_speed), &(this->animation_speed_is_set));
     }
     else if (attributename == "animationspeed") {
-        xml_attribute_to_float(attribute, errors, &(this->animation_speed), &(this->animation_speed_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->animation_speed), &(this->animation_speed_is_set));
     }
     else if (attributename == "type") {
-        xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
+        xml_attribute_to_marker_category(attribute, errors, state, &(this->category), &(this->category_is_set));
     }
     else if (attributename == "category") {
-        xml_attribute_to_marker_category(attribute, errors, &(this->category), &(this->category_is_set));
+        xml_attribute_to_marker_category(attribute, errors, state, &(this->category), &(this->category_is_set));
     }
     else if (attributename == "color") {
-        xml_attribute_to_color(attribute, errors, &(this->color), &(this->color_is_set));
+        xml_attribute_to_color(attribute, errors, state, &(this->color), &(this->color_is_set));
     }
     else if (attributename == "bhcolor") {
-        xml_attribute_to_color(attribute, errors, &(this->color), &(this->color_is_set));
+        xml_attribute_to_color(attribute, errors, state, &(this->color), &(this->color_is_set));
     }
     else if (attributename == "alpha") {
-        xml_attribute_to_float(attribute, errors, &(this->color.alpha), &(this->color_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->color.alpha), &(this->color_is_set));
     }
     else if (attributename == "blue") {
-        xml_attribute_to_float(attribute, errors, &(this->color.blue), &(this->color_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->color.blue), &(this->color_is_set));
     }
     else if (attributename == "green") {
-        xml_attribute_to_float(attribute, errors, &(this->color.green), &(this->color_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->color.green), &(this->color_is_set));
     }
     else if (attributename == "red") {
-        xml_attribute_to_float(attribute, errors, &(this->color.red), &(this->color_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->color.red), &(this->color_is_set));
     }
     else if (attributename == "cull") {
-        xml_attribute_to_cull_chirality(attribute, errors, &(this->cull_chirality), &(this->cull_chirality_is_set));
+        xml_attribute_to_cull_chirality(attribute, errors, state, &(this->cull_chirality), &(this->cull_chirality_is_set));
     }
     else if (attributename == "canfade") {
-        inverted_xml_attribute_to_bool(attribute, errors, &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
+        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
     else if (attributename == "fadefar") {
-        xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
     }
     else if (attributename == "distancefadeend") {
-        xml_attribute_to_float(attribute, errors, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
     }
     else if (attributename == "fadenear") {
-        xml_attribute_to_float(attribute, errors, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
     }
     else if (attributename == "distancefadestart") {
-        xml_attribute_to_float(attribute, errors, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
     }
     else if (attributename == "festival") {
-        xml_attribute_to_festival_filter(attribute, errors, &(this->festival_filter), &(this->festival_filter_is_set));
+        xml_attribute_to_festival_filter(attribute, errors, state, &(this->festival_filter), &(this->festival_filter_is_set));
     }
     else if (attributename == "guid") {
-        xml_attribute_to_unique_id(attribute, errors, &(this->guid), &(this->guid_is_set));
+        xml_attribute_to_unique_id(attribute, errors, state, &(this->guid), &(this->guid_is_set));
     }
     else if (attributename == "iswall") {
-        xml_attribute_to_bool(attribute, errors, &(this->is_wall), &(this->is_wall_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->is_wall), &(this->is_wall_is_set));
     }
     else if (attributename == "mapdisplaysize") {
-        xml_attribute_to_int(attribute, errors, &(this->map_display_size), &(this->map_display_size_is_set));
+        xml_attribute_to_int(attribute, errors, state, &(this->map_display_size), &(this->map_display_size_is_set));
     }
     else if (attributename == "mapid") {
-        xml_attribute_to_int(attribute, errors, &(this->map_id), &(this->map_id_is_set));
+        xml_attribute_to_int(attribute, errors, state, &(this->map_id), &(this->map_id_is_set));
     }
     else if (attributename == "maptype") {
-        xml_attribute_to_map_type_filter(attribute, errors, &(this->map_type_filter), &(this->map_type_filter_is_set));
+        xml_attribute_to_map_type_filter(attribute, errors, state, &(this->map_type_filter), &(this->map_type_filter_is_set));
     }
     else if (attributename == "mount") {
-        xml_attribute_to_mount_filter(attribute, errors, &(this->mount_filter), &(this->mount_filter_is_set));
+        xml_attribute_to_mount_filter(attribute, errors, state, &(this->mount_filter), &(this->mount_filter_is_set));
     }
     else if (attributename == "profession") {
-        xml_attribute_to_profession_filter(attribute, errors, &(this->profession_filter), &(this->profession_filter_is_set));
+        xml_attribute_to_profession_filter(attribute, errors, state, &(this->profession_filter), &(this->profession_filter_is_set));
     }
     else if (attributename == "ingamevisibility") {
-        xml_attribute_to_bool(attribute, errors, &(this->render_ingame), &(this->render_ingame_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->render_ingame), &(this->render_ingame_is_set));
     }
     else if (attributename == "bhingamevisibility") {
-        xml_attribute_to_bool(attribute, errors, &(this->render_ingame), &(this->render_ingame_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->render_ingame), &(this->render_ingame_is_set));
     }
     else if (attributename == "mapvisibility") {
-        xml_attribute_to_bool(attribute, errors, &(this->render_on_map), &(this->render_on_map_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "bhmapvisibility") {
-        xml_attribute_to_bool(attribute, errors, &(this->render_on_map), &(this->render_on_map_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "minimapvisibility") {
-        xml_attribute_to_bool(attribute, errors, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "bhminimapvisibility") {
-        xml_attribute_to_bool(attribute, errors, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "schedule") {
-        xml_attribute_to_string(attribute, errors, &(this->schedule), &(this->schedule_is_set));
+        xml_attribute_to_string(attribute, errors, state, &(this->schedule), &(this->schedule_is_set));
     }
     else if (attributename == "scheduleduration") {
-        xml_attribute_to_float(attribute, errors, &(this->schedule_duration), &(this->schedule_duration_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->schedule_duration), &(this->schedule_duration_is_set));
     }
     else if (attributename == "specialization") {
-        xml_attribute_to_specialization_filter(attribute, errors, &(this->specialization_filter), &(this->specialization_filter_is_set));
+        xml_attribute_to_specialization_filter(attribute, errors, state, &(this->specialization_filter), &(this->specialization_filter_is_set));
     }
     else if (attributename == "race") {
-        xml_attribute_to_species_filter(attribute, errors, &(this->species_filter), &(this->species_filter_is_set));
+        xml_attribute_to_species_filter(attribute, errors, state, &(this->species_filter), &(this->species_filter_is_set));
     }
     else if (attributename == "species") {
-        xml_attribute_to_species_filter(attribute, errors, &(this->species_filter), &(this->species_filter_is_set));
+        xml_attribute_to_species_filter(attribute, errors, state, &(this->species_filter), &(this->species_filter_is_set));
     }
     else if (attributename == "texture") {
-        xml_attribute_to_image(attribute, errors, &(this->texture), &(this->texture_is_set));
+        xml_attribute_to_image(attribute, errors, state, &(this->texture), &(this->texture_is_set));
     }
     else if (attributename == "traildata") {
-        xml_attribute_to_trail_data(attribute, errors, base_dir, &(this->trail_data), &(this->trail_data_is_set), &(this->map_id), &(this->map_id_is_set));
+        xml_attribute_to_trail_data(attribute, errors, state, &(this->trail_data), &(this->trail_data_is_set), &(this->map_id), &(this->map_id_is_set));
     }
     else if (attributename == "trailscale") {
-        xml_attribute_to_float(attribute, errors, &(this->trail_scale), &(this->trail_scale_is_set));
+        xml_attribute_to_float(attribute, errors, state, &(this->trail_scale), &(this->trail_scale_is_set));
     }
     else {
         return false;

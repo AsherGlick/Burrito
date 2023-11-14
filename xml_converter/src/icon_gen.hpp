@@ -20,6 +20,7 @@
 #include "attribute/unique_id.hpp"
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
+#include "state_structs/xml_parse_state.hpp"
 #include "waypoint.pb.h"
 
 class XMLError;
@@ -122,7 +123,7 @@ class Icon : public Parseable {
     bool trigger_range_is_set = false;
     virtual std::vector<std::string> as_xml() const;
     virtual std::string classname();
-    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, std::string base_dir = "");
+    bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLParseState* state);
     waypoint::Icon as_protobuf() const;
     void parse_protobuf(waypoint::Icon proto_icon);
     bool validate_attributes_of_type_marker_category();

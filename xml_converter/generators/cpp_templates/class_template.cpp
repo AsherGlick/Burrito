@@ -18,12 +18,12 @@ string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
 {% if cpp_class == "Category": %}
-    void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, string base_dir) {
+    void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLParseState* state) {
         for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
-            bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors);
-            bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors);
+            bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
+            bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors, state);
 
-            if (init_xml_attribute(attribute, errors, base_dir)) {
+            if (init_xml_attribute(attribute, errors, state)) {
             }
             else if (is_icon_value || is_trail_value) {
             }
@@ -34,13 +34,13 @@ string {{cpp_class}}::classname() {
     }
 {% endif %}
 
-bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
+bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLParseState* state) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_fields) %}
             {{ "if" if i == n == 0 else "else if" }} (attributename == "{{value}}") {
-                {{attribute_variable.deserialize_xml_function}}(attribute, errors, {% if attribute_variable.uses_file_path %}base_dir, {% endif %}&(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %});
+                {{attribute_variable.deserialize_xml_function}}(attribute, errors, state, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endfor %}
     {% endfor %}
