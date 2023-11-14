@@ -63,6 +63,8 @@ onready var minimap := $Control/MiniMap as Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	self.marker_packs.set_column_expand(1, false)
+	self.marker_packs.set_column_min_width(1, 24)
 	get_tree().get_root().set_transparent_background(true)
 	x11_fg = X11_FG.new()
 	taco_parser = TacoParser.new()
@@ -482,9 +484,9 @@ func init_category_tree():
 	self.marker_packs.clear()
 	var root : TreeItem
 	root = self.marker_packs.create_item()
-	root.set_text(0, "Markers available on current map")
-	root.set_selectable(0, false)
-	root.set_text(1, "Visible")
+	root.set_text(0, "Markers")
+	root.set_expand_right(0, true)
+
 
 
 func waypoint_categories_to_godot_nodes():
@@ -493,8 +495,8 @@ func waypoint_categories_to_godot_nodes():
 
 
 func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
-	var category_item = self.marker_packs.create_item(item)
-	if category.get_name() == "": 
+	var category_item: TreeItem = self.marker_packs.create_item(item)
+	if category.get_name() == "":
 		# If this is called, there is an error in the Waypoint data
 		category_item.set_text(0, "No name")
 		category_item.set_metadata(0, "")
@@ -507,6 +509,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 	category_item.set_tooltip(1, "Show/Hide")
 	category_item.set_editable(1, true)
 	category_item.set_collapsed(collapsed)
+	category_item.set_selectable(1, false)
 
 	for path in category.get_trail():
 		var path_points := PoolVector3Array()
@@ -534,7 +537,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 			continue
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
-	
+
 	for category_child in category.get_children():
 		_waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
 
@@ -542,7 +545,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 func apply_category_visibility_to_nodes(category_item: TreeItem):
 	Settings.local_category_data[category_item.get_metadata(0)] = {
 		"checked" : category_item.is_checked(1),
-	} 
+	}
 	Settings.save()
 	var temporary_cateogry_visibility_data = populate_update_dict(category_item, {})
 	update_node_visibility(temporary_cateogry_visibility_data, self.paths)
@@ -570,9 +573,9 @@ func update_node_visibility(cateogry_data, nodes):
 			if node.get_name() == "Path":
 				var index = node.get_index()
 				var route2d = self.minimap.get_child(index)
-				route2d.visible= node.visible 
+				route2d.visible= node.visible
 
-#Child visibility is contigent on all parents having permission 
+#Child visibility is contigent on all parents having permission
 func is_category_visible(category_item: TreeItem) -> bool:
 	if category_item == marker_packs.get_root():
 		return true
@@ -617,7 +620,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 		new_route.visible = is_category_visible(category_item)
 	else:
 		new_route.visible = false
-	
+
 	paths.add_child(new_route)
 
 	# Create a new 2D Path
@@ -634,7 +637,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	self.currently_active_path_2d = new_2d_path
 
 
-func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem): 
+func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem):
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position
@@ -697,7 +700,7 @@ func gen_adjustment_nodes():
 		if self.currently_active_category.get_metadata(0) == route.waypoint.get_category().get_name():
 			for i in range(route.get_point_count()):
 				var gizmo_position = route.get_point_position(i)
-			
+
 				# Simplistic cull to prevent nodes that are too far away to be
 				# visible from being created. Additional work can be done here
 				# if this is not enough of an optimization in the future.
@@ -839,7 +842,7 @@ func _on_NewPathPoint_pressed():
 
 
 ################################################################################
-# 
+#
 ################################################################################
 func _on_SavePath_pressed():
 	$Control/Dialogs/SaveDialog.show()

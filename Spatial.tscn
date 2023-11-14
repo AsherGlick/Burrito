@@ -601,7 +601,6 @@ disabled = true
 text = "Reverse Path Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
-visible = false
 margin_left = 592.0
 margin_top = 146.0
 margin_right = 981.0
@@ -756,26 +755,6 @@ margin_bottom = 336.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 
-[node name="MarkerPacks" type="WindowDialog" parent="Control/Dialogs"]
-margin_left = 280.0
-margin_top = 105.0
-margin_right = 751.0
-margin_bottom = 486.0
-resizable = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MarkerPacks" type="Tree" parent="Control/Dialogs/MarkerPacks"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = 47.0
-size_flags_vertical = 3
-columns = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="Spacer" type="Control" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 visible = false
 margin_top = 284.0
@@ -789,6 +768,25 @@ margin_top = 284.0
 margin_right = 384.0
 margin_bottom = 304.0
 text = "Load Lutris Profile"
+
+[node name="MarkerPacks" type="WindowDialog" parent="Control/Dialogs"]
+margin_left = 280.0
+margin_top = 105.0
+margin_right = 751.0
+margin_bottom = 486.0
+resizable = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarkerPacks" type="Tree" parent="Control/Dialogs/MarkerPacks"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Border" type="Control" parent="Control"]
 visible = false
@@ -913,9 +911,9 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath" to="." method="_on_SetActivePath_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection" to="." method="_on_ReversePathDirection_pressed"]
 [connection signal="hide" from="Control/Dialogs/SettingsDialog" to="." method="_on_NodeEditorDialog_hide"]
-[connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideSize" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumWidth" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumHeight" to="Control/Dialogs/SettingsDialog" method="save_settings"]
+[connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideSize" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideWidth" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideHeight" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/AutoLaunchBurritoLink" to="Control/Dialogs/SettingsDialog" method="save_settings"]
