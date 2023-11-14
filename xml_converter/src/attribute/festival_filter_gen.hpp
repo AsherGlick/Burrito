@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/xml_parse_state.hpp"
+
 class XMLError;
 namespace waypoint {
 class FestivalFilter;
@@ -27,6 +29,7 @@ class FestivalFilter {
 void xml_attribute_to_festival_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     FestivalFilter* value,
     bool* is_set);
 

@@ -18,12 +18,12 @@ using namespace std;
 string Category::classname() {
     return "MarkerCategory";
 }
-void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, string base_dir) {
+void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLParseState* state) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
-        bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors);
-        bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors);
+        bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
+        bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors, state);
 
-        if (init_xml_attribute(attribute, errors, base_dir)) {
+        if (init_xml_attribute(attribute, errors, state)) {
         }
         else if (is_icon_value || is_trail_value) {
         }
@@ -33,23 +33,23 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* erro
     }
 }
 
-bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, string base_dir) {
+bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLParseState* state) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "defaulttoggle") {
-        xml_attribute_to_bool(attribute, errors, &(this->default_visibility), &(this->default_visibility_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->default_visibility), &(this->default_visibility_is_set));
     }
     else if (attributename == "displayname") {
-        xml_attribute_to_string(attribute, errors, &(this->display_name), &(this->display_name_is_set));
+        xml_attribute_to_string(attribute, errors, state, &(this->display_name), &(this->display_name_is_set));
     }
     else if (attributename == "isseparator") {
-        xml_attribute_to_bool(attribute, errors, &(this->is_separator), &(this->is_separator_is_set));
+        xml_attribute_to_bool(attribute, errors, state, &(this->is_separator), &(this->is_separator_is_set));
     }
     else if (attributename == "name") {
-        xml_attribute_to_string(attribute, errors, &(this->name), &(this->name_is_set));
+        xml_attribute_to_string(attribute, errors, state, &(this->name), &(this->name_is_set));
     }
     else if (attributename == "tipdescription") {
-        xml_attribute_to_string(attribute, errors, &(this->tooltip_description), &(this->tooltip_description_is_set));
+        xml_attribute_to_string(attribute, errors, state, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
     else {
         return false;

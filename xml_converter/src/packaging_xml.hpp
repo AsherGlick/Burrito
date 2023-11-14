@@ -8,6 +8,7 @@
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
+#include "state_structs/xml_parse_state.hpp"
 
 void parse_xml_file(
     std::string xml_filepath,

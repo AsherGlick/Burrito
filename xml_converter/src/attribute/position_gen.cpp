@@ -14,6 +14,7 @@ using namespace std;
 void xml_attribute_to_position(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
+    XMLParseState* state,
     Position* value,
     bool* is_set) {
     Position position;

@@ -216,14 +216,15 @@ def generate_cpp_variable_data(
 
     cpp_includes.hpp_absolute_includes.add("string")
     cpp_includes.hpp_absolute_includes.add("vector")
+    cpp_includes.hpp_absolute_includes.add("functional")
     cpp_includes.hpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
     cpp_includes.hpp_relative_includes.add("parseable.hpp")
     cpp_includes.hpp_relative_includes.add("waypoint.pb.h")
+    cpp_includes.hpp_relative_includes.add("state_structs/xml_parse_state.hpp")
     cpp_includes.hpp_forward_declarations.add("XMLError")
 
     cpp_includes.cpp_absolute_includes.add("iosfwd")
     cpp_includes.cpp_absolute_includes.add("string")
-    cpp_includes.hpp_absolute_includes.add("functional")
     cpp_includes.cpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
     cpp_includes.cpp_relative_includes.add("string_helper.hpp")
     cpp_includes.cpp_relative_includes.add("rapid_helpers.hpp")
