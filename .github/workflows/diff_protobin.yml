@@ -70,6 +70,7 @@ jobs:
               "</details>",
             ].join("\n");
             
+            console.log(file)
 
             await github.rest.pulls.createReviewComment({
               owner: context.repo.owner,
