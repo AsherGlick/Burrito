@@ -120,4 +120,10 @@ testcases: List[Testcase] = [
         expected_output_xml_path="./expected_outputs/xml_specialization_filter",
         expected_output_proto_path="./expected_outputs/proto_specialization_filter",
     ),
+    Testcase(
+        name="species_filter",
+        xml_input_paths=["./inputs/xml_species_filter"],
+        expected_output_xml_path="./expected_outputs/xml_species_filter",
+        expected_output_proto_path="./expected_outputs/proto_species_filter",
+    ),
 ]
