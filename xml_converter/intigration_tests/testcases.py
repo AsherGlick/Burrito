@@ -114,4 +114,10 @@ testcases: List[Testcase] = [
         expected_output_xml_path="./expected_outputs/xml_profession_filter",
         expected_output_proto_path="./expected_outputs/proto_profession_filter",
     ),
+    Testcase(
+        name="animation_speed",
+        xml_input_paths=["./inputs/xml_animation_speed"],
+        expected_output_xml_path="./expected_outputs/xml_animation_speed",
+    ),
+
 ]
