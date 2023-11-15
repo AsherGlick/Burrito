@@ -114,4 +114,10 @@ testcases: List[Testcase] = [
         expected_output_xml_path="./expected_outputs/xml_profession_filter",
         expected_output_proto_path="./expected_outputs/proto_profession_filter",
     ),
+    Testcase(
+        name="cull_chirality",
+        xml_input_paths=["./inputs/xml_cull_chirality"],
+        expected_output_xml_path="./expected_outputs/xml_cull_chirality",
+        expected_output_proto_path="./expected_outputs/proto_cull_chirality",
+    ),
 ]
