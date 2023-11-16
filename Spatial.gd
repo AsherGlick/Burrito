@@ -48,6 +48,8 @@ var x11_window_id_burrito: int
 var is_transient:bool = false
 
 # Variables that store informations about ui scaling
+# The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
+var ui_size = 1
 # This array holds the width of one item for every ui-scale
 var icon_size_preset = [26.5, 29.5, 33.0, 36.0] # 0=small; 1=normal; 2=large; 3=larger
 # The position indicates how many buttons will be there.
@@ -330,9 +332,15 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# The left- and right-margin can be calculated from the ui-scale combined with the preset icon width and the desired position.
 	# set_minimal_mouse_block() should be called only once, if it is called while any burrito windows is open it will become unclickable.
 	# TODO: Check if the calculated position is inside the window.
-	if $Control/GlobalMenuButton.margin_left != icon_size_preset[identity["uisz"]] * button_position:
-		$Control/GlobalMenuButton.margin_left = icon_size_preset[identity["uisz"]] * button_position
-		$Control/GlobalMenuButton.margin_right = (icon_size_preset[identity["uisz"]] * (button_position + 1))
+
+	ui_size = identity["uisz"]
+	# If the value is outside of the expected range use the "normal" size.
+	if (ui_size < 0) or (ui_size > 3):
+		ui_size = 1
+
+	if $Control/GlobalMenuButton.margin_left != icon_size_preset[ui_size] * button_position:
+		$Control/GlobalMenuButton.margin_left = icon_size_preset[ui_size] * button_position
+		$Control/GlobalMenuButton.margin_right = (icon_size_preset[ui_size] * (button_position + 1))
 		set_minimal_mouse_block()
 
 	if self.map_id != old_map_id:
