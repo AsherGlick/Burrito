@@ -337,11 +337,13 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		ui_size = 1
 
 	var button_position_max = floor(OS.window_size.x / icon_size_preset[ui_size]) - 1
+	var button_margin_left = $Control/GlobalMenuButton.margin_left
 	# Make sure the expected position is inside the window.
 	if (button_position > button_position_max):
-		button_position = button_position_max
+		button_margin_left = icon_size_preset[ui_size] * button_position_max
+	else:
+		button_margin_left = icon_size_preset[ui_size] * button_position
 
-	var button_margin_left = icon_size_preset[ui_size] * button_position
 	if $Control/GlobalMenuButton.margin_left != button_margin_left:
 		$Control/GlobalMenuButton.margin_left = button_margin_left
 		$Control/GlobalMenuButton.margin_right = button_margin_left + icon_size_preset[ui_size]
