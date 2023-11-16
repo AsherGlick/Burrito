@@ -331,16 +331,20 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# Calculations to dynamically place the main icon/button
 	# The left- and right-margin can be calculated from the ui-scale combined with the preset icon width and the desired position.
 	# set_minimal_mouse_block() should be called only once, if it is called while any burrito windows is open it will become unclickable.
-	# TODO: Check if the calculated position is inside the window.
-
 	ui_size = identity["uisz"]
 	# If the value is outside of the expected range use the "normal" size.
 	if (ui_size < 0) or (ui_size > 3):
 		ui_size = 1
 
-	if $Control/GlobalMenuButton.margin_left != icon_size_preset[ui_size] * button_position:
-		$Control/GlobalMenuButton.margin_left = icon_size_preset[ui_size] * button_position
-		$Control/GlobalMenuButton.margin_right = (icon_size_preset[ui_size] * (button_position + 1))
+	var button_position_max = floor(OS.window_size.x / icon_size_preset[ui_size]) - 1
+	# Make sure the expected position is inside the window.
+	if (button_position > button_position_max):
+		button_position = button_position_max
+
+	var button_margin_left = icon_size_preset[ui_size] * button_position
+	if $Control/GlobalMenuButton.margin_left != button_margin_left:
+		$Control/GlobalMenuButton.margin_left = button_margin_left
+		$Control/GlobalMenuButton.margin_right = button_margin_left + icon_size_preset[ui_size]
 		set_minimal_mouse_block()
 
 	if self.map_id != old_map_id:
