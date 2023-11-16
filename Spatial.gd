@@ -51,10 +51,10 @@ var is_transient:bool = false
 # The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
 var ui_size = 1
 # This array holds the width of one item for every ui-scale
-var icon_size_preset = [26.5, 29.5, 33.0, 36.0] # 0=small; 1=normal; 2=large; 3=larger
+const icon_size_preset = [26.5, 29.5, 33.0, 36.0] # 0=small; 1=normal; 2=large; 3=larger
 # The position indicates how many buttons will be there.
 # e.g. if the native ui has 10 buttons we want to be on position 11.
-var button_position = 11 # Place the icon/button on n..th position
+const button_position = 11 # Place the icon/button on n..th position
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
