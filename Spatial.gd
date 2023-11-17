@@ -53,6 +53,7 @@ const path2d_scene = preload("res://Route2D.tscn")
 const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
+const PackDialog = preload("res://PackDialog.gd")
 
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
@@ -83,6 +84,8 @@ func _ready():
 
 	if (Settings.burrito_link_auto_launch_enabled):
 		launch_burrito_link()
+	
+	
 
 
 ################################################################################
@@ -634,7 +637,6 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 	var category_data = category_item.get_metadata(0)
 	category_data.category3d.add_icon(new_icon)
 
-
 # This function take all of the currently rendered objects and converts it into
 # the data format that is saved/loaded from.
 func data_from_renderview():
@@ -743,9 +745,6 @@ func clear_adjustment_nodes():
 func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
-
-func _on_FileDialog_file_selected(path):
-	pass
 
 func _on_Dialog_hide():
 	for dialog in $Control/Dialogs.get_children():
@@ -928,4 +927,8 @@ func _on_MarkersUI_cell_selected():
 func _on_MarkersUI_item_edited():
 	var category_item = self.markers_ui.get_edited()
 	apply_category_visibility_to_nodes(category_item)
+
+
+func _on_ImportPath_pressed():
+	$Control/Dialogs/FileDialog.show()
 
