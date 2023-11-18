@@ -9,5 +9,9 @@
 <Trail  AnimSpeed="0.000000" Type="mycategory"/>
 <Trail  AnimSpeed="3.140000" Type="mycategory"/>
 <Trail  AnimSpeed="123.456001" Type="mycategory"/>
+<Trail  AnimSpeed="-3.140000" Type="mycategory"/>
+<Trail  AnimSpeed="-123.456001" Type="mycategory"/>
+<Trail  AnimSpeed="-3.140000" Type="mycategory"/>
+<Trail  AnimSpeed="-123.456001" Type="mycategory"/>
 </POIs>
 </OverlayData>
