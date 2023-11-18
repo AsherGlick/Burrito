@@ -21,3 +21,4 @@ std::vector<uint8_t> base64_decode(std::string const&);
 
 std::string get_base_dir(std::string filepath);
 bool has_suffix(std::string const& fullString, std::string const& ending);
+void ensure_trailing_slash(std::string* directory_path);

@@ -287,3 +287,10 @@ bool has_suffix(std::string const& fullString, std::string const& ending) {
         return false;
     }
 }
+
+void ensure_trailing_slash(std::string* directory_path) {
+    if (!has_suffix(*directory_path , "/")) {
+        *directory_path += "/";
+    }
+    return;
+}
