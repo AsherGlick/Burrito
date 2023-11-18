@@ -165,7 +165,7 @@ jobs:
       - name: Download Godot
         # if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
-          wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
           unzip Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
           rm Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
 
@@ -183,7 +183,7 @@ jobs:
         run: |
           mkdir -v -p ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
 
-          wget -q https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
 
           unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz
           mv templates/* ~/.local/share/godot/templates/${GODOT_VERSION}.stable/
