@@ -151,7 +151,6 @@ void process_data(
         // TODO: This is wildly incorrect now because we might have a
         //       different output directory then output_split_waypoint_dir
         if (output_split_waypoint_dir != "") {
-
             ensure_trailing_slash(&output_split_waypoint_dir);
             move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
         }
