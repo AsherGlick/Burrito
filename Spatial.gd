@@ -502,7 +502,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 		category_item.set_metadata(0, "")
 		print("Category found with no name.")
 		return
-	category_item.set_text(0, category.get_display_name())
+	category_item.set_text(0, category.get_name())
 	category_item.set_metadata(0, full_category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 	category_item.set_checked(1, Settings.local_category_data.get(full_category_name, {}).get("checked", false))
@@ -564,7 +564,7 @@ func populate_update_dict(category_item: TreeItem, category_visibility_data):
 #Updates the visibilty of a node and all children.
 func update_node_visibility(cateogry_data, nodes):
 	for node in nodes.get_children():
-		var node_name = node.waypoint.get_category().get_name()
+		var node_name = node.category.get_metadata(0)
 		if node_name in cateogry_data:
 			if cateogry_data[node_name]:
 				node.visible = true
@@ -616,6 +616,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_route.create_mesh(points_3d)
 	new_route.set_texture(texture)
 	new_route.waypoint = waypoint_trail
+	new_route.category = category_item
 	if category_item != null:
 		new_route.visible = is_category_visible(category_item)
 	else:
@@ -643,6 +644,7 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 	new_icon.translation = position
 	new_icon.set_icon_image(texture_path)
 	new_icon.waypoint = waypoint_icon
+	new_icon.category = category_item
 	if category_item != null:
 		new_icon.visible = is_category_visible(category_item)
 	else:

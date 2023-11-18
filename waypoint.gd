@@ -708,101 +708,60 @@ class Category:
 	func _init():
 		var service
 		
-		_default_visibility = PBField.new("default_visibility", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = _default_visibility
-		data[_default_visibility.tag] = service
-		
-		_display_name = PBField.new("display_name", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
-		service = PBServiceField.new()
-		service.field = _display_name
-		data[_display_name.tag] = service
-		
-		_is_separator = PBField.new("is_separator", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = _is_separator
-		data[_is_separator.tag] = service
-		
-		_name = PBField.new("name", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 4, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
+		_name = PBField.new("name", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
 		service = PBServiceField.new()
 		service.field = _name
 		data[_name.tag] = service
 		
-		_tip_description = PBField.new("tip_description", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 5, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
-		service = PBServiceField.new()
-		service.field = _tip_description
-		data[_tip_description.tag] = service
-		
-		_children = PBField.new("children", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 6, true, [])
+		_children = PBField.new("children", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 2, true, [])
 		service = PBServiceField.new()
 		service.field = _children
 		service.func_ref = funcref(self, "add_children")
 		data[_children.tag] = service
 		
-		_icon = PBField.new("icon", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 7, true, [])
+		_icon = PBField.new("icon", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 3, true, [])
 		service = PBServiceField.new()
 		service.field = _icon
 		service.func_ref = funcref(self, "add_icon")
 		data[_icon.tag] = service
 		
-		_trail = PBField.new("trail", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 8, true, [])
+		_trail = PBField.new("trail", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 4, true, [])
 		service = PBServiceField.new()
 		service.field = _trail
 		service.func_ref = funcref(self, "add_trail")
 		data[_trail.tag] = service
 		
+		_is_separator = PBField.new("is_separator", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 5, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		service = PBServiceField.new()
+		service.field = _is_separator
+		data[_is_separator.tag] = service
+		
+		_default_visibility = PBField.new("default_visibility", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 6, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		service = PBServiceField.new()
+		service.field = _default_visibility
+		data[_default_visibility.tag] = service
+		
+		_tip_description = PBField.new("tip_description", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 7, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
+		service = PBServiceField.new()
+		service.field = _tip_description
+		data[_tip_description.tag] = service
+		
 	var data = {}
-	
-	var _default_visibility: PBField
-	func get_default_visibility() -> bool:
-		return _default_visibility.value
-	func clear_default_visibility() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_default_visibility.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_default_visibility(value : bool) -> void:
-		_default_visibility.value = value
-	
-	var _display_name: PBField
-	func get_display_name() -> String:
-		return _display_name.value
-	func clear_display_name() -> void:
-		data[2].state = PB_SERVICE_STATE.UNFILLED
-		_display_name.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
-	func set_display_name(value : String) -> void:
-		_display_name.value = value
-	
-	var _is_separator: PBField
-	func get_is_separator() -> bool:
-		return _is_separator.value
-	func clear_is_separator() -> void:
-		data[3].state = PB_SERVICE_STATE.UNFILLED
-		_is_separator.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_is_separator(value : bool) -> void:
-		_is_separator.value = value
 	
 	var _name: PBField
 	func get_name() -> String:
 		return _name.value
 	func clear_name() -> void:
-		data[4].state = PB_SERVICE_STATE.UNFILLED
+		data[1].state = PB_SERVICE_STATE.UNFILLED
 		_name.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
 	func set_name(value : String) -> void:
 		_name.value = value
-	
-	var _tip_description: PBField
-	func get_tip_description() -> String:
-		return _tip_description.value
-	func clear_tip_description() -> void:
-		data[5].state = PB_SERVICE_STATE.UNFILLED
-		_tip_description.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
-	func set_tip_description(value : String) -> void:
-		_tip_description.value = value
 	
 	var _children: PBField
 	func get_children() -> Array:
 		return _children.value
 	func clear_children() -> void:
-		data[6].state = PB_SERVICE_STATE.UNFILLED
+		data[2].state = PB_SERVICE_STATE.UNFILLED
 		_children.value = []
 	func add_children() -> Category:
 		var element = Category.new()
@@ -813,7 +772,7 @@ class Category:
 	func get_icon() -> Array:
 		return _icon.value
 	func clear_icon() -> void:
-		data[7].state = PB_SERVICE_STATE.UNFILLED
+		data[3].state = PB_SERVICE_STATE.UNFILLED
 		_icon.value = []
 	func add_icon() -> Icon:
 		var element = Icon.new()
@@ -824,12 +783,39 @@ class Category:
 	func get_trail() -> Array:
 		return _trail.value
 	func clear_trail() -> void:
-		data[8].state = PB_SERVICE_STATE.UNFILLED
+		data[4].state = PB_SERVICE_STATE.UNFILLED
 		_trail.value = []
 	func add_trail() -> Trail:
 		var element = Trail.new()
 		_trail.value.append(element)
 		return element
+	
+	var _is_separator: PBField
+	func get_is_separator() -> bool:
+		return _is_separator.value
+	func clear_is_separator() -> void:
+		data[5].state = PB_SERVICE_STATE.UNFILLED
+		_is_separator.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_separator(value : bool) -> void:
+		_is_separator.value = value
+	
+	var _default_visibility: PBField
+	func get_default_visibility() -> bool:
+		return _default_visibility.value
+	func clear_default_visibility() -> void:
+		data[6].state = PB_SERVICE_STATE.UNFILLED
+		_default_visibility.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_default_visibility(value : bool) -> void:
+		_default_visibility.value = value
+	
+	var _tip_description: PBField
+	func get_tip_description() -> String:
+		return _tip_description.value
+	func clear_tip_description() -> void:
+		data[7].state = PB_SERVICE_STATE.UNFILLED
+		_tip_description.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
+	func set_tip_description(value : String) -> void:
+		_tip_description.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -862,10 +848,9 @@ class Icon:
 		service.func_ref = funcref(self, "new_texture_path")
 		data[_texture_path.tag] = service
 		
-		_guid = PBField.new("guid", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_guid = PBField.new("guid", PB_DATA_TYPE.BYTES, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES])
 		service = PBServiceField.new()
 		service.field = _guid
-		service.func_ref = funcref(self, "new_guid")
 		data[_guid.tag] = service
 		
 		_map_id = PBField.new("map_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 4, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
@@ -916,10 +901,10 @@ class Icon:
 		service.field = _achievement_id
 		data[_achievement_id.tag] = service
 		
-		_can_fade = PBField.new("can_fade", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		_disable_player_cutout = PBField.new("disable_player_cutout", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
-		service.field = _can_fade
-		data[_can_fade.tag] = service
+		service.field = _disable_player_cutout
+		data[_disable_player_cutout.tag] = service
 		
 		_minimum_size_on_screen = PBField.new("minimum_size_on_screen", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 20, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
 		service = PBServiceField.new()
@@ -1028,10 +1013,9 @@ class Icon:
 		service.field = _bhdraft__schedule_duration
 		data[_bhdraft__schedule_duration.tag] = service
 		
-		_category = PBField.new("category", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_category = PBField.new("category", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
 		service.field = _category
-		service.func_ref = funcref(self, "new_category")
 		data[_category.tag] = service
 		
 	var data = {}
@@ -1047,14 +1031,13 @@ class Icon:
 		return _texture_path.value
 	
 	var _guid: PBField
-	func get_guid() -> GUID:
+	func get_guid() -> PoolByteArray:
 		return _guid.value
 	func clear_guid() -> void:
 		data[3].state = PB_SERVICE_STATE.UNFILLED
-		_guid.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_guid() -> GUID:
-		_guid.value = GUID.new()
-		return _guid.value
+		_guid.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES]
+	func set_guid(value : PoolByteArray) -> void:
+		_guid.value = value
 	
 	var _map_id: PBField
 	func get_map_id() -> int:
@@ -1140,14 +1123,14 @@ class Icon:
 	func set_achievement_id(value : int) -> void:
 		_achievement_id.value = value
 	
-	var _can_fade: PBField
-	func get_can_fade() -> bool:
-		return _can_fade.value
-	func clear_can_fade() -> void:
+	var _disable_player_cutout: PBField
+	func get_disable_player_cutout() -> bool:
+		return _disable_player_cutout.value
+	func clear_disable_player_cutout() -> void:
 		data[19].state = PB_SERVICE_STATE.UNFILLED
-		_can_fade.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_can_fade(value : bool) -> void:
-		_can_fade.value = value
+		_disable_player_cutout.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_disable_player_cutout(value : bool) -> void:
+		_disable_player_cutout.value = value
 	
 	var _minimum_size_on_screen: PBField
 	func get_minimum_size_on_screen() -> int:
@@ -1337,14 +1320,13 @@ class Icon:
 		_bhdraft__schedule_duration.value = value
 	
 	var _category: PBField
-	func get_category() -> Category:
+	func get_category() -> bool:
 		return _category.value
 	func clear_category() -> void:
 		data[2054].state = PB_SERVICE_STATE.UNFILLED
-		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_category() -> Category:
-		_category.value = Category.new()
-		return _category.value
+		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_category(value : bool) -> void:
+		_category.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -1377,10 +1359,9 @@ class Trail:
 		service.func_ref = funcref(self, "new_texture_path")
 		data[_texture_path.tag] = service
 		
-		_guid = PBField.new("guid", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_guid = PBField.new("guid", PB_DATA_TYPE.BYTES, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES])
 		service = PBServiceField.new()
 		service.field = _guid
-		service.func_ref = funcref(self, "new_guid")
 		data[_guid.tag] = service
 		
 		_map_id = PBField.new("map_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 4, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
@@ -1419,10 +1400,10 @@ class Trail:
 		service.field = _achievement_id
 		data[_achievement_id.tag] = service
 		
-		_can_fade = PBField.new("can_fade", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		_disable_player_cutout = PBField.new("disable_player_cutout", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
-		service.field = _can_fade
-		data[_can_fade.tag] = service
+		service.field = _disable_player_cutout
+		data[_disable_player_cutout.tag] = service
 		
 		_is_wall = PBField.new("is_wall", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 20, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
@@ -1511,10 +1492,9 @@ class Trail:
 		service.field = _bhdraft__schedule_duration
 		data[_bhdraft__schedule_duration.tag] = service
 		
-		_category = PBField.new("category", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_category = PBField.new("category", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
 		service.field = _category
-		service.func_ref = funcref(self, "new_category")
 		data[_category.tag] = service
 		
 	var data = {}
@@ -1530,14 +1510,13 @@ class Trail:
 		return _texture_path.value
 	
 	var _guid: PBField
-	func get_guid() -> GUID:
+	func get_guid() -> PoolByteArray:
 		return _guid.value
 	func clear_guid() -> void:
 		data[3].state = PB_SERVICE_STATE.UNFILLED
-		_guid.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_guid() -> GUID:
-		_guid.value = GUID.new()
-		return _guid.value
+		_guid.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES]
+	func set_guid(value : PoolByteArray) -> void:
+		_guid.value = value
 	
 	var _map_id: PBField
 	func get_map_id() -> int:
@@ -1603,14 +1582,14 @@ class Trail:
 	func set_achievement_id(value : int) -> void:
 		_achievement_id.value = value
 	
-	var _can_fade: PBField
-	func get_can_fade() -> bool:
-		return _can_fade.value
-	func clear_can_fade() -> void:
+	var _disable_player_cutout: PBField
+	func get_disable_player_cutout() -> bool:
+		return _disable_player_cutout.value
+	func clear_disable_player_cutout() -> void:
 		data[19].state = PB_SERVICE_STATE.UNFILLED
-		_can_fade.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_can_fade(value : bool) -> void:
-		_can_fade.value = value
+		_disable_player_cutout.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_disable_player_cutout(value : bool) -> void:
+		_disable_player_cutout.value = value
 	
 	var _is_wall: PBField
 	func get_is_wall() -> bool:
@@ -1764,14 +1743,13 @@ class Trail:
 		_bhdraft__schedule_duration.value = value
 	
 	var _category: PBField
-	func get_category() -> Category:
+	func get_category() -> bool:
 		return _category.value
 	func clear_category() -> void:
 		data[2054].state = PB_SERVICE_STATE.UNFILLED
-		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_category() -> Category:
-		_category.value = Category.new()
-		return _category.value
+		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_category(value : bool) -> void:
+		_category.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -2235,47 +2213,6 @@ class Trigger:
 		_reset_behavior.value = DEFAULT_VALUES_3[PB_DATA_TYPE.ENUM]
 	func set_reset_behavior(value) -> void:
 		_reset_behavior.value = value
-	
-	func to_string() -> String:
-		return PBPacker.message_to_string(data)
-		
-	func to_bytes() -> PoolByteArray:
-		return PBPacker.pack_message(data)
-		
-	func from_bytes(bytes : PoolByteArray, offset : int = 0, limit : int = -1) -> int:
-		var cur_limit = bytes.size()
-		if limit != -1:
-			cur_limit = limit
-		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
-		if result == cur_limit:
-			if PBPacker.check_required(data):
-				if limit == -1:
-					return PB_ERR.NO_ERRORS
-			else:
-				return PB_ERR.REQUIRED_FIELDS
-		elif limit == -1 && result > 0:
-			return PB_ERR.PARSE_INCOMPLETE
-		return result
-	
-class GUID:
-	func _init():
-		var service
-		
-		_guid = PBField.new("guid", PB_DATA_TYPE.BYTES, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES])
-		service = PBServiceField.new()
-		service.field = _guid
-		data[_guid.tag] = service
-		
-	var data = {}
-	
-	var _guid: PBField
-	func get_guid() -> PoolByteArray:
-		return _guid.value
-	func clear_guid() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_guid.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES]
-	func set_guid(value : PoolByteArray) -> void:
-		_guid.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
