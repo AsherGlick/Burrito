@@ -14,7 +14,7 @@ using namespace std;
 void xml_attribute_to_euler_rotation(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     EulerRotation* value,
     bool* is_set) {
     EulerRotation euler_rotation;

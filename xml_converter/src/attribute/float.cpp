@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_float(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     float* value,
     bool* is_set) {
     *value = std::stof(get_attribute_value(input));

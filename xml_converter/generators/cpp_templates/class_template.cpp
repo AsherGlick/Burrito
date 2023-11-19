@@ -18,7 +18,7 @@ string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
 {% if cpp_class == "Category": %}
-    void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLParseState* state) {
+    void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLReaderState* state) {
         for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
             bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
             bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors, state);
@@ -34,7 +34,7 @@ string {{cpp_class}}::classname() {
     }
 {% endif %}
 
-bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLParseState* state) {
+bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLReaderState* state) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}

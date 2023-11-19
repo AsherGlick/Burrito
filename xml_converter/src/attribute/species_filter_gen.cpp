@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_species_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     SpeciesFilter* value,
     bool* is_set) {
     SpeciesFilter species_filter;

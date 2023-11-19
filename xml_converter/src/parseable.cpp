@@ -11,7 +11,7 @@ std::string Parseable::classname() {
     return "Parseable";
 }
 
-void Parseable::init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLParseState* state) {
+void Parseable::init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLReaderState* state) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
         if (init_xml_attribute(attribute, errors, state)) {
         }
@@ -28,7 +28,7 @@ void Parseable::init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>
 // all of the other parsible classes. So just return false right away without
 // doing anything.
 ////////////////////////////////////////////////////////////////////////////////
-bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>*, std::vector<XMLError*>*, XMLParseState*) {
+bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>*, std::vector<XMLError*>*, XMLReaderState*) {
     return false;
 }
 

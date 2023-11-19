@@ -51,7 +51,7 @@ int convert_color_channel_float_to_int(float input) {
 void xml_attribute_to_color(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     Color* value,
     bool* is_set) {
     Color color;
