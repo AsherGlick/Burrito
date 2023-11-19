@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_profession_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     ProfessionFilter* value,
     bool* is_set) {
     ProfessionFilter profession_filter;

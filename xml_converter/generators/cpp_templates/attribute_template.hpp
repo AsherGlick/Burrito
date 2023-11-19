@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "../state_structs/xml_parse_state.hpp"
+#include "../state_structs/xml_reader_state.hpp"
 {% if type == "Enum" %}
     #include "waypoint.pb.h"
 
@@ -35,7 +35,7 @@
 void xml_attribute_to_{{attribute_name}}(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     {{class_name}}* value,
     bool* is_set);
 

@@ -5,7 +5,7 @@
 
 class Category;
 
-struct XMLParseState {
+struct XMLReaderState {
     std::string xml_filedir;
     std::map<std::string, Category>* marker_categories;
 };

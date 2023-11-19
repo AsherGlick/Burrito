@@ -15,7 +15,7 @@
 void xml_attribute_to_marker_category(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     MarkerCategory* value,
     bool* is_set) {
     value->category = get_attribute_value(input);

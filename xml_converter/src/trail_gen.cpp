@@ -19,7 +19,7 @@ string Trail::classname() {
     return "Trail";
 }
 
-bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLParseState* state) {
+bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLReaderState* state) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {

@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_festival_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     FestivalFilter* value,
     bool* is_set) {
     FestivalFilter festival_filter;

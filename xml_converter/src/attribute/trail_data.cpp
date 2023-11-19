@@ -22,7 +22,7 @@ using namespace std;
 void xml_attribute_to_trail_data(
     rapidxml::xml_attribute<>* input,
     vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     TrailData* value,
     bool* is_set,
     int* map_id_value,
