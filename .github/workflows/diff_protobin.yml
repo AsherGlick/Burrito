@@ -24,6 +24,7 @@ jobs:
     - name: Get Filenames
       run: |
         for file in $(git diff --name-only origin/${{ github.base_ref }} refs/pull/${{ github.event.pull_request.number }}/head | grep '.bin$'); do
+          mkdir -p $(dirname "$file")
           if [ -n "$(git ls-tree "origin/${{ github.base_ref }}" -- "$file")" ]; then
             git show origin/${{ github.base_ref }}:$file > $file._old
             protoc --decode=waypoint.Waypoint xml_converter/proto/waypoint.proto < $file._old > $file.textproto._old
