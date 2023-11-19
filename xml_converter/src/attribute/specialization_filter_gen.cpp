@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_specialization_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     SpecializationFilter* value,
     bool* is_set) {
     SpecializationFilter specialization_filter;

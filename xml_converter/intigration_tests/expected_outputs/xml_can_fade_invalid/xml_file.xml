@@ -4,5 +4,6 @@
 
 <POIs>
 <POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
 </POIs>
 </OverlayData>

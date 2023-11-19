@@ -17,7 +17,7 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
     if (get_node_name(node) == "MarkerCategory") {
         string name = lowercase(find_attribute_value(node, "name"));
 
-        XMLParseState state = {
+        XMLReaderState state = {
             base_dir,
             marker_categories,
         };
@@ -79,7 +79,7 @@ Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker
 vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors, string base_dir) {
     vector<Parseable*> markers;
 
-    XMLParseState state = {
+    XMLReaderState state = {
         base_dir,
         marker_categories,
     };

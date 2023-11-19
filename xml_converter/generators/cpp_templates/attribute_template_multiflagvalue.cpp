@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_{{attribute_name}}(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLParseState* state,
+    XMLReaderState* state,
     {{class_name}}* value,
     bool* is_set) {
     {{class_name}} {{attribute_name}};

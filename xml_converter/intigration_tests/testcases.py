@@ -32,7 +32,12 @@ testcases: List[Testcase] = [
             "Error: Found a boolean value that was not a '1', '0', 'true', or 'false'",
             "./inputs/xml_can_fade_invalid/xml_file.xml",
             '6 |        <POI CanFade="yes" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />',
-            "  |                      ^^^"
+            "  |                      ^^^",
+            "Error: Found a boolean value that was not a '1', '0', 'true', or 'false'",
+            './inputs/xml_can_fade_invalid/xml_file.xml',
+            '7 |        <POI CanFade="はい" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />',
+            '  |                      ^^^^^^',
+
         ]
     ),
     Testcase(
@@ -119,5 +124,17 @@ testcases: List[Testcase] = [
         xml_input_paths=["./inputs/xml_cull_chirality"],
         expected_output_xml_path="./expected_outputs/xml_cull_chirality",
         expected_output_proto_path="./expected_outputs/proto_cull_chirality",
+    ).
+    Testcase(
+        name="specialization_filter",
+        xml_input_paths=["./inputs/xml_specialization_filter"],
+        expected_output_xml_path="./expected_outputs/xml_specialization_filter",
+        expected_output_proto_path="./expected_outputs/proto_specialization_filter",
+    ),
+    Testcase(
+        name="species_filter",
+        xml_input_paths=["./inputs/xml_species_filter"],
+        expected_output_xml_path="./expected_outputs/xml_species_filter",
+        expected_output_proto_path="./expected_outputs/proto_species_filter",
     ),
 ]
