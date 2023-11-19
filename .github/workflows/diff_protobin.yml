@@ -1,7 +1,7 @@
 name: Diff Protobin
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - '**/*.bin'
 jobs:
@@ -23,15 +23,22 @@ jobs:
 
     - name: Get Filenames
       run: |
-        for file in $(git diff --name-only origin/${{ github.base_ref }}...refs/pull/${{ github.event.pull_request.number }}/head | grep '.bin$'); do
+        for file in $(git diff --name-only origin/${{ github.base_ref }} refs/pull/${{ github.event.pull_request.number }}/head | grep '.bin$'); do
           if [ -n "$(git ls-tree "origin/${{ github.base_ref }}" -- "$file")" ]; then
             git show origin/${{ github.base_ref }}:$file > $file._old
-            protoc --decode=waypoint.Waypoint xml_converter/proto/waypoint.proto < $file._old > $file._old._textproto
+            protoc --decode=waypoint.Waypoint xml_converter/proto/waypoint.proto < $file._old > $file.textproto._old
           else
-            touch $file._old._textproto
+            touch $file.textproto._old
           fi
-          protoc --decode=waypoint.Waypoint xml_converter/proto/waypoint.proto < $file > $file._textproto
-          diff -u $file._old._textproto $file._textproto > $file._diff || true
+
+          if [ -n "$(git ls-tree "refs/pull/${{ github.event.pull_request.number }}/head" -- "$file")" ]; then
+            git show refs/pull/${{ github.event.pull_request.number }}/head:$file > $file._new
+            protoc --decode=waypoint.Waypoint xml_converter/proto/waypoint.proto < $file._new > $file.textproto._new
+          else
+            touch $file.textproto._new
+          fi
+
+          diff -u $file.textproto._old $file.textproto._new > $file._diff || true
           echo $file >> file_list.txt
         done
 
