@@ -49,7 +49,7 @@ var is_transient:bool = false
 
 # Variables that store informations about ui scaling
 # The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
-var ui_size = 1
+var ui_size: int = 1
 # This array holds the width of one item for every ui-scale
 const icon_size_preset = [26.5, 29.5, 33.0, 36.0] # 0=small; 1=normal; 2=large; 3=larger
 # The position indicates how many buttons will be there.
@@ -331,22 +331,22 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# Calculations to dynamically place the main icon/button
 	# The left- and right-margin can be calculated from the ui-scale combined with the preset icon width and the desired position.
 	# set_minimal_mouse_block() should be called only once, if it is called while any burrito windows is open it will become unclickable.
-	ui_size = identity["uisz"]
+	self.ui_size = int(identity["uisz"])
 	# If the value is outside of the expected range use the "normal" size.
-	if (ui_size < 0) or (ui_size > 3):
-		ui_size = 1
+	if (self.ui_size < 0) or (self.ui_size > 3):
+		self.ui_size = 1
 
-	var button_position_max = floor(OS.window_size.x / icon_size_preset[ui_size]) - 1
+	var button_position_max = floor(OS.window_size.x / self.icon_size_preset[self.ui_size]) - 1
 	var button_margin_left = $Control/GlobalMenuButton.margin_left
 	# Make sure the expected position is inside the window.
-	if (button_position > button_position_max):
-		button_margin_left = icon_size_preset[ui_size] * button_position_max
+	if (self.button_position > button_position_max):
+		button_margin_left = self.icon_size_preset[self.ui_size] * button_position_max
 	else:
-		button_margin_left = icon_size_preset[ui_size] * button_position
+		button_margin_left = self.icon_size_preset[self.ui_size] * self.button_position
 
 	if $Control/GlobalMenuButton.margin_left != button_margin_left:
 		$Control/GlobalMenuButton.margin_left = button_margin_left
-		$Control/GlobalMenuButton.margin_right = button_margin_left + icon_size_preset[ui_size]
+		$Control/GlobalMenuButton.margin_right = button_margin_left + self.icon_size_preset[self.ui_size]
 		set_minimal_mouse_block()
 
 	if self.map_id != old_map_id:
