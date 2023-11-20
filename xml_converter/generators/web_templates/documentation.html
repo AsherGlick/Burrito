@@ -1,0 +1,101 @@
+<html>
+	<head>
+		<style>
+			body {
+				font-family: sans-serif;
+				background: #EEE;
+			}
+			table.quickfinder td, th {
+				border: 1px solid black;
+				padding: 5px;
+			}
+			table.quickfinder {
+				border-collapse: collapse;
+			}
+
+			.content {
+				max-width: 1200px;
+				margin: auto;
+			}
+
+			.codeblock {
+				white-space: pre-wrap;
+				font-family: monospace;
+				font-size: 1.2em;
+				background: #DDD;
+				padding: 10px;
+				padding-left: 13px;
+
+				border: 1px solid #888;
+				border-radius: 3px;
+				margin: 10px 30px;
+			}
+
+			table.flagbox {
+				margin-top: -1em;
+				border-spacing: 0 1em;
+				width: 100%;
+			}
+
+			.flag_valuebox {
+				padding: 10px;
+				background: #CCC;
+				line-height: 1.5em;
+				border-radius: 3px;
+				text-align: center;
+			}
+			.flag_arrowbox{
+				padding: 10px;
+				/*background: #CCC;*/
+				text-align: center;
+
+			}
+			.flag_namebox {
+				padding: 10px;
+				background: #CCC;
+				border-radius: 3px;
+				text-align: center;
+			}
+
+			.infobox {
+				float: left;
+				text-align: center;
+				border: 1px solid black;
+			}
+
+			.info_title {
+				background: #CCC;
+			}
+
+			.halfbox {
+				width: 50%;
+				box-sizing: border-box;
+				float: left;
+			}
+			.field_wrapper {
+				border:  1px solid black;
+				padding: 10px;
+				background: #FFF;
+			}
+
+			.navitem {
+				width: 300px;
+				float: left;
+				padding: 10px;
+				box-sizing: border-box;
+				border: 1px solid black;
+				text-align: center;
+				margin: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">Hello world</div>
+		<div class="content_bar">
+			{% for link in content_nav %}
+				<a href="./{{link[1]}}.html"><div class="navitem">{{link[0]}}</div></a>
+			{% endfor %}
+		</div>
+		<div class="content">{{generated_doc}}</div>
+	</body>
+</html>

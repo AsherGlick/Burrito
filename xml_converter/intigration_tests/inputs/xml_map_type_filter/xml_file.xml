@@ -1,0 +1,12 @@
+<OverlayData>
+    <MarkerCategory DisplayName="My Category" Name="mycategory">
+    </MarkerCategory>
+
+    <POIs>
+        <POI MapType="Unknown" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MapType="redirect,charactercreate" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MapType="redirect, charactercreate" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MapType="Redirect,Charactercreate" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MapType="Unknown,redirect,charactercreate,pvp,gvg,instance,public,tournament,tutorial,usertournament,center,eternalbattlegrounds,bluehome,blueborderlands,greenhome,greenborderlands,redhome,redborderlands,fortunesvale,jumppuzzle,obsidiansanctum,edgeofthemists,publicmini,wvwlounge" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+    </POIs>
+</OverlayData>

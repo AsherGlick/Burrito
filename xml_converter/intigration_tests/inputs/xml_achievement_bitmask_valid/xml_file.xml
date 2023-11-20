@@ -1,0 +1,19 @@
+<OverlayData>
+	<MarkerCategory DisplayName="My Category" Name="mycategory">
+	</MarkerCategory>
+
+	<POIs>
+		<POI AchievementBit="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementBit="5" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementBit="2147483647" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<Trail AchievementBit="5" Type="mycategory" />
+
+		<!-- TODO: textproto seems to think a fixed32 is a uint32, but we support negative values for this currently. We should probably adjust that -->
+		<POI AchievementBit="-2147483648" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementBit="-5" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+
+		<!-- TODO: These throw errors and crash but probably should not if this were a uint32 -->
+		<!-- <POI AchievementBit="4294967295" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" /> -->
+		<!-- <POI AchievementBit="2147483648" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" /> -->
+	</POIs>
+</OverlayData>

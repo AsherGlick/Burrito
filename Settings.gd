@@ -3,6 +3,7 @@ extends Node
 const CONFIG_PATH = "user://settings.json"
 
 var _config_data = {}
+var local_category_data = {}
 
 var minimum_width: int = 800
 var minimum_height: int = 600
@@ -25,7 +26,9 @@ func _ready():
 
 	if self._config_data == null:
 		self._config_data = {}
-
+		
+	if "local_category_data" in self._config_data:
+		self.local_category_data = self._config_data["local_category_data"]
 	if "minimum_width" in self._config_data:
 		self.minimum_width = self._config_data["minimum_width"]
 	if "minimum_height" in self._config_data:
@@ -54,8 +57,9 @@ func save():
 		"burrito_link_auto_launch_enabled": burrito_link_auto_launch_enabled,
 		"burrito_link_wine_path": burrito_link_wine_path,
 		"burrito_link_env_args": burrito_link_env_args,
+		"local_category_data": local_category_data
 	}
 
 	var file = File.new()
 	file.open(CONFIG_PATH, File.WRITE)
-	file.store_string(JSON.print(self._config_data))
+	file.store_string(JSON.print(self._config_data, "    "))

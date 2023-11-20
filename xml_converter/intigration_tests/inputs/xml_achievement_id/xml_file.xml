@@ -1,0 +1,14 @@
+<OverlayData>
+	<MarkerCategory DisplayName="My Category" Name="mycategory">
+	</MarkerCategory>
+
+	<POIs>
+		<POI AchievementId="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementId="1" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementId="5" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementId="2147483647" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementId="-2147483648" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI AchievementId="-5" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<Trail AchievementId="5" Type="mycategory" />
+	</POIs>
+</OverlayData>
