@@ -330,7 +330,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	# Calculations to dynamically place the main icon/button
 	# The left- and right-margin can be calculated from the ui-scale combined with the preset icon width and the desired position.
-	# set_minimal_mouse_block() should be called only once, if it is called while any burrito windows is open it will become unclickable.
 	self.ui_size = int(identity["uisz"])
 	# If the value is outside of the expected range use the "normal" size.
 	if (self.ui_size < 0) or (self.ui_size > 3):
@@ -344,9 +343,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	else:
 		button_margin_left = self.icon_size_preset[self.ui_size] * self.button_position
 
-	if $Control/GlobalMenuButton.margin_left != button_margin_left:
-		$Control/GlobalMenuButton.margin_left = button_margin_left
-		$Control/GlobalMenuButton.margin_right = button_margin_left + self.icon_size_preset[self.ui_size]
+	$Control/GlobalMenuButton.margin_left = button_margin_left
+	$Control/GlobalMenuButton.margin_right = button_margin_left + self.icon_size_preset[self.ui_size]
+	if !is_any_dialog_visible():
 		set_minimal_mouse_block()
 
 	if self.map_id != old_map_id:
@@ -712,11 +711,16 @@ func clear_adjustment_nodes():
 		child.queue_free()
 
 
-func _on_Dialog_hide():
+func is_any_dialog_visible():
 	for dialog in $Control/Dialogs.get_children():
 		if dialog.visible:
-			return
-	set_minimal_mouse_block()
+			return true
+	return false
+
+
+func _on_Dialog_hide():
+	if !is_any_dialog_visible():
+		set_minimal_mouse_block()
 
 
 func _on_LoadPath_pressed():
