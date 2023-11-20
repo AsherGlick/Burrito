@@ -335,14 +335,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if !self.icon_size_preset.has(self.ui_size):
 		self.ui_size = 1
 
-	var button_position_max = floor(OS.window_size.x / self.icon_size_preset[self.ui_size]) - 1
-	var button_margin_left = $Control/GlobalMenuButton.margin_left
-	# Make sure the expected position is inside the window.
-	if (self.button_position > button_position_max):
-		button_margin_left = self.icon_size_preset[self.ui_size] * button_position_max
-	else:
-		button_margin_left = self.icon_size_preset[self.ui_size] * self.button_position
-
+	var button_margin_left = self.icon_size_preset[self.ui_size] * self.button_position
 	$Control/GlobalMenuButton.margin_left = button_margin_left
 	$Control/GlobalMenuButton.margin_right = button_margin_left + self.icon_size_preset[self.ui_size]
 	if !is_any_dialog_visible():
