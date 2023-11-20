@@ -51,7 +51,7 @@ var is_transient:bool = false
 # The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
 var ui_size: int = 1
 # This array holds the width of one item for every ui-scale
-const icon_size_preset = [26.5, 29.5, 33.0, 36.0] # 0=small; 1=normal; 2=large; 3=larger
+const icon_size_preset = {0: 26.5, 1: 29.5, 2: 33.0, 3: 36.0} # 0=small; 1=normal; 2=large; 3=larger
 # The position indicates how many buttons will be there.
 # e.g. if the native ui has 10 buttons we want to be on position 11.
 const button_position = 11 # Place the icon/button on n..th position
@@ -331,8 +331,8 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# Calculations to dynamically place the main icon/button
 	# The left- and right-margin can be calculated from the ui-scale combined with the preset icon width and the desired position.
 	self.ui_size = int(identity["uisz"])
-	# If the value is outside of the expected range use the "normal" size.
-	if (self.ui_size < 0) or (self.ui_size > 3):
+	# If the value is not part of the dictionary use the "normal" size.
+	if !self.icon_size_preset.has(self.ui_size):
 		self.ui_size = 1
 
 	var button_position_max = floor(OS.window_size.x / self.icon_size_preset[self.ui_size]) - 1
