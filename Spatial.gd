@@ -50,11 +50,13 @@ var is_transient:bool = false
 # Variables that store informations about ui scaling
 # The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
 var ui_size: int = 1
-# This array holds the width of one item for every ui-scale
-const icon_size_preset = {0: 26.5, 1: 29.5, 2: 33.0, 3: 36.0} # 0=small; 1=normal; 2=large; 3=larger
-# The position indicates how many buttons will be there.
-# e.g. if the native ui has 10 buttons we want to be on position 11.
-const button_position = 11 # Place the icon/button on n..th position
+# This dictionary holds the left and right margin for the main button for every ui-scale
+const button_margin = {
+	0: {"left": 292, "right": 318}, # small
+	1: {"left": 323, "right": 352}, # normal
+	2: {"left": 361, "right": 394}, # large
+	3: {"left": 395, "right": 431}  # larger
+}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -329,15 +331,13 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	# Calculations to dynamically place the main icon/button
-	# The left- and right-margin can be calculated from the ui-scale combined with the preset icon width and the desired position.
 	self.ui_size = int(identity["uisz"])
 	# If the value is not part of the dictionary use the "normal" size.
-	if !self.icon_size_preset.has(self.ui_size):
+	if !self.button_margin.has(self.ui_size):
 		self.ui_size = 1
 
-	var button_margin_left = self.icon_size_preset[self.ui_size] * self.button_position
-	$Control/GlobalMenuButton.margin_left = button_margin_left
-	$Control/GlobalMenuButton.margin_right = button_margin_left + self.icon_size_preset[self.ui_size]
+	$Control/GlobalMenuButton.margin_left = self.button_margin[self.ui_size]["left"]
+	$Control/GlobalMenuButton.margin_right = self.button_margin[self.ui_size]["right"]
 	if !is_any_dialog_visible():
 		set_minimal_mouse_block()
 
