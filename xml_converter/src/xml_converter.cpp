@@ -69,8 +69,10 @@ void move_supplementary_files(string input_directory, string output_directory) {
     while ((entry = readdir(dir)) != NULL) {
         string filename = entry->d_name;
         if (filename != "." && filename != "..") {
+            ensure_trailing_slash(&input_directory);
             string path = input_directory + filename;
             if (entry->d_type == DT_DIR) {
+                ensure_trailing_slash(&output_directory);
                 string new_directory = output_directory + filename;
                 if (mkdir(new_directory.c_str(), 0700) == -1 && errno != EEXIST) {
                     cout << "Error making " << new_directory << endl;
@@ -84,6 +86,7 @@ void move_supplementary_files(string input_directory, string output_directory) {
             else {
                 // TODO: Only include files that are referenced by the
                 // individual markers in order to avoid any unnessecary files
+                ensure_trailing_slash(&output_directory);
                 string new_path = output_directory + filename;
                 copy_file(path, new_path);
             }
@@ -96,7 +99,6 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
-        ensure_trailing_slash(&input_path);
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
         for (const string& path : xml_files) {
             parse_xml_file(path, marker_categories, parsed_pois);
@@ -109,6 +111,7 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
 
 void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
+    ensure_trailing_slash(&output_path);
     if (!filesystem::is_directory(output_path)) {
         if (!filesystem::create_directory(output_path)) {
             cout << "Error: " << output_path << "is not a valid directory path" << endl;
@@ -151,7 +154,6 @@ void process_data(
         // TODO: This is wildly incorrect now because we might have a
         //       different output directory then output_split_waypoint_dir
         if (output_split_waypoint_dir != "") {
-            ensure_trailing_slash(&output_split_waypoint_dir);
             move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
         }
     }
@@ -172,7 +174,6 @@ void process_data(
     // Write all of the xml taco paths
     begin = chrono::high_resolution_clock::now();
     for (size_t i = 0; i < output_taco_paths.size(); i++) {
-        ensure_trailing_slash(&output_taco_paths[i]);
         write_taco_directory(output_taco_paths[i], &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
@@ -182,7 +183,6 @@ void process_data(
 
     // Write all of the protobin waypoint paths
     for (size_t i = 0; i < output_waypoint_paths.size(); i++) {
-        ensure_trailing_slash(&output_waypoint_paths[i]);
         StringHierarchy category_filter;
         category_filter.add_path({}, true);
         write_protobuf_file(output_waypoint_paths[i], category_filter, &marker_categories, &parsed_pois);
@@ -191,7 +191,6 @@ void process_data(
     // Write the special map-split protbin waypoint file
     begin = chrono::high_resolution_clock::now();
     if (output_split_waypoint_dir != "") {
-        ensure_trailing_slash(&output_split_waypoint_dir);
         StringHierarchy category_filter;
         category_filter.add_path({}, true);
         write_protobuf_file_per_map_id(output_split_waypoint_dir, category_filter, &marker_categories, &parsed_pois);

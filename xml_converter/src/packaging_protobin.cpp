@@ -177,11 +177,12 @@ void _write_protobuf_file(
 }
 
 void write_protobuf_file(
-    const string& filepath,
+    string& filepath,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<string, std::vector<Parseable*>> category_to_pois;
+
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -197,6 +198,7 @@ void write_protobuf_file(
             std::cout << "Unknown type" << std::endl;
         }
     }
+    ensure_trailing_slash(&filepath);
 
     _write_protobuf_file(
         filepath + "/markers.bin",
@@ -207,7 +209,7 @@ void write_protobuf_file(
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
-    const string& proto_directory,
+    string& proto_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
@@ -227,6 +229,8 @@ void write_protobuf_file_per_map_id(
             std::cout << "Unknown type" << std::endl;
         }
     }
+
+    ensure_trailing_slash(&proto_directory);
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
         string output_filepath = proto_directory + to_string(iterator->first) + ".data";
