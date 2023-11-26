@@ -69,7 +69,10 @@ void xml_attribute_to_profession_filter(
     *is_set = true;
 }
 
-string profession_filter_to_xml_attribute(const std::string& attribute_name, const ProfessionFilter* value) {
+string profession_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const ProfessionFilter* value) {
     vector<string> flag_values;
     if (value->guardian == true) {
         flag_values.push_back("guardian");
@@ -102,7 +105,11 @@ string profession_filter_to_xml_attribute(const std::string& attribute_name, con
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-void proto_to_profession_filter(waypoint::ProfessionFilter input, ProfessionFilter* value, bool* is_set) {
+void proto_to_profession_filter(
+    waypoint::ProfessionFilter input,
+    ProtoReaderState* state,
+    ProfessionFilter* value,
+    bool* is_set) {
     ProfessionFilter profession_filter;
     profession_filter.guardian = input.guardian();
     profession_filter.warrior = input.warrior();
@@ -117,7 +124,10 @@ void proto_to_profession_filter(waypoint::ProfessionFilter input, ProfessionFilt
     *is_set = true;
 }
 
-void profession_filter_to_proto(ProfessionFilter value, std::function<void(waypoint::ProfessionFilter*)> setter) {
+void profession_filter_to_proto(
+    ProfessionFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::ProfessionFilter*)> setter) {
     waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
     bool should_write = false;
     proto_profession_filter->set_guardian(value.guardian);

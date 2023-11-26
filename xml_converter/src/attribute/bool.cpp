@@ -40,7 +40,10 @@ void xml_attribute_to_bool(
 //
 // Converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string bool_to_xml_attribute(const string& attribute_name, const bool* value) {
+string bool_to_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const bool* value) {
     if (*value) {
         return " " + attribute_name + "=\"true\"";
     }
@@ -80,7 +83,10 @@ void inverted_xml_attribute_to_bool(
 //
 // Inverts and converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string bool_to_inverted_xml_attribute(const string& attribute_name, const bool* value) {
+string bool_to_inverted_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const bool* value) {
     if (*value) {
         return " " + attribute_name + "=\"false\"";
     }
@@ -94,7 +100,11 @@ string bool_to_inverted_xml_attribute(const string& attribute_name, const bool* 
 //
 // Parses a bool from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_bool(bool input, bool* value, bool* is_set) {
+void proto_to_bool(
+    bool input,
+    ProtoReaderState* state,
+    bool* value,
+    bool* is_set) {
     *value = input;
     *is_set = true;
 }
@@ -104,6 +114,9 @@ void proto_to_bool(bool input, bool* value, bool* is_set) {
 //
 // Writes a bool to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void bool_to_proto(bool value, std::function<void(bool)> setter) {
+void bool_to_proto(
+    bool value,
+    ProtoWriterState* state,
+    std::function<void(bool)> setter) {
     setter(value);
 }

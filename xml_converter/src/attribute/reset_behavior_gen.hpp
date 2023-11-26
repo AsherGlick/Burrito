@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 #include "waypoint.pb.h"
 
 class XMLError;
@@ -28,8 +31,18 @@ void xml_attribute_to_reset_behavior(
     ResetBehavior* value,
     bool* is_set);
 
-std::string reset_behavior_to_xml_attribute(const std::string& attribute_name, const ResetBehavior* value);
+std::string reset_behavior_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const ResetBehavior* value);
 
-void proto_to_reset_behavior(waypoint::ResetBehavior input, ResetBehavior* value, bool* is_set);
+void proto_to_reset_behavior(
+    waypoint::ResetBehavior input,
+    ProtoReaderState* state,
+    ResetBehavior* value,
+    bool* is_set);
 
-void reset_behavior_to_proto(ResetBehavior value, std::function<void(waypoint::ResetBehavior)> setter);
+void reset_behavior_to_proto(
+    ResetBehavior value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::ResetBehavior)> setter);
