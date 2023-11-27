@@ -57,6 +57,12 @@ const button_margin = {
 	2: {"left": 361, "right": 394}, # large
 	3: {"left": 395, "right": 431}  # larger
 }
+const minimap_scale = {
+	0: {"offset": 32, "factor": 0.904}, # small
+	1: {"offset": 36, "factor": 1}, # normal
+	2: {"offset": 40, "factor": 1.118}, # large
+	3: {"offset": 44, "factor": 1.223} # larger
+}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -258,7 +264,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	if (!map_is_open):
 		map_size = Vector2(compass_width, compass_height)
 		if !compass_is_top_right:
-			map_corner = get_viewport().size - Vector2(compass_width, compass_height + 36)
+			map_corner = get_viewport().size - Vector2(compass_width, compass_height + self.minimap_scale[self.ui_size]["offset"])
 		else:
 			map_corner = Vector2(get_viewport().size.x - compass_width, 0)
 
@@ -341,6 +347,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if !is_any_dialog_visible():
 		set_minimal_mouse_block()
 
+	compass_width = compass_width * self.minimap_scale[self.ui_size]["factor"]
+	compass_height = compass_height * self.minimap_scale[self.ui_size]["factor"]
+
 	if self.map_id != old_map_id:
 		print("New Map")
 
@@ -372,7 +381,7 @@ func reset_minimap_masks():
 	compass_corner1 = Vector2(0, 0)
 	compass_corner2 = viewport_size
 	if !map_is_open && !compass_is_top_right:
-		compass_corner1 = Vector2(viewport_size.x-compass_width, 36)
+		compass_corner1 = Vector2(viewport_size.x-compass_width, self.minimap_scale[self.ui_size]["offset"])
 		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
 	elif !map_is_open && compass_is_top_right:
 		compass_corner1 = viewport_size - Vector2(compass_width, compass_height)
