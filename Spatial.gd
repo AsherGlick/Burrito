@@ -47,6 +47,17 @@ var taco_parser: TacoParser
 var x11_window_id_burrito: int
 var is_transient:bool = false
 
+# Variables that store informations about ui scaling
+# The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
+var ui_size: int = 1
+# This dictionary holds the left and right margin for the main button for every ui-scale
+const button_margin = {
+	0: {"left": 292, "right": 318}, # small
+	1: {"left": 323, "right": 352}, # normal
+	2: {"left": 361, "right": 394}, # large
+	3: {"left": 395, "right": 431}  # larger
+}
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
@@ -318,6 +329,17 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# TODO: after looking back at this it has become obvious this is just degrees
 	# vs radians. 70deg = 1.22173rad and 25deg = 0.4363323rad. We should redo
 	# this to just be a radian to degree conversion.
+
+	# Calculations to dynamically place the main icon/button
+	self.ui_size = int(identity["uisz"])
+	# If the value is not part of the dictionary use the "normal" size.
+	if !self.button_margin.has(self.ui_size):
+		self.ui_size = 1
+
+	$Control/GlobalMenuButton.margin_left = self.button_margin[self.ui_size]["left"]
+	$Control/GlobalMenuButton.margin_right = self.button_margin[self.ui_size]["right"]
+	if !is_any_dialog_visible():
+		set_minimal_mouse_block()
 
 	if self.map_id != old_map_id:
 		print("New Map")
@@ -682,11 +704,16 @@ func clear_adjustment_nodes():
 		child.queue_free()
 
 
-func _on_Dialog_hide():
+func is_any_dialog_visible():
 	for dialog in $Control/Dialogs.get_children():
 		if dialog.visible:
-			return
-	set_minimal_mouse_block()
+			return true
+	return false
+
+
+func _on_Dialog_hide():
+	if !is_any_dialog_visible():
+		set_minimal_mouse_block()
 
 
 func _on_LoadPath_pressed():
