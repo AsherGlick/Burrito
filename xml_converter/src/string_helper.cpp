@@ -288,9 +288,10 @@ bool has_suffix(std::string const& fullString, std::string const& ending) {
     }
 }
 
-void ensure_trailing_slash(std::string* directory_path) {
-    if (!has_suffix(*directory_path, "/")) {
-        *directory_path += "/";
+string join_file_paths(string directory_path, string file_path) {
+    string output = directory_path;
+    if (!has_suffix(directory_path, "/")) {
+        output += "/";
     }
-    return;
+    return output + file_path;
 }
