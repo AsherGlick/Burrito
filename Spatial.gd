@@ -51,13 +51,13 @@ var is_transient:bool = false
 # Scenes used throughout this scene
 const route_scene = preload("res://Route.tscn")
 const icon_scene = preload("res://Icon.tscn")
+const category_scene = preload("res://Category.tscn")
 const path2d_scene = preload("res://Route2D.tscn")
 const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 
 ##########Node Connections###########
 onready var marker_packs := $Control/Dialogs/MarkerPacks/MarkerPacks as Tree
-onready var icons := $Icons as Spatial
-onready var paths := $Paths as Spatial
+onready var categories := $Categories as Spatial
 onready var minimap := $Control/MiniMap as Node2D
 
 
@@ -232,8 +232,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var unchecked_flag = (ui_flags & 0xFFFFFF80) != 0x00000000;
 
 	if map_is_open != map_was_open:
-		$Paths.visible = !map_is_open
-		$Icons.visible = !map_is_open
+		self.categories.visible = !map_is_open
 		reset_minimap_masks()
 		map_was_open = map_is_open
 
@@ -344,14 +343,18 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		load_waypoint_markers(self.map_id)
 
 	# TODO move this to reset_minimap_masks
-	for child in $Paths.get_children():
-		child.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
-
-	# TODO move this to reset_minimap_masks
-	for icon in $Icons.get_children():
-		icon.material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
+	set_shader_param(self.categories, compass_width, compass_height)
 
 	reset_minimap_masks()
+
+func set_shader_param(node: Spatial, compass_width, compass_height):
+	for child in node.get_children():
+		if child.get_name().find("Path") != -1:
+			child.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
+		if child.get_name().find("Icon") != -1:
+			child.material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
+		if child.get_name().find("Category") != -1:
+			set_shader_param(child, compass_width, compass_height)
 
 
 func decode_timeout_packet(spb: StreamPeerBuffer):
@@ -470,15 +473,11 @@ func _unhandled_input(event):
 ################################################################################
 func clear_map_markers():
 	# Clear all the rendered assets to make way for the new ones
-	for path in paths.get_children():
-		path.queue_free()
+	for cateogry in self.categories.get_children():
+		cateogry.queue_free()
 
 	for path2d in minimap.get_children():
 		path2d.queue_free()
-
-	for icon in icons.get_children():
-		icon.queue_free()
-
 
 func init_category_tree():
 	self.marker_packs.clear()
@@ -490,19 +489,22 @@ func init_category_tree():
 
 
 func waypoint_categories_to_godot_nodes():
-	for category in self.waypoint_data.get_category():
-		_waypoint_categories_to_godot_nodes(null, category, category.get_name(), false)
+	for waypoint_category in self.waypoint_data.get_category():
+		_waypoint_categories_to_godot_nodes(null, waypoint_category, waypoint_category.get_name(), self.categories, false)
 
 
-func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category_name: String, collapsed: bool):
+func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, full_category_name: String, parent_category: Spatial, collapsed: bool):
+	var new_category = category_scene.instance()
+	parent_category.add_child(new_category)
+	new_category.waypoint_category = waypoint_category
 	var category_item: TreeItem = self.marker_packs.create_item(item)
-	if category.get_name() == "":
+	if waypoint_category.get_name() == "":
 		# If this is called, there is an error in the Waypoint data
 		category_item.set_text(0, "No name")
 		category_item.set_metadata(0, "")
 		print("Category found with no name.")
 		return
-	category_item.set_text(0, category.get_name())
+	category_item.set_text(0, waypoint_category.get_name())
 	category_item.set_metadata(0, full_category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 	category_item.set_checked(1, Settings.local_category_data.get(full_category_name, {}).get("checked", false))
@@ -511,7 +513,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 	category_item.set_collapsed(collapsed)
 	category_item.set_selectable(1, false)
 
-	for path in category.get_trail():
+	for path in waypoint_category.get_trail():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
 		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
@@ -523,9 +525,10 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 			print("Warning: No texture found in " , full_category_name)
 			continue
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
-		gen_new_path(path_points, full_texture_path, path, category_item)
+		gen_new_path(path_points, full_texture_path, path, category_item, new_category)
+		
 
-	for icon in category.get_icon():
+	for icon in waypoint_category.get_icon():
 		var position = icon.get_position()
 		if position == null:
 			print("Warning: No position found for icon ", full_category_name)
@@ -536,10 +539,10 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, category, full_category
 			print("Warning: No texture found in " , full_category_name)
 			continue
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
-		gen_new_icon(position_vector, full_texture_path, icon, category_item)
+		gen_new_icon(position_vector, full_texture_path, icon, category_item, new_category)
 
-	for category_child in category.get_children():
-		_waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), true)
+	for category_child in waypoint_category.get_children():
+		_waypoint_categories_to_godot_nodes(category_item, category_child, full_category_name + "." + category_child.get_name(), new_category, true)
 
 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
@@ -547,9 +550,8 @@ func apply_category_visibility_to_nodes(category_item: TreeItem):
 		"checked" : category_item.is_checked(1),
 	}
 	Settings.save()
-	var temporary_cateogry_visibility_data = populate_update_dict(category_item, {})
-	update_node_visibility(temporary_cateogry_visibility_data, self.paths)
-	update_node_visibility(temporary_cateogry_visibility_data, self.icons)
+	var temporary_category_visibility_data = populate_update_dict(category_item, {})
+	update_node_visibility(temporary_category_visibility_data)
 
 
 # Builds a dictionary of the visibility of a specific category and all children
@@ -561,19 +563,22 @@ func populate_update_dict(category_item: TreeItem, category_visibility_data):
 		child_item = child_item.get_next()
 	return category_visibility_data
 
+
 #Updates the visibilty of a node and all children.
-func update_node_visibility(cateogry_data, nodes):
-	for node in nodes.get_children():
-		var node_name = node.category.get_metadata(0)
-		if node_name in cateogry_data:
-			if cateogry_data[node_name]:
-				node.visible = true
-			else:
-				node.visible = false
-			if node.get_name() == "Path":
-				var index = node.get_index()
-				var route2d = self.minimap.get_child(index)
-				route2d.visible= node.visible
+func update_node_visibility(category_data):
+	for key in category_data.keys():
+		var category = search_node_by_name(self.categories, key)
+		category.print_tree_pretty()
+		for node in category.get_children():
+			print(node.get_name())
+			if node.get_name().find("Category") == -1:
+				if category_data[key]:
+					node.visible = true
+				else:
+					node.visible = false
+				if node.get_name().find("Path") != -1:
+					self.minimap.get_node(node.minimap_path).visible = node.visible
+
 
 #Child visibility is contigent on all parents having permission
 func is_category_visible(category_item: TreeItem) -> bool:
@@ -587,7 +592,7 @@ func is_category_visible(category_item: TreeItem) -> bool:
 		return false
 
 
-func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem):
+func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem, category: Spatial):
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
@@ -616,13 +621,11 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_route.create_mesh(points_3d)
 	new_route.set_texture(texture)
 	new_route.waypoint = waypoint_trail
-	new_route.category = category_item
 	if category_item != null:
 		new_route.visible = is_category_visible(category_item)
 	else:
 		new_route.visible = false
-
-	paths.add_child(new_route)
+	category.add_child(new_route)
 
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
@@ -632,24 +635,43 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_2d_path.points = points_2d
 	new_2d_path.texture = texture
 	new_2d_path.visible = new_route.visible
-	minimap.add_child(new_2d_path)
+	self.minimap.add_child(new_2d_path)
+	new_route.minimap_path= new_2d_path.get_path()
 
 	self.currently_active_path = new_route
 	self.currently_active_path_2d = new_2d_path
 
 
-func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem):
+func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem, category: Spatial):
 	position.z = -position.z
 	var new_icon = icon_scene.instance()
 	new_icon.translation = position
 	new_icon.set_icon_image(texture_path)
 	new_icon.waypoint = waypoint_icon
-	new_icon.category = category_item
 	if category_item != null:
 		new_icon.visible = is_category_visible(category_item)
 	else:
 		new_icon.visible = false
-	icons.add_child(new_icon)
+	category.add_child(new_icon)
+
+func search_node_by_name(node, target_name):
+	for child in node.get_children():
+		var result = _search_node_by_name(child, target_name)
+		if result:
+			return result
+
+func _search_node_by_name(node: Spatial, target_name: String):
+	var split_name = target_name.split(".")
+	if "waypoint_category" in node and node.waypoint_category.get_name() == split_name[0]:
+		if split_name.size() > 1:
+			split_name.remove(0)
+			for child in node.get_children():
+				if child.get_name().find("Category") != -1:
+					var result = _search_node_by_name(child, split_name.join("."))
+					if result:
+						return result
+		else:
+			return node
 
 # This function take all of the currently rendered objects and converts it into
 # the data format that is saved/loaded from.
@@ -696,13 +718,15 @@ func gen_adjustment_nodes():
 		print("No category selected")
 		return
 
-	for index in range(self.paths.get_child_count()):
-		var route = self.paths.get_child(index)
-		var path2d = self.minimap.get_child(index)
-		if self.currently_active_category.get_metadata(0) == route.waypoint.get_category().get_name():
+	var category = search_node_by_name(self.categories, self.currently_active_category.get_metadata(0))
+	for child in category.get_children():
+		if child.get_name().find("Path") != -1:
+			var route = child
+			print(route.minimap_path)
+			var path2d = self.minimap.get_node(route.minimap_path)
+			print(path2d.texture)
 			for i in range(route.get_point_count()):
 				var gizmo_position = route.get_point_position(i)
-
 				# Simplistic cull to prevent nodes that are too far away to be
 				# visible from being created. Additional work can be done here
 				# if this is not enough of an optimization in the future.
@@ -714,16 +738,15 @@ func gen_adjustment_nodes():
 				new_gizmo.connect("selected", self, "on_gizmo_selected")
 				new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 				$Gizmos.add_child(new_gizmo)
-
-	for index in range(self.icons.get_child_count()):
-		var icon = self.icons.get_child(index)
-		if self.currently_active_category.get_metadata(0) == icon.waypoint.get_category().get_name():
-			var new_gizmo = gizmo_scene.instance()
-			new_gizmo.translation = icon.translation
-			new_gizmo.link_point("icon", icon)
-			new_gizmo.connect("selected", self, "on_gizmo_selected")
-			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
-			$Gizmos.add_child(new_gizmo)
+		if child.get_name().find("Icon") != -1:
+			var icon = child
+			if self.currently_active_category.get_metadata(0) == icon.waypoint.get_category().get_name():
+				var new_gizmo = gizmo_scene.instance()
+				new_gizmo.translation = icon.translation
+				new_gizmo.link_point("icon", icon)
+				new_gizmo.connect("selected", self, "on_gizmo_selected")
+				new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+				$Gizmos.add_child(new_gizmo)
 
 
 var currently_selected_node = null
@@ -826,16 +849,18 @@ func _on_NewPath_pressed():
 # Create a new icon and give it the texture
 ################################################################################
 func _on_NewIcon_pressed():
-	var waypoint_icon = Waypoint.Icon.new()
-	waypoint_icon.new_category().set_name(self.currently_active_category.get_metadata(0))
-	gen_new_icon(self.player_position, self.next_texture_path, waypoint_icon, self.currently_active_category)
+	var category = search_node_by_name(self.categories, self.currently_active_category.get_metadata(0))
+	var waypoint_category = category.waypoint_category
+	var waypoint_icon = waypoint_category.new_icon()
+	gen_new_icon(self.player_position, self.next_texture_path, waypoint_icon, self.currently_active_category, category)
 
 # A new path point is created
 func _on_NewPathPoint_pressed():
 	if self.currently_active_path == null:
-		var waypoint_trail = Waypoint.Trail.new()
-		waypoint_trail.new_category().set_name(self.currently_active_category.get_metadata(0))
-		gen_new_path([self.player_position], self.next_texture_path, waypoint_trail, self.currently_active_category)
+		var category = search_node_by_name(self.categories, self.currently_active_category.get_metadata(0))
+		var waypoint_category = category.waypoint_category
+		var waypoint_trail = waypoint_category.new_trail()
+		gen_new_path([self.player_position], self.next_texture_path, waypoint_trail, self.currently_active_category, category)
 	else:
 		var z_accurate_player_position = player_position
 		z_accurate_player_position.z = -z_accurate_player_position.z
