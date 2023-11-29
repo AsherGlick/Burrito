@@ -58,10 +58,10 @@ const button_margin = {
 	3: {"left": 395, "right": 431}  # larger
 }
 const minimap_scale = {
-	0: {"offset": 32, "factor": 0.904}, # small
+	0: {"offset": 32, "factor": 0.9}, # small
 	1: {"offset": 36, "factor": 1}, # normal
-	2: {"offset": 40, "factor": 1.118}, # large
-	3: {"offset": 44, "factor": 1.223} # larger
+	2: {"offset": 40, "factor": 1.11}, # large
+	3: {"offset": 44, "factor": 1.22} # larger
 }
 
 # Called when the node enters the scene tree for the first time.
