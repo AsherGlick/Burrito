@@ -12,6 +12,8 @@ output_dir = ""
 source_path: str = ""
 target_path: str = ""
 
+unnamed_count: int = 0
+
 def main():
     if len(sys.argv) != 3:
         print(f"USAGE: {sys.argv[0]} SRC_DIR DEST_DIR")
@@ -50,11 +52,37 @@ def eprint(*args, **kwargs):
         print(eprint_title)
     print("   ", *args, **kwargs)
 
-
+other_ignored_tags = set([
+    "achievementBit",
+    "tip-name",
+    "tip-description",
+    "achievementId", 
+    "autotrigger",
+    "copy",
+    "copy-message",
+    "triggerrange",
+    "autotrigger",
+    "bh-color",
+    "bh-DisplayName",
+    "bh-heightOffset",
+    "bh-iconSize",
+    "bh-inGameVisibility",
+    "bh-mapVisibility",
+    "bh-miniMapVisibility",
+    "bh-name",
+    "bounce",
+    "bounce-height",
+    "copy",
+    "copy-message",
+    "inGameVisibility",
+    "Name",
+    "profession",
+    "triggerrange",
+])
 ################################################################################
 #
 ################################################################################
-def parse_marker_category(marker_category_node, base=""):
+def parse_marker_category(marker_category_node, base="", parent_limited_attribs={}):
     required_keys = set(["DisplayName", "name" ])
     allowed_keys = set([
         "iconFile",
@@ -76,7 +104,7 @@ def parse_marker_category(marker_category_node, base=""):
         "texture",
         "trailScale", # Ignored
         "scaleOnMapWithZoom", # Ignored
-    ])
+    ]) | other_ignored_tags
 
 
     metadata_tree = {}
@@ -94,7 +122,7 @@ def parse_marker_category(marker_category_node, base=""):
             eprint("key {} missing from marker category".format(required_key))
 
 
-    limited_attribs = {}
+    limited_attribs = {k:v for (k, v) in parent_limited_attribs.items()}
     if "iconFile" in attribs:
         limited_attribs["icon_file"] = attribs["iconFile"]
 
@@ -110,12 +138,19 @@ def parse_marker_category(marker_category_node, base=""):
         limited_attribs["texture"] = attribs["texture"]
 
 
-    name = attribs["name"]
+    name = None
+    if "name" in attribs:
+        name = attribs["name"]
+
+    if name == None:
+        global unnamed_count
+        name = "Unnamed"+str(unnamed_count)
+        unnamed_count += 1
 
     metadata_tree[base + name] = limited_attribs
 
     for child in marker_category_node:
-        subtree = parse_marker_category(child, base + name + ".")
+        subtree = parse_marker_category(child, base + name + ".", parent_limited_attribs=limited_attribs)
         for elem in subtree:
             metadata_tree[elem] = subtree[elem]
 
@@ -198,7 +233,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
         "resetLength", # Ignored
         "info", # Ignored
         "infoRange", # Ignored
-    ])
+    ]) | other_ignored_tags
 
     required_trail_attrib = set([
         "texture",
@@ -213,7 +248,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
         "mapVisibility",  # Ignored
         "miniMapVisibility",  # Ignored
         "fadeNear",  # Ignored
-    ])
+    ]) | other_ignored_tags
 
     burrito_marker_data = {}
 
@@ -353,6 +388,9 @@ def copyimage(image_path):
 
 
 def open_trail_format(trl_path: str) -> Tuple[int, List[float]]:
+    if not os.path.exists(trl_path):
+        eprint("Cannot find file {}".format(trl_path))
+        return (0, [])
     with open(trl_path, 'rb') as f:
         file_bytes = f.read()
 
