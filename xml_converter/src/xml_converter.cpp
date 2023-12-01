@@ -43,7 +43,7 @@ vector<string> get_files_by_suffix(string directory, string suffix) {
     while ((entry = readdir(dir)) != NULL) {
         string filename = entry->d_name;
         if (filename != "." && filename != "..") {
-            string path = directory + "/" + filename;
+            string path = join_file_paths(directory, filename);
             if (entry->d_type == DT_DIR) {
                 vector<string> subfiles = get_files_by_suffix(path, suffix);
                 // Default: markerpacks have all xml files in the first directory
@@ -68,9 +68,9 @@ void move_supplementary_files(string input_directory, string output_directory) {
     while ((entry = readdir(dir)) != NULL) {
         string filename = entry->d_name;
         if (filename != "." && filename != "..") {
-            string path = input_directory + "/" + filename;
+            string path = join_file_paths(input_directory, filename);
             if (entry->d_type == DT_DIR) {
-                string new_directory = output_directory + "/" + filename;
+                string new_directory = join_file_paths(output_directory, filename);
                 if (mkdir(new_directory.c_str(), 0700) == -1 && errno != EEXIST) {
                     cout << "Error making " << new_directory << endl;
                     continue;
@@ -83,7 +83,7 @@ void move_supplementary_files(string input_directory, string output_directory) {
             else {
                 // TODO: Only include files that are referenced by the
                 // individual markers in order to avoid any unnessecary files
-                string new_path = output_directory + "/" + filename;
+                string new_path = join_file_paths(output_directory, filename);
                 copy_file(path, new_path);
             }
         }
@@ -107,15 +107,12 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
 
 void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
-    if (!has_suffix(output_path, "/")) {
-        output_path += "/";
-    }
     if (!filesystem::is_directory(output_path)) {
         if (!filesystem::create_directory(output_path)) {
             cout << "Error: " << output_path << "is not a valid directory path" << endl;
         }
     }
-    write_xml_file(output_path + "xml_file.xml", marker_categories, parsed_pois);
+    write_xml_file(join_file_paths(output_path, "xml_file.xml"), marker_categories, parsed_pois);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
