@@ -177,7 +177,7 @@ void _write_protobuf_file(
 }
 
 void write_protobuf_file(
-    string filepath,
+    const string& filepath,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
@@ -207,7 +207,7 @@ void write_protobuf_file(
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
-    string proto_directory,
+    const string& proto_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {

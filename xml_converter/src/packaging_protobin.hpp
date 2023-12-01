@@ -16,13 +16,13 @@ void read_protobuf_file(
     std::vector<Parseable*>* parsed_pois);
 
 void write_protobuf_file(
-    std::string proto_directory,
+    const std::string& proto_directory,
     const StringHierarchy& category_filter,
     const std::map<std::string, Category>* marker_categories,
     const std::vector<Parseable*>* parsed_pois);
 
 void write_protobuf_file_per_map_id(
-    std::string proto_directory,
+    const std::string& proto_directory,
     const StringHierarchy& category_filter,
     const std::map<std::string, Category>* marker_categories,
     const std::vector<Parseable*>* parsed_pois);
