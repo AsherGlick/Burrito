@@ -21,4 +21,4 @@ std::vector<uint8_t> base64_decode(std::string const&);
 
 std::string get_base_dir(std::string filepath);
 bool has_suffix(std::string const& fullString, std::string const& ending);
-std::string join_file_paths(std::string directory_path, std::string file_path);
+std::string join_file_paths(const std::string& path_a, const std::string& path_b);

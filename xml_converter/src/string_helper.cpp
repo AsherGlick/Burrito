@@ -288,10 +288,10 @@ bool has_suffix(std::string const& fullString, std::string const& ending) {
     }
 }
 
-string join_file_paths(string directory_path, string file_path) {
-    string output = directory_path;
-    if (!has_suffix(directory_path, "/")) {
+string join_file_paths(const string& path_a, const string& path_b) {
+    string output = path_a;
+    if (!has_suffix(path_a, "/")) {
         output += "/";
     }
-    return output + file_path;
+    return output + path_b;
 }
