@@ -233,7 +233,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 
 	if map_is_open != map_was_open:
 		self.categories.visible = !map_is_open
-		reset_minimap_masks()
+		reset_masks()
 		map_was_open = map_is_open
 
 	if unchecked_flag:
@@ -337,24 +337,12 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
-
 		print("Saving Old Map")
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 
-	# TODO move this to reset_minimap_masks
-	set_shader_param(self.categories, compass_width, compass_height)
+	reset_masks()
 
-	reset_minimap_masks()
-
-func set_shader_param(node: Spatial, compass_width, compass_height):
-	for child in node.get_children():
-		if child.get_name().find("Path") != -1:
-			child.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
-		if child.get_name().find("Icon") != -1:
-			child.material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
-		if child.get_name().find("Category") != -1:
-			set_shader_param(child, compass_width, compass_height)
 
 
 func decode_timeout_packet(spb: StreamPeerBuffer):
@@ -364,7 +352,7 @@ func decode_timeout_packet(spb: StreamPeerBuffer):
 		launch_burrito_link()
 
 
-func reset_minimap_masks():
+func reset_masks():
 	var viewport_size = get_viewport().size
 	compass_corner1 = Vector2(0, 0)
 	compass_corner2 = viewport_size
@@ -378,6 +366,23 @@ func reset_minimap_masks():
 	for minimap_path in $Control/MiniMap.get_children():
 		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
 		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
+
+	for category in self.categories.get_children():
+		_reset_masks(category)
+
+
+func _reset_masks(category: Spatial):
+	print(category.paths)
+	print(category.icons)
+	print(category.subcategories)
+	for path in category.paths:
+		path.print_tree_pretty()
+		path.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
+	for icon in category.icons:
+		icon.material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
+	for subcategory in category.subcategories:
+		_reset_masks(subcategory)
+
 
 var waypoint_data = Waypoint.Waypoint.new()
 var marker_file_dir = "user://protobins/"
@@ -495,7 +500,7 @@ func waypoint_categories_to_godot_nodes():
 
 func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, full_category_name: String, parent_category: Spatial, collapsed: bool):
 	var new_category = category_scene.instance()
-	parent_category.add_child(new_category)
+	parent_category.add_subcategory(new_category)
 	new_category.waypoint_category = waypoint_category
 	var category_item: TreeItem = self.marker_packs.create_item(item)
 	if waypoint_category.get_name() == "":
@@ -568,16 +573,14 @@ func populate_update_dict(category_item: TreeItem, category_visibility_data):
 func update_node_visibility(category_data):
 	for key in category_data.keys():
 		var category = search_node_by_name(self.categories, key)
-		category.print_tree_pretty()
-		for node in category.get_children():
-			print(node.get_name())
-			if node.get_name().find("Category") == -1:
-				if category_data[key]:
-					node.visible = true
-				else:
-					node.visible = false
-				if node.get_name().find("Path") != -1:
-					self.minimap.get_node(node.minimap_path).visible = node.visible
+		var visibility = false
+		if category_data[key]:
+			visibility = true
+		for node in category.icons:
+			node.visible = visibility
+		for node in category.paths:
+			node.visible = visibility
+			self.minimap.get_node(node.minimap_path).visible = node.visible
 
 
 #Child visibility is contigent on all parents having permission
@@ -625,7 +628,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 		new_route.visible = is_category_visible(category_item)
 	else:
 		new_route.visible = false
-	category.add_child(new_route)
+	category.add_path(new_route)
 
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
@@ -652,7 +655,7 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 		new_icon.visible = is_category_visible(category_item)
 	else:
 		new_icon.visible = false
-	category.add_child(new_icon)
+	category.add_icon(new_icon)
 
 func search_node_by_name(node, target_name):
 	for child in node.get_children():
@@ -665,11 +668,10 @@ func _search_node_by_name(node: Spatial, target_name: String):
 	if "waypoint_category" in node and node.waypoint_category.get_name() == split_name[0]:
 		if split_name.size() > 1:
 			split_name.remove(0)
-			for child in node.get_children():
-				if child.get_name().find("Category") != -1:
-					var result = _search_node_by_name(child, split_name.join("."))
-					if result:
-						return result
+			for subcategory in node.subcategories:
+				var result = _search_node_by_name(subcategory, split_name.join("."))
+				if result:
+					return result
 		else:
 			return node
 
@@ -719,34 +721,30 @@ func gen_adjustment_nodes():
 		return
 
 	var category = search_node_by_name(self.categories, self.currently_active_category.get_metadata(0))
-	for child in category.get_children():
-		if child.get_name().find("Path") != -1:
-			var route = child
-			print(route.minimap_path)
-			var path2d = self.minimap.get_node(route.minimap_path)
-			print(path2d.texture)
-			for i in range(route.get_point_count()):
-				var gizmo_position = route.get_point_position(i)
-				# Simplistic cull to prevent nodes that are too far away to be
-				# visible from being created. Additional work can be done here
-				# if this is not enough of an optimization in the future.
-				if (gizmo_position.distance_squared_to(self.correct_player_position) > 10000):
-					continue
-				var new_gizmo = gizmo_scene.instance()
-				new_gizmo.translation = gizmo_position
-				new_gizmo.link_point("path", route, path2d, i)
-				new_gizmo.connect("selected", self, "on_gizmo_selected")
-				new_gizmo.connect("deselected", self, "on_gizmo_deselected")
-				$Gizmos.add_child(new_gizmo)
-		if child.get_name().find("Icon") != -1:
-			var icon = child
-			if self.currently_active_category.get_metadata(0) == icon.waypoint.get_category().get_name():
-				var new_gizmo = gizmo_scene.instance()
-				new_gizmo.translation = icon.translation
-				new_gizmo.link_point("icon", icon)
-				new_gizmo.connect("selected", self, "on_gizmo_selected")
-				new_gizmo.connect("deselected", self, "on_gizmo_deselected")
-				$Gizmos.add_child(new_gizmo)
+	for route in category.paths:
+		print(route.minimap_path)
+		var path2d = self.minimap.get_node(route.minimap_path)
+		print(path2d.texture)
+		for i in range(route.get_point_count()):
+			var gizmo_position = route.get_point_position(i)
+			# Simplistic cull to prevent nodes that are too far away to be
+			# visible from being created. Additional work can be done here
+			# if this is not enough of an optimization in the future.
+			if (gizmo_position.distance_squared_to(self.correct_player_position) > 10000):
+				continue
+			var new_gizmo = gizmo_scene.instance()
+			new_gizmo.translation = gizmo_position
+			new_gizmo.link_point("path", route, path2d, i)
+			new_gizmo.connect("selected", self, "on_gizmo_selected")
+			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+			$Gizmos.add_child(new_gizmo)
+	for icon in category.icons:
+		var new_gizmo = gizmo_scene.instance()
+		new_gizmo.translation = icon.translation
+		new_gizmo.link_point("icon", icon)
+		new_gizmo.connect("selected", self, "on_gizmo_selected")
+		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+		$Gizmos.add_child(new_gizmo)
 
 
 var currently_selected_node = null
