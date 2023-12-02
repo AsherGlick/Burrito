@@ -30,7 +30,10 @@ void xml_attribute_to_image(
 //
 // Converts an image into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string image_to_xml_attribute(const string& attribute_name, const Image* value) {
+string image_to_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const Image* value) {
     return " " + attribute_name + "=\"" + value->path + "\"";
 }
 
@@ -39,7 +42,11 @@ string image_to_xml_attribute(const string& attribute_name, const Image* value) 
 //
 // Parses an Image from proto
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_image(waypoint::TexturePath input, Image* value, bool* is_set) {
+void proto_to_image(
+    waypoint::TexturePath input,
+    ProtoReaderState* state,
+    Image* value,
+    bool* is_set) {
     Image image;
     image.path = input.path();
     *value = image;
@@ -51,7 +58,10 @@ void proto_to_image(waypoint::TexturePath input, Image* value, bool* is_set) {
 //
 // Writes a string filepath to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void image_to_proto(Image value, std::function<void(waypoint::TexturePath*)> setter) {
+void image_to_proto(
+    Image value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::TexturePath*)> setter) {
     waypoint::TexturePath* texture = new waypoint::TexturePath();
     texture->set_path(value.path);
     setter(texture);

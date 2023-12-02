@@ -34,7 +34,11 @@ void xml_attribute_to_position(
     *is_set = true;
 }
 
-void proto_to_position(waypoint::Position input, Position* value, bool* is_set) {
+void proto_to_position(
+    waypoint::Position input,
+    ProtoReaderState* state,
+    Position* value,
+    bool* is_set) {
     Position position;
     position.x_position = input.x();
     position.y_position = input.y();
@@ -43,7 +47,10 @@ void proto_to_position(waypoint::Position input, Position* value, bool* is_set) 
     *is_set = true;
 }
 
-void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter) {
+void position_to_proto(
+    Position value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::Position*)> setter) {
     waypoint::Position* proto_position = new waypoint::Position();
     proto_position->set_x(value.x_position);
     proto_position->set_y(value.y_position);

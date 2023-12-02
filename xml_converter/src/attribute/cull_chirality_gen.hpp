@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 #include "waypoint.pb.h"
 
 class XMLError;
@@ -22,8 +25,18 @@ void xml_attribute_to_cull_chirality(
     CullChirality* value,
     bool* is_set);
 
-std::string cull_chirality_to_xml_attribute(const std::string& attribute_name, const CullChirality* value);
+std::string cull_chirality_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const CullChirality* value);
 
-void proto_to_cull_chirality(waypoint::CullChirality input, CullChirality* value, bool* is_set);
+void proto_to_cull_chirality(
+    waypoint::CullChirality input,
+    ProtoReaderState* state,
+    CullChirality* value,
+    bool* is_set);
 
-void cull_chirality_to_proto(CullChirality value, std::function<void(waypoint::CullChirality)> setter);
+void cull_chirality_to_proto(
+    CullChirality value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::CullChirality)> setter);

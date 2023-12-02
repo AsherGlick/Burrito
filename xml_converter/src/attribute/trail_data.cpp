@@ -86,7 +86,10 @@ void xml_attribute_to_trail_data(
 // TODO: Write ".trl" files from data
 // TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
-string trail_data_to_xml_attribute(const string& attribute_name, const TrailData* value) {
+string trail_data_to_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const TrailData* value) {
     return " " + attribute_name + "=\"" + "temp_name_of_trail.trl" + "\"";
 }
 
@@ -95,7 +98,11 @@ string trail_data_to_xml_attribute(const string& attribute_name, const TrailData
 //
 // Parses a TrailData from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_trail_data(waypoint::TrailData input, TrailData* value, bool* is_set) {
+void proto_to_trail_data(
+    waypoint::TrailData input,
+    ProtoReaderState* state,
+    TrailData* value,
+    bool* is_set) {
     TrailData trail_data;
     trail_data.points_x = {input.points_x().begin(), input.points_x().end()};
     trail_data.points_y = {input.points_y().begin(), input.points_y().end()};
@@ -109,7 +116,10 @@ void proto_to_trail_data(waypoint::TrailData input, TrailData* value, bool* is_s
 //
 // Saves a TrailData object to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void trail_data_to_proto(TrailData value, std::function<void(waypoint::TrailData*)> setter) {
+void trail_data_to_proto(
+    TrailData value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::TrailData*)> setter) {
     waypoint::TrailData* trail_data = new waypoint::TrailData();
     *trail_data->mutable_points_x() = {value.points_x.begin(), value.points_x.end()};
     *trail_data->mutable_points_y() = {value.points_y.begin(), value.points_y.end()};

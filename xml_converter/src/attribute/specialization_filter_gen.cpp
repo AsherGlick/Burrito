@@ -402,7 +402,10 @@ void xml_attribute_to_specialization_filter(
     *is_set = true;
 }
 
-string specialization_filter_to_xml_attribute(const std::string& attribute_name, const SpecializationFilter* value) {
+string specialization_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const SpecializationFilter* value) {
     vector<string> flag_values;
     if (value->elementalist_tempest == true) {
         flag_values.push_back("48");
@@ -624,7 +627,11 @@ string specialization_filter_to_xml_attribute(const std::string& attribute_name,
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-void proto_to_specialization_filter(waypoint::SpecializationFilter input, SpecializationFilter* value, bool* is_set) {
+void proto_to_specialization_filter(
+    waypoint::SpecializationFilter input,
+    ProtoReaderState* state,
+    SpecializationFilter* value,
+    bool* is_set) {
     SpecializationFilter specialization_filter;
     specialization_filter.elementalist_tempest = input.elementalist_tempest();
     specialization_filter.engineer_scrapper = input.engineer_scrapper();
@@ -702,7 +709,10 @@ void proto_to_specialization_filter(waypoint::SpecializationFilter input, Specia
     *is_set = true;
 }
 
-void specialization_filter_to_proto(SpecializationFilter value, std::function<void(waypoint::SpecializationFilter*)> setter) {
+void specialization_filter_to_proto(
+    SpecializationFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::SpecializationFilter*)> setter) {
     waypoint::SpecializationFilter* proto_specialization_filter = new waypoint::SpecializationFilter();
     bool should_write = false;
     proto_specialization_filter->set_elementalist_tempest(value.elementalist_tempest);

@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
 
@@ -28,8 +31,18 @@ void xml_attribute_to_color(
     Color* value,
     bool* is_set);
 
-std::string color_to_xml_attribute(const std::string& attribute_name, const Color* value);
+std::string color_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const Color* value);
 
-void proto_to_color(waypoint::RGBAColor input, Color* value, bool* is_set);
+void proto_to_color(
+    waypoint::RGBAColor input,
+    ProtoReaderState* state,
+    Color* value,
+    bool* is_set);
 
-void color_to_proto(Color value, std::function<void(waypoint::RGBAColor*)> setter);
+void color_to_proto(
+    Color value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::RGBAColor*)> setter);

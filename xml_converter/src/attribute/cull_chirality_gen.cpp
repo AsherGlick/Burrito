@@ -37,7 +37,10 @@ void xml_attribute_to_cull_chirality(
     *is_set = true;
 }
 
-string cull_chirality_to_xml_attribute(const std::string& attribute_name, const CullChirality* value) {
+string cull_chirality_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const CullChirality* value) {
     if (*value == CullChirality::none) {
         return " " + attribute_name + "=\"" + "none" + "\"";
     }
@@ -52,7 +55,11 @@ string cull_chirality_to_xml_attribute(const std::string& attribute_name, const 
     }
 }
 
-void proto_to_cull_chirality(waypoint::CullChirality input, CullChirality* value, bool* is_set) {
+void proto_to_cull_chirality(
+    waypoint::CullChirality input,
+    ProtoReaderState* state,
+    CullChirality* value,
+    bool* is_set) {
     switch (input) {
         case waypoint::CullChirality::none:
             *value = CullChirality::none;
@@ -73,7 +80,10 @@ void proto_to_cull_chirality(waypoint::CullChirality input, CullChirality* value
     }
 }
 
-void cull_chirality_to_proto(CullChirality value, std::function<void(waypoint::CullChirality)> setter) {
+void cull_chirality_to_proto(
+    CullChirality value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::CullChirality)> setter) {
     switch (value) {
         case CullChirality::none:
             setter(waypoint::CullChirality::none);

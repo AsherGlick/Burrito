@@ -41,7 +41,10 @@ void xml_attribute_to_{{attribute_name}}(
     *is_set = true;
 }
 
-string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value) {
+string {{attribute_name}}_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const {{class_name}}* value) {
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_fields) %}
             {%-if i == 0 and n == 0:%}
@@ -58,7 +61,11 @@ string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, co
     }
 }
 
-void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}* value, bool* is_set) {
+void proto_to_{{attribute_name}}(
+    {{proto_field_cpp_type}} input,
+    ProtoReaderState* state,
+    {{class_name}}* value,
+    bool* is_set) {
     switch (input) {
         {% for attribute_variable in attribute_variables %}
             case {{proto_field_cpp_type}}::{{attribute_variable.attribute_name}}:
@@ -73,7 +80,10 @@ void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}*
     }
 }
 
-void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}})> setter) {
+void {{attribute_name}}_to_proto(
+    {{class_name}} value,
+    ProtoWriterState* state,
+    std::function<void({{proto_field_cpp_type}})> setter) {
     switch (value) {
         {% for attribute_variable in attribute_variables %}
             case {{class_name}}::{{attribute_variable.attribute_name}}:

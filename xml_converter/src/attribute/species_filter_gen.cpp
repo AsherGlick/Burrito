@@ -53,7 +53,10 @@ void xml_attribute_to_species_filter(
     *is_set = true;
 }
 
-string species_filter_to_xml_attribute(const std::string& attribute_name, const SpeciesFilter* value) {
+string species_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const SpeciesFilter* value) {
     vector<string> flag_values;
     if (value->asura == true) {
         flag_values.push_back("asura");
@@ -74,7 +77,11 @@ string species_filter_to_xml_attribute(const std::string& attribute_name, const 
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-void proto_to_species_filter(waypoint::SpeciesFilter input, SpeciesFilter* value, bool* is_set) {
+void proto_to_species_filter(
+    waypoint::SpeciesFilter input,
+    ProtoReaderState* state,
+    SpeciesFilter* value,
+    bool* is_set) {
     SpeciesFilter species_filter;
     species_filter.asura = input.asura();
     species_filter.charr = input.charr();
@@ -85,7 +92,10 @@ void proto_to_species_filter(waypoint::SpeciesFilter input, SpeciesFilter* value
     *is_set = true;
 }
 
-void species_filter_to_proto(SpeciesFilter value, std::function<void(waypoint::SpeciesFilter*)> setter) {
+void species_filter_to_proto(
+    SpeciesFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::SpeciesFilter*)> setter) {
     waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
     bool should_write = false;
     proto_species_filter->set_asura(value.asura);

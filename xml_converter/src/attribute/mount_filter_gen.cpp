@@ -73,7 +73,10 @@ void xml_attribute_to_mount_filter(
     *is_set = true;
 }
 
-string mount_filter_to_xml_attribute(const std::string& attribute_name, const MountFilter* value) {
+string mount_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const MountFilter* value) {
     vector<string> flag_values;
     if (value->raptor == true) {
         flag_values.push_back("raptor");
@@ -109,7 +112,11 @@ string mount_filter_to_xml_attribute(const std::string& attribute_name, const Mo
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-void proto_to_mount_filter(waypoint::MountFilter input, MountFilter* value, bool* is_set) {
+void proto_to_mount_filter(
+    waypoint::MountFilter input,
+    ProtoReaderState* state,
+    MountFilter* value,
+    bool* is_set) {
     MountFilter mount_filter;
     mount_filter.raptor = input.raptor();
     mount_filter.springer = input.springer();
@@ -125,7 +132,10 @@ void proto_to_mount_filter(waypoint::MountFilter input, MountFilter* value, bool
     *is_set = true;
 }
 
-void mount_filter_to_proto(MountFilter value, std::function<void(waypoint::MountFilter*)> setter) {
+void mount_filter_to_proto(
+    MountFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::MountFilter*)> setter) {
     waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
     bool should_write = false;
     proto_mount_filter->set_raptor(value.raptor);
