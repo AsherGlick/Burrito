@@ -287,3 +287,11 @@ bool has_suffix(std::string const& fullString, std::string const& ending) {
         return false;
     }
 }
+
+string join_file_paths(const string& path_a, const string& path_b) {
+    string output = path_a;
+    if (!has_suffix(path_a, "/")) {
+        output += "/";
+    }
+    return output + path_b;
+}

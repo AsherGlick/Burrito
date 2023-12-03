@@ -64,7 +64,10 @@ void xml_attribute_to_festival_filter(
     *is_set = true;
 }
 
-string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value) {
+string festival_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const FestivalFilter* value) {
     vector<string> flag_values;
     if (value->dragonbash == true) {
         flag_values.push_back("dragonbash");
@@ -91,7 +94,11 @@ string festival_filter_to_xml_attribute(const std::string& attribute_name, const
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-void proto_to_festival_filter(waypoint::FestivalFilter input, FestivalFilter* value, bool* is_set) {
+void proto_to_festival_filter(
+    waypoint::FestivalFilter input,
+    ProtoReaderState* state,
+    FestivalFilter* value,
+    bool* is_set) {
     FestivalFilter festival_filter;
     festival_filter.dragonbash = input.dragonbash();
     festival_filter.festival_of_the_four_winds = input.festival_of_the_four_winds();
@@ -104,7 +111,10 @@ void proto_to_festival_filter(waypoint::FestivalFilter input, FestivalFilter* va
     *is_set = true;
 }
 
-void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter) {
+void festival_filter_to_proto(
+    FestivalFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::FestivalFilter*)> setter) {
     waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
     bool should_write = false;
     proto_festival_filter->set_dragonbash(value.dragonbash);

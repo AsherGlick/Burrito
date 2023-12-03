@@ -30,7 +30,10 @@ void xml_attribute_to_string(
 //
 // Converts a string into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string string_to_xml_attribute(const string& attribute_name, const string* value) {
+string string_to_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const string* value) {
     return " " + attribute_name + "=\"" + *value + "\"";
 }
 
@@ -39,7 +42,11 @@ string string_to_xml_attribute(const string& attribute_name, const string* value
 //
 // Parses a string from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_string(string input, string* value, bool* is_set) {
+void proto_to_string(
+    string input,
+    ProtoReaderState* state,
+    string* value,
+    bool* is_set) {
     *value = input;
     *is_set = true;
 }
@@ -49,12 +56,16 @@ void proto_to_string(string input, string* value, bool* is_set) {
 //
 // Writes a string to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void string_to_proto(std::string value, std::function<void(std::string)> setter) {
+void string_to_proto(
+    std::string value,
+    ProtoWriterState* state,
+    std::function<void(std::string)> setter) {
     setter(value);
 }
 
 void proto_display_name_to_display_name_and_name(
     std::string input,
+    ProtoReaderState* state,
     std::string* display_name,
     bool* is_display_name_set,
     std::string* name,

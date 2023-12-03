@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 {% if type == "Enum" %}
     #include "waypoint.pb.h"
 
@@ -39,12 +42,25 @@ void xml_attribute_to_{{attribute_name}}(
     {{class_name}}* value,
     bool* is_set);
 
-std::string {{attribute_name}}_to_xml_attribute(const std::string& attribute_name, const {{class_name}}* value);
+std::string {{attribute_name}}_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const {{class_name}}* value);
 
-void proto_to_{{attribute_name}}({{proto_field_cpp_type}} input, {{class_name}}* value, bool* is_set);
+void proto_to_{{attribute_name}}(
+    {{proto_field_cpp_type}} input,
+    ProtoReaderState* state,
+    {{class_name}}* value,
+    bool* is_set);
 
 {% if type == "Enum" %}
-    void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}})> setter);
+    void {{attribute_name}}_to_proto(
+        {{class_name}} value,
+        ProtoWriterState* state,
+        std::function<void({{proto_field_cpp_type}})> setter);
 {% else %}
-    void {{attribute_name}}_to_proto({{class_name}} value, std::function<void({{proto_field_cpp_type}}*)> setter);
+    void {{attribute_name}}_to_proto(
+        {{class_name}} value,
+        ProtoWriterState* state,
+        std::function<void({{proto_field_cpp_type}}*)> setter);
 {% endif %}

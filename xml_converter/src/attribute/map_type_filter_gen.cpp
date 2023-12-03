@@ -129,7 +129,10 @@ void xml_attribute_to_map_type_filter(
     *is_set = true;
 }
 
-string map_type_filter_to_xml_attribute(const std::string& attribute_name, const MapTypeFilter* value) {
+string map_type_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const MapTypeFilter* value) {
     vector<string> flag_values;
     if (value->unknown_map == true) {
         flag_values.push_back("unknown");
@@ -207,7 +210,11 @@ string map_type_filter_to_xml_attribute(const std::string& attribute_name, const
     return " " + attribute_name + "=\"" + output + "\"";
 }
 
-void proto_to_map_type_filter(waypoint::MapTypeFilter input, MapTypeFilter* value, bool* is_set) {
+void proto_to_map_type_filter(
+    waypoint::MapTypeFilter input,
+    ProtoReaderState* state,
+    MapTypeFilter* value,
+    bool* is_set) {
     MapTypeFilter map_type_filter;
     map_type_filter.unknown_map = input.unknown_map();
     map_type_filter.redirect_map = input.redirect_map();
@@ -237,7 +244,10 @@ void proto_to_map_type_filter(waypoint::MapTypeFilter input, MapTypeFilter* valu
     *is_set = true;
 }
 
-void map_type_filter_to_proto(MapTypeFilter value, std::function<void(waypoint::MapTypeFilter*)> setter) {
+void map_type_filter_to_proto(
+    MapTypeFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::MapTypeFilter*)> setter) {
     waypoint::MapTypeFilter* proto_map_type_filter = new waypoint::MapTypeFilter();
     bool should_write = false;
     proto_map_type_filter->set_unknown_map(value.unknown_map);

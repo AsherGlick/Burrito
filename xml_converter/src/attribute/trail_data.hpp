@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
 
@@ -29,8 +32,18 @@ void xml_attribute_to_trail_data(
     int* map_id_value,
     bool* is_map_id_set);
 
-std::string trail_data_to_xml_attribute(const std::string& attribute_name, const TrailData* value);
+std::string trail_data_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const TrailData* value);
 
-void proto_to_trail_data(waypoint::TrailData input, TrailData* value, bool* is_set);
+void proto_to_trail_data(
+    waypoint::TrailData input,
+    ProtoReaderState* state,
+    TrailData* value,
+    bool* is_set);
 
-void trail_data_to_proto(TrailData value, std::function<void(waypoint::TrailData*)> setter);
+void trail_data_to_proto(
+    TrailData value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::TrailData*)> setter);

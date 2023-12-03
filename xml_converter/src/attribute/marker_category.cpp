@@ -27,7 +27,10 @@ void xml_attribute_to_marker_category(
 //
 // Converts a marker category a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string marker_category_to_xml_attribute(const std::string& attribute_name, const MarkerCategory* value) {
+std::string marker_category_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const MarkerCategory* value) {
     return " " + attribute_name + "=\"" + value->category + "\"";
 }
 
@@ -36,7 +39,11 @@ std::string marker_category_to_xml_attribute(const std::string& attribute_name, 
 //
 // Parses a marker category from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_marker_category(waypoint::Category input, MarkerCategory* value, bool* is_set) {
+void proto_to_marker_category(
+    waypoint::Category input,
+    ProtoReaderState* state,
+    MarkerCategory* value,
+    bool* is_set) {
     MarkerCategory marker_category;
     marker_category.category = input.name();
     *value = marker_category;
@@ -48,7 +55,10 @@ void proto_to_marker_category(waypoint::Category input, MarkerCategory* value, b
 //
 // Returns a waypoint::Category so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
-void marker_category_to_proto(MarkerCategory value, std::function<void(waypoint::Category*)> setter) {
+void marker_category_to_proto(
+    MarkerCategory value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::Category*)> setter) {
     waypoint::Category* category = new waypoint::Category();
     category->set_name(value.category);
     setter(category);
