@@ -29,10 +29,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         xml_attribute_to_int(attribute, errors, state, &(this->achievement_id), &(this->achievement_id_is_set));
     }
     else if (attributename == "animspeed") {
-        xml_attribute_to_float(attribute, errors, state, &(this->animation_speed), &(this->animation_speed_is_set));
+        default_value_one_xml_attribute_to_float(attribute, errors, state, &(this->animation_speed), &(this->animation_speed_is_set));
     }
     else if (attributename == "animationspeed") {
-        xml_attribute_to_float(attribute, errors, state, &(this->animation_speed), &(this->animation_speed_is_set));
+        default_value_one_xml_attribute_to_float(attribute, errors, state, &(this->animation_speed), &(this->animation_speed_is_set));
     }
     else if (attributename == "type") {
         xml_attribute_to_marker_category(attribute, errors, state, &(this->category), &(this->category_is_set));

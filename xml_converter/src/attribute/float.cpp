@@ -1,6 +1,5 @@
 #include "float.hpp"
 
-#include <math.h>
 #include <string>
 #include <vector>
 
@@ -55,9 +54,9 @@ void float_to_proto(float value, std::function<void(float&)> setter) {
 // replace_one_point_zero_with_zero
 //
 // Parses a float from the value of a rapidxml::xml_attribute and
-// replaces it 
+// replaces default value of one with zero
 ////////////////////////////////////////////////////////////////////////////////
-void default_value_one_xml_attribute_to_float(    
+void default_value_one_xml_attribute_to_float(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,

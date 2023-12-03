@@ -4,9 +4,11 @@
 
     <POIs>
         <Trail AnimSpeed="0" Type="mycategory" />
+        <Trail AnimSpeed="1.0" Type="mycategory" />
         <Trail AnimSpeed="3.14" Type="mycategory" />
         <Trail AnimSpeed="123.456" Type="mycategory" />
         <Trail AnimationSpeed="0" Type="mycategory" />
+        <Trail AnimationSpeed="1" Type="mycategory" />     
         <Trail AnimationSpeed="3.14" Type="mycategory" />
         <Trail AnimationSpeed="123.456" Type="mycategory" />
         <Trail AnimSpeed="-3.14" Type="mycategory" />
