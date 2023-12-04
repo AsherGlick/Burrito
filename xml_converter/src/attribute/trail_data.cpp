@@ -44,6 +44,12 @@ void xml_attribute_to_trail_data(
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
         return;
     }
+
+    streampos fsize = trail_data_file.tellg();
+    trail_data_file.seekg(0, std::ios::end);
+    fsize = trail_data_file.tellg() - fsize;
+    trail_data_file.seekg(0, std::ios::beg);
+
     char version[4];
     trail_data_file.read(version, 4);
     // Validate the version number. Currently supports versions [0]
@@ -57,7 +63,7 @@ void xml_attribute_to_trail_data(
     *map_id_value = *reinterpret_cast<uint32_t*>(map_id_char);
     *is_map_id_set = true;
 
-    while (trail_data_file.tellg() > 0) {
+    while (trail_data_file.tellg() > 0 && trail_data_file.tellg() < fsize) {
         char point_x[4];
         trail_data_file.read(point_x, 4);
         trail_data.points_x.push_back(*reinterpret_cast<float*>(point_x));
