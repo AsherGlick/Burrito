@@ -199,7 +199,7 @@ void write_protobuf_file(
     }
 
     _write_protobuf_file(
-        filepath + "/markers.bin",
+        join_file_paths(filepath, "markers.bin"),
         category_filter,
         marker_categories,
         category_to_pois);
@@ -229,7 +229,7 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-        string output_filepath = proto_directory + "/" + to_string(iterator->first) + ".data";
+        string output_filepath = join_file_paths(proto_directory, to_string(iterator->first) + ".data");
 
         _write_protobuf_file(
             output_filepath,

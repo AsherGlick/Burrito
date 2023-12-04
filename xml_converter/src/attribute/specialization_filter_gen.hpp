@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
 namespace waypoint {
@@ -98,8 +101,18 @@ void xml_attribute_to_specialization_filter(
     SpecializationFilter* value,
     bool* is_set);
 
-std::string specialization_filter_to_xml_attribute(const std::string& attribute_name, const SpecializationFilter* value);
+std::string specialization_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const SpecializationFilter* value);
 
-void proto_to_specialization_filter(waypoint::SpecializationFilter input, SpecializationFilter* value, bool* is_set);
+void proto_to_specialization_filter(
+    waypoint::SpecializationFilter input,
+    ProtoReaderState* state,
+    SpecializationFilter* value,
+    bool* is_set);
 
-void specialization_filter_to_proto(SpecializationFilter value, std::function<void(waypoint::SpecializationFilter*)> setter);
+void specialization_filter_to_proto(
+    SpecializationFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::SpecializationFilter*)> setter);

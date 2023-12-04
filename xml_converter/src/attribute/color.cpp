@@ -96,7 +96,10 @@ void xml_attribute_to_color(
 //
 // Converts a color into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string color_to_xml_attribute(const string& attribute_name, const Color* value) {
+string color_to_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const Color* value) {
     std::stringstream stream;
     std::string hex_string = "#";
 
@@ -119,7 +122,11 @@ string color_to_xml_attribute(const string& attribute_name, const Color* value) 
 //
 // Parses a Color from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_color(waypoint::RGBAColor input, Color* value, bool* is_set) {
+void proto_to_color(
+    waypoint::RGBAColor input,
+    ProtoReaderState* state,
+    Color* value,
+    bool* is_set) {
     Color color;
     std::stringstream stream;
     uint32_t rgba = input.rgba_color();
@@ -138,7 +145,10 @@ void proto_to_color(waypoint::RGBAColor input, Color* value, bool* is_set) {
 //
 // Writes a Color to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void color_to_proto(Color value, std::function<void(waypoint::RGBAColor*)> setter) {
+void color_to_proto(
+    Color value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::RGBAColor*)> setter) {
     waypoint::RGBAColor* color = new waypoint::RGBAColor();
     // The default RGB in burrito will be 000000 (i.e. black)
     // Default value of alpha in Burrito is 1.0 (i.e. 255)

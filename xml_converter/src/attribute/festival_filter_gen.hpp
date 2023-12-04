@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
 namespace waypoint {
@@ -33,8 +36,18 @@ void xml_attribute_to_festival_filter(
     FestivalFilter* value,
     bool* is_set);
 
-std::string festival_filter_to_xml_attribute(const std::string& attribute_name, const FestivalFilter* value);
+std::string festival_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const FestivalFilter* value);
 
-void proto_to_festival_filter(waypoint::FestivalFilter input, FestivalFilter* value, bool* is_set);
+void proto_to_festival_filter(
+    waypoint::FestivalFilter input,
+    ProtoReaderState* state,
+    FestivalFilter* value,
+    bool* is_set);
 
-void festival_filter_to_proto(FestivalFilter value, std::function<void(waypoint::FestivalFilter*)> setter);
+void festival_filter_to_proto(
+    FestivalFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::FestivalFilter*)> setter);

@@ -27,7 +27,10 @@ void xml_attribute_to_float(
 //
 // Converts a float into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string float_to_xml_attribute(const string& attribute_name, const float* value) {
+string float_to_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const float* value) {
     return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }
 
@@ -36,7 +39,11 @@ string float_to_xml_attribute(const string& attribute_name, const float* value) 
 //
 // Parses a float from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_float(float input, float* value, bool* is_set) {
+void proto_to_float(
+    float input,
+    ProtoReaderState* state,
+    float* value,
+    bool* is_set) {
     *value = input;
     *is_set = true;
 }
@@ -46,7 +53,10 @@ void proto_to_float(float input, float* value, bool* is_set) {
 //
 // Writes a float to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void float_to_proto(float value, std::function<void(float&)> setter) {
+void float_to_proto(
+    float value,
+    ProtoWriterState* state,
+    std::function<void(float&)> setter) {
     setter(value);
 }
 

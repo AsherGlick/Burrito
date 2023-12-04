@@ -42,7 +42,10 @@ void xml_attribute_to_int(
 //
 // Converts an int a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string int_to_xml_attribute(const string& attribute_name, const int* value) {
+string int_to_xml_attribute(
+    const string& attribute_name,
+    XMLWriterState* state,
+    const int* value) {
     return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }
 
@@ -51,7 +54,11 @@ string int_to_xml_attribute(const string& attribute_name, const int* value) {
 //
 // Parses an int from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_int(int input, int* value, bool* is_set) {
+void proto_to_int(
+    int input,
+    ProtoReaderState* state,
+    int* value,
+    bool* is_set) {
     *value = input;
     *is_set = true;
 }
@@ -61,6 +68,9 @@ void proto_to_int(int input, int* value, bool* is_set) {
 //
 // Writes a int to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void int_to_proto(int value, std::function<void(int&)> setter) {
+void int_to_proto(
+    int value,
+    ProtoWriterState* state,
+    std::function<void(int&)> setter) {
     setter(value);
 }

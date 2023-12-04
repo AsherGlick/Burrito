@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
 namespace waypoint {
@@ -29,8 +32,18 @@ void xml_attribute_to_position(
     Position* value,
     bool* is_set);
 
-std::string position_to_xml_attribute(const std::string& attribute_name, const Position* value);
+std::string position_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const Position* value);
 
-void proto_to_position(waypoint::Position input, Position* value, bool* is_set);
+void proto_to_position(
+    waypoint::Position input,
+    ProtoReaderState* state,
+    Position* value,
+    bool* is_set);
 
-void position_to_proto(Position value, std::function<void(waypoint::Position*)> setter);
+void position_to_proto(
+    Position value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::Position*)> setter);

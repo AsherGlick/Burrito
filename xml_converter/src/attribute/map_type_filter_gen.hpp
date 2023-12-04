@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../state_structs/proto_reader_state.hpp"
+#include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
+#include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
 namespace waypoint {
@@ -50,8 +53,18 @@ void xml_attribute_to_map_type_filter(
     MapTypeFilter* value,
     bool* is_set);
 
-std::string map_type_filter_to_xml_attribute(const std::string& attribute_name, const MapTypeFilter* value);
+std::string map_type_filter_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const MapTypeFilter* value);
 
-void proto_to_map_type_filter(waypoint::MapTypeFilter input, MapTypeFilter* value, bool* is_set);
+void proto_to_map_type_filter(
+    waypoint::MapTypeFilter input,
+    ProtoReaderState* state,
+    MapTypeFilter* value,
+    bool* is_set);
 
-void map_type_filter_to_proto(MapTypeFilter value, std::function<void(waypoint::MapTypeFilter*)> setter);
+void map_type_filter_to_proto(
+    MapTypeFilter value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::MapTypeFilter*)> setter);

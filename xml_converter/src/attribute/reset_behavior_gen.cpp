@@ -82,7 +82,10 @@ void xml_attribute_to_reset_behavior(
     *is_set = true;
 }
 
-string reset_behavior_to_xml_attribute(const std::string& attribute_name, const ResetBehavior* value) {
+string reset_behavior_to_xml_attribute(
+    const std::string& attribute_name,
+    XMLWriterState* state,
+    const ResetBehavior* value) {
     if (*value == ResetBehavior::always_visible) {
         return " " + attribute_name + "=\"" + "0" + "\"";
     }
@@ -142,7 +145,11 @@ string reset_behavior_to_xml_attribute(const std::string& attribute_name, const 
     }
 }
 
-void proto_to_reset_behavior(waypoint::ResetBehavior input, ResetBehavior* value, bool* is_set) {
+void proto_to_reset_behavior(
+    waypoint::ResetBehavior input,
+    ProtoReaderState* state,
+    ResetBehavior* value,
+    bool* is_set) {
     switch (input) {
         case waypoint::ResetBehavior::always_visible:
             *value = ResetBehavior::always_visible;
@@ -187,7 +194,10 @@ void proto_to_reset_behavior(waypoint::ResetBehavior input, ResetBehavior* value
     }
 }
 
-void reset_behavior_to_proto(ResetBehavior value, std::function<void(waypoint::ResetBehavior)> setter) {
+void reset_behavior_to_proto(
+    ResetBehavior value,
+    ProtoWriterState* state,
+    std::function<void(waypoint::ResetBehavior)> setter) {
     switch (value) {
         case ResetBehavior::always_visible:
             setter(waypoint::ResetBehavior::always_visible);
