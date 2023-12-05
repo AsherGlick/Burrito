@@ -59,24 +59,3 @@ void float_to_proto(
     std::function<void(float&)> setter) {
     setter(value);
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// replace_one_point_zero_with_zero
-//
-// Parses a float from the value of a rapidxml::xml_attribute and
-// replaces default value of one with zero
-////////////////////////////////////////////////////////////////////////////////
-void default_value_one_xml_attribute_to_float(
-    rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>* errors,
-    XMLReaderState* state,
-    float* value,
-    bool* is_set) {
-    if (std::stof(get_attribute_value(input)) == 1.0) {
-        *value = 0;
-    }
-    else {
-        *value = std::stof(get_attribute_value(input));
-        *is_set = true;
-    }
-}
