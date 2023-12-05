@@ -44,6 +44,7 @@ void xml_attribute_to_trail_data(
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
         return;
     }
+
     char version[4];
     trail_data_file.read(version, 4);
     // Validate the version number. Currently supports versions [0]
@@ -57,20 +58,15 @@ void xml_attribute_to_trail_data(
     *map_id_value = *reinterpret_cast<uint32_t*>(map_id_char);
     *is_map_id_set = true;
 
-    while (trail_data_file.tellg() > 0) {
-        char point_x[4];
-        trail_data_file.read(point_x, 4);
-        trail_data.points_x.push_back(*reinterpret_cast<float*>(point_x));
-        char point_y[4];
-        trail_data_file.read(point_y, 4);
-        trail_data.points_y.push_back(*reinterpret_cast<float*>(point_y));
-        char point_z[4];
-        trail_data_file.read(point_z, 4);
-        trail_data.points_z.push_back(*reinterpret_cast<float*>(point_z));
+    char points[12];
+    while (trail_data_file.read(points, 12)) {
+        trail_data.points_x.push_back(*reinterpret_cast<float*>(points));
+        trail_data.points_y.push_back(*reinterpret_cast<float*>(points + 4));
+        trail_data.points_z.push_back(*reinterpret_cast<float*>(points + 8));
     }
 
-    if (trail_data.points_x.size() != trail_data.points_y.size() || trail_data.points_x.size() != trail_data.points_z.size()) {
-        errors->push_back(new XMLAttributeValueError("Unexpected number of bits in trail file. Does not have equal number of X, Y, and Z coordinates." + trail_path, input));
+    if (trail_data_file.gcount() != 0) {
+        errors->push_back(new XMLAttributeValueError("Unexpected number of bytes in trail file." + trail_path, input));
     }
 
     trail_data_file.close();
