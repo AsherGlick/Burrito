@@ -518,24 +518,23 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, pare
 	category_data.waypoint_category = waypoint_category
 	category_data.category = godot_category
 	category_data.category2d = godot_category2d
-	category_item.set_metadata(0, category_data)
 
+	category_item.set_metadata(0, category_data)
 	category_item.set_text(0, waypoint_category.get_name())
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
-	# TODO: Without unique category names, this could give false info when
-	# switching maps or changes to marker pack files.
+	# TODO 214: The format for the category name stored here is a/b/c. 
+	# This could be changed to some UUID.
 	godot_category.name = waypoint_category.get_name()
 	var relative_path: String = self.categories.get_path_to(godot_category)
 	category_item.set_checked(1, Settings.local_category_data.get(relative_path, {}).get("checked", false))
-	
 	category_item.set_tooltip(1, "Show/Hide")
 	category_item.set_editable(1, true)
 	category_item.set_collapsed(collapsed)
 	category_item.set_selectable(1, false)
-	
-	category_data.is_visible = is_category_visible(category_item)
-	godot_category.visible = category_data.is_visible 
-	godot_category2d.visible = category_data.is_visible 
+
+	category_data.is_visible = category_item.is_checked(1)
+	godot_category.visible = category_data.is_visible
+	godot_category2d.visible = category_data.is_visible
 
 	for path in waypoint_category.get_trail():
 		var path_points := PoolVector3Array()
@@ -550,7 +549,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, pare
 			continue
 		var full_texture_path = self.marker_file_dir + texture_path.get_path()
 		gen_new_path(path_points, full_texture_path, path, category_item)
-		
+
 
 	for icon in waypoint_category.get_icon():
 		var position = icon.get_position()
@@ -572,25 +571,16 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, pare
 func apply_category_visibility_to_nodes(category_item: TreeItem):
 	var category_data = category_item.get_metadata(0)
 	var relative_path: String = self.categories.get_path_to(category_data.category)
+	# TODO 214: The format for the category name stored here is a/b/c.
+	# This could be changed to some UUID.
 	Settings.local_category_data[relative_path] = {
 		"checked" : category_item.is_checked(1),
 	}
 	Settings.save()
-	
+
 	category_data.is_visible = category_item.is_checked(1)
 	category_data.category.visible = category_data.is_visible
 	category_data.category2d.visible = category_data.is_visible
-
-#Child visibility is contigent on all parents having permission
-func is_category_visible(category_item: TreeItem) -> bool:
-	if category_item == marker_packs.get_root():
-		return true
-	if category_item == null:
-		return false
-	if category_item.is_checked(1):
-		return is_category_visible(category_item.get_parent())
-	else:
-		return false
 
 
 func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem):
@@ -624,7 +614,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_route.waypoint = waypoint_trail
 	var category_data = category_item.get_metadata(0)
 	category_data.category.add_path(new_route)
-	
+
 
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
