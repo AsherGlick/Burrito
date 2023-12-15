@@ -506,7 +506,6 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, pare
 	if waypoint_category.get_name() == "":
 		# If this is called, there is an empty Category in the Waypoint data
 		print("Category found with no name.")
-		return
 
 	var godot_category = category_scene.instance()
 	var godot_category2d = category2d_scene.instance()
