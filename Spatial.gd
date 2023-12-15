@@ -5,7 +5,6 @@ var peers = []
 
 var map_id:int = 0
 
-var Waypoint = preload("res://waypoint.gd")
 var map_is_open: bool
 var compass_is_top_right: bool
 
@@ -39,9 +38,6 @@ var compass_width: int = 0;
 # taken for the MeshCSG leading to an overall lower number of polygons.
 var path_resolution = 1
 
-# Variables that store opposit corners of the compass
-var compass_corner1
-var compass_corner2
 #x11 fg and window id
 var x11_fg: X11_FG
 var taco_parser: TacoParser
@@ -56,6 +52,7 @@ const category2d_scene = preload("res://Category2D.tscn")
 const path2d_scene = preload("res://Route2D.tscn")
 const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 const CategoryData = preload("res://CategoryData.gd")
+const Waypoint = preload("res://waypoint.gd")
 
 ##########Node Connections###########
 onready var marker_packs := $Control/Dialogs/MarkerPacks/MarkerPacks as Tree
@@ -356,21 +353,21 @@ func decode_timeout_packet(spb: StreamPeerBuffer):
 
 func reset_masks():
 	var viewport_size = get_viewport().size
-	compass_corner1 = Vector2(0, 0)
-	compass_corner2 = viewport_size
+	var compass_corner1 = Vector2(0, 0)
+	var compass_corner2 = viewport_size
 	if !map_is_open && !compass_is_top_right:
-		compass_corner1 = Vector2(viewport_size.x-compass_width, 36)
-		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
+		compass_corner1 = Vector2(viewport_size.x-self.compass_width, 36)
+		compass_corner2 = compass_corner1 + Vector2(self.compass_width, self.compass_height)
 	elif !map_is_open && compass_is_top_right:
-		compass_corner1 = viewport_size - Vector2(compass_width, compass_height)
-		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
+		compass_corner1 = viewport_size - Vector2(self.compass_width, self.compass_height)
+		compass_corner2 = compass_corner1 + Vector2(self.compass_width, self.compass_height)
 
-	for child in $Control/MiniMap.get_children():
-		if child.get_name() == "Category2D":
-			_reset_2D_masks(child, compass_corner1, compass_corner2)
+	for category in self.minimap.subcategories():
+		_reset_2D_masks(category, compass_corner1, compass_corner2)
 
-	for category in self.categories.get_children():
-		_reset_3D_masks(category)
+	if self.categories.visible:
+		for category in self.categories.subcategories():
+			_reset_3D_masks(category)
 
 func _reset_2D_masks(category2d: Node2D, compass_corner1, compass_corner2):
 	for path2d in category2d.paths2d:
@@ -482,11 +479,11 @@ func _unhandled_input(event):
 ################################################################################
 func clear_map_markers():
 	# Clear all the rendered assets to make way for the new ones
-	for cateogry in self.categories.get_children():
-		cateogry.queue_free()
+	for child in self.categories.get_children():
+		child.queue_free()
 
-	for path2d in minimap.get_children():
-		path2d.queue_free()
+	for child in self.minimap.get_children():
+		child.queue_free()
 
 func init_category_tree():
 	self.marker_packs.clear()
@@ -502,11 +499,7 @@ func waypoint_categories_to_godot_nodes():
 		_waypoint_categories_to_godot_nodes(null, waypoint_category, self.categories, self.minimap, false)
 
 
-func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, parent_category: Spatial, parent_category2d: Node2D, collapsed: bool):
-	if waypoint_category.get_name() == "":
-		# If this is called, there is an empty Category in the Waypoint data
-		print("Category found with no name.")
-
+func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Waypoint.Category, parent_category: Spatial, parent_category2d: Node2D, collapsed: bool):
 	var godot_category = category_scene.instance()
 	var godot_category2d = category2d_scene.instance()
 	parent_category.add_subcategory(godot_category)
@@ -519,7 +512,11 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category, pare
 	category_data.category2d = godot_category2d
 
 	category_item.set_metadata(0, category_data)
-	category_item.set_text(0, waypoint_category.get_name())
+	if waypoint_category.get_name() == "":
+		print("Category found with no name.")
+		category_item.set_text(0, "No Name")
+	else:
+		category_item.set_text(0, waypoint_category.get_name())
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 	# TODO 214: The format for the category name stored here is a/b/c. 
 	# This could be changed to some UUID.
@@ -635,7 +632,6 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 	new_icon.set_icon_image(texture_path)
 	new_icon.waypoint = waypoint_icon
 	var category_data = category_item.get_metadata(0)
-	new_icon.visible = category_data.is_visible
 	category_data.category.add_icon(new_icon)
 
 
@@ -811,14 +807,14 @@ func _on_NewPath_pressed():
 # Create a new icon and give it the texture
 ################################################################################
 func _on_NewIcon_pressed():
-	var waypoint_category = self.currently_active_category.get_metadata(0).waypoint_category
+	var waypoint_category: Waypoint.Category = self.currently_active_category.get_metadata(0).waypoint_category
 	var waypoint_icon = waypoint_category.new_icon()
 	gen_new_icon(self.player_position, self.next_texture_path, waypoint_icon, self.currently_active_category)
 
 # A new path point is created
 func _on_NewPathPoint_pressed():
 	if self.currently_active_path == null:
-		var waypoint_category = self.currently_active_category.get_metadata(0).waypoint_category
+		var waypoint_category: Waypoint.Category = self.currently_active_category.get_metadata(0).waypoint_category
 		var waypoint_trail = waypoint_category.new_trail()
 		gen_new_path([self.player_position], self.next_texture_path, waypoint_trail, self.currently_active_category)
 	else:
