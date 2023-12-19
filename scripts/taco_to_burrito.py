@@ -79,6 +79,13 @@ other_ignored_tags = set([
     "profession",
     "triggerrange",
 ])
+
+################################################################################
+# Strips namespace from tags
+################################################################################   
+def get_tag(element):
+    return element.tag.rpartition('}')[-1]
+
 ################################################################################
 #
 ################################################################################
@@ -109,7 +116,7 @@ def parse_marker_category(marker_category_node, base="", parent_limited_attribs=
 
     metadata_tree = {}
 
-    if marker_category_node.tag != "MarkerCategory":
+    if get_tag(marker_category_node) != "MarkerCategory":
         eprint("MarkerCategory Child not  MarkerCategory", marker_category_node.tag)
 
     attribs = marker_category_node.attrib
@@ -161,11 +168,10 @@ def parse_marker_category(marker_category_node, base="", parent_limited_attribs=
 ################################################################################
 def convert_markers(xml_path: str, output_dir: str):
     set_eprint_title(xml_path)
-    # print(xml_path)
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
-    if root.tag != "OverlayData":
+    if get_tag(root) != "OverlayData":
         eprint("Root not OverlayData", root.tag)
 
     if root.attrib != {}:
@@ -175,14 +181,14 @@ def convert_markers(xml_path: str, output_dir: str):
         eprint("Root has {} children instead of the expected 2".format(len(root)))
         return
 
-    if root[0].tag != "MarkerCategory":
+    if get_tag(root[0]) != "MarkerCategory":
         eprint("First element of root is {} not MarkerCategory".format(root[0].tag))
     else:
         marker_metadata = parse_marker_category(root[0])
 
     # print(marker_metadata)
 
-    if root[1].tag != "POIs":
+    if get_tag(root[1]) != "POIs":
         eprint("Second element of root is {} not POIs".format(root[1].tag))
     else:
         burrito_marker_data = parse_icons_and_paths(root[1], marker_metadata, os.path.dirname(xml_path))
@@ -257,7 +263,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
         if len(child) > 0:
             eprint("POI element has children")
 
-        if child.tag == "POI":
+        if get_tag(child) == "POI":
             attribs = child.attrib
             for present_key in attribs:
                 if present_key not in required_poi_attrib and present_key not in allowed_poi_attrib:
@@ -296,7 +302,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
                 "texture": copyimage(icon_path)
             })
 
-        elif child.tag == "Trail":
+        elif get_tag(child) == "Trail":
             attribs = child.attrib
             for present_key in attribs:
                 if present_key not in required_trail_attrib and present_key not in allowed_trail_attrib:
