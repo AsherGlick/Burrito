@@ -680,10 +680,10 @@ func gen_adjustment_nodes():
 		print("No category selected")
 		return
 
-	var category = self.currently_active_category.get_metadata(0).category3d
+	var category3d = self.currently_active_category.get_metadata(0).category3d
 	var category2d = self.currently_active_category.get_metadata(0).category2d
-	for index in category.paths.size():
-		var route = category.paths[index]
+	for index in category3d.paths.size():
+		var route = category3d.paths[index]
 		var path2d = category2d.paths2d[index]
 		for i in range(route.get_point_count()):
 			var gizmo_position = route.get_point_position(i)
@@ -698,7 +698,7 @@ func gen_adjustment_nodes():
 			new_gizmo.connect("selected", self, "on_gizmo_selected")
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 			$Gizmos.add_child(new_gizmo)
-	for icon in category.icons:
+	for icon in category3d.icons:
 		var new_gizmo = gizmo_scene.instance()
 		new_gizmo.translation = icon.translation
 		new_gizmo.link_point("icon", icon)
