@@ -28,11 +28,14 @@ void parse_waypoint_categories(
     vector<Parseable*>* parsed_pois) {
     full_category_name += proto_category.name();
     Category* this_category = &(*marker_categories)[full_category_name];
-    this_category->parse_protobuf(proto_category);
+
+    ProtoReaderState state;
+
+    this_category->parse_protobuf(proto_category, &state);
 
     for (int i = 0; i < proto_category.icon_size(); i++) {
         Icon* icon = new Icon();
-        icon->parse_protobuf(proto_category.icon(i));
+        icon->parse_protobuf(proto_category.icon(i), &state);
         // TODO: The field category in Icon is being deprciated
         // This overwrites any icon.category with its position in the heirarchy
         icon->category.category = full_category_name;
@@ -40,7 +43,7 @@ void parse_waypoint_categories(
     }
     for (int i = 0; i < proto_category.trail_size(); i++) {
         Trail* trail = new Trail();
-        trail->parse_protobuf(proto_category.trail(i));
+        trail->parse_protobuf(proto_category.trail(i), &state);
         // TODO: The field category in Trail is being deprciated
         // This overwrites any trail.category with its position in the heirarchy
         trail->category.category = full_category_name;
@@ -85,7 +88,9 @@ MaybeCategory build_category_objects(
     const StringHierarchy& category_filter,
     const std::map<string, std::vector<Parseable*>>& category_to_pois,
     vector<string>* category_vector) {
-    waypoint::Category category_proto = category->as_protobuf();
+    ProtoWriterState state;
+
+    waypoint::Category category_proto = category->as_protobuf(&state);
     bool has_valid_contents = false;
 
     vector<waypoint::Category> categories_to_write;
@@ -119,14 +124,14 @@ MaybeCategory build_category_objects(
             if (parsed_poi->classname() == "POI") {
                 Icon* icon = dynamic_cast<Icon*>(parsed_poi);
                 if (category_filter.in_hierarchy(split(icon->category.category, "."))) {
-                    category_proto.add_icon()->MergeFrom(icon->as_protobuf());
+                    category_proto.add_icon()->MergeFrom(icon->as_protobuf(&state));
                     has_valid_contents = true;
                 }
             }
             else if (parsed_poi->classname() == "Trail") {
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
                 if (category_filter.in_hierarchy(split(trail->category.category, "."))) {
-                    category_proto.add_trail()->MergeFrom(trail->as_protobuf());
+                    category_proto.add_trail()->MergeFrom(trail->as_protobuf(&state));
                     has_valid_contents = true;
                 }
             }

@@ -165,12 +165,14 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     ofstream outfile;
     string tab_string;
 
+    XMLWriterState state;
+
     outfile.open(xml_filepath, ios::out);
 
     outfile << "<OverlayData>\n";
     for (const auto& category : *marker_categories) {
         string text;
-        for (const auto& s : category.second.as_xml()) {
+        for (const auto& s : category.second.as_xml(&state)) {
             text += s;
         }
         outfile << text + "\n";
@@ -179,7 +181,7 @@ void write_xml_file(string xml_filepath, map<string, Category>* marker_categorie
     outfile << "<POIs>\n";
     for (const auto& parsed_poi : *parsed_pois) {
         string text;
-        for (const auto& s : parsed_poi->as_xml()) {
+        for (const auto& s : parsed_poi->as_xml(&state)) {
             text += s;
         }
         outfile << text + "\n";

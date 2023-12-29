@@ -59,14 +59,13 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     }
 {% endif %}
 
-vector<string> {{cpp_class}}::as_xml() const {
-    XMLWriterState state;
+vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<{{xml_class_name}} ");
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.write_to_xml == true %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                xml_node_contents.push_back({{attribute_variable.serialize_xml_function}}("{{attribute_variable.default_xml_field}}", &state, &this->{{attribute_variable.attribute_name}}));
+                xml_node_contents.push_back({{attribute_variable.serialize_xml_function}}("{{attribute_variable.default_xml_field}}", state, &this->{{attribute_variable.attribute_name}}));
             }
         {% endif %}
     {% endfor %}
@@ -75,7 +74,7 @@ vector<string> {{cpp_class}}::as_xml() const {
 
         for (const auto& [key, val] : this->children) {
             string text;
-            for (const auto& s : val.as_xml()) {
+            for (const auto& s : val.as_xml(state)) {
                 text += s;
             }
 
@@ -89,8 +88,7 @@ vector<string> {{cpp_class}}::as_xml() const {
     return xml_node_contents;
 }
 
-waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
-    ProtoWriterState state;
+waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) const {
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
@@ -100,15 +98,14 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf() const {
                 {% else %}
                     std::function<void({{attribute_variable.protobuf_cpp_type}})> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.protobuf_cpp_type}} val) { proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(val); };
                 {% endif %}
-                {{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}, &state, setter);
+                {{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}, state, setter);
             }
         {% endif %}
     {% endfor %}
     return proto_{{cpp_class_header}};
 }
 
-void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}) {
-    ProtoReaderState state;
+void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}, ProtoReaderState* state) {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
             {% if not attribute_variable.is_proto_field_scalar %}
@@ -118,7 +115,7 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
             {% else %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
             {% endif %}
-                {{attribute_variable.deserialize_proto_function}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}(), &state, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
+                {{attribute_variable.deserialize_proto_function}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}(), state, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endif %}
     {% endfor %}
