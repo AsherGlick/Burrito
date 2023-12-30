@@ -7,9 +7,9 @@ import subprocess
 import re
 import os
 from typing import List, Optional, Final, Tuple
-from testcases import testcases
+from src.testcase_loader import load_testcases
 import shutil
-from proto_utils import compare_protos
+from src.proto_utils import compare_protos
 
 # Path to compiled C++ executable
 xml_converter_binary_path: str = "../build/xml_converter"
@@ -157,7 +157,7 @@ def main() -> None:
 
     rebuild_xml_converter_binary()
 
-    for testcase in testcases:
+    for testcase in load_testcases():
         xml_output_dir_path = os.path.join(output_parent_dirpath, "xml", testcase.name)
         proto_output_dir_path = os.path.join(output_parent_dirpath, "proto", testcase.name)
 
