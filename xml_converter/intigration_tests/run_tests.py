@@ -86,6 +86,36 @@ def remove_ansii_color_escapecodes(lines: List[str]) -> List[str]:
 
 
 ################################################################################
+# rebuild_xml_converter_binary
+#
+# Recompiles the XML Converter binary. If the compilation returns an error code
+# then this function throws an error
+################################################################################
+def rebuild_xml_converter_binary():
+    cmake_build_directory = "../build"
+
+    # Store the current working directory
+    original_cwd = os.getcwd()
+
+    # Check if the relative path exists
+    target_path = os.path.join(original_cwd, cmake_build_directory)
+    if os.path.exists(target_path):
+        # Change the working directory to the target directory
+        os.chdir(target_path)
+
+        # Run cmake and make
+        cmake_process = subprocess.run(["cmake", ".."])
+        make_process = subprocess.run(["make"])
+
+        if cmake_process.returncode != 0 or make_process.returncode != 0:
+            raise ValueError("Nonzero return code from xml_converter build process.")
+
+        # Change back to the original working directory
+        os.chdir(original_cwd)
+    else:
+        print(f"Directory '{cmake_build_directory}' does not exist.")
+
+################################################################################
 # remove_ignored_lines
 #
 # Goes through a list of lines and removes any line that matches a pattern in
@@ -124,6 +154,8 @@ def main() -> None:
     # Ensure that the test output directory is empty
     if os.path.exists(output_parent_dirpath):
         shutil.rmtree(output_parent_dirpath)
+
+    rebuild_xml_converter_binary()
 
     for testcase in testcases:
         xml_output_dir_path = os.path.join(output_parent_dirpath, "xml", testcase.name)
