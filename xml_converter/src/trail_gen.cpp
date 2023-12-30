@@ -343,7 +343,7 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         species_filter_to_proto(this->species_filter, state, setter);
     }
     if (this->texture_is_set) {
-        std::function<void(waypoint::TexturePath*)> setter = [&proto_trail](waypoint::TexturePath* val) { proto_trail.set_allocated_texture_path(val); };
+        std::function<void(unsigned int)> setter = [&proto_trail](unsigned int val) { proto_trail.set_texture_id(val); };
         image_to_proto(this->texture, state, setter);
     }
     if (this->trail_data_is_set) {
@@ -430,8 +430,8 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state)
     if (proto_trail.has_species_filter()) {
         proto_to_species_filter(proto_trail.species_filter(), state, &(this->species_filter), &(this->species_filter_is_set));
     }
-    if (proto_trail.has_texture_path()) {
-        proto_to_image(proto_trail.texture_path(), state, &(this->texture), &(this->texture_is_set));
+    if (proto_trail.texture_id() != 0) {
+        proto_to_image(proto_trail.texture_id(), state, &(this->texture), &(this->texture_is_set));
     }
     if (proto_trail.has_trail_data()) {
         proto_to_trail_data(proto_trail.trail_data(), state, &(this->trail_data), &(this->trail_data_is_set));
