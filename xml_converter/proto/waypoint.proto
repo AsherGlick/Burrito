@@ -306,3 +306,50 @@ message TrailData {
     repeated float points_z = 4;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// proto creation guidelines
+//
+// Fields
+// ======
+// Field indexes are backwards and forwards compatible per this design, meaning
+// that any proto should be parseable by both older and newer clients without
+// issue. This means that if an attribute is assigned an index then no other
+// field should ever be assigned that index as well. Larger indexes require
+// more bytes to encode. As a result the smaller indexes are highly protected
+// while larger indexes numbers a mostly unregulated.
+//
+// Core Fields: Indexes 1-15
+// -------------------------
+// The first 15 indexes are the only indexes that will take just a single byte
+// to store. These should only be used for attributes that are the most common.
+// In order to create a new field with a number in this range it must be an
+// effectively required field or very common field to warrant using only a
+// single byte.
+//
+// Additional Fields: Indexes 16-2047
+// ----------------------------------
+// The next 2032 numbers are for additional fields. These are fields that are
+// permanent but not as common as the Core Fields. Possibly optional arguments
+// for their message, or metadata. A field must be finalized before it can be
+// set with an ID in this range, no experimental values should be present.
+//
+// Experimental Fields: Indexes 2048-262143+
+// ---------------------------------------------
+// All other IDs are considered experimental. Any index up to 232143 will use
+// 3 bytes of identification. The only requirement for creating a field with
+// an id in this range is that no other field has ever used that ID before.
+// Fields that are experimental may be prefixed with some value to indicate
+// which project is experimenting with them. This will help ensure the name
+// of the experimental field does not conflict with name of the possible future
+// field the experiment is for.
+//
+// Messages
+// ========
+// Messages have little effective permanent costs outside of JSON exports and
+// imports. As such there is no issue with creating new messages for any
+// reason so long as they do not conflict with any other message names.
+// Messages that are still under development may be prefixed with some value to
+// indicate which project is experimenting with them. This will prevent the
+// name of the message from conflicting with the name of the possible future
+// message the experimental message is for.
+////////////////////////////////////////////////////////////////////////////////
