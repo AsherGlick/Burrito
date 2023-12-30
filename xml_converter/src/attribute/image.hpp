@@ -12,13 +12,10 @@
 
 class XMLError;
 
-namespace waypoint {
-class TexturePath;
-}
-
 class Image {
  public:
-    std::string path;
+    std::string filename;
+    std::string original_filepath;
 };
 
 void xml_attribute_to_image(
@@ -34,12 +31,12 @@ std::string image_to_xml_attribute(
     const Image* value);
 
 void proto_to_image(
-    waypoint::TexturePath input,
+    unsigned int input,
     ProtoReaderState* state,
     Image* value,
     bool* is_set);
 
 void image_to_proto(
-    Image value,
+    const Image& value,
     ProtoWriterState* state,
-    std::function<void(waypoint::TexturePath*)> setter);
+    std::function<void(unsigned int)> setter);

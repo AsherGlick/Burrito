@@ -137,4 +137,10 @@ testcases: List[Testcase] = [
         expected_output_xml_path="./expected_outputs/xml_species_filter",
         expected_output_proto_path="./expected_outputs/proto_species_filter",
     ),
+    Testcase(
+        name="texture",
+        xml_input_paths=["./inputs/xml_texture"],
+        expected_output_xml_path="./expected_outputs/xml_texture",
+        expected_output_proto_path="./expected_outputs/proto_texture",
+    ),
 ]

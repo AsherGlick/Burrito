@@ -21,7 +21,8 @@ void xml_attribute_to_image(
     XMLReaderState* state,
     Image* value,
     bool* is_set) {
-    value->path = get_attribute_value(input);
+    value->filename = get_attribute_value(input);
+    value->original_filepath = state->xml_filedir + "/" + value->filename;
     *is_set = true;
 }
 
@@ -34,7 +35,7 @@ string image_to_xml_attribute(
     const string& attribute_name,
     XMLWriterState* state,
     const Image* value) {
-    return " " + attribute_name + "=\"" + value->path + "\"";
+    return " " + attribute_name + "=\"" + value->filename + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,12 +44,13 @@ string image_to_xml_attribute(
 // Parses an Image from proto
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_image(
-    waypoint::TexturePath input,
+    unsigned int input,
     ProtoReaderState* state,
     Image* value,
     bool* is_set) {
+    // TODO: this is broken until we load the string index into the proto read state
     Image image;
-    image.path = input.path();
+    // image.path = input.path();
     *value = image;
     *is_set = true;
 }
@@ -56,13 +58,24 @@ void proto_to_image(
 ////////////////////////////////////////////////////////////////////////////////
 // image_to_proto
 //
-// Writes a string filepath to a proto using the provided setter function.
+// Creates a new element of the proto writer state if the image has not been
+// used before. Then writes the new or existing index of the image to the proto.
 ////////////////////////////////////////////////////////////////////////////////
 void image_to_proto(
-    Image value,
+    const Image& value,
     ProtoWriterState* state,
-    std::function<void(waypoint::TexturePath*)> setter) {
-    waypoint::TexturePath* texture = new waypoint::TexturePath();
-    texture->set_path(value.path);
-    setter(texture);
+    std::function<void(unsigned int)> setter) {
+    // Get the texture index or create a new one
+    uint32_t texture_index = 0;
+    auto file_map_lookup = state->texture_path_to_textures_index.find(value.original_filepath);
+    if (file_map_lookup != state->texture_path_to_textures_index.end()) {
+        texture_index = file_map_lookup->second;
+    }
+    else {
+        texture_index = state->textures.size();
+        state->texture_path_to_textures_index[value.original_filepath] = texture_index;
+        state->textures.push_back(&value);
+    }
+
+    setter(texture_index);
 }

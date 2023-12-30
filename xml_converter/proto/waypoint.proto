@@ -4,6 +4,15 @@ package waypoint;
 
 message Waypoint {
     repeated Category category = 1;
+    repeated TextureData textures = 2;
+}
+
+message TextureData {
+    string filepath = 1;
+    // repeated string tags = 2;
+    // bytes filehash = 3;
+    // // Maybe useful for approximation or for loading in a base color on meshes before the texture data is ready
+    // RGBAColor approximate_color = 4;
 }
 
 message Category {
@@ -17,7 +26,7 @@ message Category {
 }
 
 message Icon {
-    TexturePath texture_path = 2;
+    uint32 texture_id = 2;
     bytes guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
@@ -57,7 +66,7 @@ message Icon {
 }
 
 message Trail {
-    TexturePath texture_path = 2;
+    uint32 texture_id = 2;
     bytes guid = 3;
     int32 map_id = 4;
     float distance_fade_end = 5;
@@ -89,15 +98,11 @@ message Trail {
     // TODO: Delete this when we can parse data per marker instead of per field
     bool category = 2054;
 }
-    
-message TexturePath {
-    string path = 1;
-}
 
-message RGBAColor{
+message RGBAColor {
     int32 rgba_color = 1;
 }
-    
+
 message Position {
     float x = 1;
     float y = 2;

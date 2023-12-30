@@ -5,7 +5,7 @@ class: Image
 applies_to: [Trail]
 xml_fields: [Texture]
 uses_file_path: false
-protobuf_field: texture_path
+protobuf_field: texture_id
 ---
 The path to an image which contains the texture that will be present on a trail.
 

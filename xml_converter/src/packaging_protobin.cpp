@@ -87,10 +87,9 @@ MaybeCategory build_category_objects(
     const Category* category,
     const StringHierarchy& category_filter,
     const std::map<string, std::vector<Parseable*>>& category_to_pois,
-    vector<string>* category_vector) {
-    ProtoWriterState state;
-
-    waypoint::Category category_proto = category->as_protobuf(&state);
+    vector<string>* category_vector,
+    ProtoWriterState* state) {
+    waypoint::Category category_proto = category->as_protobuf(state);
     bool has_valid_contents = false;
 
     vector<waypoint::Category> categories_to_write;
@@ -104,7 +103,8 @@ MaybeCategory build_category_objects(
                 &it->second,
                 category_filter,
                 category_to_pois,
-                category_vector);
+                category_vector,
+                state);
 
             if (child_category.is_category) {
                 has_valid_contents = true;
@@ -124,14 +124,14 @@ MaybeCategory build_category_objects(
             if (parsed_poi->classname() == "POI") {
                 Icon* icon = dynamic_cast<Icon*>(parsed_poi);
                 if (category_filter.in_hierarchy(split(icon->category.category, "."))) {
-                    category_proto.add_icon()->MergeFrom(icon->as_protobuf(&state));
+                    category_proto.add_icon()->MergeFrom(icon->as_protobuf(state));
                     has_valid_contents = true;
                 }
             }
             else if (parsed_poi->classname() == "Trail") {
                 Trail* trail = dynamic_cast<Trail*>(parsed_poi);
                 if (category_filter.in_hierarchy(split(trail->category.category, "."))) {
-                    category_proto.add_trail()->MergeFrom(trail->as_protobuf(&state));
+                    category_proto.add_trail()->MergeFrom(trail->as_protobuf(state));
                     has_valid_contents = true;
                 }
             }
@@ -147,6 +147,18 @@ MaybeCategory build_category_objects(
     return return_value;
 }
 
+void proto_post_processing(ProtoWriterState* state, waypoint::Waypoint* proto) {
+    if (state->textures.size() > 1) {
+        // Handle the 0th index null value independently.
+        proto->add_textures();
+
+        for (size_t i = 1; i < state->textures.size(); i++) {
+            waypoint::TextureData* texture_data = proto->add_textures();
+            texture_data->set_filepath(state->textures[i]->filename);
+        }
+    }
+}
+
 void _write_protobuf_file(
     const string& filepath,
     const StringHierarchy& category_filter,
@@ -154,6 +166,8 @@ void _write_protobuf_file(
     const std::map<string, std::vector<Parseable*>>& category_to_pois) {
     ofstream outfile;
     outfile.open(filepath, ios::out | ios::binary);
+
+    ProtoWriterState state;
 
     if (!outfile.is_open()) {
         cout << "Unable to open " << filepath << endl;
@@ -170,12 +184,15 @@ void _write_protobuf_file(
             category_object,
             category_filter,
             category_to_pois,
-            &category_vector);
+            &category_vector,
+            &state);
 
         if (maybe_category.is_category) {
             output_message.add_category()->MergeFrom(maybe_category.category);
         }
     }
+
+    proto_post_processing(&state, &output_message);
 
     output_message.SerializeToOstream(&outfile);
     outfile.close();

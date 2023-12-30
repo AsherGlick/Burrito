@@ -489,7 +489,7 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         marker_category_to_proto(this->hide_category, state, setter);
     }
     if (this->icon_is_set) {
-        std::function<void(waypoint::TexturePath*)> setter = [&proto_icon](waypoint::TexturePath* val) { proto_icon.set_allocated_texture_path(val); };
+        std::function<void(unsigned int)> setter = [&proto_icon](unsigned int val) { proto_icon.set_texture_id(val); };
         image_to_proto(this->icon, state, setter);
     }
     if (this->icon_size_is_set) {
@@ -660,8 +660,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
     if (proto_icon.trigger().has_action_hide_category()) {
         proto_to_marker_category(proto_icon.trigger().action_hide_category(), state, &(this->hide_category), &(this->hide_category_is_set));
     }
-    if (proto_icon.has_texture_path()) {
-        proto_to_image(proto_icon.texture_path(), state, &(this->icon), &(this->icon_is_set));
+    if (proto_icon.texture_id() != 0) {
+        proto_to_image(proto_icon.texture_id(), state, &(this->icon), &(this->icon_is_set));
     }
     if (proto_icon.tentative__scale() != 0) {
         proto_to_float(proto_icon.tentative__scale(), state, &(this->icon_size), &(this->icon_size_is_set));
