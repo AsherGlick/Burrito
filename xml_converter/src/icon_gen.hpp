@@ -121,10 +121,10 @@ class Icon : public Parseable {
     bool tooltip_description_is_set = false;
     bool tooltip_name_is_set = false;
     bool trigger_range_is_set = false;
-    virtual std::vector<std::string> as_xml() const;
+    virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
-    waypoint::Icon as_protobuf() const;
-    void parse_protobuf(waypoint::Icon proto_icon);
+    waypoint::Icon as_protobuf(ProtoWriterState* state) const;
+    void parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state);
     bool validate_attributes_of_type_marker_category();
 };

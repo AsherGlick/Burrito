@@ -6,6 +6,7 @@
 
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
+#include "state_structs/xml_writer_state.hpp"
 
 std::string Parseable::classname() {
     return "Parseable";
@@ -32,7 +33,7 @@ bool Parseable::init_xml_attribute(rapidxml::xml_attribute<>*, std::vector<XMLEr
     return false;
 }
 
-std::vector<std::string> Parseable::as_xml() const {
+std::vector<std::string> Parseable::as_xml(XMLWriterState*) const {
     throw std::runtime_error("error: Parseable::as_xml() should not be called");
     std::vector<std::string> result;
     return result;

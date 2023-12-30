@@ -5,6 +5,7 @@
 
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "state_structs/xml_reader_state.hpp"
+#include "state_structs/xml_writer_state.hpp"
 
 class XMLError;
 
@@ -19,5 +20,5 @@ class Parseable {
     // A default parser function to parse a single XML attribute into the class.
     virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState*);
 
-    virtual std::vector<std::string> as_xml() const;
+    virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
 };
