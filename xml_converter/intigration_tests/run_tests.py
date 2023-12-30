@@ -2,7 +2,6 @@
 
 import argparse
 import difflib
-import json
 import subprocess
 import re
 import os
@@ -70,8 +69,6 @@ def len_diff(lines: List[str]) -> int:
     return diffcount
 
 
-
-
 ################################################################################
 # remove_ansii_color_escapecodes
 #
@@ -82,7 +79,7 @@ pattern_for_color_escape_codes = r"\u001b\[[0-9;]+m"
 
 
 def remove_ansii_color_escapecodes(lines: List[str]) -> List[str]:
-    return [ re.sub(pattern_for_color_escape_codes, '', line) for line in lines ]
+    return [re.sub(pattern_for_color_escape_codes, '', line) for line in lines]
 
 
 ################################################################################
@@ -91,7 +88,7 @@ def remove_ansii_color_escapecodes(lines: List[str]) -> List[str]:
 # Recompiles the XML Converter binary. If the compilation returns an error code
 # then this function throws an error
 ################################################################################
-def rebuild_xml_converter_binary():
+def rebuild_xml_converter_binary() -> None:
     cmake_build_directory = "../build"
 
     # Store the current working directory
@@ -114,6 +111,7 @@ def rebuild_xml_converter_binary():
         os.chdir(original_cwd)
     else:
         print(f"Directory '{cmake_build_directory}' does not exist.")
+
 
 ################################################################################
 # remove_ignored_lines
@@ -161,7 +159,6 @@ def main() -> None:
         xml_output_dir_path = os.path.join(output_parent_dirpath, "xml", testcase.name)
         proto_output_dir_path = os.path.join(output_parent_dirpath, "proto", testcase.name)
 
-
         os.makedirs(xml_output_dir_path, exist_ok=True)
         os.makedirs(proto_output_dir_path, exist_ok=True)
 
@@ -183,7 +180,7 @@ def main() -> None:
             print("    return_code : {}".format(returncode))
 
         all_tests_passed: bool = True
-        
+
         stdout_diff: List[str] = list(difflib.unified_diff(testcase.expected_stdout, stdout, fromfile="Expected stdout", tofile="Actual stdout", lineterm=""))
         if len_diff(stdout_diff) != 0:
             print(f"Standard output did not match for test {testcase.name}")
@@ -198,7 +195,7 @@ def main() -> None:
                 print(line)
             all_tests_passed = False
 
-        if testcase.expected_returncode is not None and testcase.expected_returncode != returncode :
+        if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
             print(f"Expected a return code of {testcase.expected_returncode} for {testcase.name} but got {returncode}")
 
         if testcase.expected_output_xml_path is not None:
@@ -208,7 +205,7 @@ def main() -> None:
             output_xml_filepath = os.path.join(xml_output_dir_path, "xml_file.xml")
             expected_output_xml_filepath = os.path.join(testcase.expected_output_xml_path, "xml_file.xml")
 
-            xml_diff = compare_text_files(expected_output_xml_filepath , output_xml_filepath)
+            xml_diff = compare_text_files(expected_output_xml_filepath, output_xml_filepath)
 
             if len_diff(xml_diff) != 0:
                 print(f"XML output was incorrect for test {testcase.name}")

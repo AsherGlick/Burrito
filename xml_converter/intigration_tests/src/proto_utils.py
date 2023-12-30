@@ -2,6 +2,7 @@ import os
 import subprocess
 import difflib
 
+
 def compare_protos(
     outputs_directory: str,
     expected_outputs_directory: str,
@@ -33,6 +34,7 @@ def compare_protos(
     # error and make it look like there is no diff but the test still fails.
 
     return False
+
 
 def compare_binary_file(file_path_1: str, file_path_2: str) -> bool:
     if not os.path.exists(file_path_1):
