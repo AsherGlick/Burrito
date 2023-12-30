@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
@@ -12,8 +12,8 @@
 [ext_resource path="res://icon_new_point.png" type="Texture" id=11]
 [ext_resource path="res://SettingsDialog.gd" type="Script" id=12]
 [ext_resource path="res://Category3D.gd" type="Script" id=13]
-[ext_resource path="res://Category2D.gd" type="Script" id=15]
 [ext_resource path="res://PackDialog.gd" type="Script" id=14]
+[ext_resource path="res://Category2D.gd" type="Script" id=15]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -194,17 +194,17 @@ mode = 2
 access = 2
 current_dir = "/home/steph/Desktop/Packs"
 current_path = "/home/steph/Desktop/Packs/"
-script = ExtResource( 13 )
+script = ExtResource( 14 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="WindowDialog" type="WindowDialog" parent="Control/Dialogs/FileDialog"]
 visible = true
-margin_left = 108.0
-margin_top = 169.0
-margin_right = 708.0
-margin_bottom = 419.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 663.0
+margin_bottom = 462.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
