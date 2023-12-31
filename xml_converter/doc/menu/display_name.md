@@ -8,6 +8,9 @@ custom_functions:
   read.proto:
     function: proto_display_name_to_display_name_and_name
     side_effects: [Name]
+  write.proto:
+    function: display_name_and_name_to_proto_display_name
+    side_effects: [Name]
 
 ---
 A human readable name of this category.

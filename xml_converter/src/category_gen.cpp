@@ -98,7 +98,7 @@ waypoint::Category Category::as_protobuf(ProtoWriterState* state) const {
     }
     if (this->display_name_is_set) {
         std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
-        string_to_proto(this->display_name, state, setter);
+        display_name_and_name_to_proto_display_name(this->display_name, state, setter, &(this->name), &(this->name_is_set));
     }
     if (this->is_separator_is_set) {
         std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_is_separator(val); };
