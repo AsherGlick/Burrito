@@ -54,9 +54,9 @@ jobs:
         run: |
           pip3 install cpplint
 
-      - name: Install xml_converter/generators Dependencies
+      - name: Install xml_converter python Dependencies
         run: |
-          cd xml_converter/generators
+          cd xml_converter
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
