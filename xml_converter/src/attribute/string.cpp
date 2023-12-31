@@ -76,7 +76,6 @@ void proto_display_name_to_display_name_and_name(
     *is_name_set = true;
 }
 
-
 void display_name_and_name_to_proto_display_name(
     std::string value,
     ProtoWriterState* state,
