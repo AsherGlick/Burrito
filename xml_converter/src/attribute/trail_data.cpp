@@ -4,16 +4,16 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstring>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cstring>
 
 #include "../packaging_xml.hpp"
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "waypoint.pb.h"
 #include "../string_helper.hpp"
+#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -78,21 +78,19 @@ void xml_attribute_to_trail_data(
     *is_set = true;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // djb2_hash
 //
 // A simple non cryptographic hash that we use to deterministically generate the
 // filename of the trl files.
 ////////////////////////////////////////////////////////////////////////////////
-unsigned long djb2_hash(const unsigned char* str, size_t length) {
-    unsigned long hash = 5381;
+uint64_t djb2_hash(const unsigned char* str, size_t length) {
+    uint64_t hash = 5381;
     for (size_t i = 0; i < length; i++) {
         hash = ((hash << 5) + hash) + str[i]; /* hash * 33 + c */
     }
     return hash;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // trail_data_to_xml_attribute
@@ -108,7 +106,6 @@ string trail_data_to_xml_attribute(
     const TrailData* value,
     const int* map_id_value,
     const bool* is_map_id_set) {
-
     size_t byte_array_size = sizeof(int) + sizeof(uint32_t) + value->points_x.size() * 3 * sizeof(float);
     unsigned char* byte_array = new unsigned char[byte_array_size];
 
