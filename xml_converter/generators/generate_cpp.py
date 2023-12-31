@@ -461,9 +461,9 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         protobuf_field: str
         _, _, protobuf_field = split_field_into_drilldown(metadata[filepath]["protobuf_field"])
 
-        xml_fields: List[str] = []
         if metadata[filepath]['type'] == "MultiflagValue":
             for flag in metadata[filepath]['flags']:
+                xml_fields = []
                 for item in metadata[filepath]['flags'][flag]:
                     xml_fields.append(normalize(item))
                 attribute_component = AttributeComponent(
@@ -476,6 +476,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
 
         elif metadata[filepath]['type'] == "CompoundValue":
             for component in metadata[filepath]['components']:
+                xml_fields = []
                 if component['type'] not in documentation_type_data:
                     raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
                         attribute_name=attribute_name
@@ -495,6 +496,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
 
         elif metadata[filepath]['type'] == "Enum":
             for value in metadata[filepath]['values']:
+                xml_fields = []
                 for item in metadata[filepath]['values'][value]:
                     xml_fields.append(normalize(item))
                 attribute_component = AttributeComponent(
