@@ -10,6 +10,9 @@ custom_functions:
   read.xml:
     function: xml_attribute_to_trail_data
     side_effects: [Map ID]
+  write.xml:
+    function: trail_data_to_xml_attribute
+    side_effects: [Map ID]
 ---
 
 The coordinates of each point along a trail path.

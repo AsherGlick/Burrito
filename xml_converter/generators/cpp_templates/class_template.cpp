@@ -65,7 +65,7 @@ vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.write_to_xml == true %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                xml_node_contents.push_back({{attribute_variable.serialize_xml_function}}("{{attribute_variable.default_xml_field}}", state, &this->{{attribute_variable.attribute_name}}));
+                xml_node_contents.push_back({{attribute_variable.serialize_xml_function}}("{{attribute_variable.default_xml_field}}", state, &this->{{attribute_variable.attribute_name}}{% for side_effect in attribute_variable.serialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %}));
             }
         {% endif %}
     {% endfor %}

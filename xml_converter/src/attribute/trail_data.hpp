@@ -35,7 +35,9 @@ void xml_attribute_to_trail_data(
 std::string trail_data_to_xml_attribute(
     const std::string& attribute_name,
     XMLWriterState* state,
-    const TrailData* value);
+    const TrailData* value,
+    const int* map_id_value,
+    const bool* is_map_id_set);
 
 void proto_to_trail_data(
     waypoint::TrailData input,
