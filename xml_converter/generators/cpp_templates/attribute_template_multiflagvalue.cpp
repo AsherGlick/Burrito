@@ -21,19 +21,19 @@ void xml_attribute_to_{{attribute_name}}(
     {{class_name}} {{attribute_name}};
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
-    {% for attribute_variable in attribute_variables %}
+    {% for attribute_variable in attribute_components %}
         {{attribute_name}}.{{attribute_variable.attribute_name}} = false;
     {% endfor %}
 
     for (string flag_value : flag_values) {
         string normalized_flag_value = normalize(flag_value);
-        {% for n, attribute_variable in enumerate(attribute_variables) %}
+        {% for n, attribute_variable in enumerate(attribute_components) %}
             {% for i, value in enumerate(attribute_variable.xml_fields) %}
-                {% if i == 0 and n == 0: %}
+                {% if i == 0 and n == 0 %}
                     if (normalized_flag_value == "{{value}}") {
                         {{attribute_name}}.{{attribute_variable.attribute_name}} = true;
                     }
-                {% else: %}
+                {% else %}
                     else if (normalized_flag_value == "{{value}}") {
                         {{attribute_name}}.{{attribute_variable.attribute_name}} = true;
                     }
@@ -54,7 +54,7 @@ string {{attribute_name}}_to_xml_attribute(
     XMLWriterState* state,
     const {{class_name}}* value) {
     vector<string> flag_values;
-    {% for n, attribute_variable in enumerate(attribute_variables)%}
+    {% for n, attribute_variable in enumerate(attribute_components) %}
         if (value->{{attribute_variable.attribute_name}} == true) {
             flag_values.push_back("{{attribute_variable.xml_fields[0]}}");
         }
@@ -69,7 +69,7 @@ void proto_to_{{attribute_name}}(
     {{class_name}}* value,
     bool* is_set) {
     {{class_name}} {{attribute_name}};
-    {% for n, attribute_variable in enumerate(attribute_variables)%}
+    {% for n, attribute_variable in enumerate(attribute_components) %}
         {{attribute_name}}.{{attribute_variable.attribute_name}} = input.{{attribute_variable.attribute_name}}();
     {% endfor %}
     *value = {{attribute_name}};
@@ -82,7 +82,7 @@ void {{attribute_name}}_to_proto(
     std::function<void({{proto_field_cpp_type}}*)> setter) {
     {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
     bool should_write = false;
-    {% for n, attribute_variable in enumerate(attribute_variables)%}
+    {% for n, attribute_variable in enumerate(attribute_components) %}
         proto_{{attribute_name}}->set_{{attribute_variable.attribute_name}}(value.{{attribute_variable.attribute_name}});
         should_write |= value.{{attribute_variable.attribute_name}};
     {% endfor %}

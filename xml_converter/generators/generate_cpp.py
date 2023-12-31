@@ -95,6 +95,14 @@ class AttributeVariable:
     is_component: bool = False
 
 
+@dataclass
+class AttributeComponent:
+    attribute_name: str
+    cpp_type: str
+    protobuf_field: str
+    xml_fields: List[str]
+
+
 ################################################################################
 # CPPInclude
 #
@@ -420,10 +428,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         lstrip_blocks=True
     )
     attribute_names: Dict[str, str] = {}
-    attribute_variables: List[AttributeVariable] = []
-    attribute_variable: AttributeVariable
     metadata: Dict[str, SchemaType] = {}
-    xml_fields: List[str] = []
     template: Dict[str, Template] = {
         "MultiflagValue": env.get_template("attribute_template_multiflagvalue.cpp"),
         "CompoundValue": env.get_template("attribute_template_compoundvalue.cpp"),
@@ -435,7 +440,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         attribute_names[filepath] = filename.split(".md")[0]
 
     for filepath in attribute_names:
-        attribute_variables = []
+        attribute_components: List[AttributeComponent] = []
         xml_bundled_components: List[str] = []
         metadata[filepath] = data[filepath].metadata
         attribute_name = attribute_name_from_markdown_data(metadata[filepath]['name'])
@@ -453,43 +458,24 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                 print("Proto Field prototype differes between different marker types for ", metadata[filepath]["protobuf_field"])
             proto_field_prototype = new_prototype
 
-        proto_drilldown_calls: str
-        mutable_proto_drilldown_calls: str
         protobuf_field: str
-        proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(metadata[filepath]["protobuf_field"])
+        _, _, protobuf_field = split_field_into_drilldown(metadata[filepath]["protobuf_field"])
 
+        xml_fields: List[str] = []
         if metadata[filepath]['type'] == "MultiflagValue":
             for flag in metadata[filepath]['flags']:
-                xml_fields = []
                 for item in metadata[filepath]['flags'][flag]:
                     xml_fields.append(normalize(item))
-
-                # TODO: Replace AttributeVariable with a more fitting dataclass
-                attribute_variable = AttributeVariable(
+                attribute_component = AttributeComponent(
                     attribute_name=flag,
-                    attribute_type=metadata[filepath]['type'],
                     cpp_type="bool",
-                    class_name=attribute_name,
                     xml_fields=xml_fields,
                     protobuf_field=protobuf_field,
-                    proto_drilldown_calls=proto_drilldown_calls,
-                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
-                    protobuf_cpp_type="",
-                    is_proto_field_scalar=False,
-                    serialize_xml_function="",
-                    deserialize_xml_function="",
-                    serialize_proto_function="",
-                    deserialize_proto_function="",
-                    serialize_xml_side_effects=[],
-                    deserialize_xml_side_effects=[],
-                    # serialize_proto_side_effects=[],
-                    deserialize_proto_side_effects=[],
                 )
-                attribute_variables.append(attribute_variable)
+                attribute_components.append(attribute_component)
 
         elif metadata[filepath]['type'] == "CompoundValue":
             for component in metadata[filepath]['components']:
-                xml_fields = []
                 if component['type'] not in documentation_type_data:
                     raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
                         attribute_name=attribute_name
@@ -499,56 +485,25 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                     xml_fields.append(normalize(item))
                 if component['name'] in metadata[filepath]['xml_bundled_components']:
                     xml_bundled_components.append(component_attribute_name)
-                # TODO: Replace AttributeVariable with a more fitting dataclass
-                attribute_variable = AttributeVariable(
+                attribute_component = AttributeComponent(
                     attribute_name=component_attribute_name,
-                    attribute_type=metadata[filepath]['type'],
                     cpp_type=documentation_type_data[component['type']]["cpp_type"],
-                    class_name=attribute_name,
                     xml_fields=xml_fields,
                     protobuf_field=component["protobuf_field"],
-                    proto_drilldown_calls=proto_drilldown_calls,
-                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
-                    protobuf_cpp_type="",
-                    is_proto_field_scalar=False,
-                    serialize_xml_function="",
-                    deserialize_xml_function="",
-                    serialize_proto_function="",
-                    deserialize_proto_function="",
-                    serialize_xml_side_effects=[],
-                    deserialize_xml_side_effects=[],
-                    # serialize_proto_side_effects=[],
-                    deserialize_proto_side_effects=[],
                 )
-                attribute_variables.append(attribute_variable)
+                attribute_components.append(attribute_component)
 
         elif metadata[filepath]['type'] == "Enum":
             for value in metadata[filepath]['values']:
-                xml_fields = []
                 for item in metadata[filepath]['values'][value]:
                     xml_fields.append(normalize(item))
-                # TODO: Replace AttributeVariable with a more fitting dataclass
-                attribute_variable = AttributeVariable(
+                attribute_component = AttributeComponent(
                     attribute_name=value,
-                    attribute_type=metadata[filepath]['type'],
                     cpp_type="str",
-                    class_name=attribute_name,
                     xml_fields=xml_fields,
                     protobuf_field=protobuf_field,
-                    proto_drilldown_calls=proto_drilldown_calls,
-                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
-                    protobuf_cpp_type="",
-                    is_proto_field_scalar=False,
-                    serialize_xml_function="",
-                    deserialize_xml_function="",
-                    serialize_proto_function="",
-                    deserialize_proto_function="",
-                    serialize_xml_side_effects=[],
-                    deserialize_xml_side_effects=[],
-                    # serialize_proto_side_effects=[],
-                    deserialize_proto_side_effects=[],
                 )
-                attribute_variables.append(attribute_variable)
+                attribute_components.append(attribute_component)
 
         else:
             continue
@@ -558,7 +513,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
             hpp_filepath,
             env.get_template("attribute_template.hpp").render(
                 attribute_name=attribute_name,
-                attribute_variables=sorted(attribute_variables, key=get_attribute_variable_key),
+                attribute_components=sorted(attribute_components, key=get_attribute_component_key),
                 class_name=capitalize(attribute_name, delimiter=""),
                 type=metadata[filepath]['type'],
                 proto_field_cpp_type=proto_field_type,
@@ -573,7 +528,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
             template[metadata[filepath]['type']].render(
                 attribute_name=attribute_name,
                 # TODO: Should this attribute_variables list be sorted? The hpp one is.
-                attribute_variables=attribute_variables,
+                attribute_components=attribute_components,
                 class_name=capitalize(attribute_name, delimiter=""),
                 enumerate=enumerate,
                 xml_bundled_components=xml_bundled_components,
@@ -606,6 +561,10 @@ def write_if_different(path: str, contents: str) -> None:
 
 def get_attribute_variable_key(attribute_variable: AttributeVariable) -> str:
     return attribute_variable.attribute_name
+
+
+def get_attribute_component_key(attribute_component: AttributeComponent) -> str:
+    return attribute_component.attribute_name
 
 
 ################################################################################
