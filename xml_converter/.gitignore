@@ -11,3 +11,4 @@ web_docs
 __pycache__/
 build/
 export_packs/
+.cache/clangd

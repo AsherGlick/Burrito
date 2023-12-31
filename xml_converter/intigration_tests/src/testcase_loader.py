@@ -48,7 +48,7 @@ def load_testcases() -> List[Testcase]:
 # A simple loader that loads the testcase from a specific directory, doing
 # typechecking on the testcase data to be sure it is properly structured.
 ################################################################################
-def load_testcase(path) -> Optional[Testcase]:
+def load_testcase(path: str) -> Optional[Testcase]:
     test_info_path = os.path.join(path, "testcase.yaml")
     with open(test_info_path) as f:
         data = yaml.safe_load(f)
@@ -61,13 +61,13 @@ def load_testcase(path) -> Optional[Testcase]:
     for pack_name, pack_type in data["input_paths"].items():
         if not isinstance(pack_name, str):
             print(f"Invalid pack name, expecting a string but got {pack_name}")
-            return
+            return None
 
         pack_path = os.path.join(inputs_path, pack_name)
 
         if not os.path.exists(pack_path):
             print(f"Input pack path {pack_path} not found")
-            return
+            return None
 
         if pack_type == "xml":
             xml_input_paths.append(pack_path)
@@ -75,7 +75,7 @@ def load_testcase(path) -> Optional[Testcase]:
             proto_input_paths.append(pack_path)
         else:
             print(f"Invalid pack type {pack_type} found in {test_info_path}")
-            return
+            return None
 
     # Sanity check that all the input directories were accounted for
     for possible_input_path in os.listdir(inputs_path):
@@ -85,24 +85,24 @@ def load_testcase(path) -> Optional[Testcase]:
     # Typecheck the expected stdout, stderr, and returncode values
     if "expected_stdout" not in data:
         print(f"Expected 'expected_stdout' field in {test_info_path}")
-        return
+        return None
     elif not isinstance(data["expected_stdout"], str):
         print(f"Invalid Test, expecting string value for 'expected_stdout' in {path}")
-        return
+        return None
 
     if "expected_stderr" not in data:
         print(f"Expected 'expected_stderr' field in {test_info_path}")
-        return
+        return None
     elif not isinstance(data["expected_stderr"], str):
         print(f"Invalid Test, expecting string value for 'expected_stderr' in {path}")
-        return
+        return None
 
     if "expected_returncode" not in data:
         print(f"Expected 'expected_returncode' field in {test_info_path}")
-        return
+        return None
     elif not isinstance(data["expected_returncode"], int):
         print(f"Invalid Test, expecting string value for 'expected_returncode' in {path}")
-        return
+        return None
 
     return Testcase(
         name=os.path.basename(path),
