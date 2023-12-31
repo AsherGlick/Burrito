@@ -70,7 +70,7 @@ fi
 popd
 
 # Run the python presubmit for the "integration_tests" subdirectory.
-pushd intigration_tests
+pushd integration_tests
 ./presubmit.sh
 if (( $? > 0 )); then
     error_count=`expr $error_count + 1`
