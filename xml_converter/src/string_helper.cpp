@@ -295,3 +295,20 @@ string join_file_paths(const string& path_a, const string& path_b) {
     }
     return output + path_b;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// long_to_hex_string
+//
+// A helper function that converts an 8 byte long into a 16 byte hex string.
+////////////////////////////////////////////////////////////////////////////////
+const char* hex_chars = "0123456789abcdef";
+std::string long_to_hex_string(uint64_t number) {
+    std::string hex_string(16, '0');
+
+    for (int i = 15; i >= 0; --i) {
+        hex_string[i] = hex_chars[number & 0xF];
+        number >>= 4;
+    }
+
+    return hex_string;
+}

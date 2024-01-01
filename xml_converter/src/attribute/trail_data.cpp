@@ -3,6 +3,8 @@
 #include <stdint.h>
 
 #include <algorithm>
+#include <cstddef>
+#include <cstring>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -10,6 +12,7 @@
 #include "../packaging_xml.hpp"
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
 #include "waypoint.pb.h"
 
 using namespace std;
@@ -76,19 +79,71 @@ void xml_attribute_to_trail_data(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// djb2_hash
+//
+// A simple non cryptographic hash that we use to deterministically generate the
+// filename of the trl files.
+////////////////////////////////////////////////////////////////////////////////
+uint64_t djb2_hash(const unsigned char* str, size_t length) {
+    uint64_t hash = 5381;
+    for (size_t i = 0; i < length; i++) {
+        hash = ((hash << 5) + hash) + str[i]; /* hash * 33 + c */
+    }
+    return hash;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // trail_data_to_xml_attribute
 //
 // Converts a traildata into a fully qualified xml attribute string.
 // TODO: Write ".trl" files from data
 // TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
+uint32_t trail_version_number = 0;
 string trail_data_to_xml_attribute(
     const string& attribute_name,
     XMLWriterState* state,
     const TrailData* value,
     const int* map_id_value,
     const bool* is_map_id_set) {
-    return " " + attribute_name + "=\"" + "temp_name_of_trail.trl" + "\"";
+    size_t byte_array_size = sizeof(int) + sizeof(uint32_t) + value->points_x.size() * 3 * sizeof(float);
+    unsigned char* byte_array = new unsigned char[byte_array_size];
+
+    size_t offset = 0;
+    std::memcpy(byte_array + offset, &trail_version_number, sizeof(trail_version_number));
+    offset += sizeof(trail_version_number);
+
+    std::memcpy(byte_array + offset, map_id_value, sizeof(*map_id_value));
+    offset += sizeof(*map_id_value);
+
+    for (size_t i = 0; i < value->points_x.size(); i++) {
+        std::memcpy(byte_array + offset, &value->points_x[i], sizeof(float));
+        offset += sizeof(float);
+        std::memcpy(byte_array + offset, &value->points_y[i], sizeof(float));
+        offset += sizeof(float);
+        std::memcpy(byte_array + offset, &value->points_z[i], sizeof(float));
+        offset += sizeof(float);
+    }
+
+    // Sanity check offset is where we think it should be.
+    if (offset != byte_array_size) {
+        cerr << "Found more data to write then we thought. This might mean there is a programming issue for serializing trl files." << endl;
+        cerr << "Found " << offset << " instead of " << byte_array_size << endl;
+    }
+
+    string trail_file_name = long_to_hex_string(djb2_hash(byte_array, byte_array_size)) + ".trl";
+    string trail_file_path = join_file_paths(state->filedir, trail_file_name);
+
+    ofstream trail_data_file(trail_file_path, ios::binary);
+
+    if (!trail_data_file.good()) {
+        cerr << "Error opening file. " << trail_file_path << endl;
+    }
+    trail_data_file.write(reinterpret_cast<const char*>(byte_array), byte_array_size);
+    trail_data_file.close();
+
+    delete[] byte_array;
+    return " " + attribute_name + "=\"" + trail_file_name + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
