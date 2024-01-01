@@ -85,7 +85,9 @@ void xml_attribute_to_trail_data(
 string trail_data_to_xml_attribute(
     const string& attribute_name,
     XMLWriterState* state,
-    const TrailData* value) {
+    const TrailData* value,
+    const int* map_id_value,
+    const bool* is_map_id_set) {
     return " " + attribute_name + "=\"" + "temp_name_of_trail.trl" + "\"";
 }
 

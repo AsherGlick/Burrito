@@ -235,7 +235,7 @@ vector<string> Trail::as_xml(XMLWriterState* state) const {
         xml_node_contents.push_back(image_to_xml_attribute("Texture", state, &this->texture));
     }
     if (this->trail_data_is_set) {
-        xml_node_contents.push_back(trail_data_to_xml_attribute("TrailData", state, &this->trail_data));
+        xml_node_contents.push_back(trail_data_to_xml_attribute("TrailData", state, &this->trail_data, &(this->map_id), &(this->map_id_is_set)));
     }
     if (this->trail_scale_is_set) {
         xml_node_contents.push_back(float_to_xml_attribute("TrailScale", state, &this->trail_scale));

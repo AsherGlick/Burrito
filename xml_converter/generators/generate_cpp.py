@@ -54,7 +54,7 @@ class AttributeVariable:
 
     # The function name and additional side effect pointers for xml serialization.
     serialize_xml_function: str
-    # serialize_xml_side_effects: List[str]
+    serialize_xml_side_effects: List[str]
 
     # The function name and additional side effect pointers for xml deserialization.
     deserialize_xml_function: str
@@ -309,7 +309,7 @@ def generate_cpp_variable_data(
                         is_component=True,
 
                         serialize_xml_function=component_class_name + "_to_xml_attribute",
-                        # serialize_xml_side_effects=[],
+                        serialize_xml_side_effects=[],
                         deserialize_xml_function="xml_attribute_to_" + component_class_name,
                         deserialize_xml_side_effects=[],
                         serialize_proto_function="to_proto_" + component_class_name,
@@ -386,7 +386,7 @@ def generate_cpp_variable_data(
                 side_effects=side_effects,
 
                 serialize_xml_function=serialize_xml_function,
-                # serialize_xml_side_effects=serialize_xml_side_effects,
+                serialize_xml_side_effects=serialize_xml_side_effects,
                 deserialize_xml_function=deserialize_xml_function,
                 deserialize_xml_side_effects=deserialize_xml_side_effects,
                 serialize_proto_function=serialize_proto_function,
@@ -480,7 +480,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                     deserialize_xml_function="",
                     serialize_proto_function="",
                     deserialize_proto_function="",
-                    # serialize_xml_side_effects=[],
+                    serialize_xml_side_effects=[],
                     deserialize_xml_side_effects=[],
                     # serialize_proto_side_effects=[],
                     deserialize_proto_side_effects=[],
@@ -515,7 +515,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                     deserialize_xml_function="",
                     serialize_proto_function="",
                     deserialize_proto_function="",
-                    # serialize_xml_side_effects=[],
+                    serialize_xml_side_effects=[],
                     deserialize_xml_side_effects=[],
                     # serialize_proto_side_effects=[],
                     deserialize_proto_side_effects=[],
@@ -543,7 +543,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                     deserialize_xml_function="",
                     serialize_proto_function="",
                     deserialize_proto_function="",
-                    # serialize_xml_side_effects=[],
+                    serialize_xml_side_effects=[],
                     deserialize_xml_side_effects=[],
                     # serialize_proto_side_effects=[],
                     deserialize_proto_side_effects=[],
