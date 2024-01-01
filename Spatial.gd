@@ -926,5 +926,5 @@ func _on_MarkersUI_item_edited():
 
 
 func _on_ImportPath_pressed():
-	$Control/Dialogs/FileDialog.show()
+	$Control/Dialogs/ImportPackDialog.show()
 
