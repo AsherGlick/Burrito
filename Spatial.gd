@@ -84,8 +84,7 @@ func _ready():
 
 	if (Settings.burrito_link_auto_launch_enabled):
 		launch_burrito_link()
-	
-	
+
 
 
 ################################################################################
