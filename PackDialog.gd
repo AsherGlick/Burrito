@@ -36,7 +36,7 @@ func _on_FileDialog_dir_selected(dir_path):
 		"--input-taco-path", dir_path,
 		"--output-waypoint-path", new_path,
 		"--output-split-waypoint-path", self.split_protobin_data_folder
-		]
+	]
 	custom_print(args)
 	var result: int = OS.execute(self.executable_path, args, true, output)
 	custom_print(output)
