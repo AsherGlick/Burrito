@@ -16,6 +16,10 @@ func _ready():
 		var success = dir.make_dir(self.protobin_data_folder)
 		if success != OK:
 			print("Error: Could not create data folder:", self.protobin_data_folder)
+	if not dir.dir_exists(self.split_protobin_data_folder):
+		var success = dir.make_dir(self.split_protobin_data_folder)
+		if success != OK:
+			print("Error: Could not create data folder:", self.split_protobin_data_folder)
 
 func _on_FileDialog_dir_selected(dir_path):
 	var output: Array = []
