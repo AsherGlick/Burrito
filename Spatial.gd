@@ -482,11 +482,8 @@ func _unhandled_input(event):
 ################################################################################
 func clear_map_markers():
 	# Clear all the rendered assets to make way for the new ones
-	for child in self.markers_3d.get_children():
-		child.queue_free()
-
-	for child in self.markers_2d.get_children():
-		child.queue_free()
+	self.markers_3d.clear_all()
+	self.markers_2d.clear_all()
 
 func init_category_tree():
 	self.markers_ui.clear()
