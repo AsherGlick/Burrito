@@ -529,7 +529,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
             cpp_filepath,
             template[metadata[filepath]['type']].render(
                 attribute_name=attribute_name,
-                # TODO: Should this attribute_variables list be sorted? The hpp one is.
+                # TODO: Should this attribute_components list be sorted? The hpp one is.
                 attribute_components=attribute_components,
                 class_name=capitalize(attribute_name, delimiter=""),
                 enumerate=enumerate,
