@@ -198,30 +198,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="OutputDialog" type="WindowDialog" parent="Control/Dialogs/ImportPackDialog"]
-margin_left = 689.0
-margin_top = 1.0
-margin_right = 1344.0
-margin_bottom = 455.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/Dialogs/ImportPackDialog/OutputDialog"]
-margin_right = 653.0
-margin_bottom = 453.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="OutputLabel" type="Label" parent="Control/Dialogs/ImportPackDialog/OutputDialog/ScrollContainer"]
-margin_right = 100.0
-margin_bottom = 100.0
-rect_min_size = Vector2( 100, 100 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
 margin_left = 55.0
 margin_top = 60.0

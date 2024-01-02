@@ -4,8 +4,6 @@ const executable_path: String = "./xml_converter/build/xml_converter"
 var protobin_data_folder: String
 var split_protobin_data_folder: String
 var user_data_dir: String 
-onready var output_dialog = $OutputDialog
-onready var output_label = $OutputDialog/ScrollContainer/OutputLabel
 
 func _ready():
 	var dir = Directory.new()
@@ -37,15 +35,10 @@ func _on_FileDialog_dir_selected(dir_path):
 		"--output-waypoint-path", new_path,
 		"--output-split-waypoint-path", self.split_protobin_data_folder
 	]
-	custom_print(args)
-	var result: int = OS.execute(self.executable_path, args, true, output)
-	custom_print(output)
+	print(args)
+	var result: int = OS.execute(self.executable_path, args, true, output, true)
+	print(output)
 	if result != OK:
 		print("Failed to execute the command. Error code:", result)
 	else:
 		print("Command executed successfully.")
-
-func custom_print(message: Array):
-	output_dialog.show()
-	for line in message:
-		output_label.text += line + "\n"
