@@ -157,7 +157,6 @@ def main() -> bool:
 
     rebuild_xml_converter_binary()
 
-
     for testcase in load_testcases():
         xml_output_dir_path = os.path.join(output_parent_dirpath, "xml", testcase.name)
         proto_output_dir_path = os.path.join(output_parent_dirpath, "proto", testcase.name)
@@ -211,6 +210,7 @@ def main() -> bool:
 
     return all_tests_passed
 
+
 ################################################################################
 # diff_dirs
 #
@@ -241,7 +241,6 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
         diff_found = True
         print("+Unexpected dir `{}` found in the actual output.".format(os.path.join(actual_output_dir, directory)))
 
-
     files_to_diff = set.intersection(set(expected_files), set(actual_files))
 
     for file_to_diff in files_to_diff:
@@ -264,7 +263,7 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
 
         if len_diff(diff) != 0:
             diff_found = True
-            print(f"XML output was incorrect for test")
+            print("XML output was incorrect for test")
             for line in diff:
                 print(line)
 
