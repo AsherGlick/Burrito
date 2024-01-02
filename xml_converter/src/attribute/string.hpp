@@ -45,4 +45,12 @@ void proto_display_name_to_display_name_and_name(
     bool* is_display_name_set,
     std::string* name,
     bool* is_name_set);
+
+void display_name_and_name_to_proto_display_name(
+    std::string input,
+    ProtoWriterState* state,
+    std::function<void(std::string)> setter,
+    const std::string* name,
+    const bool* is_name_set);
+
 #define do_nothing(...)

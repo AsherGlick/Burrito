@@ -75,3 +75,12 @@ void proto_display_name_to_display_name_and_name(
     *name = normalize(input);
     *is_name_set = true;
 }
+
+void display_name_and_name_to_proto_display_name(
+    std::string value,
+    ProtoWriterState* state,
+    std::function<void(std::string)> setter,
+    const std::string* name,
+    const bool* is_name_set) {
+    setter(value);
+}

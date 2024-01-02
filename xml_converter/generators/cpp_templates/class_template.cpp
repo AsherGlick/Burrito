@@ -98,7 +98,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) cons
                 {% else %}
                     std::function<void({{attribute_variable.protobuf_cpp_type}})> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.protobuf_cpp_type}} val) { proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(val); };
                 {% endif %}
-                {{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}, state, setter);
+                {{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}, state, setter{% for side_effect in attribute_variable.serialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endif %}
     {% endfor %}

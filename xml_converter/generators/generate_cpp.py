@@ -62,7 +62,7 @@ class AttributeVariable:
 
     # The function name and additional side effect pointers for proto serialization.
     serialize_proto_function: str
-    # serialize_proto_side_effects: List[str]
+    serialize_proto_side_effects: List[str]
 
     # The function name and additional side effect pointers for proto deserialization.
     deserialize_proto_function: str
@@ -321,7 +321,7 @@ def generate_cpp_variable_data(
                         deserialize_xml_function="xml_attribute_to_" + component_class_name,
                         deserialize_xml_side_effects=[],
                         serialize_proto_function="to_proto_" + component_class_name,
-                        # serialize_proto_side_effects=[],
+                        serialize_proto_side_effects=[],
                         deserialize_proto_function="from_proto_" + component_class_name,
                         deserialize_proto_side_effects=[],
                     )
@@ -398,7 +398,7 @@ def generate_cpp_variable_data(
                 deserialize_xml_function=deserialize_xml_function,
                 deserialize_xml_side_effects=deserialize_xml_side_effects,
                 serialize_proto_function=serialize_proto_function,
-                # serialize_proto_side_effects=serialize_proto_side_effects,
+                serialize_proto_side_effects=serialize_proto_side_effects,
                 deserialize_proto_function=deserialize_proto_function,
                 deserialize_proto_side_effects=deserialize_proto_side_effects,
 
