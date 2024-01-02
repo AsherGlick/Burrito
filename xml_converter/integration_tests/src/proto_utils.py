@@ -1,39 +1,27 @@
 import os
 import subprocess
 import difflib
+from typing import List
 
 
 def compare_protos(
-    outputs_directory: str,
-    expected_outputs_directory: str,
-) -> bool:
-    # TODO: These paths are directories and 'markers.bin` is just one
-    # possible file in the directories. Eventually we should check all
-    # the files in the directory not just the one.
-    files_are_equal = compare_binary_file(
-        os.path.join(expected_outputs_directory, "markers.bin"),
-        os.path.join(outputs_directory, "markers.bin"),
-    )
+    expected_proto_path: str,
+    actual_proto_path: str
+) -> List[str]:
+    files_are_equal = compare_binary_file(expected_proto_path, actual_proto_path)
 
     if files_are_equal:
-        return True
+        return []
 
-    expected_textproto_path = os.path.join(expected_outputs_directory, "markers.bin")
-    actual_textproto_path = os.path.join(outputs_directory, "markers.bin")
+    expected_textproto = get_waypoint_textproto(expected_proto_path)
+    actual_textproto = get_waypoint_textproto(actual_proto_path)
 
-    expected_textproto = get_waypoint_textproto(expected_textproto_path)
-    actual_textproto = get_waypoint_textproto(actual_textproto_path)
+    diff = list(difflib.unified_diff(expected_textproto.split("\n"), actual_textproto.split("\n"), fromfile=expected_proto_path, tofile=actual_proto_path, lineterm=""))
 
-    diff = difflib.unified_diff(expected_textproto.split("\n"), actual_textproto.split("\n"), fromfile=expected_textproto_path, tofile=actual_textproto_path, lineterm="")
+    if len(diff) == 0:
+        diff = ["Something went wrong diffing {} and {}.".format(expected_proto_path, actual_proto_path)]
 
-    for line in diff:
-        print(line)
-
-    # TODO: Also might be good to include a HEX diff breakdown because if the
-    # diff is just ordering then the textproto conversion might correct the
-    # error and make it look like there is no diff but the test still fails.
-
-    return False
+    return list(diff)
 
 
 def compare_binary_file(file_path_1: str, file_path_2: str) -> bool:
