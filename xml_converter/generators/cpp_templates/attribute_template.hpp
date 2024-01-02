@@ -15,8 +15,8 @@
     class XMLError;
 
     enum {{class_name}} {
-        {% for attribute_variable in attribute_components %}
-            {{attribute_variable.attribute_name}},
+        {% for attribute_component in attribute_components %}
+            {{attribute_component.attribute_name}},
         {% endfor %}
     };
 {% elif type in ["CompoundValue", "MultiflagValue"] %}
@@ -26,8 +26,8 @@
 
     class {{class_name}} {
      public:
-        {% for attribute_variable in attribute_components %}
-            {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
+        {% for attribute_component in attribute_components %}
+            {{attribute_component.cpp_type}} {{attribute_component.attribute_name}};
         {% endfor %}
 
         virtual std::string classname() {

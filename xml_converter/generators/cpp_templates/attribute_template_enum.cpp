@@ -20,15 +20,15 @@ void xml_attribute_to_{{attribute_name}}(
     bool* is_set) {
     {{class_name}} {{attribute_name}};
     string normalized_value = normalize(get_attribute_value(input));
-    {% for n, attribute_variable in enumerate(attribute_components) %}
-        {% for i, value in enumerate(attribute_variable.xml_fields) %}
+    {% for n, attribute_component in enumerate(attribute_components) %}
+        {% for i, value in enumerate(attribute_component.xml_fields) %}
             {% if i == 0 and n == 0 %}
                 if (normalized_value == "{{value}}") {
-                    {{attribute_name}} = {{class_name}}::{{attribute_variable.attribute_name}};
+                    {{attribute_name}} = {{class_name}}::{{attribute_component.attribute_name}};
                 }
             {% else %}
                 else if (normalized_value == "{{value}}") {
-                    {{attribute_name}} = {{class_name}}::{{attribute_variable.attribute_name}};
+                    {{attribute_name}} = {{class_name}}::{{attribute_component.attribute_name}};
                 }
             {% endif %}
         {% endfor %}
@@ -45,12 +45,12 @@ string {{attribute_name}}_to_xml_attribute(
     const std::string& attribute_name,
     XMLWriterState* state,
     const {{class_name}}* value) {
-    {% for n, attribute_variable in enumerate(attribute_components) %}
-        {% for i, value in enumerate(attribute_variable.xml_fields) %}
+    {% for n, attribute_component in enumerate(attribute_components) %}
+        {% for i, value in enumerate(attribute_component.xml_fields) %}
             {%-if i == 0 and n == 0:%}
-                if (*value == {{class_name}}::{{attribute_variable.attribute_name}}) {
+                if (*value == {{class_name}}::{{attribute_component.attribute_name}}) {
             {% else %}
-                else if (*value == {{class_name}}::{{attribute_variable.attribute_name}}) {
+                else if (*value == {{class_name}}::{{attribute_component.attribute_name}}) {
             {%  endif %}
                 return " " + attribute_name + "=\"" + "{{value}}" + "\"";
             }
@@ -67,9 +67,9 @@ void proto_to_{{attribute_name}}(
     {{class_name}}* value,
     bool* is_set) {
     switch (input) {
-        {% for attribute_variable in attribute_components %}
-            case {{proto_field_cpp_type}}::{{attribute_variable.attribute_name}}:
-                *value = {{class_name}}::{{attribute_variable.attribute_name}};
+        {% for attribute_component in attribute_components %}
+            case {{proto_field_cpp_type}}::{{attribute_component.attribute_name}}:
+                *value = {{class_name}}::{{attribute_component.attribute_name}};
                 *is_set = true;
                 break;
         {% endfor %}
@@ -85,9 +85,9 @@ void {{attribute_name}}_to_proto(
     ProtoWriterState* state,
     std::function<void({{proto_field_cpp_type}})> setter) {
     switch (value) {
-        {% for attribute_variable in attribute_components %}
-            case {{class_name}}::{{attribute_variable.attribute_name}}:
-                setter({{proto_field_cpp_type}}::{{attribute_variable.attribute_name}});
+        {% for attribute_component in attribute_components %}
+            case {{class_name}}::{{attribute_component.attribute_name}}:
+                setter({{proto_field_cpp_type}}::{{attribute_component.attribute_name}});
                 break;
         {% endfor %}
         default:
