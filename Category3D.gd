@@ -16,3 +16,10 @@ func add_icon(icon):
 func add_subcategory(subcategory):
 	self.add_child(subcategory, true)
 	subcategories.push_back(subcategory)
+
+func clear_all():
+	self.paths = []
+	self.icons = []
+	self.subcategories = []
+	for child in self.get_children():
+		child.queue_free()
