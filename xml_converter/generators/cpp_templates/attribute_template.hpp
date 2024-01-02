@@ -15,19 +15,19 @@
     class XMLError;
 
     enum {{class_name}} {
-        {% for attribute_variable in attribute_variables: %}
-        {{attribute_variable.attribute_name}},
+        {% for attribute_component in attribute_components %}
+            {{attribute_component.attribute_name}},
         {% endfor %}
     };
-{% else %}
+{% elif type in ["CompoundValue", "MultiflagValue"] %}
 
     class XMLError;
     {{proto_field_cpp_type_prototype}}
 
     class {{class_name}} {
      public:
-        {% for attribute_variable in attribute_variables: %}
-        {{attribute_variable.cpp_type}} {{attribute_variable.attribute_name}};
+        {% for attribute_component in attribute_components %}
+            {{attribute_component.cpp_type}} {{attribute_component.attribute_name}};
         {% endfor %}
 
         virtual std::string classname() {
