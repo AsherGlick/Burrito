@@ -670,6 +670,12 @@ class Waypoint:
 		service.func_ref = funcref(self, "add_category")
 		data[_category.tag] = service
 		
+		_textures = PBField.new("textures", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 2, true, [])
+		service = PBServiceField.new()
+		service.field = _textures
+		service.func_ref = funcref(self, "add_textures")
+		data[_textures.tag] = service
+		
 	var data = {}
 	
 	var _category: PBField
@@ -682,6 +688,58 @@ class Waypoint:
 		var element = Category.new()
 		_category.value.append(element)
 		return element
+	
+	var _textures: PBField
+	func get_textures() -> Array:
+		return _textures.value
+	func clear_textures() -> void:
+		data[2].state = PB_SERVICE_STATE.UNFILLED
+		_textures.value = []
+	func add_textures() -> TextureData:
+		var element = TextureData.new()
+		_textures.value.append(element)
+		return element
+	
+	func to_string() -> String:
+		return PBPacker.message_to_string(data)
+		
+	func to_bytes() -> PoolByteArray:
+		return PBPacker.pack_message(data)
+		
+	func from_bytes(bytes : PoolByteArray, offset : int = 0, limit : int = -1) -> int:
+		var cur_limit = bytes.size()
+		if limit != -1:
+			cur_limit = limit
+		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
+		if result == cur_limit:
+			if PBPacker.check_required(data):
+				if limit == -1:
+					return PB_ERR.NO_ERRORS
+			else:
+				return PB_ERR.REQUIRED_FIELDS
+		elif limit == -1 && result > 0:
+			return PB_ERR.PARSE_INCOMPLETE
+		return result
+	
+class TextureData:
+	func _init():
+		var service
+		
+		_filepath = PBField.new("filepath", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
+		service = PBServiceField.new()
+		service.field = _filepath
+		data[_filepath.tag] = service
+		
+	var data = {}
+	
+	var _filepath: PBField
+	func get_filepath() -> String:
+		return _filepath.value
+	func clear_filepath() -> void:
+		data[1].state = PB_SERVICE_STATE.UNFILLED
+		_filepath.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
+	func set_filepath(value : String) -> void:
+		_filepath.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -842,11 +900,10 @@ class Icon:
 	func _init():
 		var service
 		
-		_texture_path = PBField.new("texture_path", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_texture_id = PBField.new("texture_id", PB_DATA_TYPE.UINT32, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.UINT32])
 		service = PBServiceField.new()
-		service.field = _texture_path
-		service.func_ref = funcref(self, "new_texture_path")
-		data[_texture_path.tag] = service
+		service.field = _texture_id
+		data[_texture_id.tag] = service
 		
 		_guid = PBField.new("guid", PB_DATA_TYPE.BYTES, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES])
 		service = PBServiceField.new()
@@ -1020,15 +1077,14 @@ class Icon:
 		
 	var data = {}
 	
-	var _texture_path: PBField
-	func get_texture_path() -> TexturePath:
-		return _texture_path.value
-	func clear_texture_path() -> void:
+	var _texture_id: PBField
+	func get_texture_id() -> int:
+		return _texture_id.value
+	func clear_texture_id() -> void:
 		data[2].state = PB_SERVICE_STATE.UNFILLED
-		_texture_path.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_texture_path() -> TexturePath:
-		_texture_path.value = TexturePath.new()
-		return _texture_path.value
+		_texture_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.UINT32]
+	func set_texture_id(value : int) -> void:
+		_texture_id.value = value
 	
 	var _guid: PBField
 	func get_guid() -> PoolByteArray:
@@ -1353,11 +1409,10 @@ class Trail:
 	func _init():
 		var service
 		
-		_texture_path = PBField.new("texture_path", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_texture_id = PBField.new("texture_id", PB_DATA_TYPE.UINT32, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.UINT32])
 		service = PBServiceField.new()
-		service.field = _texture_path
-		service.func_ref = funcref(self, "new_texture_path")
-		data[_texture_path.tag] = service
+		service.field = _texture_id
+		data[_texture_id.tag] = service
 		
 		_guid = PBField.new("guid", PB_DATA_TYPE.BYTES, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES])
 		service = PBServiceField.new()
@@ -1499,15 +1554,14 @@ class Trail:
 		
 	var data = {}
 	
-	var _texture_path: PBField
-	func get_texture_path() -> TexturePath:
-		return _texture_path.value
-	func clear_texture_path() -> void:
+	var _texture_id: PBField
+	func get_texture_id() -> int:
+		return _texture_id.value
+	func clear_texture_id() -> void:
 		data[2].state = PB_SERVICE_STATE.UNFILLED
-		_texture_path.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_texture_path() -> TexturePath:
-		_texture_path.value = TexturePath.new()
-		return _texture_path.value
+		_texture_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.UINT32]
+	func set_texture_id(value : int) -> void:
+		_texture_id.value = value
 	
 	var _guid: PBField
 	func get_guid() -> PoolByteArray:
@@ -1750,47 +1804,6 @@ class Trail:
 		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
 	func set_category(value : bool) -> void:
 		_category.value = value
-	
-	func to_string() -> String:
-		return PBPacker.message_to_string(data)
-		
-	func to_bytes() -> PoolByteArray:
-		return PBPacker.pack_message(data)
-		
-	func from_bytes(bytes : PoolByteArray, offset : int = 0, limit : int = -1) -> int:
-		var cur_limit = bytes.size()
-		if limit != -1:
-			cur_limit = limit
-		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
-		if result == cur_limit:
-			if PBPacker.check_required(data):
-				if limit == -1:
-					return PB_ERR.NO_ERRORS
-			else:
-				return PB_ERR.REQUIRED_FIELDS
-		elif limit == -1 && result > 0:
-			return PB_ERR.PARSE_INCOMPLETE
-		return result
-	
-class TexturePath:
-	func _init():
-		var service
-		
-		_path = PBField.new("path", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
-		service = PBServiceField.new()
-		service.field = _path
-		data[_path.tag] = service
-		
-	var data = {}
-	
-	var _path: PBField
-	func get_path() -> String:
-		return _path.value
-	func clear_path() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_path.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
-	func set_path(value : String) -> void:
-		_path.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
