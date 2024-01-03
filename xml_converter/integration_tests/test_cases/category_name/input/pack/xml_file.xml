@@ -1,8 +1,6 @@
 <OverlayData>
     <MarkerCategory DisplayName="My Category" Name="MYCATEGORY">
     </MarkerCategory>
-    <MarkerCategory DisplayName="My Category" Name="mycategory">
-    </MarkerCategory>
     <POIs>
         <POI Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
         <POI Type="Mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
