@@ -8,7 +8,7 @@ import os
 from typing import List, Optional, Final, Tuple
 from src.testcase_loader import load_testcases
 import shutil
-from src.proto_utils import compare_protos
+from src.proto_utils import compare_protos, compare_binary_file
 
 # Path to compiled C++ executable
 xml_converter_binary_path: str = "../build/xml_converter"
@@ -142,7 +142,7 @@ def remove_ignored_lines(lines: List[str]) -> List[str]:
     return filtered_array
 
 
-def main() -> None:
+def main() -> bool:
     parser = argparse.ArgumentParser(description="A test harness for evaluating the output of the xmlconverter program")
     parser.add_argument("-v", "--verbose", help="Prints the results from xmlconverter in JSON format", action="store_true")
     args = parser.parse_args()
@@ -152,6 +152,8 @@ def main() -> None:
     # Ensure that the test output directory is empty
     if os.path.exists(output_parent_dirpath):
         shutil.rmtree(output_parent_dirpath)
+
+    all_tests_passed = True
 
     rebuild_xml_converter_binary()
 
@@ -179,51 +181,123 @@ def main() -> None:
             print("    stderr : {}".format("\n".join(stderr)))
             print("    return_code : {}".format(returncode))
 
-        all_tests_passed: bool = True
+        testcase_passed: bool = True
 
         stdout_diff: List[str] = list(difflib.unified_diff(testcase.expected_stdout, stdout, fromfile="Expected stdout", tofile="Actual stdout", lineterm=""))
         if len_diff(stdout_diff) != 0:
             print(f"Standard output did not match for test {testcase.name}")
             for line in stdout_diff:
                 print(line)
-            all_tests_passed = False
+            testcase_passed = False
 
         stderr_diff: List[str] = list(difflib.unified_diff(testcase.expected_stderr, stderr, fromfile="Expected stderr", tofile="Actual stderr", lineterm=""))
         if len_diff(stderr_diff) != 0:
             print(f"Standard error did not match for test {testcase.name}")
             for line in stderr_diff:
                 print(line)
-            all_tests_passed = False
+            testcase_passed = False
 
         if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
             print(f"Expected a return code of {testcase.expected_returncode} for {testcase.name} but got {returncode}")
 
-        if testcase.expected_output_xml_path is not None:
-            # TODO: These paths are directories and `xml_file.xml` is just one
-            # possible file in the directories. Eventually we should check all
-            # the files in the directory not just the one.
-            output_xml_filepath = os.path.join(xml_output_dir_path, "xml_file.xml")
-            expected_output_xml_filepath = os.path.join(testcase.expected_output_xml_path, "xml_file.xml")
+        testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
+        testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
 
-            xml_diff = compare_text_files(expected_output_xml_filepath, output_xml_filepath)
-
-            if len_diff(xml_diff) != 0:
-                print(f"XML output was incorrect for test {testcase.name}")
-                for line in xml_diff:
-                    print(line)
-                all_tests_passed = False
-
-        if testcase.expected_output_proto_path is not None:
-            protos_are_equal = compare_protos(
-                outputs_directory=proto_output_dir_path,
-                expected_outputs_directory=testcase.expected_output_proto_path,
-            )
-
-            all_tests_passed &= protos_are_equal
-
-        if all_tests_passed:
+        if testcase_passed:
             print(f"Success: test {testcase.name}")
+
+        all_tests_passed &= testcase_passed
+
+    return all_tests_passed
+
+
+################################################################################
+# diff_dirs
+#
+# Diffs the file hirearchy and the files themselves between two directories.
+################################################################################
+def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
+    diff_found = False
+
+    actual_files, actual_directories = get_paths(actual_output_dir)
+    expected_files, expected_directories = get_paths(expected_output_dir)
+
+    expected_only_files = set(expected_files) - set(actual_files)
+    actual_only_files = set(actual_files) - set(expected_files)
+
+    expected_only_dirs = set(expected_directories) - set(actual_directories)
+    actual_only_dirs = set(actual_directories) - set(expected_directories)
+
+    for file in expected_only_files:
+        diff_found = True
+        print("-Expected `{}` but did not find the file in the actual output.".format(os.path.join(expected_output_dir, file)))
+    for file in actual_only_files:
+        diff_found = True
+        print("+Unexpected file `{}` found in the actual output.".format(os.path.join(actual_output_dir, file)))
+    for directory in expected_only_dirs:
+        diff_found = True
+        print("-Expected `{}` but did not find the dir in the actual output.".format(os.path.join(expected_output_dir, directory)))
+    for directory in actual_only_dirs:
+        diff_found = True
+        print("+Unexpected dir `{}` found in the actual output.".format(os.path.join(actual_output_dir, directory)))
+
+    files_to_diff = set.intersection(set(expected_files), set(actual_files))
+
+    for file_to_diff in files_to_diff:
+        expected_file = os.path.join(expected_output_dir, file_to_diff)
+        actual_file = os.path.join(actual_output_dir, file_to_diff)
+
+        diff: List[str]
+        if file_to_diff.endswith(".xml"):
+            diff = compare_text_files(expected_file, actual_file)
+        elif file_to_diff.endswith(".data") or file_to_diff.endswith(".bin") or file_to_diff.endswith(".guildp"):
+            diff = compare_protos(actual_file, expected_file)
+        elif file_to_diff.endswith(".trl"):
+            diff = []
+            if not compare_binary_file(actual_file, expected_file):
+                diff = ['{} and {} Files Differ'.format(actual_file, expected_file)]
+        else:
+            diff = []
+            if not compare_binary_file(actual_file, expected_file):
+                diff = ['{} and {} Files Differ'.format(actual_file, expected_file)]
+
+        if len_diff(diff) != 0:
+            diff_found = True
+            print("XML output was incorrect for test")
+            for line in diff:
+                print(line)
+
+    return not diff_found
+
+
+################################################################################
+# get_paths
+#
+# Gets a list of all of the file and directory paths within a given directory.
+# Returns a tuple of `(files, directories)`.
+################################################################################
+def get_paths(directory: str) -> Tuple[List[str], List[str]]:
+    files: List[str] = []
+    directories: List[str] = []
+
+    for path in os.listdir(directory):
+        if os.path.isdir(os.path.join(directory, path)):
+            subfiles, subdirectories = get_paths(os.path.join(directory, path))
+
+            directories.append(path)
+            for subfile in subfiles:
+                files.append(os.path.join(path, subfile))
+            for subdirectory in subdirectories:
+                files.append(os.path.join(path, subdirectory))
+        else:
+            files.append(path)
+    return (files, directories)
 
 
 if __name__ == "__main__":
-    main()
+    returncode = main()
+
+    if returncode:
+        exit(0)
+    else:
+        exit(1)
