@@ -537,11 +537,11 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 			print("Warning: Trail ", category_name, " does not have equal number of X, Y, and Z coordinates.")
 		for index in range(0, trail_data.get_points_z().size()):
 			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
-		var texture_path = path.get_texture_path()
-		if texture_path == null:
+		var texture_id = path.get_texture_id()
+		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_path(path_points, full_texture_path, path, category_item)
 
 
@@ -551,11 +551,11 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 			print("Warning: No position found for icon ", category_name)
 			continue
 		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
-		var texture_path = icon.get_texture_path()
-		if texture_path == null:
+		var texture_id = icon.get_texture_id()
+		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + texture_path.get_path()
+		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 
 	for category_child in waypoint_category.get_children():
