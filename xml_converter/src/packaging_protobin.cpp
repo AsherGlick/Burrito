@@ -209,11 +209,11 @@ void write_protobuf_file(
         Parseable* parsed_poi = (*parsed_pois)[i];
         if (parsed_poi->classname() == "POI") {
             Icon* icon = dynamic_cast<Icon*>(parsed_poi);
-            category_to_pois[icon->category.category].push_back(parsed_poi);
+            category_to_pois[lowercase(icon->category.category)].push_back(parsed_poi);
         }
         else if (parsed_poi->classname() == "Trail") {
             Trail* trail = dynamic_cast<Trail*>(parsed_poi);
-            category_to_pois[trail->category.category].push_back(parsed_poi);
+            category_to_pois[lowercase(trail->category.category)].push_back(parsed_poi);
         }
         else {
             std::cout << "Unknown type" << std::endl;
