@@ -59,7 +59,7 @@ const PackDialog = preload("res://PackDialog.gd")
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
 onready var markers_2d := $Control/Markers2D as Node2D
-
+onready var unsaved_data_icon := $Control/GlobalMenuButton/UnsavedDataIcon as TextureRect
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -336,10 +336,12 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
+		if unsaved_data_icon.visible:
+			save_current_map_data()
 		print("New Map")
 		print("Saving Old Map")
 		print("Loading New Map")
-		load_waypoint_markers(self.map_id)
+		load_waypoint_markers()
 
 	reset_minimap_masks()
 
@@ -387,11 +389,12 @@ func reset_3D_minimap_masks(category: Spatial):
 
 
 var waypoint_data = Waypoint.Waypoint.new()
-var marker_file_dir = "user://protobins/"
+var split_marker_file_dir = "user://protobins/"
+var marker_pack_dir = "user://packs/"
 var marker_file_path = ""
 
-func load_waypoint_markers(map_id):
-	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
+func load_waypoint_markers():
+	self.marker_file_path = self.split_marker_file_dir + String(self.map_id) + ".data"
 	self.waypoint_data.clear_category()
 	clear_map_markers()
 	init_category_tree()
@@ -533,6 +536,9 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 	for path in waypoint_category.get_trail():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
+		if trail_data == null:
+			print("Warning: Trail ", category_name, " has no trail data")
+			continue
 		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
 			print("Warning: Trail ", category_name, " does not have equal number of X, Y, and Z coordinates.")
 		for index in range(0, trail_data.get_points_z().size()):
@@ -631,6 +637,33 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 	new_icon.waypoint = waypoint_icon
 	var category_data = category_item.get_metadata(0)
 	category_data.category3d.add_icon(new_icon)
+
+################################################################################
+# Section of functions for saving changes to markers
+################################################################################
+func on_change_made():
+	self.unsaved_data_icon.visible = true
+
+func save_current_map_data():
+	var packed_bytes = self.waypoint_data.to_bytes()
+	if packed_bytes.size() > 0:
+		var file = File.new()
+		file.open(self.marker_file_path, file.WRITE)
+		file.store_buffer(packed_bytes)
+
+func save_from_split_files():
+	save_current_map_data()
+	for waypoint_category in self.waypoint_data.get_category():
+		var output: Array = []
+		var args: PoolStringArray = [
+			"--input-waypoint-path", self.split_marker_file_dir,
+			"--output-waypoint-path", waypoint_category.get_name()
+		]
+		var result: int = OS.execute(self.executable_path, args, true, output, true)
+		print(output)
+		if result != OK:
+			print("Failed to execute the command. Error code:", result)
+	self.unsaved_data_icon.visible = true
 
 # This function take all of the currently rendered objects and converts it into
 # the data format that is saved/loaded from.
@@ -822,16 +855,13 @@ func _on_NewPathPoint_pressed():
 #
 ################################################################################
 func _on_SavePath_pressed():
-	$Control/Dialogs/SaveDialog.show()
+	save_from_split_files()
 
 ################################################################################
 # TODO: This function will be used when exporting packs
 ################################################################################
 func _on_SaveDialog_file_selected(path):
-	self.markerdata[str(self.map_id)] = data_from_renderview()
-	var save_game = File.new()
-	save_game.open(path, File.WRITE)
-	save_game.store_string(JSON.print(self.markerdata))
+	pass
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
@@ -905,6 +935,8 @@ func _on_ReversePathDirection_pressed():
 
 
 func _on_ExitButton_pressed():
+	if unsaved_data_icon.visible:
+		save_current_map_data()
 	exit_burrito()
 
 
@@ -927,3 +959,9 @@ func _on_MarkersUI_item_edited():
 func _on_ImportPath_pressed():
 	$Control/Dialogs/ImportPackDialog.show()
 
+
+func _on_UnsavedDataIcon_visibility_changed():
+	if $Control/GlobalMenuButton/UnsavedDataIcon.visible:
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
+	else:
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""

@@ -42,3 +42,4 @@ func _on_FileDialog_dir_selected(dir_path):
 		print("Failed to execute the command. Error code:", result)
 	else:
 		print("Command executed successfully.")
+	get_node("../../..").load_waypoint_markers()
