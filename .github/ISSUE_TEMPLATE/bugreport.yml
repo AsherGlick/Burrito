@@ -1,0 +1,57 @@
+name: Bug Report
+description: Something is crashing or not working as expected.
+title: "[Bug]: "
+projects: ["AsherGlick/Burrito"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    id: burrito_version
+    attributes:
+      label: Burrito Version
+      description: Please make sure you are using the latest version of Burrito before opening a report.
+      options:
+        - label: All components of Burrito (application, link and DLL) are upgraded to the latest version.
+          required: true
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: Install
+      description: How did you install the link-component?
+      options:
+        - Standalone binary/script
+        - DLL (d3d11.dll)
+        - DLL (arcdps_burritolink.dll)
+        - Other
+      default: 0
+    validations:
+      required: true
+  - type: checkboxes
+    id: de_composing
+    attributes:
+      label: Desktop-Environment
+      description: Please mark everything that describes your system.
+      options:
+        - label: My desktop is Gnome
+        - label: My desktop is KDE
+        - label: I know for sure composing is enabled
+        - label: I'm using X11
+        - label: I'm using Wayland
+        - label: I have no idea what you are talking about
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what is wrong!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: textarea
+    id: opt
+    attributes:
+      label: Optional information
+      description: Please run the command `inxi -Gxxx && wmctrl -m` and copy and paste the output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
