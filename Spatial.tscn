@@ -195,10 +195,11 @@ __meta__ = {
 }
 
 [node name="ImportPackDialog" type="FileDialog" parent="Control/Dialogs"]
-margin_left = 289.0
-margin_top = 36.0
-margin_right = 960.0
-margin_bottom = 534.0
+visible = true
+margin_left = 777.0
+margin_top = 89.0
+margin_right = 1448.0
+margin_bottom = 587.0
 window_title = "Open a Directory"
 mode = 2
 access = 2
@@ -795,6 +796,7 @@ margin_bottom = 304.0
 text = "Load Lutris Profile"
 
 [node name="CategoriesDialog" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
 margin_left = 280.0
 margin_top = 105.0
 margin_right = 751.0

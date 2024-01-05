@@ -395,7 +395,7 @@ var marker_file_path = ""
 
 func load_waypoint_markers():
 	self.marker_file_path = self.split_marker_file_dir + String(self.map_id) + ".data"
-	self.waypoint_data.clear_category()
+	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
 	var file = File.new()
@@ -547,7 +547,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.split_marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_path(path_points, full_texture_path, path, category_item)
 
 
@@ -561,7 +561,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.split_marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 
 	for category_child in waypoint_category.get_children():
