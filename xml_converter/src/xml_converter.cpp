@@ -77,7 +77,7 @@ void move_supplementary_files(string input_directory, string output_directory) {
                 }
                 move_supplementary_files(path, new_directory);
             }
-            else if (has_suffix(filename, ".trl") || has_suffix(filename, ".xml")) {
+            else if (has_suffix(filename, ".trl") || has_suffix(filename, ".xml") || has_suffix(filename, ".bin")) {
                 continue;
             }
             else {
@@ -102,6 +102,21 @@ void read_taco_directory(string input_path, map<string, Category>* marker_catego
     }
     else if (filesystem::is_regular_file(input_path)) {
         parse_xml_file(input_path, marker_categories, parsed_pois);
+    }
+}
+
+void read_burrito_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+    if (!filesystem::exists(input_path)) {
+        cout << "Error: " << input_path << " is not an existing directory or file" << endl;
+    }
+    else if (filesystem::is_directory(input_path)) {
+        vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
+        for (const string& path : burrito_files) {
+            read_protobuf_file(path, marker_categories, parsed_pois);
+        }
+    }
+    else if (filesystem::is_regular_file(input_path)) {
+        read_protobuf_file(input_path, marker_categories, parsed_pois);
     }
 }
 
@@ -132,7 +147,8 @@ void process_data(
 
     // This is a special output path used for burrito internal use that splits
     // the waypoint protobins by map id.
-    string output_split_waypoint_dir) {
+    string output_split_waypoint_dir,
+    bool move_files_to_output) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
@@ -146,10 +162,20 @@ void process_data(
             &marker_categories,
             &parsed_pois);
 
-        // TODO: This is wildly incorrect now because we might have a
-        //       different output directory then output_split_waypoint_dir
-        if (output_split_waypoint_dir != "") {
-            move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
+        if (move_files_to_output) {
+            if (output_split_waypoint_dir != "") {
+                move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
+            }
+            if (output_taco_paths.size() != 0) {
+                for (size_t j = 0; j < output_taco_paths.size(); j++) {
+                    move_supplementary_files(input_taco_paths[i], output_taco_paths[j]);
+                }
+            }
+            if (output_waypoint_paths.size() != 0) {
+                for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
+                    move_supplementary_files(input_taco_paths[i], output_waypoint_paths[j]);
+                }
+            }
         }
     }
     auto end = chrono::high_resolution_clock::now();
@@ -160,10 +186,26 @@ void process_data(
     // Read in all the protobin waypoint markerpacks
     for (size_t i = 0; i < input_waypoint_paths.size(); i++) {
         cout << "Loading waypoint pack " << input_waypoint_paths[i] << endl;
-        read_protobuf_file(
+        read_burrito_directory(
             input_waypoint_paths[i],
             &marker_categories,
             &parsed_pois);
+
+        if (move_files_to_output) {
+            if (output_split_waypoint_dir != "") {
+                move_supplementary_files(input_waypoint_paths[i], output_split_waypoint_dir);
+            }
+            if (output_taco_paths.size() != 0) {
+                for (size_t j = 0; j < output_taco_paths.size(); j++) {
+                    move_supplementary_files(input_waypoint_paths[i], output_taco_paths[j]);
+                }
+            }
+            if (output_waypoint_paths.size() != 0) {
+                for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
+                    move_supplementary_files(input_waypoint_paths[i], output_waypoint_paths[j]);
+                }
+            }
+        }
     }
 
     // Write all of the xml taco paths
@@ -212,6 +254,7 @@ int main(int argc, char* argv[]) {
     vector<string> output_taco_paths;
     vector<string> input_waypoint_paths;
     vector<string> output_waypoint_paths;
+    bool move_files_to_output = false;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
@@ -238,6 +281,9 @@ int main(int argc, char* argv[]) {
             // CLI arg parsing later to properly capture this.
             arg_target = &output_split_waypoint_paths;
         }
+        else if (!strcmp(argv[i], "--copy-images")) {
+            move_files_to_output = true;
+        }
         else {
             arg_target->push_back(argv[i]);
         }
@@ -258,7 +304,8 @@ int main(int argc, char* argv[]) {
         input_waypoint_paths,
         output_taco_paths,
         output_waypoint_paths,
-        output_split_waypoint_dir);
+        output_split_waypoint_dir,
+        move_files_to_output);
 
     return 0;
 }

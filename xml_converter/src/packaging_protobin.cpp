@@ -251,7 +251,7 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-        string output_filepath = join_file_paths(proto_directory, to_string(iterator->first) + ".data");
+        string output_filepath = join_file_paths(proto_directory, to_string(iterator->first) + ".bin");
 
         _write_protobuf_file(
             output_filepath,
