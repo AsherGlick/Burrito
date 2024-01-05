@@ -147,8 +147,7 @@ void process_data(
 
     // This is a special output path used for burrito internal use that splits
     // the waypoint protobins by map id.
-    string output_split_waypoint_dir,
-    bool move_files_to_output) {
+    string output_split_waypoint_dir) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
@@ -162,19 +161,17 @@ void process_data(
             &marker_categories,
             &parsed_pois);
 
-        if (move_files_to_output) {
-            if (output_split_waypoint_dir != "") {
-                move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
+        if (output_split_waypoint_dir != "") {
+            move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
+        }
+        if (output_taco_paths.size() != 0) {
+            for (size_t j = 0; j < output_taco_paths.size(); j++) {
+                move_supplementary_files(input_taco_paths[i], output_taco_paths[j]);
             }
-            if (output_taco_paths.size() != 0) {
-                for (size_t j = 0; j < output_taco_paths.size(); j++) {
-                    move_supplementary_files(input_taco_paths[i], output_taco_paths[j]);
-                }
-            }
-            if (output_waypoint_paths.size() != 0) {
-                for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
-                    move_supplementary_files(input_taco_paths[i], output_waypoint_paths[j]);
-                }
+        }
+        if (output_waypoint_paths.size() != 0) {
+            for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
+                move_supplementary_files(input_taco_paths[i], output_waypoint_paths[j]);
             }
         }
     }
@@ -191,19 +188,17 @@ void process_data(
             &marker_categories,
             &parsed_pois);
 
-        if (move_files_to_output) {
-            if (output_split_waypoint_dir != "") {
-                move_supplementary_files(input_waypoint_paths[i], output_split_waypoint_dir);
+        if (output_split_waypoint_dir != "") {
+            move_supplementary_files(input_waypoint_paths[i], output_split_waypoint_dir);
+        }
+        if (output_taco_paths.size() != 0) {
+            for (size_t j = 0; j < output_taco_paths.size(); j++) {
+                move_supplementary_files(input_waypoint_paths[i], output_taco_paths[j]);
             }
-            if (output_taco_paths.size() != 0) {
-                for (size_t j = 0; j < output_taco_paths.size(); j++) {
-                    move_supplementary_files(input_waypoint_paths[i], output_taco_paths[j]);
-                }
-            }
-            if (output_waypoint_paths.size() != 0) {
-                for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
-                    move_supplementary_files(input_waypoint_paths[i], output_waypoint_paths[j]);
-                }
+        }
+        if (output_waypoint_paths.size() != 0) {
+            for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
+                move_supplementary_files(input_waypoint_paths[i], output_waypoint_paths[j]);
             }
         }
     }
@@ -254,7 +249,6 @@ int main(int argc, char* argv[]) {
     vector<string> output_taco_paths;
     vector<string> input_waypoint_paths;
     vector<string> output_waypoint_paths;
-    bool move_files_to_output = false;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
@@ -281,9 +275,6 @@ int main(int argc, char* argv[]) {
             // CLI arg parsing later to properly capture this.
             arg_target = &output_split_waypoint_paths;
         }
-        else if (!strcmp(argv[i], "--copy-images")) {
-            move_files_to_output = true;
-        }
         else {
             arg_target->push_back(argv[i]);
         }
@@ -304,8 +295,7 @@ int main(int argc, char* argv[]) {
         input_waypoint_paths,
         output_taco_paths,
         output_waypoint_paths,
-        output_split_waypoint_dir,
-        move_files_to_output);
+        output_split_waypoint_dir);
 
     return 0;
 }
