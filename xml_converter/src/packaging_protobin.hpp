@@ -13,7 +13,8 @@
 void read_protobuf_file(
     std::string proto_filepath,
     std::map<std::string, Category>* marker_categories,
-    std::vector<Parseable*>* parsed_pois);
+    std::vector<Parseable*>* parsed_pois,
+    ProtoReaderState* state);
 
 void write_protobuf_file(
     const std::string& proto_directory,

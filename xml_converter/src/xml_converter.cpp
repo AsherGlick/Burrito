@@ -90,33 +90,35 @@ void move_supplementary_files(string input_directory, string output_directory) {
     }
 }
 
-void read_taco_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void read_taco_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois, XMLReaderState* state) {
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
         for (const string& path : xml_files) {
-            parse_xml_file(path, marker_categories, parsed_pois);
+            parse_xml_file(path, marker_categories, parsed_pois, state);
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
-        parse_xml_file(input_path, marker_categories, parsed_pois);
+        state->xml_filedir = get_base_dir(input_path);
+        parse_xml_file(input_path, marker_categories, parsed_pois, state);
     }
 }
 
-void read_burrito_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void read_burrito_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois, ProtoReaderState* state) {
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
         for (const string& path : burrito_files) {
-            read_protobuf_file(path, marker_categories, parsed_pois);
+            read_protobuf_file(path, marker_categories, parsed_pois, state);
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
-        read_protobuf_file(input_path, marker_categories, parsed_pois);
+        state->proto_filedir = get_base_dir(input_path);
+        read_protobuf_file(input_path, marker_categories, parsed_pois, state);
     }
 }
 
@@ -152,28 +154,36 @@ void process_data(
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
 
+    vector<string> all_output_paths;
+    if (output_split_waypoint_dir != "") {
+        all_output_paths.push_back(output_split_waypoint_dir);
+    }
+    if (output_taco_paths.size() != 0) {
+        for (size_t i = 0; i < output_taco_paths.size(); i++) {
+            all_output_paths.push_back(output_taco_paths[i]);
+        }
+    }
+    if (output_waypoint_paths.size() != 0) {
+        for (size_t i = 0; i < output_waypoint_paths.size(); i++) {
+            all_output_paths.push_back(output_waypoint_paths[i]);
+        }
+    }
+
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();
     for (size_t i = 0; i < input_taco_paths.size(); i++) {
         cout << "Loading taco pack " << input_taco_paths[i] << endl;
+
+        XMLReaderState state = {
+            input_taco_paths[i],
+            all_output_paths,
+        };
+
         read_taco_directory(
             input_taco_paths[i],
             &marker_categories,
-            &parsed_pois);
-
-        if (output_split_waypoint_dir != "") {
-            move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
-        }
-        if (output_taco_paths.size() != 0) {
-            for (size_t j = 0; j < output_taco_paths.size(); j++) {
-                move_supplementary_files(input_taco_paths[i], output_taco_paths[j]);
-            }
-        }
-        if (output_waypoint_paths.size() != 0) {
-            for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
-                move_supplementary_files(input_taco_paths[i], output_waypoint_paths[j]);
-            }
-        }
+            &parsed_pois,
+            &state);
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -183,24 +193,18 @@ void process_data(
     // Read in all the protobin waypoint markerpacks
     for (size_t i = 0; i < input_waypoint_paths.size(); i++) {
         cout << "Loading waypoint pack " << input_waypoint_paths[i] << endl;
+
+        ProtoReaderState state = {
+            {},
+            input_waypoint_paths[i],
+            all_output_paths,
+        };
+
         read_burrito_directory(
             input_waypoint_paths[i],
             &marker_categories,
-            &parsed_pois);
-
-        if (output_split_waypoint_dir != "") {
-            move_supplementary_files(input_waypoint_paths[i], output_split_waypoint_dir);
-        }
-        if (output_taco_paths.size() != 0) {
-            for (size_t j = 0; j < output_taco_paths.size(); j++) {
-                move_supplementary_files(input_waypoint_paths[i], output_taco_paths[j]);
-            }
-        }
-        if (output_waypoint_paths.size() != 0) {
-            for (size_t j = 0; j < output_waypoint_paths.size(); j++) {
-                move_supplementary_files(input_waypoint_paths[i], output_waypoint_paths[j]);
-            }
-        }
+            &parsed_pois,
+            &state);
     }
 
     // Write all of the xml taco paths

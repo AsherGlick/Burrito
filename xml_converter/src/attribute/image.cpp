@@ -1,14 +1,15 @@
 #include "image.hpp"
 
-#include <iosfwd>
+#include <filesystem>
 #include <string>
 #include <vector>
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "waypoint.pb.h"
+#include "../string_helper.hpp"
 
 using namespace std;
+namespace fs = std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 // parse_image
@@ -21,8 +22,19 @@ void xml_attribute_to_image(
     XMLReaderState* state,
     Image* value,
     bool* is_set) {
-    value->filename = get_attribute_value(input);
-    value->original_filepath = state->xml_filedir + "/" + value->filename;
+    Image image;
+    image.filename = get_attribute_value(input);
+    image.original_filepath = join_file_paths(state->xml_filedir, image.filename);
+    if (fs::exists(fs::path(image.original_filepath))) {
+        for (const string& path : state->all_output_dirs) {
+            fs::path output_path = fs::path(path) / image.filename;
+            if (!fs::exists(output_path)) {
+                fs::create_directories(output_path.parent_path());
+                fs::copy_file(fs::path(image.original_filepath), output_path);
+            }
+        }
+    }
+    *value = image;
     *is_set = true;
 }
 
@@ -48,9 +60,19 @@ void proto_to_image(
     ProtoReaderState* state,
     Image* value,
     bool* is_set) {
-    // TODO: this is broken until we load the string index into the proto read state
     Image image;
-    // image.path = input.path();
+    image.filename = state->textures_index_to_texture_path[input];
+    image.original_filepath = state->proto_filedir + "/" + image.filename;
+    if (fs::exists(fs::path(image.original_filepath))) {
+        for (const string& path : state->all_output_dirs) {
+            fs::path output_path = fs::path(path) / image.filename;
+            if (!fs::exists(output_path)) {
+                fs::create_directories(output_path.parent_path());
+                fs::copy_file(fs::path(image.original_filepath), output_path);
+            }
+        }
+    }
+
     *value = image;
     *is_set = true;
 }

@@ -25,17 +25,16 @@ void parse_waypoint_categories(
     string full_category_name,
     ::waypoint::Category proto_category,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois,
+    ProtoReaderState* state) {
     full_category_name += proto_category.name();
     Category* this_category = &(*marker_categories)[full_category_name];
 
-    ProtoReaderState state;
-
-    this_category->parse_protobuf(proto_category, &state);
+    this_category->parse_protobuf(proto_category, state);
 
     for (int i = 0; i < proto_category.icon_size(); i++) {
         Icon* icon = new Icon();
-        icon->parse_protobuf(proto_category.icon(i), &state);
+        icon->parse_protobuf(proto_category.icon(i), state);
         // TODO: The field category in Icon is being deprciated
         // This overwrites any icon.category with its position in the heirarchy
         icon->category.category = full_category_name;
@@ -43,7 +42,7 @@ void parse_waypoint_categories(
     }
     for (int i = 0; i < proto_category.trail_size(); i++) {
         Trail* trail = new Trail();
-        trail->parse_protobuf(proto_category.trail(i), &state);
+        trail->parse_protobuf(proto_category.trail(i), state);
         // TODO: The field category in Trail is being deprciated
         // This overwrites any trail.category with its position in the heirarchy
         trail->category.category = full_category_name;
@@ -51,21 +50,26 @@ void parse_waypoint_categories(
     }
 
     for (int i = 0; i < proto_category.children_size(); i++) {
-        parse_waypoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois);
+        parse_waypoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois, ProtoReaderState* state) {
     fstream infile;
     waypoint::Waypoint proto_message;
 
     infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
+
+    for (int i = 0; i < proto_message.textures_size(); i++) {
+        state->textures_index_to_texture_path[i] = proto_message.textures(i).filepath();
+    }
+
     for (int i = 0; i < proto_message.category_size(); i++) {
-        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois);
+        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois, state);
     }
 }
 

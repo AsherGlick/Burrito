@@ -1,11 +1,11 @@
 #pragma once
 
-#include <map>
 #include <string>
+#include <vector>
 
 class Category;
 
 struct XMLReaderState {
     std::string xml_filedir;
-    std::map<std::string, Category>* marker_categories;
+    std::vector<std::string> all_output_dirs;
 };

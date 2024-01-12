@@ -13,7 +13,8 @@
 void parse_xml_file(
     std::string xml_filepath,
     std::map<std::string, Category>* marker_categories,
-    std::vector<Parseable*>* parsed_pois);
+    std::vector<Parseable*>* parsed_pois,
+    XMLReaderState* state);
 
 void write_xml_file(
     std::string xml_filepath,
