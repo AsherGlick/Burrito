@@ -665,32 +665,6 @@ func save_from_split_files():
 			print("Failed to execute the command. Error code:", result)
 	self.unsaved_data_icon.visible = true
 
-# This function take all of the currently rendered objects and converts it into
-# the data format that is saved/loaded from.
-func data_from_renderview():
-	var icons_data = []
-	var paths_data = []
-
-	for icon in $Icons.get_children():
-		icons_data.append({
-			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
-			"texture": icon.texture_path
-		})
-
-	for path in $Paths.get_children():
-		#print(path)
-		var points = []
-		for point in range(path.get_point_count()):
-			var point_position:Vector3 = path.get_point_position(point)
-			points.append([point_position.x, point_position.y, -point_position.z])
-		paths_data.append({
-			"points": points,
-			"texture": path.texture_path
-		})
-
-	var data_out = {"icons": icons_data, "paths": paths_data}
-	return data_out
-
 ################################################################################
 # Adjustment and gizmo functions
 ################################################################################

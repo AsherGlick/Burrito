@@ -33,7 +33,6 @@ func _on_FileDialog_dir_selected(dir_path):
 	var args: PoolStringArray = [
 		"--input-taco-path", dir_path,
 		"--output-waypoint-path", new_path,
-		"--copy-images"
 	]
 	print(args)
 	var result: int = OS.execute(self.executable_path, args, true, output, true)
@@ -64,7 +63,6 @@ func split_waypoint_markers():
 	args.append_array(input_waypoint_paths)
 	args.append_array([
 		"--output-split-waypoint-path", self.split_protobin_data_folder,
-		"--copy-images"
 		])
 	print(args)
 	var result: int = OS.execute(self.executable_path, args, true, output, true)
