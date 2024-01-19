@@ -1,5 +1,6 @@
 #include "packaging_protobin.hpp"
 
+#include <filesystem>
 #include <fstream>
 #include <map>
 #include <set>
@@ -8,11 +9,13 @@
 
 #include "category_gen.hpp"
 #include "parseable.hpp"
+#include "state_structs/proto_writer_state.hpp"
 #include "string_helper.hpp"
 #include "string_hierarchy.hpp"
 #include "waypoint.pb.h"
 
 using namespace std;
+namespace fs = std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// SERIALIZE ///////////////////////////////////
@@ -57,19 +60,19 @@ void parse_waypoint_categories(
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois, ProtoReaderState* state) {
+void read_protobuf_file(string proto_filepath, const string proto_filedir, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     fstream infile;
     waypoint::Waypoint proto_message;
+    ProtoReaderState state;
+    state.proto_filedir = proto_filedir.c_str();
 
     infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
 
-    for (int i = 0; i < proto_message.textures_size(); i++) {
-        state->textures_index_to_texture_path[i] = proto_message.textures(i).filepath();
-    }
+    state.textures = proto_message.textures();
 
     for (int i = 0; i < proto_message.category_size(); i++) {
-        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois, state);
+        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
     }
 }
 
@@ -158,7 +161,16 @@ void proto_post_processing(ProtoWriterState* state, waypoint::Waypoint* proto) {
 
         for (size_t i = 1; i < state->textures.size(); i++) {
             waypoint::TextureData* texture_data = proto->add_textures();
-            texture_data->set_filepath(state->textures[i]->filename);
+            const Image* image = state->textures[i];
+            texture_data->set_filepath(image->filename);
+            if (fs::exists(fs::path(state->textures[i]->original_filepath))) {
+                fs::path output_path = fs::path(state->proto_filedir) / image->filename;
+                fs::create_directories(output_path.parent_path());
+                fs::copy_file(fs::path(image->original_filepath), output_path, fs::copy_options::update_existing);
+            }
+            else {
+                cout << "Warning: File path " << state->textures[i]->original_filepath << " not found." << endl;
+            }
         }
     }
 }
@@ -167,11 +179,10 @@ void _write_protobuf_file(
     const string& filepath,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
-    const std::map<string, std::vector<Parseable*>>& category_to_pois) {
+    const std::map<string, std::vector<Parseable*>>& category_to_pois,
+    ProtoWriterState* state) {
     ofstream outfile;
     outfile.open(filepath, ios::out | ios::binary);
-
-    ProtoWriterState state;
 
     if (!outfile.is_open()) {
         cout << "Unable to open " << filepath << endl;
@@ -189,25 +200,27 @@ void _write_protobuf_file(
             category_filter,
             category_to_pois,
             &category_vector,
-            &state);
+            state);
 
         if (maybe_category.is_category) {
             output_message.add_category()->MergeFrom(maybe_category.category);
         }
     }
 
-    proto_post_processing(&state, &output_message);
+    proto_post_processing(state, &output_message);
 
     output_message.SerializeToOstream(&outfile);
     outfile.close();
 }
 
 void write_protobuf_file(
-    const string& filepath,
+    const string proto_filedir,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<string, std::vector<Parseable*>> category_to_pois;
+    ProtoWriterState state;
+    state.proto_filedir = proto_filedir.c_str();
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -225,19 +238,22 @@ void write_protobuf_file(
     }
 
     _write_protobuf_file(
-        join_file_paths(filepath, "markers.bin"),
+        join_file_paths(state.proto_filedir, "markers.bin"),
         category_filter,
         marker_categories,
-        category_to_pois);
+        category_to_pois,
+        &state);
 }
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
-    const string& proto_directory,
+    const string proto_filedir,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<int, std::map<string, std::vector<Parseable*>>> mapid_to_category_to_pois;
+    ProtoWriterState state;
+    state.proto_filedir = proto_filedir.c_str();
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -255,12 +271,13 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-        string output_filepath = join_file_paths(proto_directory, to_string(iterator->first) + ".bin");
+        string output_filepath = join_file_paths(state.proto_filedir, to_string(iterator->first) + ".bin");
 
         _write_protobuf_file(
             output_filepath,
             category_filter,
             marker_categories,
-            iterator->second);
+            iterator->second,
+            &state);
     }
 }

@@ -1,6 +1,5 @@
 #include "image.hpp"
 
-#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -9,7 +8,6 @@
 #include "../string_helper.hpp"
 
 using namespace std;
-namespace fs = std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 // parse_image
@@ -25,15 +23,6 @@ void xml_attribute_to_image(
     Image image;
     image.filename = get_attribute_value(input);
     image.original_filepath = join_file_paths(state->xml_filedir, image.filename);
-    if (fs::exists(fs::path(image.original_filepath))) {
-        for (const string& path : state->all_output_dirs) {
-            fs::path output_path = fs::path(path) / image.filename;
-            if (!fs::exists(output_path)) {
-                fs::create_directories(output_path.parent_path());
-                fs::copy_file(fs::path(image.original_filepath), output_path);
-            }
-        }
-    }
     *value = image;
     *is_set = true;
 }
@@ -47,6 +36,7 @@ string image_to_xml_attribute(
     const string& attribute_name,
     XMLWriterState* state,
     const Image* value) {
+    state->textures.push_back(value);
     return " " + attribute_name + "=\"" + value->filename + "\"";
 }
 
@@ -61,18 +51,8 @@ void proto_to_image(
     Image* value,
     bool* is_set) {
     Image image;
-    image.filename = state->textures_index_to_texture_path[input];
-    image.original_filepath = state->proto_filedir + "/" + image.filename;
-    if (fs::exists(fs::path(image.original_filepath))) {
-        for (const string& path : state->all_output_dirs) {
-            fs::path output_path = fs::path(path) / image.filename;
-            if (!fs::exists(output_path)) {
-                fs::create_directories(output_path.parent_path());
-                fs::copy_file(fs::path(image.original_filepath), output_path);
-            }
-        }
-    }
-
+    image.filename = state->textures[input].filepath();
+    image.original_filepath = join_file_paths(state->proto_filedir, image.filename);
     *value = image;
     *is_set = true;
 }

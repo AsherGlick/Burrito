@@ -1,12 +1,11 @@
 #pragma once
 
-#include <map>
 #include <string>
-#include <vector>
+
+#include "waypoint.pb.h"
 
 struct ProtoReaderState {
-    // A map from the index within "textures" to the texture path.
-    std::map<uint32_t, std::string> textures_index_to_texture_path;
-    std::string proto_filedir;
-    std::vector<std::string> all_output_dirs;
+    // A list of all of the textures with their paths.
+    google::protobuf::RepeatedPtrField<::waypoint::TextureData> textures;
+    const char* proto_filedir;
 };
