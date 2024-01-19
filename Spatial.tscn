@@ -203,8 +203,8 @@ margin_bottom = 587.0
 window_title = "Open a Directory"
 mode = 2
 access = 2
-current_dir = "/home/steph/Code/Projects/Burrito"
-current_path = "/home/steph/Code/Projects/Burrito/"
+current_dir = "."
+current_path = "."
 script = ExtResource( 14 )
 __meta__ = {
 "_edit_use_anchors_": false
