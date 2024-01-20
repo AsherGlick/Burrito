@@ -1,0 +1,13 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+    Error: Category attribute 'name' is missing or is an empty string when it should be a non-empty string
+    test_cases/category_name_invalid/input/pack/xml_file.xml
+    2 |    <MarkerCategory DisplayName="My Missing Category" />
+      |     ^^^^^^^^^^^^^^
+    Error: Category attribute 'name' is missing or is an empty string when it should be a non-empty string
+    test_cases/category_name_invalid/input/pack/xml_file.xml
+    3 |    <MarkerCategory DisplayName="My Empty Category" Name="" />
+      |     ^^^^^^^^^^^^^^
+expected_stderr: |
+expected_returncode: 0

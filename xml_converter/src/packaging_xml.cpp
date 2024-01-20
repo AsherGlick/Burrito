@@ -13,14 +13,26 @@ using namespace std;
 ////////////////////////////////// SERIALIZE ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
 void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, string base_dir, int depth = 0) {
     if (get_node_name(node) == "MarkerCategory") {
+        // TODO: Eventually this process should be removed. Instead we should be
+        //       grabbing the name during the parsing of all the atrributes to
+        //       avoid doing a secondary search through the attributes, and then
+        //       we should have a method of applying the parsed node on top of
+        //       its hirearchy probably using the is_set flags.
         string name = lowercase(find_attribute_value(node, "name"));
 
         XMLReaderState state = {
             base_dir,
             marker_categories,
         };
+
+        if (name == "") {
+            errors->push_back(new XMLNodeNameError("Category attribute 'name' is missing or is an empty string when it should be a non-empty string", node));
+            name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            UNKNOWN_CATEGORY_COUNTER++;
+        }
 
         Category* this_category = &(*marker_categories)[name];
         this_category->init_from_xml(node, errors, &state);
