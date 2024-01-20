@@ -1,7 +1,5 @@
 extends Control
 
-const Waypoint = preload("res://waypoint.gd")
-
 const executable_path: String = "./xml_converter/build/xml_converter"
 var protobin_data_folder: String
 var split_protobin_data_folder: String
