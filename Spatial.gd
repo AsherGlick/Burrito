@@ -651,46 +651,6 @@ func save_current_map_data():
 		file.open(self.marker_file_path, file.WRITE)
 		file.store_buffer(packed_bytes)
 
-func save_from_split_files():
-	save_current_map_data()
-	for waypoint_category in self.waypoint_data.get_category():
-		var output: Array = []
-		var args: PoolStringArray = [
-			"--input-waypoint-path", self.split_marker_file_dir,
-			"--output-waypoint-path", waypoint_category.get_name()
-		]
-		var result: int = OS.execute(self.executable_path, args, true, output, true)
-		print(output)
-		if result != OK:
-			print("Failed to execute the command. Error code:", result)
-	self.unsaved_data_icon.visible = true
-
-# This function take all of the currently rendered objects and converts it into
-# the data format that is saved/loaded from.
-func data_from_renderview():
-	var icons_data = []
-	var paths_data = []
-
-	for icon in $Icons.get_children():
-		icons_data.append({
-			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
-			"texture": icon.texture_path
-		})
-
-	for path in $Paths.get_children():
-		#print(path)
-		var points = []
-		for point in range(path.get_point_count()):
-			var point_position:Vector3 = path.get_point_position(point)
-			points.append([point_position.x, point_position.y, -point_position.z])
-		paths_data.append({
-			"points": points,
-			"texture": path.texture_path
-		})
-
-	var data_out = {"icons": icons_data, "paths": paths_data}
-	return data_out
-
 ################################################################################
 # Adjustment and gizmo functions
 ################################################################################
@@ -855,7 +815,8 @@ func _on_NewPathPoint_pressed():
 #
 ################################################################################
 func _on_SavePath_pressed():
-	save_from_split_files()
+	#TODO: Save split files into individual files
+	pass
 
 ################################################################################
 # TODO: This function will be used when exporting packs

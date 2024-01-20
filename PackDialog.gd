@@ -33,39 +33,8 @@ func _on_FileDialog_dir_selected(dir_path):
 	var args: PoolStringArray = [
 		"--input-taco-path", dir_path,
 		"--output-waypoint-path", new_path,
-		"--copy-images"
+		"--output-split-waypoint-path", self.split_protobin_data_folder
 	]
-	print(args)
-	var result: int = OS.execute(self.executable_path, args, true, output, true)
-	print(output)
-	if result != OK:
-		print("Failed to execute the command. Error code:", result)
-	else:
-		print("Command executed successfully.")
-	split_waypoint_markers()
-	get_node("../../..").load_waypoint_markers()
-
-func split_waypoint_markers():
-	var input_waypoint_paths: Array = []
-	var output: Array = []
-	var dir = Directory.new()
-	if dir.open(self.protobin_data_folder) == OK:
-		dir.list_dir_begin(true)
-		var file_name = dir.get_next()
-		while file_name != "":
-			if dir.current_is_dir():
-				input_waypoint_paths.append(self.protobin_data_folder.plus_file(file_name.plus_file("markers.bin")))
-			file_name = dir.get_next()
-			print(file_name)
-	else:
-		print("An error occurred when trying to access ", self.protobin_data_folder)
-		return
-	var args: PoolStringArray = ["--input-waypoint-path"]
-	args.append_array(input_waypoint_paths)
-	args.append_array([
-		"--output-split-waypoint-path", self.split_protobin_data_folder,
-		"--copy-images"
-		])
 	print(args)
 	var result: int = OS.execute(self.executable_path, args, true, output, true)
 	print(output)
