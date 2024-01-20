@@ -1,0 +1,10 @@
+<OverlayData>
+<MarkerCategory  DisplayName="My Missing Category">
+</MarkerCategory>
+
+<MarkerCategory  DisplayName="My Empty Category" Name="">
+</MarkerCategory>
+
+<POIs>
+</POIs>
+</OverlayData>
