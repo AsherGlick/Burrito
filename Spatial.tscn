@@ -3,6 +3,7 @@
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
+[ext_resource path="res://FileHandler.gd" type="Script" id=4]
 [ext_resource path="res://icon_close.png" type="Texture" id=5]
 [ext_resource path="res://RangeDialog.gd" type="Script" id=6]
 [ext_resource path="res://icon_new_icon.png" type="Texture" id=7]
@@ -12,7 +13,6 @@
 [ext_resource path="res://icon_new_point.png" type="Texture" id=11]
 [ext_resource path="res://SettingsDialog.gd" type="Script" id=12]
 [ext_resource path="res://Category3D.gd" type="Script" id=13]
-[ext_resource path="res://PackDialog.gd" type="Script" id=14]
 [ext_resource path="res://Category2D.gd" type="Script" id=15]
 
 [sub_resource type="Shader" id=1]
@@ -193,7 +193,7 @@ mode = 2
 access = 2
 current_dir = ""
 current_path = ""
-script = ExtResource( 14 )
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
