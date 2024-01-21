@@ -16,28 +16,36 @@ using namespace std;
 unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
 void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, string base_dir, int depth = 0) {
     if (get_node_name(node) == "MarkerCategory") {
-        // TODO: Eventually this process should be removed. Instead we should be
-        //       grabbing the name during the parsing of all the atrributes to
-        //       avoid doing a secondary search through the attributes, and then
-        //       we should have a method of applying the parsed node on top of
-        //       its hirearchy probably using the is_set flags.
-        string name = lowercase(find_attribute_value(node, "name"));
-
         XMLReaderState state = {
             base_dir,
             marker_categories,
         };
 
-        if (name == "") {
-            errors->push_back(new XMLNodeNameError("Category attribute 'name' is missing or is an empty string when it should be a non-empty string", node));
+        Category new_category;
+        new_category.init_from_xml(node, errors, &state);
+
+        string name;
+        if (!new_category.name_is_set) {
+            errors->push_back(new XMLNodeNameError("Category attribute 'name' is missing so it cannot be properly referenced", node));
+            // TODO: Maybe fall back on display name slugification.
             name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
             UNKNOWN_CATEGORY_COUNTER++;
         }
+        else if (new_category.name == "") {
+            errors->push_back(new XMLNodeNameError("Category attribute 'name' is an empty string so it cannot be properly referenced", node));
+            // TODO: Maybe fall back on display name slugification.
+            name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            UNKNOWN_CATEGORY_COUNTER++;
+        }
+        else {
+            name = lowercase(new_category.name);
+        }
 
-        Category* this_category = &(*marker_categories)[name];
-        this_category->init_from_xml(node, errors, &state);
+        Category* existing_category = &(*marker_categories)[name];
+        existing_category->apply_overlay(new_category);
+
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
-            parse_marker_categories(child_node, &(this_category->children), errors, base_dir, depth + 1);
+            parse_marker_categories(child_node, &(existing_category->children), errors, base_dir, depth + 1);
         }
     }
     else {

@@ -120,3 +120,49 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
         {% endif %}
     {% endfor %}
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_underlay
+//
+// Transforms this {{cpp_class}} as if this class was overlayed on top of the
+// underlay argument.
+////////////////////////////////////////////////////////////////////////////////
+void {{cpp_class}}::apply_underlay(const {{cpp_class}}& underlay) {
+    {% for attribute_variable in attribute_variables %}
+        {% if attribute_variable.is_component == false %}
+            if (!this->{{attribute_variable.attribute_flag_name}} && underlay.{{attribute_variable.attribute_flag_name}}) {
+                this->{{attribute_variable.attribute_name}} = underlay.{{attribute_variable.attribute_name}};
+                this->{{attribute_variable.attribute_flag_name}} = true;
+            }
+        {% endif %}
+    {% endfor %}
+
+    {% if cpp_class == "Category": %}
+        this->default_icon.apply_underlay(underlay.default_icon);
+        this->default_trail.apply_underlay(underlay.default_trail);
+    {% endif %}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_overlay
+//
+// Transforms this {{cpp_class}} as if the overlay argument were overlayed on
+// top of this class.
+////////////////////////////////////////////////////////////////////////////////
+void {{cpp_class}}::apply_overlay(const {{cpp_class}}& overlay) {
+    {% for attribute_variable in attribute_variables %}
+        {% if attribute_variable.is_component == false %}
+            if (overlay.{{attribute_variable.attribute_flag_name}}) {
+                this->{{attribute_variable.attribute_name}} = overlay.{{attribute_variable.attribute_name}};
+                this->{{attribute_variable.attribute_flag_name}} = true;
+            }
+        {% endif %}
+    {% endfor %}
+
+    {% if cpp_class == "Category": %}
+        this->default_icon.apply_overlay(overlay.default_icon);
+        this->default_trail.apply_overlay(overlay.default_trail);
+    {% endif %}
+}
+
