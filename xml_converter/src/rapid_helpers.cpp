@@ -9,23 +9,6 @@
 
 using namespace std;
 
-////////////////////////////////////////////////////////////////////////////////
-// find_attribute_value (depricated)
-//
-// This function does a linear search over an xml node to try and find an
-// attribute with the specified name. It the attribute is not found then an
-// empty string is returned.
-//
-// This function is depricated and should not be used by any new code.
-////////////////////////////////////////////////////////////////////////////////
-string find_attribute_value(rapidxml::xml_node<>* node, string attribute_name) {
-    rapidxml::xml_attribute<char>* attribute = node->first_attribute(attribute_name.data(), attribute_name.size(), false);
-    if (attribute == nullptr) {
-        return "";
-    }
-
-    return string(attribute->value(), attribute->value_size());
-}
 
 rapidxml::xml_attribute<>* find_attribute(rapidxml::xml_node<>* node, string attribute_name) {
     return node->first_attribute(attribute_name.data(), attribute_name.size(), false);
