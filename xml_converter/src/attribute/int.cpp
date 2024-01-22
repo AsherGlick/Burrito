@@ -19,7 +19,7 @@ using namespace std;
 void xml_attribute_to_int(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     int* value,
     bool* is_set) {
     try {
@@ -44,7 +44,7 @@ void xml_attribute_to_int(
 ////////////////////////////////////////////////////////////////////////////////
 string int_to_xml_attribute(
     const string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const int* value) {
     return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }
@@ -56,7 +56,7 @@ string int_to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_int(
     int input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     int* value,
     bool* is_set) {
     *value = input;
@@ -70,7 +70,7 @@ void proto_to_int(
 ////////////////////////////////////////////////////////////////////////////////
 void int_to_proto(
     int value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(int&)> setter) {
     setter(value);
 }

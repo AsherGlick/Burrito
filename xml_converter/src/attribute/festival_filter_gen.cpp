@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_festival_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     FestivalFilter* value,
     bool* is_set) {
     FestivalFilter festival_filter;
@@ -66,7 +66,7 @@ void xml_attribute_to_festival_filter(
 
 string festival_filter_to_xml_attribute(
     const std::string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const FestivalFilter* value) {
     vector<string> flag_values;
     if (value->dragonbash == true) {
@@ -96,7 +96,7 @@ string festival_filter_to_xml_attribute(
 
 void proto_to_festival_filter(
     waypoint::FestivalFilter input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     FestivalFilter* value,
     bool* is_set) {
     FestivalFilter festival_filter;
@@ -113,7 +113,7 @@ void proto_to_festival_filter(
 
 void festival_filter_to_proto(
     FestivalFilter value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::FestivalFilter*)> setter) {
     waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
     bool should_write = false;

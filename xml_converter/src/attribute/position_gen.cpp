@@ -13,8 +13,8 @@ using namespace std;
 
 void xml_attribute_to_position(
     rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    std::vector<XMLError*>*,
+    XMLReaderState*,
     Position* value,
     bool* is_set) {
     Position position;
@@ -36,7 +36,7 @@ void xml_attribute_to_position(
 
 void proto_to_position(
     waypoint::Position input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     Position* value,
     bool* is_set) {
     Position position;
@@ -49,7 +49,7 @@ void proto_to_position(
 
 void position_to_proto(
     Position value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::Position*)> setter) {
     waypoint::Position* proto_position = new waypoint::Position();
     proto_position->set_x(value.x_position);

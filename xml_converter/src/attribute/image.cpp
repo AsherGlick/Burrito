@@ -17,7 +17,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 void xml_attribute_to_image(
     rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>* errors,
+    std::vector<XMLError*>*,
     XMLReaderState* state,
     Image* value,
     bool* is_set) {
@@ -33,7 +33,7 @@ void xml_attribute_to_image(
 ////////////////////////////////////////////////////////////////////////////////
 string image_to_xml_attribute(
     const string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const Image* value) {
     return " " + attribute_name + "=\"" + value->filename + "\"";
 }

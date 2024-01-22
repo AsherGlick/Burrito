@@ -153,7 +153,7 @@ string trail_data_to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_trail_data(
     waypoint::TrailData input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     TrailData* value,
     bool* is_set) {
     TrailData trail_data;
@@ -171,7 +171,7 @@ void proto_to_trail_data(
 ////////////////////////////////////////////////////////////////////////////////
 void trail_data_to_proto(
     TrailData value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::TrailData*)> setter) {
     waypoint::TrailData* trail_data = new waypoint::TrailData();
     *trail_data->mutable_points_x() = {value.points_x.begin(), value.points_x.end()};
