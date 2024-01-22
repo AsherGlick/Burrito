@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+
 #include "attribute/unique_id.hpp"
 
 class Hash64 {

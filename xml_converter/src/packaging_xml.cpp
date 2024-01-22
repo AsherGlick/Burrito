@@ -2,11 +2,11 @@
 
 #include <utility>
 
+#include "hash_helpers.hpp"
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
-#include "hash_helpers.hpp"
 
 using namespace std;
 
