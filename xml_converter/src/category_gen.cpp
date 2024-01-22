@@ -133,7 +133,6 @@ void Category::parse_protobuf(waypoint::Category proto_category, ProtoReaderStat
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // apply_underlay
 //
@@ -197,4 +196,3 @@ void Category::apply_overlay(const Category& overlay) {
     this->default_icon.apply_overlay(overlay.default_icon);
     this->default_trail.apply_overlay(overlay.default_trail);
 }
-

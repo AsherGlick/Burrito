@@ -441,7 +441,6 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state)
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // apply_underlay
 //
@@ -557,7 +556,6 @@ void Trail::apply_underlay(const Trail& underlay) {
         this->trail_scale = underlay.trail_scale;
         this->trail_scale_is_set = true;
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -675,6 +673,4 @@ void Trail::apply_overlay(const Trail& overlay) {
         this->trail_scale = overlay.trail_scale;
         this->trail_scale_is_set = true;
     }
-
 }
-

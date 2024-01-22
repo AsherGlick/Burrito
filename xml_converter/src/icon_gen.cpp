@@ -743,7 +743,6 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // apply_underlay
 //
@@ -939,7 +938,6 @@ void Icon::apply_underlay(const Icon& underlay) {
         this->trigger_range = underlay.trigger_range;
         this->trigger_range_is_set = true;
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1137,6 +1135,4 @@ void Icon::apply_overlay(const Icon& overlay) {
         this->trigger_range = overlay.trigger_range;
         this->trigger_range_is_set = true;
     }
-
 }
-

@@ -17,7 +17,7 @@ using namespace std;
 string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
-{% if cpp_class == "Category": %}
+{% if cpp_class == "Category" %}
     void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLReaderState* state) {
         for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
             bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
@@ -69,7 +69,7 @@ vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
             }
         {% endif %}
     {% endfor %}
-    {% if cpp_class == "Category": %}
+    {% if cpp_class == "Category" %}
         xml_node_contents.push_back(">\n");
 
         for (const auto& [key, val] : this->children) {
@@ -121,7 +121,6 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
     {% endfor %}
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // apply_underlay
 //
@@ -137,8 +136,8 @@ void {{cpp_class}}::apply_underlay(const {{cpp_class}}& underlay) {
             }
         {% endif %}
     {% endfor %}
+    {% if cpp_class == "Category" %}
 
-    {% if cpp_class == "Category": %}
         this->default_icon.apply_underlay(underlay.default_icon);
         this->default_trail.apply_underlay(underlay.default_trail);
     {% endif %}
@@ -159,10 +158,9 @@ void {{cpp_class}}::apply_overlay(const {{cpp_class}}& overlay) {
             }
         {% endif %}
     {% endfor %}
+    {% if cpp_class == "Category" %}
 
-    {% if cpp_class == "Category": %}
         this->default_icon.apply_overlay(overlay.default_icon);
         this->default_trail.apply_overlay(overlay.default_trail);
     {% endif %}
 }
-
