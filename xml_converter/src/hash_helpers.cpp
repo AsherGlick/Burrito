@@ -1,7 +1,7 @@
 // Hashing
 #include "hash_helpers.hpp"
 
-const char* hex_chars = "0123456789abcdef";
+static const char* hex_chars = "0123456789abcdef";
 
 Hash64::Hash64() {
     this->hash = 0b0000010010000001001101100111001011100111010110000100001101011110;
@@ -80,4 +80,19 @@ std::string Hash128::hex() const {
     }
 
     return hex_string;
+}
+
+UniqueId Hash128::unique_id() const {
+    UniqueId unique_id;
+    unique_id.guid = {
+        (unsigned char)((this->upper >> 0) & 0xFF),
+        (unsigned char)((this->upper >> 8) & 0xFF),
+        (unsigned char)((this->upper >> 16) & 0xFF),
+        (unsigned char)((this->upper >> 24) & 0xFF),
+        (unsigned char)((this->lower >> 0) & 0xFF),
+        (unsigned char)((this->lower >> 8) & 0xFF),
+        (unsigned char)((this->lower >> 16) & 0xFF),
+        (unsigned char)((this->lower >> 24) & 0xFF),
+    };
+    return unique_id;
 }

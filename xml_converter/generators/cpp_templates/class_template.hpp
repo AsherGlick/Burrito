@@ -28,6 +28,7 @@ class {{cpp_class}} : public Parseable {
         std::map<std::string, Category> children;
         Icon default_icon;
         Trail default_trail;
+        Category* parent;
 
         void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLReaderState* state);
     {% endif %}

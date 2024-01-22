@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "attribute/unique_id.hpp"
 
 class Hash64 {
  private:
@@ -25,5 +26,5 @@ class Hash128 {
     void update(const unsigned char* str, size_t length);
     void update(const std::string& str);
     std::string hex() const;
-    std::string base64() const;
+    UniqueId unique_id() const;
 };
