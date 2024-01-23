@@ -39,4 +39,6 @@ class {{cpp_class}} : public Parseable {
     {% if attributes_of_type_marker_category %}
         bool validate_attributes_of_type_marker_category();
     {% endif %}
+    void apply_underlay(const {{cpp_class}}& underlay);
+    void apply_overlay(const {{cpp_class}}& overlay);
 };

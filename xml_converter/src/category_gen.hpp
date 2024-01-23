@@ -36,4 +36,6 @@ class Category : public Parseable {
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
     waypoint::Category as_protobuf(ProtoWriterState* state) const;
     void parse_protobuf(waypoint::Category proto_category, ProtoReaderState* state);
+    void apply_underlay(const Category& underlay);
+    void apply_overlay(const Category& overlay);
 };

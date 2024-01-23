@@ -132,3 +132,67 @@ void Category::parse_protobuf(waypoint::Category proto_category, ProtoReaderStat
         proto_to_string(proto_category.tip_description(), state, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_underlay
+//
+// Transforms this Category as if this class was overlayed on top of the
+// underlay argument.
+////////////////////////////////////////////////////////////////////////////////
+void Category::apply_underlay(const Category& underlay) {
+    if (!this->default_visibility_is_set && underlay.default_visibility_is_set) {
+        this->default_visibility = underlay.default_visibility;
+        this->default_visibility_is_set = true;
+    }
+    if (!this->display_name_is_set && underlay.display_name_is_set) {
+        this->display_name = underlay.display_name;
+        this->display_name_is_set = true;
+    }
+    if (!this->is_separator_is_set && underlay.is_separator_is_set) {
+        this->is_separator = underlay.is_separator;
+        this->is_separator_is_set = true;
+    }
+    if (!this->name_is_set && underlay.name_is_set) {
+        this->name = underlay.name;
+        this->name_is_set = true;
+    }
+    if (!this->tooltip_description_is_set && underlay.tooltip_description_is_set) {
+        this->tooltip_description = underlay.tooltip_description;
+        this->tooltip_description_is_set = true;
+    }
+
+    this->default_icon.apply_underlay(underlay.default_icon);
+    this->default_trail.apply_underlay(underlay.default_trail);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_overlay
+//
+// Transforms this Category as if the overlay argument were overlayed on
+// top of this class.
+////////////////////////////////////////////////////////////////////////////////
+void Category::apply_overlay(const Category& overlay) {
+    if (overlay.default_visibility_is_set) {
+        this->default_visibility = overlay.default_visibility;
+        this->default_visibility_is_set = true;
+    }
+    if (overlay.display_name_is_set) {
+        this->display_name = overlay.display_name;
+        this->display_name_is_set = true;
+    }
+    if (overlay.is_separator_is_set) {
+        this->is_separator = overlay.is_separator;
+        this->is_separator_is_set = true;
+    }
+    if (overlay.name_is_set) {
+        this->name = overlay.name;
+        this->name_is_set = true;
+    }
+    if (overlay.tooltip_description_is_set) {
+        this->tooltip_description = overlay.tooltip_description;
+        this->tooltip_description_is_set = true;
+    }
+
+    this->default_icon.apply_overlay(overlay.default_icon);
+    this->default_trail.apply_overlay(overlay.default_trail);
+}

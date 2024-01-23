@@ -85,4 +85,6 @@ class Trail : public Parseable {
     waypoint::Trail as_protobuf(ProtoWriterState* state) const;
     void parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state);
     bool validate_attributes_of_type_marker_category();
+    void apply_underlay(const Trail& underlay);
+    void apply_overlay(const Trail& overlay);
 };

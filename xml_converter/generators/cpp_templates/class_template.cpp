@@ -17,7 +17,7 @@ using namespace std;
 string {{cpp_class}}::classname() {
     return "{{xml_class_name}}";
 }
-{% if cpp_class == "Category": %}
+{% if cpp_class == "Category" %}
     void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLReaderState* state) {
         for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
             bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
@@ -69,7 +69,7 @@ vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
             }
         {% endif %}
     {% endfor %}
-    {% if cpp_class == "Category": %}
+    {% if cpp_class == "Category" %}
         xml_node_contents.push_back(">\n");
 
         for (const auto& [key, val] : this->children) {
@@ -119,4 +119,48 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
             }
         {% endif %}
     {% endfor %}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_underlay
+//
+// Transforms this {{cpp_class}} as if this class was overlayed on top of the
+// underlay argument.
+////////////////////////////////////////////////////////////////////////////////
+void {{cpp_class}}::apply_underlay(const {{cpp_class}}& underlay) {
+    {% for attribute_variable in attribute_variables %}
+        {% if attribute_variable.is_component == false %}
+            if (!this->{{attribute_variable.attribute_flag_name}} && underlay.{{attribute_variable.attribute_flag_name}}) {
+                this->{{attribute_variable.attribute_name}} = underlay.{{attribute_variable.attribute_name}};
+                this->{{attribute_variable.attribute_flag_name}} = true;
+            }
+        {% endif %}
+    {% endfor %}
+    {% if cpp_class == "Category" %}
+
+        this->default_icon.apply_underlay(underlay.default_icon);
+        this->default_trail.apply_underlay(underlay.default_trail);
+    {% endif %}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_overlay
+//
+// Transforms this {{cpp_class}} as if the overlay argument were overlayed on
+// top of this class.
+////////////////////////////////////////////////////////////////////////////////
+void {{cpp_class}}::apply_overlay(const {{cpp_class}}& overlay) {
+    {% for attribute_variable in attribute_variables %}
+        {% if attribute_variable.is_component == false %}
+            if (overlay.{{attribute_variable.attribute_flag_name}}) {
+                this->{{attribute_variable.attribute_name}} = overlay.{{attribute_variable.attribute_name}};
+                this->{{attribute_variable.attribute_flag_name}} = true;
+            }
+        {% endif %}
+    {% endfor %}
+    {% if cpp_class == "Category" %}
+
+        this->default_icon.apply_overlay(overlay.default_icon);
+        this->default_trail.apply_overlay(overlay.default_trail);
+    {% endif %}
 }

@@ -127,4 +127,6 @@ class Icon : public Parseable {
     waypoint::Icon as_protobuf(ProtoWriterState* state) const;
     void parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state);
     bool validate_attributes_of_type_marker_category();
+    void apply_underlay(const Icon& underlay);
+    void apply_overlay(const Icon& overlay);
 };
