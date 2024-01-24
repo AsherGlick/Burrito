@@ -3,6 +3,7 @@ extends Spatial
 var camera: Camera
 signal selected(selected_object)
 signal deselected(selected_object)
+signal update()
 var last_translation
 var selected: bool = false
 
@@ -49,10 +50,10 @@ func update_point():
 			self.object_link.set_point_position(self.object_index, self.translation)
 			self.object_2d_link.points[self.object_index] = Vector2(self.translation.x, self.translation.z)
 		if point_type == "icon":
-			self.object_link.translation = self.translation
+			self.object_link.set_point_position(self.translation)
 		print("update")
+		emit_signal("update")
 		self.last_translation  = self.translation
-
 
 ################################################################################
 # Handle resizing the control nodes so that no matter how far away from the

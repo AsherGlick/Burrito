@@ -9,6 +9,7 @@ var map_is_open: bool
 var compass_is_top_right: bool
 
 var edit_panel_open: bool = false
+var unsaved_changes: bool = false
 
 # This is the path to the texture that will be used for the next created 3d-path
 # object or icon object in the UI
@@ -59,7 +60,6 @@ const PackDialog = preload("res://PackDialog.gd")
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
 onready var markers_2d := $Control/Markers2D as Node2D
-onready var unsaved_data_icon := $Control/GlobalMenuButton/UnsavedDataIcon as TextureRect
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -336,12 +336,12 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
-		if unsaved_data_icon.visible:
+		if self.unsaved_changes:
 			save_current_map_data()
 		print("New Map")
 		print("Saving Old Map")
 		print("Loading New Map")
-		load_waypoint_markers()
+		load_waypoint_markers(self.map_id)
 
 	reset_minimap_masks()
 
@@ -388,13 +388,13 @@ func reset_3D_minimap_masks(category: Spatial):
 		reset_3D_minimap_masks(subcategory)
 
 
-var waypoint_data = Waypoint.Waypoint.new()
-var split_marker_file_dir = "user://protobins/"
-var marker_pack_dir = "user://packs/"
-var marker_file_path = ""
+var waypoint_data: Waypoint.Waypoint = Waypoint.Waypoint.new()
+const user_protobin_by_map_id_dir: String = "user://protobin_by_map_id/"
+const user_marker_pack_dir: String = "user://marker_packs/"
+var marker_file_path: String = ""
 
-func load_waypoint_markers():
-	self.marker_file_path = self.split_marker_file_dir + String(self.map_id) + ".data"
+func load_waypoint_markers(map_id_to_load: int):
+	self.marker_file_path = self.user_protobin_by_map_id_dir + String(map_id_to_load) + ".data"
 	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
@@ -547,7 +547,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.split_marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.user_protobin_by_map_id_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_path(path_points, full_texture_path, path, category_item)
 
 
@@ -561,7 +561,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.split_marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.user_protobin_by_map_id_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 
 	for category_child in waypoint_category.get_children():
@@ -641,15 +641,21 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 ################################################################################
 # Section of functions for saving changes to markers
 ################################################################################
-func on_change_made():
-	self.unsaved_data_icon.visible = true
+func update_burrito_icon():
+	if self.unsaved_changes:
+		$Control/GlobalMenuButton/TextureRect.modulate = Color(.78, 0.3, 0.3, 1.0)
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
+	else:
+		$Control/GlobalMenuButton/TextureRect.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""
 
 func save_current_map_data():
 	var packed_bytes = self.waypoint_data.to_bytes()
-	if packed_bytes.size() > 0:
-		var file = File.new()
-		file.open(self.marker_file_path, file.WRITE)
-		file.store_buffer(packed_bytes)
+	var file = File.new()
+	file.open(self.marker_file_path, file.WRITE)
+	file.store_buffer(packed_bytes)
+	self.unsaved_changes = false
+	update_burrito_icon()
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -687,6 +693,7 @@ func gen_adjustment_nodes():
 			new_gizmo.link_point("path", route, path2d, i)
 			new_gizmo.connect("selected", self, "on_gizmo_selected")
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+			new_gizmo.connect("update", self, "on_update_made")
 			$Gizmos.add_child(new_gizmo)
 	for icon in category3d.icons:
 		var new_gizmo = gizmo_scene.instance()
@@ -694,6 +701,7 @@ func gen_adjustment_nodes():
 		new_gizmo.link_point("icon", icon)
 		new_gizmo.connect("selected", self, "on_gizmo_selected")
 		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+		new_gizmo.connect("update", self, "on_update_made")
 		$Gizmos.add_child(new_gizmo)
 
 
@@ -721,6 +729,9 @@ func on_gizmo_deselected(object):
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = true
 
+func on_update_made():
+	self.unsaved_changes = true
+	update_burrito_icon()
 
 func clear_adjustment_nodes():
 	for child in $Gizmos.get_children():
@@ -730,6 +741,9 @@ func clear_adjustment_nodes():
 ################################################################################
 # Signal Functions
 ################################################################################
+func _on_SavePath_pressed():
+	save_current_map_data()
+
 func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
@@ -811,19 +825,6 @@ func _on_NewPathPoint_pressed():
 		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
 
 
-################################################################################
-#
-################################################################################
-func _on_SavePath_pressed():
-	#TODO: Save split files into individual files
-	pass
-
-################################################################################
-# TODO: This function will be used when exporting packs
-################################################################################
-func _on_SaveDialog_file_selected(path):
-	pass
-
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
 	clear_adjustment_nodes()
@@ -896,7 +897,7 @@ func _on_ReversePathDirection_pressed():
 
 
 func _on_ExitButton_pressed():
-	if unsaved_data_icon.visible:
+	if self.unsaved_changes:
 		save_current_map_data()
 	exit_burrito()
 
@@ -921,8 +922,3 @@ func _on_ImportPath_pressed():
 	$Control/Dialogs/ImportPackDialog.show()
 
 
-func _on_UnsavedDataIcon_visibility_changed():
-	if $Control/GlobalMenuButton/UnsavedDataIcon.visible:
-		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
-	else:
-		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""
