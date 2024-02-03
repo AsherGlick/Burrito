@@ -373,9 +373,10 @@ def main() -> None:
             generator.load_input_doc(full_markdown_doc_directory)
 
     generator.delete_generated_docs("../web_docs")
-    generator.delete_generated_docs("../src/")
     generator.write_webdocs("../web_docs/")
-    write_cpp_classes("../src/", generator.data)
+
+    written_classes = write_cpp_classes("../src/", generator.data)
+    generator.delete_generated_docs("../src/", skip=written_classes)
 
     written_attributes = write_attribute("../src/attribute", generator.data)
     generator.delete_generated_docs("../src/attribute", skip=written_attributes)
