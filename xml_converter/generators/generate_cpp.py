@@ -208,6 +208,7 @@ def write_cpp_classes(
 
     return written_files
 
+
 def build_custom_function_data(config: Dict[str, Any]) -> Tuple[str, List[str]]:
     function = config["function"]
     side_effects = []
