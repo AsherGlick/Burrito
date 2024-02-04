@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_map_type_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     MapTypeFilter* value,
     bool* is_set) {
     MapTypeFilter map_type_filter;
@@ -131,7 +131,7 @@ void xml_attribute_to_map_type_filter(
 
 string map_type_filter_to_xml_attribute(
     const std::string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const MapTypeFilter* value) {
     vector<string> flag_values;
     if (value->unknown_map == true) {
@@ -212,7 +212,7 @@ string map_type_filter_to_xml_attribute(
 
 void proto_to_map_type_filter(
     waypoint::MapTypeFilter input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     MapTypeFilter* value,
     bool* is_set) {
     MapTypeFilter map_type_filter;
@@ -246,7 +246,7 @@ void proto_to_map_type_filter(
 
 void map_type_filter_to_proto(
     MapTypeFilter value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::MapTypeFilter*)> setter) {
     waypoint::MapTypeFilter* proto_map_type_filter = new waypoint::MapTypeFilter();
     bool should_write = false;

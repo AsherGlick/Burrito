@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_cull_chirality(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     CullChirality* value,
     bool* is_set) {
     CullChirality cull_chirality;
@@ -39,7 +39,7 @@ void xml_attribute_to_cull_chirality(
 
 string cull_chirality_to_xml_attribute(
     const std::string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const CullChirality* value) {
     if (*value == CullChirality::none) {
         return " " + attribute_name + "=\"" + "none" + "\"";
@@ -57,7 +57,7 @@ string cull_chirality_to_xml_attribute(
 
 void proto_to_cull_chirality(
     waypoint::CullChirality input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     CullChirality* value,
     bool* is_set) {
     switch (input) {
@@ -82,7 +82,7 @@ void proto_to_cull_chirality(
 
 void cull_chirality_to_proto(
     CullChirality value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::CullChirality)> setter) {
     switch (value) {
         case CullChirality::none:

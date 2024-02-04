@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_{{attribute_name}}(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     {{class_name}}* value,
     bool* is_set) {
     {{class_name}} {{attribute_name}};
@@ -43,7 +43,7 @@ void xml_attribute_to_{{attribute_name}}(
 
 string {{attribute_name}}_to_xml_attribute(
     const std::string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const {{class_name}}* value) {
     {% for n, attribute_component in enumerate(attribute_components) %}
         {% for i, value in enumerate(attribute_component.xml_fields) %}
@@ -63,7 +63,7 @@ string {{attribute_name}}_to_xml_attribute(
 
 void proto_to_{{attribute_name}}(
     {{proto_field_cpp_type}} input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     {{class_name}}* value,
     bool* is_set) {
     switch (input) {
@@ -82,7 +82,7 @@ void proto_to_{{attribute_name}}(
 
 void {{attribute_name}}_to_proto(
     {{class_name}} value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void({{proto_field_cpp_type}})> setter) {
     switch (value) {
         {% for attribute_component in attribute_components %}
