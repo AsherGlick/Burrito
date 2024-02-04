@@ -263,7 +263,7 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
 
         if len_diff(diff) != 0:
             diff_found = True
-            print("XML output was incorrect for test")
+            print("Output was incorrect for test")
             for line in diff:
                 print(line)
 

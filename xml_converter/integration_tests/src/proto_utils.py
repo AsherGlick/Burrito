@@ -16,7 +16,7 @@ def compare_protos(
     expected_textproto = get_waypoint_textproto(expected_proto_path)
     actual_textproto = get_waypoint_textproto(actual_proto_path)
 
-    diff = list(difflib.unified_diff(expected_textproto.split("\n"), actual_textproto.split("\n"), fromfile=expected_proto_path, tofile=actual_proto_path, lineterm=""))
+    diff = list(difflib.unified_diff(actual_textproto.split("\n"), expected_textproto.split("\n"), fromfile=actual_proto_path, tofile=expected_proto_path, lineterm=""))
 
     if len(diff) == 0:
         diff = ["Something went wrong diffing {} and {}.".format(expected_proto_path, actual_proto_path)]
