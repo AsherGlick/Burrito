@@ -286,8 +286,8 @@ int connect_and_or_send() {
         memcpy(SendBuf + BufLength, &lc->uiState, sizeof(lc->uiState));
         BufLength += sizeof(lc->uiState);
 
-        memcpy(SendBuf + BufLength, &lc->mountIndex, sizeof(lc->mountIndex));
-        BufLength += sizeof(lc->mountIndex);
+        // memcpy(SendBuf + BufLength, &lc->mountIndex, sizeof(lc->mountIndex));
+        // BufLength += sizeof(lc->mountIndex);
 
         TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
         if (TotalByteSent != BufLength) {
