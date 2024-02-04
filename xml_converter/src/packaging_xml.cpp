@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "hash_helpers.hpp"
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
@@ -14,7 +15,13 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
-void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors, string base_dir, int depth = 0) {
+void parse_marker_categories(
+    rapidxml::xml_node<>* node,
+    map<string, Category>* marker_categories,
+    Category* parent,
+    vector<XMLError*>* errors,
+    string base_dir,
+    int depth = 0) {
     if (get_node_name(node) == "MarkerCategory") {
         XMLReaderState state = {
             base_dir,
@@ -41,11 +48,39 @@ void parse_marker_categories(rapidxml::xml_node<>* node, map<string, Category>* 
             name = lowercase(new_category.name);
         }
 
-        Category* existing_category = &(*marker_categories)[name];
+        // If this category itself, without any cascading values, does not have
+        // an id then create a new one for it based on the hashes of its name
+        // and its parents names.
+        if (!new_category.menu_id_is_set) {
+            Hash128 new_id;
+            new_id.update(name);
+
+            Category* next_node = parent;
+            while (next_node != nullptr) {
+                new_id.update(next_node->name);
+                next_node = next_node->parent;
+            }
+            new_category.menu_id = new_id.unique_id();
+            new_category.menu_id_is_set = true;
+        }
+
+        // Create and initialize a new category if this one does not exist
+        Category* existing_category;
+        auto existing_category_search = marker_categories->find(name);
+        if (existing_category_search == marker_categories->end()) {
+            existing_category = &(*marker_categories)[name];
+            existing_category->parent = parent;
+        }
+        else {
+            existing_category = &existing_category_search->second;
+            if (existing_category->parent != parent) {
+                errors->push_back(new XMLNodeNameError("Category somehow has a different parent then it used to. This might be a bug in xml_converter", node));
+            }
+        }
         existing_category->apply_overlay(new_category);
 
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
-            parse_marker_categories(child_node, &(existing_category->children), errors, base_dir, depth + 1);
+            parse_marker_categories(child_node, &(existing_category->children), existing_category, errors, base_dir, depth + 1);
         }
     }
     else {
@@ -161,7 +196,7 @@ void parse_xml_file(string xml_filepath, map<string, Category>* marker_categorie
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
-            parse_marker_categories(node, marker_categories, &errors, base_dir);
+            parse_marker_categories(node, marker_categories, nullptr, &errors, base_dir);
         }
         else if (get_node_name(node) == "POIs") {
             vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors, base_dir);

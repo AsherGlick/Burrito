@@ -23,6 +23,7 @@ message Category {
     bool is_separator = 5;
     bool default_visibility = 6;
     string tip_description = 7;
+    bytes id = 8;
 }
 
 message Icon {
