@@ -13,14 +13,21 @@
 #define PACKET_METADATA 2
 #define PACKET_LINK_TIMEOUT 3
 
+// The max buffer size for data that is being sent to burrito over the UDP socket
+#define MAX_BUFFER_SIZE 1024
 
-// The max buffer size for data that is being sent to burriot over the UDP socket
-#define MaxBufferSize 1024
+// Number of uiTicks that should pass between when each "heavy" packet is sent.
+#define HEAVY_DATA_INTERVAL 500
+
+// Define the port and address we are trying to connect to. The address is a
+// loopback address because we are trying to talk to another process running on
+// the same machine.
+#define COMMUNICATION_PORT 4242
+#define COMMUNICATION_IPV4 "127.0.0.1"
 
 // A state variable to keep track of the previous cycle's map_id to determine
 // if the map_id has changed in this cycle.
 int last_map_id = 0;
-
 
 // Do a rolling average on the player position because that seems to be
 // Roughly what the camera position is doing and doing this will remove
@@ -51,27 +58,46 @@ struct rolling_average_5 playerz_avg;
 
 float fAvatarAveragePosition[3];
 
-// global variables
-// mumble link pointer
+
+// Handle to the shared memory. This is kept so that the handle can be closed
+// when the program exits because Windows will only release the shared memory
+// once all handles are closed.
+HANDLE handle_lm;
+
+// The pointer to the mapped view of the file. This should be unmapped before
+// `handle_lm` is closed.
+LPCTSTR mapped_lm;
+
+// Pointer to the mapped LinkedMem object. Only available after initMumble()
+// is called.
 struct LinkedMem *lm = NULL;
 
-// mumble context pointer into the `lm` variable above.
+// Pointer to the mapped MumbleContext object found at `lm->context`. Only
+// available after initMumble() is called.
 struct MumbleContext *lc = NULL;
 
+
+// How many "clocks", as defined by CLOCKS_PER_SECOND and by the return value
+// of clock(), will elapse before the program should time out. If this is left
+// at 0 burrito link will never time out.
 long program_timeout = 0;
+
+// What was the value of `clock()` when the program started. This is used with
+// program_timeout to determine if the program should time out or continue.
 long program_startime = 0;
 
 
-// handle to the shared memory of Mumble link . close at the end of program. windows will only release the shared memory once ALL handles are closed,
-// so we don't have to worry about other processes like arcdps or other overlays if they are using this.
-HANDLE handle_lm;
-// the pointer to the mapped view of the file. close before handle.
-LPCTSTR mapped_lm;
-
+////////////////////////////////////////////////////////////////////////////////
+// initMumble
+//
+// Creates or reads a shared memory object named "MumbleLink" which has the
+// data from Guild Wars 2. We must create the memory object if it does not
+// exist because, while Guild Wars 2 will write to it if it exists, it will not
+// create it if it does not already exist.
+//
+// Reference: https://docs.microsoft.com/en-us/windows/win32/memory/creating-named-shared-memory
+////////////////////////////////////////////////////////////////////////////////
 void initMumble() {
-    // creates a shared memory IF it doesn't exist. otherwise, it returns the existing shared memory handle.
-    // reference: https://docs.microsoft.com/en-us/windows/win32/memory/creating-named-shared-memory
-
     size_t BUF_SIZE = sizeof(struct LinkedMem);
 
     handle_lm = CreateFileMapping(
@@ -116,7 +142,7 @@ void initMumble() {
 // This function attempts to read that property and return it.
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t x11_window_id_from_windows_process_id(uint32_t windows_process_id) {
-    // Get and send the linux x server window id
+    // Get and send the Linux x server window id
     UINT32 x11_window_id = 0;
     HWND window_handle = NULL;
     BOOL CALLBACK EnumWindowsProcMy(HWND hwnd, LPARAM lParam) {
@@ -135,7 +161,7 @@ uint32_t x11_window_id_from_windows_process_id(uint32_t windows_process_id) {
         x11_window_id = (size_t)possible_x11_window_id;
     }
     // else {
-    //     printf("No Linux ID\n");
+    //     printf("No Linux x11 window ID found\n");
     // }
     return x11_window_id;
 }
@@ -147,14 +173,12 @@ uint32_t x11_window_id_from_windows_process_id(uint32_t windows_process_id) {
 // memory block and sending the memory over to burrito over a UDP socket.
 ////////////////////////////////////////////////////////////////////////////////
 int connect_and_or_send() {
-    WSADATA wsaData;
-    SOCKET SendingSocket;
-    SOCKADDR_IN ReceiverAddr;
-    int Port = 4242;
     int BufLength = 1024;
-    char SendBuf[MaxBufferSize];
+    char SendBuf[MAX_BUFFER_SIZE];
     int TotalByteSent;
 
+    // Setup and Initialize Winsock library
+    WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         printf("Client: WSAStartup failed with error %d\n", WSAGetLastError());
 
@@ -167,10 +191,10 @@ int connect_and_or_send() {
     else {
         printf("Client: The Winsock DLL status is %s.\n", wsaData.szSystemStatus);
     }
-    // Create a new socket to receive datagrams on.
 
+    // Create a new socket to send datagrams on.
+    SOCKET SendingSocket;
     SendingSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
     if (SendingSocket == INVALID_SOCKET) {
         // Print error message
         printf("Client: Error at socket(): %d\n", WSAGetLastError());
@@ -185,39 +209,43 @@ int connect_and_or_send() {
         printf("Client: socket() is OK!\n");
     }
 
-    /*Set up a SOCKADDR_IN structure that will identify who we
-     will send datagrams to.
-     For demonstration purposes, let's assume our receiver's IP address is 127.0.0.1
-     and waiting for datagrams on port 5150.*/
-
+    // Setup the destination where we want to send the parsed data to.
+    SOCKADDR_IN ReceiverAddr;
     ReceiverAddr.sin_family = AF_INET;
-
-    ReceiverAddr.sin_port = htons(Port);
-
-    ReceiverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    ReceiverAddr.sin_port = htons(COMMUNICATION_PORT);
+    ReceiverAddr.sin_addr.s_addr = inet_addr(COMMUNICATION_IPV4);
 
     int count = 0;
-    DWORD lastuitick = 0;
+    DWORD last_ui_tick = 0;
     // Send data packages to the receiver(Server).
     do {
+        // Trigger the builtin auto close timeout if a timeout was set. Send a
+        // message to burrito that the program hit its timeout so that burrito
+        // can decide if it should launch a new instance of burrito link or not.
         if (program_timeout != 0 && clock() - program_startime > program_timeout) {
-            BufLength = 1;
-            // Set the first byte of the packet to indicate this packet is a `Heaver Context Updater` packet
+            // Set the first and only byte of the packet to indicate this
+            // packet is a `Packet Link Timeout` packet.
             SendBuf[0] = PACKET_LINK_TIMEOUT;
+            BufLength = 1;
+
             TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
             if (TotalByteSent != BufLength) {
                 printf("Not all Bytes Sent");
             }
 
-            printf("Breaking out due to timeout");
+            printf("Exiting due to timeout being reached.");
             break;
         }
-        if (lm->uiTick == lastuitick) {
+
+        // If uiTick is the same value as it was the previous loop then Guild
+        // Wars 2 has not updated any data. Sleep for 1ms and check again.
+        if (lm->uiTick == last_ui_tick) {
             Sleep(1);
             continue;
         }
-        lastuitick = lm->uiTick;
+        last_ui_tick = lm->uiTick;
 
+        // Update the player position to calculate the new rolling average.
         replace_point_in_rolling_average(&playerx_avg, lm->fAvatarPosition[0]);
         replace_point_in_rolling_average(&playery_avg, lm->fAvatarPosition[1]);
         replace_point_in_rolling_average(&playerz_avg, lm->fAvatarPosition[2]);
@@ -227,9 +255,10 @@ int connect_and_or_send() {
         fAvatarAveragePosition[1] = get_rolling_average(&playery_avg);
         fAvatarAveragePosition[2] = get_rolling_average(&playerz_avg);
 
-        BufLength = 1;
-        // Set the first byte of the packet to indicate this packet is a `Per Frame Updater` packet
+        // Set the first byte of the packet to indicate this packet is a
+        // `Per Frame Updater` packet
         SendBuf[0] = PACKET_FRAME;
+        BufLength = 1;
 
         memcpy(SendBuf + BufLength, lm->fCameraPosition, sizeof(lm->fCameraPosition));
         BufLength += sizeof(lm->fCameraPosition);
@@ -239,9 +268,6 @@ int connect_and_or_send() {
 
         memcpy(SendBuf + BufLength, fAvatarAveragePosition, sizeof(fAvatarAveragePosition));
         BufLength += sizeof(fAvatarAveragePosition);
-
-        // memcpy(SendBuf+BufLength, lm->fAvatarPosition, sizeof(lm->fAvatarPosition));
-        // BufLength += sizeof(lm->fAvatarPosition);
 
         float map_offset_x = lc->playerX - lc->mapCenterX;
         memcpy(SendBuf + BufLength, &map_offset_x, sizeof(map_offset_x));
@@ -260,13 +286,8 @@ int connect_and_or_send() {
         memcpy(SendBuf + BufLength, &lc->uiState, sizeof(lc->uiState));
         BufLength += sizeof(lc->uiState);
 
-        // UINT32
-
-        // printf("map_offset_x: %f\n", lc->playerX - lc->mapCenterX);
-        // printf("map_offset_y: %f\n", lc->playerY - lc->mapCenterY);
-        // printf("mapScale: %f\n", lc->mapScale);
-        // printf("compassRotation: %f\n", lc->compassRotation); // radians
-        // printf("UI State: %i\n", lc->uiState); // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
+        // memcpy(SendBuf + BufLength, &lc->mountIndex, sizeof(lc->mountIndex));
+        // BufLength += sizeof(lc->mountIndex);
 
         TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
         if (TotalByteSent != BufLength) {
@@ -278,41 +299,11 @@ int connect_and_or_send() {
         // the current state of the game.
         if (count == 0 || lc->mapId != last_map_id) {
             last_map_id = lc->mapId;
-            BufLength = 1;
-            // Set the first byte of the packet to indicate this packet is a `Heaver Context Updater` packet
+
+            // Set the first byte of the packet to indicate this packet is a
+            // `Heaver Context Updater` packet.
             SendBuf[0] = PACKET_METADATA;
-
-            // printf("hello world\n");
-            // printf("%ls\n", lm->description);
-
-            printf("%ls\n", lm->identity);
-
-            // printf("%i\n", lc->mapId);
-            // printf("\n", lc->serverAddress); // contains sockaddr_in or sockaddr_in6
-            // printf("Map Id: %i\n", lc->mapId);
-            // printf("Map Type: %i\n", lc->mapType);
-            // printf("shardId: %i\n", lc->shardId);
-            // printf("instance: %i\n", lc->instance);
-            // printf("buildId: %i\n", lc->buildId);
-            // printf("UI State: %i\n", lc->uiState); // Bitmask: Bit 1 = IsMapOpen, Bit 2 = IsCompassTopRight, Bit 3 = DoesCompassHaveRotationEnabled, Bit 4 = Game has focus, Bit 5 = Is in Competitive game mode, Bit 6 = Textbox has focus, Bit 7 = Is in Combat
-            // printf("compassWidth %i\n", lc->compassWidth); // pixels
-            // printf("compassHeight %i\n", lc->compassHeight); // pixels
-            // printf("compassRotation: %f\n", lc->compassRotation); // radians
-            // printf("playerX: %f\n", lc->playerX); // continentCoords
-            // printf("playerY: %f\n", lc->playerY); // continentCoords
-            // printf("mapCenterX: %f\n", lc->mapCenterX); // continentCoords
-            // printf("mapCenterY: %f\n", lc->mapCenterY); // continentCoords
-            // printf("mapScale: %f\n", lc->mapScale);
-            // printf("\n", UINT32 processId;
-            // printf("mountIndex: %i\n", lc->mountIndex);
-
-            // New things for the normal packet
-
-            // Things for the context packet
-            // printf("compassWidth %i\n", lc->compassWidth); // pixels
-            // printf("compassHeight %i\n", lc->compassHeight); // pixels
-            // printf("Map Id: %i\n", lc->mapId);
-            // printf("%ls\n", lm->identity);
+            BufLength = 1;
 
             memcpy(SendBuf + BufLength, &lc->compassWidth, sizeof(lc->compassWidth));
             BufLength += sizeof(lc->compassWidth);
@@ -324,44 +315,36 @@ int connect_and_or_send() {
             BufLength += sizeof(lc->mapId);
 
             uint32_t x11_window_id = x11_window_id_from_windows_process_id(lc->processId);
-
             memcpy(SendBuf + BufLength, &x11_window_id, sizeof(x11_window_id));
             BufLength += sizeof(x11_window_id);
 
-            // Convert and send the JSON 'identity' payload
-            char utf8str[1024];
-
-            UINT32 converted_size = WideCharToMultiByte(
-                CP_UTF8,
-                0,
-                lm->identity,
-                -1,
-                utf8str,
-                1024,
-                NULL,
-                NULL);
-
-            // printf("UTF8 Length: %i\n", converted_size);
-            // printf("%s\n", utf8str);
-
-            // UINT16 identity_size = wcslen(lm->identity);
-            memcpy(SendBuf + BufLength, &converted_size, sizeof(converted_size));
-            BufLength += sizeof(converted_size);
-
-            memcpy(SendBuf + BufLength, utf8str, converted_size);
-            BufLength += converted_size;
+            // Convert the JSON 'identity' payload from widechar to utf8
+            // encoded char and send.
+            char utf8_identity[1024];
+            UINT32 utf8_identity_size = WideCharToMultiByte(
+                CP_UTF8, // CodePage
+                0, // dwFlags
+                lm->identity, // lpWideCharStr
+                -1, // cchWideChar
+                utf8_identity, // lpMultiByteStr
+                1024, // cbMultiByte
+                NULL, // lpDefaultChar
+                NULL); // lpUsedDefaultChar
+            memcpy(SendBuf + BufLength, &utf8_identity_size, sizeof(utf8_identity_size));
+            BufLength += sizeof(utf8_identity_size);
+            memcpy(SendBuf + BufLength, utf8_identity, utf8_identity_size);
+            BufLength += utf8_identity_size;
 
             TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
             if (TotalByteSent != BufLength) {
                 printf("Not all Bytes Sent");
             }
-            // break;
         }
 
         // Update the count for the `Heaver Context Updater` packet and reset
         // it to 0 when it hits a threshold value.
         count += 1;
-        if (count > 500) {
+        if (count > HEAVY_DATA_INTERVAL) {
             count = 0;
         }
     } while (TRUE);
@@ -393,6 +376,14 @@ int connect_and_or_send() {
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// run_link
+//
+// The entry point for all burrito link processes. This is called by either the
+// command line entry point, or by a dll entry point. It initializes any global
+// that and then launches the infinite loop of reading data from shared memory
+// and sending the data over the wire to burrito.
+////////////////////////////////////////////////////////////////////////////////
 void run_link() {
     playerx_avg.index = 0;
     playery_avg.index = 0;
@@ -404,8 +395,11 @@ void run_link() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The main function initializes some global variables and shared memory. Then
-// calls the connect_and_or_send process which loops until termination.
+// main
+//
+// The entry point to burrito link when called as an executable. Sets up any
+// data that needs to be configured for just command line executions, then
+// calls run_link() which sets up all other state necessary for burrito link.
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv) {
     for (int i = 0; i < argc; i++) {
