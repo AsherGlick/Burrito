@@ -9,6 +9,7 @@ mypy==1.5.1
 pyaml==21.10.1
 pycodestyle==2.8.0
 pyflakes==2.4.0
+Pygments==2.17.2
 pyrsistent==0.18.1
 python-frontmatter==1.0.0
 PyYAML==5.1
