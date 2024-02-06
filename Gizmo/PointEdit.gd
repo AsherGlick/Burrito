@@ -29,16 +29,6 @@ func select(camera, event):
 	emit_signal("selected", self)
 
 
-func link_point(point_type: String, object_link, object_2d_link = null, object_index = 0):
-	self.point_type = point_type
-	self.object_link = object_link
-	if point_type == "path" || point_type == "area":
-		self.object_2d_link = object_2d_link
-		self.object_index = object_index
-	if point_type == "icon":
-		pass
-
-
 func update_point():
 	if self.translation != self.last_translation:
 		print("update")

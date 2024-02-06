@@ -700,7 +700,7 @@ func gen_adjustment_nodes():
 				continue
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.connect("selected", self, "on_gizmo_selected", ["path", [route, path2d, i]])
+			new_gizmo.connect("selected", self, "on_gizmo_selected", ["path", [route, path2d], i])
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 			new_gizmo.connect("update", self, "on_point_updated")
 			$Gizmos.add_child(new_gizmo)
@@ -714,21 +714,21 @@ func gen_adjustment_nodes():
 
 
 var currently_selected_node = null
-func on_gizmo_selected(object, point_type: String, binds: Array):
+func on_gizmo_selected(object, point_type: String, nodes: Array, point_index: int):
 	self.currently_selected_node = SelectedNode.new()
 	self.currently_selected_node.gizmo = object
 	self.currently_selected_node.point_type = point_type
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
 	# Only enable these buttons if the object selected is a point on the path not an icon
 	if point_type == "path":
-		self.currently_selected_node.path = binds[0]
-		self.currently_selected_node.path2d = binds[1]
-		self.currently_selected_node.object_index = binds[2]
+		self.currently_selected_node.path = nodes[0]
+		self.currently_selected_node.path2d = nodes[1]
+		self.currently_selected_node.point_index = point_index
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = false
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
 	if point_type == "icon":
-		self.currently_selected_node.icon = binds[0]
+		self.currently_selected_node.icon = nodes[0]
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
@@ -749,7 +749,7 @@ func on_point_updated(position: Vector3):
 	if self.currently_selected_node.point_type == "icon":
 		self.currently_selected_node.icon.set_point_position(self.currently_selected_node.gizmo.translation)
 	if self.currently_selected_node.point_type == "path":
-		var index = self.currently_selected_node.object_index
+		var index = self.currently_selected_node.point_index
 		self.currently_selected_node.path.set_point_position(position, index)
 		self.currently_selected_node.path2d.points[index] = Vector2(position.x, position.z)
 
@@ -859,7 +859,7 @@ func _on_DeleteNode_pressed():
 	elif self.currently_selected_node.point_type == "path":
 		var path =   self.currently_selected_node.path
 		var path2d = self.currently_selected_node.path2d
-		var index =  self.currently_selected_node.object_index
+		var index =  self.currently_selected_node.point_index
 
 		path.remove_point(index)
 		path2d.remove_point(index)
@@ -875,7 +875,7 @@ func _on_NewNodeAfter_pressed():
 		print("insert path node")
 		var path = self.currently_selected_node.path
 		var path2d = self.currently_selected_node.path2d
-		var index = self.currently_selected_node.object_index
+		var index = self.currently_selected_node.point_index
 
 		var start = path.get_point_position(index)
 		var midpoint = self.player_position
