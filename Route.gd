@@ -86,7 +86,7 @@ func get_point_count():
 func get_point_position(index: int):
 	return self.point_list[index]
 
-func set_point_position(index: int, position: Vector3):
+func set_point_position(position: Vector3, index: int):
 	self.point_list[index] = position
 	var trail_data = waypoint.get_trail_data()
 	trail_data.get_points_x()[index] = self.point_list[index][0]

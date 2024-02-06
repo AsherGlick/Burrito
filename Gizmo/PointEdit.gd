@@ -3,7 +3,7 @@ extends Spatial
 var camera: Camera
 signal selected(selected_object)
 signal deselected(selected_object)
-signal update()
+signal update(point_position)
 var last_translation
 var selected: bool = false
 
@@ -28,11 +28,6 @@ func select(camera, event):
 	$Pillar/CollisionShape.disabled = false
 	emit_signal("selected", self)
 
-var object_link = null
-var object_2d_link = null
-var object_index:int = 0
-var point_type: String
-
 
 func link_point(point_type: String, object_link, object_2d_link = null, object_index = 0):
 	self.point_type = point_type
@@ -46,14 +41,9 @@ func link_point(point_type: String, object_link, object_2d_link = null, object_i
 
 func update_point():
 	if self.translation != self.last_translation:
-		if point_type == "path" || point_type == "area":
-			self.object_link.set_point_position(self.object_index, self.translation)
-			self.object_2d_link.points[self.object_index] = Vector2(self.translation.x, self.translation.z)
-		if point_type == "icon":
-			self.object_link.set_point_position(self.translation)
 		print("update")
-		emit_signal("update")
-		self.last_translation  = self.translation
+		emit_signal("update", self.translation)
+		self.last_translation = self.translation
 
 ################################################################################
 # Handle resizing the control nodes so that no matter how far away from the

@@ -85,7 +85,7 @@ __meta__ = {
 }
 
 [node name="TextureRect" type="TextureRect" parent="Control/GlobalMenuButton"]
-modulate = Color( 1, 1, 1, 0.439216 )
+modulate = Color( 1, 1, 1, 0.44 )
 margin_top = 4.0
 margin_right = 25.0
 margin_bottom = 29.0
@@ -184,10 +184,10 @@ __meta__ = {
 }
 
 [node name="ImportPackDialog" type="FileDialog" parent="Control/Dialogs"]
-margin_left = 777.0
-margin_top = 89.0
-margin_right = 1448.0
-margin_bottom = 587.0
+margin_left = 289.0
+margin_top = 60.0
+margin_right = 960.0
+margin_bottom = 534.0
 window_title = "Open a Directory"
 mode = 2
 access = 2

@@ -8,7 +8,7 @@ var category: TreeItem
 
 func set_point_position(point_position: Vector3):
 	self.translation = point_position
-	var position = self.waypoint.position()
+	var position = self.waypoint.get_position()
 	if position == null:
 		position = Waypoint.Position.new()
 	position.set_x(point_position[0])
