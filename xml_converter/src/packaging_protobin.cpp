@@ -166,7 +166,7 @@ void proto_post_processing(ProtoWriterState* state, waypoint::Waypoint* proto) {
             if (fs::exists(fs::path(state->textures[i]->original_filepath))) {
                 fs::path output_path = fs::path(state->proto_directory) / image->filename;
                 fs::create_directories(output_path.parent_path());
-                fs::copy_file(fs::path(image->original_filepath), output_path, fs::copy_options::update_existing);
+                fs::copy_file(fs::path(image->original_filepath), output_path, fs::copy_options::overwrite_existing);
             }
             else {
                 cout << "Warning: File path " << state->textures[i]->original_filepath << " not found." << endl;
