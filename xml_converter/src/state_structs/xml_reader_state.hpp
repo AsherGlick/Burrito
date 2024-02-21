@@ -5,5 +5,5 @@
 class Category;
 
 struct XMLReaderState {
-    const char* xml_filedir;
+    std::string xml_directory;
 };

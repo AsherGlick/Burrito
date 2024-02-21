@@ -12,11 +12,11 @@
 
 void parse_xml_file(
     std::string xml_filepath,
-    const std::string xml_filedir,
+    const std::string xml_directory,
     std::map<std::string, Category>* marker_categories,
     std::vector<Parseable*>* parsed_pois);
 
 void write_xml_file(
-    const std::string xml_filedir,
+    const std::string xml_directory,
     std::map<std::string, Category>* marker_categories,
     std::vector<Parseable*>* parsed_pois);

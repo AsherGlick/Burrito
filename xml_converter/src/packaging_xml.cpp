@@ -1,6 +1,5 @@
 #include "packaging_xml.hpp"
 
-#include <filesystem>
 #include <utility>
 
 #include "rapid_helpers.hpp"
@@ -10,7 +9,6 @@
 #include "string_helper.hpp"
 
 using namespace std;
-namespace fs = std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// SERIALIZE ///////////////////////////////////
@@ -114,12 +112,12 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
 //
 // A function which parses a single XML file into their corrisponding classes.
 ////////////////////////////////////////////////////////////////////////////////
-void parse_xml_file(std::string xml_filepath, const std::string xml_filedir, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void parse_xml_file(string xml_filepath, const string xml_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     vector<XMLError*> errors;
     rapidxml::xml_document<> doc;
     rapidxml::xml_node<>* root_node;
     XMLReaderState state;
-    state.xml_filedir = xml_filedir.c_str();
+    state.xml_directory = xml_directory;
 
     rapidxml::file<> xml_file(xml_filepath.c_str());
     doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), xml_filepath.c_str());
@@ -154,26 +152,13 @@ void parse_xml_file(std::string xml_filepath, const std::string xml_filedir, map
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// DESERIALIZE //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-void xml_post_processing(XMLWriterState* state) {
-    if (state->textures.size() > 1) {
-        for (size_t i = 1; i < state->textures.size(); i++) {
-            const Image* image = state->textures[i];
-            if (fs::exists(fs::path(state->textures[i]->original_filepath))) {
-                fs::path output_path = fs::path(state->xml_filedir) / image->filename;
-                fs::create_directories(output_path.parent_path());
-                fs::copy_file(fs::path(image->original_filepath), output_path, fs::copy_options::update_existing);
-            }
-        }
-    }
-}
-
-void write_xml_file(const string xml_filedir, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void write_xml_file(const string xml_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     ofstream outfile;
     string tab_string;
     XMLWriterState state;
-    state.xml_filedir = xml_filedir.c_str();
+    state.xml_directory = xml_directory;
 
-    string xml_filepath = join_file_paths(xml_filedir, "xml_file.xml");
+    string xml_filepath = join_file_paths(xml_directory, "xml_file.xml");
     outfile.open(xml_filepath, ios::out);
 
     outfile << "<OverlayData>\n";
@@ -195,6 +180,5 @@ void write_xml_file(const string xml_filedir, map<string, Category>* marker_cate
     }
     outfile << "</POIs>\n</OverlayData>\n";
 
-    xml_post_processing(&state);
     outfile.close();
 }

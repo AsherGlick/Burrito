@@ -1,5 +1,6 @@
 #include "image.hpp"
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -22,7 +23,7 @@ void xml_attribute_to_image(
     bool* is_set) {
     Image image;
     image.filename = get_attribute_value(input);
-    image.original_filepath = join_file_paths(state->xml_filedir, image.filename);
+    image.original_filepath = join_file_paths(state->xml_directory, image.filename);
     *value = image;
     *is_set = true;
 }
@@ -36,7 +37,11 @@ string image_to_xml_attribute(
     const string& attribute_name,
     XMLWriterState* state,
     const Image* value) {
-    state->textures.push_back(value);
+    if (filesystem::exists(filesystem::path(value->original_filepath))) {
+        filesystem::path output_path = filesystem::path(state->xml_directory) / value->filename;
+        filesystem::create_directories(output_path.parent_path());
+        filesystem::copy_file(filesystem::path(value->original_filepath), output_path, filesystem::copy_options::overwrite_existing);
+    }
     return " " + attribute_name + "=\"" + value->filename + "\"";
 }
 
@@ -52,7 +57,7 @@ void proto_to_image(
     bool* is_set) {
     Image image;
     image.filename = state->textures[input].filepath();
-    image.original_filepath = join_file_paths(state->proto_filedir, image.filename);
+    image.original_filepath = join_file_paths(state->proto_directory, image.filename);
     *value = image;
     *is_set = true;
 }
