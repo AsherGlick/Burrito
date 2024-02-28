@@ -125,6 +125,9 @@ class Generator:
 
     def load_input_doc(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
+            if not filepath.endswith(".md"):
+                continue
+
             filepath = os.path.join(dir_path, filepath)
             try:
                 document = frontmatter.load(filepath)
