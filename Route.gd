@@ -70,6 +70,14 @@ func update_point_vertical(index, y_value):
 
 func reverse():
 	self.point_list.invert()
+	var trail_data = waypoint.get_trail_data()
+	# The default value of the TrailData class for new trails is null.
+	# The default for the points arrays is [] so no check is needed for those.
+	if trail_data == null:
+		trail_data = Waypoint.TrailData.new()
+	trail_data.get_points_x().invert()
+	trail_data.get_points_y().invert()
+	trail_data.get_points_z().invert()
 	refresh_mesh()
 
 func get_point_count():
@@ -78,19 +86,38 @@ func get_point_count():
 func get_point_position(index: int):
 	return self.point_list[index]
 
-func set_point_position(index: int, position: Vector3):
+func set_point_position(position: Vector3, index: int):
 	self.point_list[index] = position
+	var trail_data = waypoint.get_trail_data()
+	trail_data.get_points_x()[index] = self.point_list[index][0]
+	trail_data.get_points_y()[index] = self.point_list[index][1]
+	trail_data.get_points_z()[index] = -self.point_list[index][2]
 	refresh_mesh()
 
 func add_point(position: Vector3, index: int = -1):
+	var trail_data = waypoint.get_trail_data()
+	# The default value of the TrailData class for new trails is null.
+	# The default for the points arrays is [] so no check is needed for those.
+	if trail_data == null:
+		trail_data = Waypoint.TrailData.new()
 	if index == -1:
 		self.point_list.append(position)
+		trail_data.add_points_x(position[0])
+		trail_data.add_points_y(position[1])
+		trail_data.add_points_z(-position[2])
 	else:
 		self.point_list.insert(index, position)
+		trail_data.get_points_x()[index] = self.point_list[index][0]
+		trail_data.get_points_y()[index] = self.point_list[index][1]
+		trail_data.get_points_z()[index] = -self.point_list[index][2]
 	refresh_mesh()
 
 func remove_point(index: int):
 	self.point_list.remove(index)
+	var trail_data = waypoint.get_trail_data()
+	trail_data.get_points_x().remove(index)
+	trail_data.get_points_y().remove(index)
+	trail_data.get_points_z().remove(index)
 	refresh_mesh()
 
 

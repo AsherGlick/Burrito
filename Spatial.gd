@@ -9,6 +9,7 @@ var map_is_open: bool
 var compass_is_top_right: bool
 
 var edit_panel_open: bool = false
+var unsaved_changes: bool = false setget set_unsaved_changes
 
 # This is the path to the texture that will be used for the next created 3d-path
 # object or icon object in the UI
@@ -54,12 +55,12 @@ const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
 const PackDialog = preload("res://PackDialog.gd")
+const SelectedNode = preload("res://SelectedNode.gd")
 
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
 onready var markers_2d := $Control/Markers2D as Node2D
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -336,6 +337,8 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	if self.map_id != old_map_id:
+		if self.unsaved_changes:
+			save_current_map_data()
 		print("New Map")
 		print("Saving Old Map")
 		print("Loading New Map")
@@ -386,13 +389,18 @@ func reset_3D_minimap_masks(category: Spatial):
 		reset_3D_minimap_masks(subcategory)
 
 
-var waypoint_data = Waypoint.Waypoint.new()
-var marker_file_dir = "user://protobins/"
-var marker_file_path = ""
+var waypoint_data: Waypoint.Waypoint = Waypoint.Waypoint.new()
+# We save the marker data in this directory where the files are have been split
+# by Map ID. All changes made by the editor are saved in these files.
+const unsaved_markers_dir: String = "user://protobin_by_map_id/"
+# This directory contains the packs that have been downloaded or converted into
+# the protobin format. Any exported changes will be saved into this folder.
+const downloaded_markers_dir: String = "user://marker_packs/"
+var marker_file_path: String = ""
 
-func load_waypoint_markers(map_id):
-	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
-	self.waypoint_data.clear_category()
+func load_waypoint_markers(map_id_to_load: int):
+	self.marker_file_path = self.user_protobin_by_map_id_dir + String(map_id_to_load) + ".bin"
+	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
 	var file = File.new()
@@ -533,6 +541,9 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 	for path in waypoint_category.get_trail():
 		var path_points := PoolVector3Array()
 		var trail_data = path.get_trail_data()
+		if trail_data == null:
+			print("Warning: Trail ", category_name, " has no trail data")
+			continue
 		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
 			print("Warning: Trail ", category_name, " does not have equal number of X, Y, and Z coordinates.")
 		for index in range(0, trail_data.get_points_z().size()):
@@ -541,7 +552,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.user_protobin_by_map_id_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_path(path_points, full_texture_path, path, category_item)
 
 
@@ -555,7 +566,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.user_protobin_by_map_id_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_icon(position_vector, full_texture_path, icon, category_item)
 
 	for category_child in waypoint_category.get_children():
@@ -632,31 +643,29 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 	var category_data = category_item.get_metadata(0)
 	category_data.category3d.add_icon(new_icon)
 
-# This function take all of the currently rendered objects and converts it into
-# the data format that is saved/loaded from.
-func data_from_renderview():
-	var icons_data = []
-	var paths_data = []
+################################################################################
+# Section of functions for saving changes to markers
+################################################################################
+func set_unsaved_changes(value):
+	if self.unsaved_changes != value:
+		self.unsaved_changes = value
+		update_burrito_icon()
 
-	for icon in $Icons.get_children():
-		icons_data.append({
-			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
-			"texture": icon.texture_path
-		})
+func update_burrito_icon():
+	if self.unsaved_changes:
+		#TODO: Determine if this is the best color and alpha value to use
+		$Control/GlobalMenuButton/TextureRect.modulate = ColorN("red", 1)
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
+	else:
+		$Control/GlobalMenuButton/TextureRect.modulate = ColorN("white", 0.44)
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""
 
-	for path in $Paths.get_children():
-		#print(path)
-		var points = []
-		for point in range(path.get_point_count()):
-			var point_position:Vector3 = path.get_point_position(point)
-			points.append([point_position.x, point_position.y, -point_position.z])
-		paths_data.append({
-			"points": points,
-			"texture": path.texture_path
-		})
-
-	var data_out = {"icons": icons_data, "paths": paths_data}
-	return data_out
+func save_current_map_data():
+	var packed_bytes = self.waypoint_data.to_bytes()
+	var file = File.new()
+	file.open(self.marker_file_path, file.WRITE)
+	file.store_buffer(packed_bytes)
+	set_unsaved_changes(false)
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -691,28 +700,35 @@ func gen_adjustment_nodes():
 				continue
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.link_point("path", route, path2d, i)
-			new_gizmo.connect("selected", self, "on_gizmo_selected")
+			new_gizmo.connect("selected", self, "on_gizmo_selected", ["path", [route, path2d], i])
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+			new_gizmo.connect("update", self, "on_point_updated")
 			$Gizmos.add_child(new_gizmo)
 	for icon in category3d.icons:
 		var new_gizmo = gizmo_scene.instance()
 		new_gizmo.translation = icon.translation
-		new_gizmo.link_point("icon", icon)
-		new_gizmo.connect("selected", self, "on_gizmo_selected")
+		new_gizmo.connect("selected", self, "on_gizmo_selected", ["icon", [icon]])
 		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+		new_gizmo.connect("update", self, "on_point_updated")
 		$Gizmos.add_child(new_gizmo)
 
 
 var currently_selected_node = null
-func on_gizmo_selected(object):
-	self.currently_selected_node = object
+func on_gizmo_selected(object, point_type: String, nodes: Array, point_index: int):
+	self.currently_selected_node = SelectedNode.new()
+	self.currently_selected_node.gizmo = object
+	self.currently_selected_node.point_type = point_type
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
 	# Only enable these buttons if the object selected is a point on the path not an icon
-	if object.point_type == "path":
+	if point_type == "path":
+		self.currently_selected_node.path = nodes[0]
+		self.currently_selected_node.path2d = nodes[1]
+		self.currently_selected_node.point_index = point_index
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = false
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
 		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
+	if point_type == "icon":
+		self.currently_selected_node.icon = nodes[0]
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
@@ -728,6 +744,14 @@ func on_gizmo_deselected(object):
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = true
 
+func on_point_updated(position: Vector3):
+	set_unsaved_changes(true)
+	if self.currently_selected_node.point_type == "icon":
+		self.currently_selected_node.icon.set_point_position(self.currently_selected_node.gizmo.translation)
+	if self.currently_selected_node.point_type == "path":
+		var index = self.currently_selected_node.point_index
+		self.currently_selected_node.path.set_point_position(position, index)
+		self.currently_selected_node.path2d.points[index] = Vector2(position.x, position.z)
 
 func clear_adjustment_nodes():
 	for child in $Gizmos.get_children():
@@ -737,6 +761,9 @@ func clear_adjustment_nodes():
 ################################################################################
 # Signal Functions
 ################################################################################
+func _on_SavePath_pressed():
+	save_current_map_data()
+
 func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
@@ -818,20 +845,6 @@ func _on_NewPathPoint_pressed():
 		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
 
 
-################################################################################
-#
-################################################################################
-func _on_SavePath_pressed():
-	$Control/Dialogs/SaveDialog.show()
-
-################################################################################
-# TODO: This function will be used when exporting packs
-################################################################################
-func _on_SaveDialog_file_selected(path):
-	self.markerdata[str(self.map_id)] = data_from_renderview()
-	var save_game = File.new()
-	save_game.open(path, File.WRITE)
-	save_game.store_string(JSON.print(self.markerdata))
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
@@ -841,18 +854,18 @@ func _on_NodeEditorDialog_hide():
 
 func _on_DeleteNode_pressed():
 	if self.currently_selected_node.point_type == "icon":
-		self.currently_selected_node.object_link.get_parent().remove_child(self.currently_selected_node.object_link)
-		self.currently_selected_node.object_link.queue_free()
+		self.currently_selected_node.icon.get_parent().remove_child(self.currently_selected_node.icon)
+		self.currently_selected_node.icon.queue_free()
 	elif self.currently_selected_node.point_type == "path":
-		var path =   self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
-		var index =  self.currently_selected_node.object_index
+		var path =   self.currently_selected_node.path
+		var path2d = self.currently_selected_node.path2d
+		var index =  self.currently_selected_node.point_index
 
 		path.remove_point(index)
 		path2d.remove_point(index)
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
-	on_gizmo_deselected(self.currently_selected_node)
+	on_gizmo_deselected(self.currently_selected_node.gizmo)
 
 
 func _on_NewNodeAfter_pressed():
@@ -860,9 +873,9 @@ func _on_NewNodeAfter_pressed():
 		print("Warning: Cannot add node to icon")
 	elif self.currently_selected_node.point_type == "path":
 		print("insert path node")
-		var path = self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
-		var index = self.currently_selected_node.object_index
+		var path = self.currently_selected_node.path
+		var path2d = self.currently_selected_node.path2d
+		var index = self.currently_selected_node.point_index
 
 		var start = path.get_point_position(index)
 		var midpoint = self.player_position
@@ -876,35 +889,38 @@ func _on_NewNodeAfter_pressed():
 
 		clear_adjustment_nodes()
 		gen_adjustment_nodes()
-		on_gizmo_deselected(self.currently_selected_node)
+		on_gizmo_deselected(self.currently_selected_node.gizmo)
 
 func _on_XZSnapToPlayer_pressed():
-	self.currently_selected_node.translation.x = self.player_position.x
-	self.currently_selected_node.translation.z = -self.player_position.z
-
+	self.currently_selected_node.gizmo.translation.x = self.player_position.x
+	self.currently_selected_node.gizmo.translation.z = -self.player_position.z
+	on_point_updated(self.currently_selected_node.gizmo.translation)
 
 func _on_YSnapToPlayer_pressed():
-	self.currently_selected_node.translation.y = self.player_position.y
-
+	self.currently_selected_node.gizmo.translation.y = self.player_position.y
+	on_point_updated(self.currently_selected_node.gizmo.translation)
 
 func _on_SnapSelectedToPlayer_pressed():
-	self.currently_selected_node.translation.x = self.player_position.x
-	self.currently_selected_node.translation.z = -self.player_position.z
-	self.currently_selected_node.translation.y = self.player_position.y
+	self.currently_selected_node.gizmo.translation.x = self.player_position.x
+	self.currently_selected_node.gizmo.translation.z = -self.player_position.z
+	self.currently_selected_node.gizmo.translation.y = self.player_position.y
+	on_point_updated(self.currently_selected_node.gizmo.translation)
 
 func _on_SetActivePath_pressed():
 	if self.currently_selected_node.point_type == "icon":
 		print("Warning: Cannot set icon as active path")
 	elif self.currently_selected_node.point_type == "path":
-		self.currently_active_path = self.currently_selected_node.object_link
-		self.currently_active_path_2d = self.currently_selected_node.object_2d_link
+		self.currently_active_path = self.currently_selected_node.path
+		self.currently_active_path_2d = self.currently_selected_node.path2d
 
 
 func _on_ReversePathDirection_pressed():
-	self.currently_selected_node.object_link.reverse()
+	self.currently_selected_node.path.reverse()
 
 
 func _on_ExitButton_pressed():
+	if self.unsaved_changes:
+		save_current_map_data()
 	exit_burrito()
 
 
@@ -926,4 +942,5 @@ func _on_MarkersUI_item_edited():
 
 func _on_ImportPath_pressed():
 	$Control/Dialogs/ImportPackDialog.show()
+
 

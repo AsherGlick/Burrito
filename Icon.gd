@@ -6,6 +6,15 @@ var texture_path
 var waypoint: Waypoint.Icon
 var category: TreeItem
 
+func set_point_position(point_position: Vector3):
+	self.translation = point_position
+	var position = self.waypoint.get_position()
+	if position == null:
+		position = Waypoint.Position.new()
+	position.set_x(point_position[0])
+	position.set_y(point_position[1])
+	position.set_z(-point_position[2])
+
 func set_icon_image(texture_path: String):
 	self.texture_path = texture_path
 	
