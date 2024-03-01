@@ -9,6 +9,12 @@ var category: TreeItem
 
 var point_list := PoolVector3Array()
 
+func update_waypoint_trail(index):
+	var trail_data = waypoint.get_trail_data()
+	trail_data.get_points_x()[index] = self.point_list[index][0]
+	trail_data.get_points_y()[index] = self.point_list[index][1]
+	trail_data.get_points_z()[index] = -self.point_list[index][2]
+
 func create_mesh(point_list: PoolVector3Array):
 	self.point_list = point_list
 	refresh_mesh()

@@ -94,6 +94,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="UnsavedDataIcon" type="TextureRect" parent="Control/GlobalMenuButton"]
+visible = false
+modulate = Color( 0.92549, 0, 0, 0.439216 )
+margin_top = 4.0
+margin_right = 25.0
+margin_bottom = 29.0
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="main_menu_toggle" type="Button" parent="Control/GlobalMenuButton"]
 modulate = Color( 1, 1, 1, 0 )
 margin_left = -2.0
@@ -184,15 +195,16 @@ __meta__ = {
 }
 
 [node name="ImportPackDialog" type="FileDialog" parent="Control/Dialogs"]
-margin_left = 289.0
-margin_top = 36.0
-margin_right = 960.0
-margin_bottom = 534.0
+visible = true
+margin_left = 777.0
+margin_top = 89.0
+margin_right = 1448.0
+margin_bottom = 587.0
 window_title = "Open a Directory"
 mode = 2
 access = 2
-current_dir = ""
-current_path = ""
+current_dir = "."
+current_path = "."
 script = ExtResource( 14 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -784,6 +796,7 @@ margin_bottom = 304.0
 text = "Load Lutris Profile"
 
 [node name="CategoriesDialog" type="WindowDialog" parent="Control/Dialogs"]
+visible = true
 margin_left = 280.0
 margin_top = 105.0
 margin_right = 751.0
@@ -879,6 +892,7 @@ color = Color( 0, 0, 0, 1 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
+[connection signal="visibility_changed" from="Control/GlobalMenuButton/UnsavedDataIcon" to="." method="_on_UnsavedDataIcon_visibility_changed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]
