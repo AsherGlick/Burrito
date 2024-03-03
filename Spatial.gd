@@ -658,7 +658,7 @@ func data_from_renderview():
 
 	var data_out = {"icons": icons_data, "paths": paths_data}
 	return data_out
-	
+
 ################################################################################
 # Adjustment and gizmo functions
 ################################################################################
