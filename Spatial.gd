@@ -55,10 +55,6 @@ const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 # Scripts containing code used by this scene
 const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
-const FileHandler = preload("res://FileHandler.gd")
-
-# Instancing scripts
-var file_handler: FileHandler = FileHandler.new()
 
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
@@ -84,9 +80,6 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
-
-	# Call ready for additional scripts
-	self.file_handler._ready()
 
 	server.listen(4242)
 
@@ -640,6 +633,32 @@ func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, catego
 	var category_data = category_item.get_metadata(0)
 	category_data.category3d.add_icon(new_icon)
 
+# This function take all of the currently rendered objects and converts it into
+# the data format that is saved/loaded from.
+func data_from_renderview():
+	var icons_data = []
+	var paths_data = []
+
+	for icon in $Icons.get_children():
+		icons_data.append({
+			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
+			"texture": icon.texture_path
+		})
+
+	for path in $Paths.get_children():
+		#print(path)
+		var points = []
+		for point in range(path.get_point_count()):
+			var point_position:Vector3 = path.get_point_position(point)
+			points.append([point_position.x, point_position.y, -point_position.z])
+		paths_data.append({
+			"points": points,
+			"texture": path.texture_path
+		})
+
+	var data_out = {"icons": icons_data, "paths": paths_data}
+	return data_out
+	
 ################################################################################
 # Adjustment and gizmo functions
 ################################################################################
@@ -798,19 +817,6 @@ func _on_NewPathPoint_pressed():
 		z_accurate_player_position.z = -z_accurate_player_position.z
 		self.currently_active_path.add_point(z_accurate_player_position)
 		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
-
-
-################################################################################
-#
-################################################################################
-func _on_SavePath_pressed():
-	pass
-
-################################################################################
-# TODO: This function will be used when exporting packs
-################################################################################
-func _on_SaveDialog_file_selected(path):
-	pass
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null

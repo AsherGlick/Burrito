@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://icon_new_point.png" type="Texture" id=11]
 [ext_resource path="res://SettingsDialog.gd" type="Script" id=12]
 [ext_resource path="res://Category3D.gd" type="Script" id=13]
+[ext_resource path="res://ImportPackDialog.gd" type="Script" id=14]
 [ext_resource path="res://Category2D.gd" type="Script" id=15]
 
 [sub_resource type="Shader" id=1]
@@ -68,6 +69,14 @@ anchor_bottom = 1.0
 mouse_filter = 2
 __meta__ = {
 "_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="FileHandler" type="Control" parent="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 4 )
+__meta__ = {
 "_edit_use_anchors_": false
 }
 
@@ -193,7 +202,7 @@ mode = 2
 access = 2
 current_dir = ""
 current_path = ""
-script = ExtResource( 4 )
+script = ExtResource( 14 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
