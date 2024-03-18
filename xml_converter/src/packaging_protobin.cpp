@@ -1,5 +1,6 @@
 #include "packaging_protobin.hpp"
 
+#include <filesystem>
 #include <fstream>
 #include <map>
 #include <set>
@@ -8,6 +9,7 @@
 
 #include "category_gen.hpp"
 #include "parseable.hpp"
+#include "state_structs/proto_writer_state.hpp"
 #include "string_helper.hpp"
 #include "string_hierarchy.hpp"
 #include "waypoint.pb.h"
@@ -25,17 +27,16 @@ void parse_waypoint_categories(
     string full_category_name,
     ::waypoint::Category proto_category,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois,
+    ProtoReaderState* state) {
     full_category_name += proto_category.name();
     Category* this_category = &(*marker_categories)[full_category_name];
 
-    ProtoReaderState state;
-
-    this_category->parse_protobuf(proto_category, &state);
+    this_category->parse_protobuf(proto_category, state);
 
     for (int i = 0; i < proto_category.icon_size(); i++) {
         Icon* icon = new Icon();
-        icon->parse_protobuf(proto_category.icon(i), &state);
+        icon->parse_protobuf(proto_category.icon(i), state);
         // TODO: The field category in Icon is being deprciated
         // This overwrites any icon.category with its position in the heirarchy
         icon->category.category = full_category_name;
@@ -43,7 +44,7 @@ void parse_waypoint_categories(
     }
     for (int i = 0; i < proto_category.trail_size(); i++) {
         Trail* trail = new Trail();
-        trail->parse_protobuf(proto_category.trail(i), &state);
+        trail->parse_protobuf(proto_category.trail(i), state);
         // TODO: The field category in Trail is being deprciated
         // This overwrites any trail.category with its position in the heirarchy
         trail->category.category = full_category_name;
@@ -51,21 +52,26 @@ void parse_waypoint_categories(
     }
 
     for (int i = 0; i < proto_category.children_size(); i++) {
-        parse_waypoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois);
+        parse_waypoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void read_protobuf_file(string proto_filepath, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     fstream infile;
     waypoint::Waypoint proto_message;
+    ProtoReaderState state;
+    state.marker_pack_root_directory = marker_pack_root_directory;
 
     infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
+
+    state.textures = proto_message.textures();
+
     for (int i = 0; i < proto_message.category_size(); i++) {
-        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois);
+        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
     }
 }
 
@@ -163,11 +169,10 @@ void _write_protobuf_file(
     const string& filepath,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
-    const std::map<string, std::vector<Parseable*>>& category_to_pois) {
+    const std::map<string, std::vector<Parseable*>>& category_to_pois,
+    ProtoWriterState* state) {
     ofstream outfile;
     outfile.open(filepath, ios::out | ios::binary);
-
-    ProtoWriterState state;
 
     if (!outfile.is_open()) {
         cout << "Unable to open " << filepath << endl;
@@ -185,25 +190,27 @@ void _write_protobuf_file(
             category_filter,
             category_to_pois,
             &category_vector,
-            &state);
+            state);
 
         if (maybe_category.is_category) {
             output_message.add_category()->MergeFrom(maybe_category.category);
         }
     }
 
-    proto_post_processing(&state, &output_message);
+    proto_post_processing(state, &output_message);
 
     output_message.SerializeToOstream(&outfile);
     outfile.close();
 }
 
 void write_protobuf_file(
-    const string& filepath,
+    const string& marker_pack_root_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<string, std::vector<Parseable*>> category_to_pois;
+    ProtoWriterState state;
+    state.marker_pack_root_directory = marker_pack_root_directory;
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -221,19 +228,22 @@ void write_protobuf_file(
     }
 
     _write_protobuf_file(
-        join_file_paths(filepath, "markers.bin"),
+        join_file_paths(state.marker_pack_root_directory, "markers.bin"),
         category_filter,
         marker_categories,
-        category_to_pois);
+        category_to_pois,
+        &state);
 }
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
-    const string& proto_directory,
+    const string& marker_pack_root_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<int, std::map<string, std::vector<Parseable*>>> mapid_to_category_to_pois;
+    ProtoWriterState state;
+    state.marker_pack_root_directory = marker_pack_root_directory;
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -251,12 +261,13 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-        string output_filepath = join_file_paths(proto_directory, to_string(iterator->first) + ".data");
+        string output_filepath = join_file_paths(state.marker_pack_root_directory, to_string(iterator->first) + ".bin");
 
         _write_protobuf_file(
             output_filepath,
             category_filter,
             marker_categories,
-            iterator->second);
+            iterator->second,
+            &state);
     }
 }

@@ -62,57 +62,69 @@ vector<string> get_files_by_suffix(string directory, string suffix) {
     return files;
 }
 
-void move_supplementary_files(string input_directory, string output_directory) {
-    DIR* dir = opendir(input_directory.c_str());
-    struct dirent* entry;
-    while ((entry = readdir(dir)) != NULL) {
-        string filename = entry->d_name;
-        if (filename != "." && filename != "..") {
-            string path = join_file_paths(input_directory, filename);
-            if (entry->d_type == DT_DIR) {
-                string new_directory = join_file_paths(output_directory, filename);
-                if (mkdir(new_directory.c_str(), 0700) == -1 && errno != EEXIST) {
-                    cout << "Error making " << new_directory << endl;
-                    continue;
-                }
-                move_supplementary_files(path, new_directory);
-            }
-            else if (has_suffix(filename, ".trl") || has_suffix(filename, ".xml")) {
-                continue;
-            }
-            else {
-                // TODO: Only include files that are referenced by the
-                // individual markers in order to avoid any unnessecary files
-                string new_path = join_file_paths(output_directory, filename);
-                copy_file(path, new_path);
-            }
-        }
-    }
-}
-
-void read_taco_directory(string input_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void read_taco_directory(
+    string input_path,
+    map<string, Category>* marker_categories,
+    vector<Parseable*>* parsed_pois) {
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
         for (const string& path : xml_files) {
-            parse_xml_file(path, marker_categories, parsed_pois);
+            parse_xml_file(path, input_path, marker_categories, parsed_pois);
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
-        parse_xml_file(input_path, marker_categories, parsed_pois);
+        parse_xml_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
     }
 }
 
-void write_taco_directory(string output_path, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void read_burrito_directory(
+    string input_path,
+    map<string, Category>* marker_categories,
+    vector<Parseable*>* parsed_pois) {
+    if (!filesystem::exists(input_path)) {
+        cout << "Error: " << input_path << " is not an existing directory or file" << endl;
+    }
+    else if (filesystem::is_directory(input_path)) {
+        vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
+        for (const string& path : burrito_files) {
+            read_protobuf_file(path, input_path, marker_categories, parsed_pois);
+        }
+    }
+    else if (filesystem::is_regular_file(input_path)) {
+        read_protobuf_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+    }
+}
+
+void write_taco_directory(
+    string output_path,
+    map<string, Category>* marker_categories,
+    vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     if (!filesystem::is_directory(output_path)) {
         if (!filesystem::create_directory(output_path)) {
             cout << "Error: " << output_path << "is not a valid directory path" << endl;
+            return;
         }
     }
-    write_xml_file(join_file_paths(output_path, "xml_file.xml"), marker_categories, parsed_pois);
+    write_xml_file(output_path, marker_categories, parsed_pois);
+}
+
+void write_burrito_directory(
+    string output_path,
+    map<string, Category>* marker_categories,
+    vector<Parseable*>* parsed_pois) {
+    if (!filesystem::is_directory(output_path)) {
+        if (!filesystem::create_directory(output_path)) {
+            cout << "Error: " << output_path << "is not a valid directory path" << endl;
+            return;
+        }
+    }
+    StringHierarchy category_filter;
+    category_filter.add_path({}, true);
+    write_protobuf_file(output_path, category_filter, marker_categories, parsed_pois);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,16 +153,11 @@ void process_data(
     auto begin = chrono::high_resolution_clock::now();
     for (size_t i = 0; i < input_taco_paths.size(); i++) {
         cout << "Loading taco pack " << input_taco_paths[i] << endl;
+
         read_taco_directory(
             input_taco_paths[i],
             &marker_categories,
             &parsed_pois);
-
-        // TODO: This is wildly incorrect now because we might have a
-        //       different output directory then output_split_waypoint_dir
-        if (output_split_waypoint_dir != "") {
-            move_supplementary_files(input_taco_paths[i], output_split_waypoint_dir);
-        }
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -160,7 +167,8 @@ void process_data(
     // Read in all the protobin waypoint markerpacks
     for (size_t i = 0; i < input_waypoint_paths.size(); i++) {
         cout << "Loading waypoint pack " << input_waypoint_paths[i] << endl;
-        read_protobuf_file(
+
+        read_burrito_directory(
             input_waypoint_paths[i],
             &marker_categories,
             &parsed_pois);
@@ -178,9 +186,7 @@ void process_data(
 
     // Write all of the protobin waypoint paths
     for (size_t i = 0; i < output_waypoint_paths.size(); i++) {
-        StringHierarchy category_filter;
-        category_filter.add_path({}, true);
-        write_protobuf_file(output_waypoint_paths[i], category_filter, &marker_categories, &parsed_pois);
+        write_burrito_directory(output_waypoint_paths[i], &marker_categories, &parsed_pois);
     }
 
     // Write the special map-split protbin waypoint file

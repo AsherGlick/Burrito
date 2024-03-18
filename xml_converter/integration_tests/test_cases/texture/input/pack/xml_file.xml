@@ -3,9 +3,9 @@
 	</MarkerCategory>
 
 	<POIs>
-		<POI IconFile="my_texture.png" Type="mycategory" MapID="50" />
-		<POI IconFile="my_texture2.png" Type="mycategory" MapID="50" />
-		<POI IconFile="somedir/my_texture3.png" Type="mycategory" MapID="50" />
-		<Trail Texture="my_texture.png" Type="mycategory" MapID="50" />
+		<POI IconFile="texture_one.png" Type="mycategory" MapID="50" />
+		<POI IconFile="texture_two.png" Type="mycategory" MapID="50" />
+		<POI IconFile="somedir/texture_three.png" Type="mycategory" MapID="50" />
+		<Trail Texture="texture_one.png" Type="mycategory" MapID="50" />
 	</POIs>
 </OverlayData>
