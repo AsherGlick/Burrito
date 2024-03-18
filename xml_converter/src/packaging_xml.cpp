@@ -75,18 +75,9 @@ void parse_marker_categories(
         existing_category->apply_overlay(new_category);
 
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
-            parse_marker_categories(child_node, &(existing_category->children), existing_category, errors, base_dir, depth + 1);
+            parse_marker_categories(child_node, &(existing_category->children), existing_category, errors, state, depth + 1);
         }
-        else {
-            existing_category = &existing_category_search->second;
-            if (existing_category->parent != parent) {
-                errors->push_back(new XMLNodeNameError("Category somehow has a different parent then it used to. This might be a bug in xml_converter", node));
-            }
-        }
-        existing_category->apply_overlay(new_category);
-
-        for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
-            parse_marker_categories(child_node, &(existing_category->children), existing_category, errors, base_dir, depth + 1);
+    }
     else {
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
     }

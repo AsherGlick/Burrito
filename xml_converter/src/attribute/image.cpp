@@ -35,7 +35,7 @@ void xml_attribute_to_image(
 ////////////////////////////////////////////////////////////////////////////////
 string image_to_xml_attribute(
     const string& attribute_name,
-    XMLWriterState*,
+    XMLWriterState* state,
     const Image* value) {
     if (filesystem::exists(filesystem::path(value->original_filepath))) {
         filesystem::path output_path = filesystem::path(state->marker_pack_root_directory) / value->filename;
