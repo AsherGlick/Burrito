@@ -106,8 +106,8 @@ void write_taco_directory(
     if (!filesystem::is_directory(output_path)) {
         if (!filesystem::create_directory(output_path)) {
             cout << "Error: " << output_path << "is not a valid directory path" << endl;
+            return;
         }
-        return;
     }
     write_xml_file(output_path, marker_categories, parsed_pois);
 }

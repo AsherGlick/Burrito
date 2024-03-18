@@ -2,8 +2,6 @@
 
 #include <string>
 
-class Image;
-
 struct XMLWriterState {
-    std::string xml_directory;
+    std::string marker_pack_root_directory;
 };

@@ -32,7 +32,7 @@ void xml_attribute_to_trail_data(
     bool* is_map_id_set) {
     TrailData trail_data;
     string trail_data_relative_path = get_attribute_value(input);
-    if (state->xml_directory == "") {
+    if (state->marker_pack_root_directory == "") {
         throw "Error: Marker pack base directory is an empty string";
     }
     if (trail_data_relative_path == "") {
@@ -41,7 +41,7 @@ void xml_attribute_to_trail_data(
     }
 
     ifstream trail_data_file;
-    string trail_path = state->xml_directory + "/" + trail_data_relative_path;
+    string trail_path = join_file_paths(state->marker_pack_root_directory, trail_data_relative_path);
     trail_data_file.open(trail_path, ios::in | ios::binary);
     if (!trail_data_file.good()) {
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
@@ -132,7 +132,7 @@ string trail_data_to_xml_attribute(
     }
 
     string trail_file_name = long_to_hex_string(djb2_hash(byte_array, byte_array_size)) + ".trl";
-    string trail_file_path = join_file_paths(state->xml_directory, trail_file_name);
+    string trail_file_path = join_file_paths(state->marker_pack_root_directory, trail_file_name);
 
     ofstream trail_data_file(trail_file_path, ios::binary);
 

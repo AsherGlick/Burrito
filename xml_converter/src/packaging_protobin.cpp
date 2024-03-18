@@ -15,7 +15,6 @@
 #include "waypoint.pb.h"
 
 using namespace std;
-namespace fs = std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// SERIALIZE ///////////////////////////////////
@@ -60,11 +59,11 @@ void parse_waypoint_categories(
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void read_protobuf_file(string proto_filepath, const string proto_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+void read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     fstream infile;
     waypoint::Waypoint proto_message;
     ProtoReaderState state;
-    state.proto_directory = proto_directory;
+    state.marker_pack_root_directory = marker_pack_root_directory;
 
     infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
@@ -161,16 +160,7 @@ void proto_post_processing(ProtoWriterState* state, waypoint::Waypoint* proto) {
 
         for (size_t i = 1; i < state->textures.size(); i++) {
             waypoint::TextureData* texture_data = proto->add_textures();
-            const Image* image = state->textures[i];
-            texture_data->set_filepath(image->filename);
-            if (fs::exists(fs::path(state->textures[i]->original_filepath))) {
-                fs::path output_path = fs::path(state->proto_directory) / image->filename;
-                fs::create_directories(output_path.parent_path());
-                fs::copy_file(fs::path(image->original_filepath), output_path, fs::copy_options::overwrite_existing);
-            }
-            else {
-                cout << "Warning: File path " << state->textures[i]->original_filepath << " not found." << endl;
-            }
+            texture_data->set_filepath(state->textures[i]->filename);
         }
     }
 }
@@ -214,13 +204,13 @@ void _write_protobuf_file(
 }
 
 void write_protobuf_file(
-    const string& proto_directory,
+    const string& marker_pack_root_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<string, std::vector<Parseable*>> category_to_pois;
     ProtoWriterState state;
-    state.proto_directory = proto_directory;
+    state.marker_pack_root_directory = marker_pack_root_directory;
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -238,7 +228,7 @@ void write_protobuf_file(
     }
 
     _write_protobuf_file(
-        join_file_paths(state.proto_directory, "markers.bin"),
+        join_file_paths(state.marker_pack_root_directory, "markers.bin"),
         category_filter,
         marker_categories,
         category_to_pois,
@@ -247,13 +237,13 @@ void write_protobuf_file(
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
-    const string& proto_directory,
+    const string& marker_pack_root_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<int, std::map<string, std::vector<Parseable*>>> mapid_to_category_to_pois;
     ProtoWriterState state;
-    state.proto_directory = proto_directory;
+    state.marker_pack_root_directory = marker_pack_root_directory;
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -271,7 +261,7 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-        string output_filepath = join_file_paths(state.proto_directory, to_string(iterator->first) + ".bin");
+        string output_filepath = join_file_paths(state.marker_pack_root_directory, to_string(iterator->first) + ".bin");
 
         _write_protobuf_file(
             output_filepath,
