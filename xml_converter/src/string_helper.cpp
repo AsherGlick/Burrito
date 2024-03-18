@@ -144,41 +144,41 @@ static const char base64_chars[] =
 
 std::string base64_encode(uint8_t const* buf, unsigned int bufLen) {
     std::string ret;
-    int i = 0;
-    int j = 0;
-    uint8_t char_array_3[3];
-    uint8_t char_array_4[4];
+    int input_chunk_index = 0;
+    int output_chunk_index = 0;
+    uint8_t input_chunk[3];
+    uint8_t output_chunk[4];
 
     while (bufLen--) {
-        char_array_3[i++] = *(buf++);
-        if (i == 3) {
-            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-            char_array_4[3] = char_array_3[2] & 0x3f;
+        input_chunk[input_chunk_index++] = *(buf++);
+        if (input_chunk_index == 3) {
+            output_chunk[0] = (input_chunk[0] & 0xfc) >> 2;
+            output_chunk[1] = ((input_chunk[0] & 0x03) << 4) + ((input_chunk[1] & 0xf0) >> 4);
+            output_chunk[2] = ((input_chunk[1] & 0x0f) << 2) + ((input_chunk[2] & 0xc0) >> 6);
+            output_chunk[3] = input_chunk[2] & 0x3f;
 
-            for (i = 0; (i < 4); i++) {
-                ret += base64_chars[char_array_4[i]];
+            for (output_chunk_index = 0; output_chunk_index < 4; output_chunk_index++) {
+                ret += base64_chars[output_chunk[output_chunk_index]];
             }
-            i = 0;
+            input_chunk_index = 0;
         }
     }
 
-    if (i) {
-        for (j = i; j < 3; j++) {
-            char_array_3[j] = '\0';
+    if (input_chunk_index > 0) {
+        for (output_chunk_index = input_chunk_index; output_chunk_index < 3; output_chunk_index++) {
+            input_chunk[output_chunk_index] = 0;
         }
 
-        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-        char_array_4[3] = char_array_3[2] & 0x3f;
+        output_chunk[0] = (input_chunk[0] & 0xfc) >> 2;
+        output_chunk[1] = ((input_chunk[0] & 0x03) << 4) + ((input_chunk[1] & 0xf0) >> 4);
+        output_chunk[2] = ((input_chunk[1] & 0x0f) << 2) + ((input_chunk[2] & 0xc0) >> 6);
+        output_chunk[3] = input_chunk[2] & 0x3f;
 
-        for (j = 0; (j < i + 1); j++) {
-            ret += base64_chars[char_array_4[j]];
+        for (output_chunk_index = 0; (output_chunk_index < input_chunk_index + 1); output_chunk_index++) {
+            ret += base64_chars[output_chunk[output_chunk_index]];
         }
 
-        while (i++ < 3) {
+        while (input_chunk_index++ < 3) {
             ret += '=';
         }
     }
@@ -239,6 +239,7 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
 
             if (char_array_4[i] == 255) {
                 // TODO: Throw an error or something
+                std::cerr << "Found an invalid letter when decoding base64" << std::endl;
                 return std::vector<uint8_t>();
             }
         }
@@ -259,6 +260,7 @@ std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
 
             if (char_array_4[i] == 255) {
                 // TODO: Throw an error or something
+                std::cerr << "Found an invalid letter when decoding base64" << std::endl;
                 return std::vector<uint8_t>();
             }
         }
@@ -301,7 +303,7 @@ string join_file_paths(const string& path_a, const string& path_b) {
 //
 // A helper function that converts an 8 byte long into a 16 byte hex string.
 ////////////////////////////////////////////////////////////////////////////////
-const char* hex_chars = "0123456789abcdef";
+static const char* hex_chars = "0123456789abcdef";
 std::string long_to_hex_string(uint64_t number) {
     std::string hex_string(16, '0');
 

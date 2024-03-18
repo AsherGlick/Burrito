@@ -13,8 +13,8 @@ using namespace std;
 
 void xml_attribute_to_euler_rotation(
     rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    std::vector<XMLError*>*,
+    XMLReaderState*,
     EulerRotation* value,
     bool* is_set) {
     EulerRotation euler_rotation;
@@ -35,7 +35,7 @@ void xml_attribute_to_euler_rotation(
 }
 string euler_rotation_to_xml_attribute(
     const std::string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const EulerRotation* value) {
     string output;
     output = to_string(value->x_rotation);
@@ -46,7 +46,7 @@ string euler_rotation_to_xml_attribute(
 
 void proto_to_euler_rotation(
     waypoint::EulerRotation input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     EulerRotation* value,
     bool* is_set) {
     EulerRotation euler_rotation;
@@ -59,7 +59,7 @@ void proto_to_euler_rotation(
 
 void euler_rotation_to_proto(
     EulerRotation value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::EulerRotation*)> setter) {
     waypoint::EulerRotation* proto_euler_rotation = new waypoint::EulerRotation();
     proto_euler_rotation->set_x(value.x_rotation);

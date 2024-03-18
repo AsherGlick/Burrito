@@ -51,7 +51,7 @@ int convert_color_channel_float_to_int(float input) {
 void xml_attribute_to_color(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     Color* value,
     bool* is_set) {
     Color color;
@@ -98,7 +98,7 @@ void xml_attribute_to_color(
 ////////////////////////////////////////////////////////////////////////////////
 string color_to_xml_attribute(
     const string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const Color* value) {
     std::stringstream stream;
     std::string hex_string = "#";
@@ -124,7 +124,7 @@ string color_to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_color(
     waypoint::RGBAColor input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     Color* value,
     bool* is_set) {
     Color color;
@@ -147,7 +147,7 @@ void proto_to_color(
 ////////////////////////////////////////////////////////////////////////////////
 void color_to_proto(
     Color value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::RGBAColor*)> setter) {
     waypoint::RGBAColor* color = new waypoint::RGBAColor();
     // The default RGB in burrito will be 000000 (i.e. black)

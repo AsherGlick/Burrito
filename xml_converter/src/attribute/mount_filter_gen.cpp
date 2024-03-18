@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_mount_filter(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     MountFilter* value,
     bool* is_set) {
     MountFilter mount_filter;
@@ -75,7 +75,7 @@ void xml_attribute_to_mount_filter(
 
 string mount_filter_to_xml_attribute(
     const std::string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const MountFilter* value) {
     vector<string> flag_values;
     if (value->raptor == true) {
@@ -114,7 +114,7 @@ string mount_filter_to_xml_attribute(
 
 void proto_to_mount_filter(
     waypoint::MountFilter input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     MountFilter* value,
     bool* is_set) {
     MountFilter mount_filter;
@@ -134,7 +134,7 @@ void proto_to_mount_filter(
 
 void mount_filter_to_proto(
     MountFilter value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::MountFilter*)> setter) {
     waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
     bool should_write = false;

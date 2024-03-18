@@ -440,3 +440,237 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state)
         proto_to_float(proto_trail.scale(), state, &(this->trail_scale), &(this->trail_scale_is_set));
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_underlay
+//
+// Transforms this Trail as if this class was overlayed on top of the
+// underlay argument.
+////////////////////////////////////////////////////////////////////////////////
+void Trail::apply_underlay(const Trail& underlay) {
+    if (!this->achievement_bitmask_is_set && underlay.achievement_bitmask_is_set) {
+        this->achievement_bitmask = underlay.achievement_bitmask;
+        this->achievement_bitmask_is_set = true;
+    }
+    if (!this->achievement_id_is_set && underlay.achievement_id_is_set) {
+        this->achievement_id = underlay.achievement_id;
+        this->achievement_id_is_set = true;
+    }
+    if (!this->animation_speed_is_set && underlay.animation_speed_is_set) {
+        this->animation_speed = underlay.animation_speed;
+        this->animation_speed_is_set = true;
+    }
+    if (!this->category_is_set && underlay.category_is_set) {
+        this->category = underlay.category;
+        this->category_is_set = true;
+    }
+    if (!this->color_is_set && underlay.color_is_set) {
+        this->color = underlay.color;
+        this->color_is_set = true;
+    }
+    if (!this->cull_chirality_is_set && underlay.cull_chirality_is_set) {
+        this->cull_chirality = underlay.cull_chirality;
+        this->cull_chirality_is_set = true;
+    }
+    if (!this->disable_player_cutout_is_set && underlay.disable_player_cutout_is_set) {
+        this->disable_player_cutout = underlay.disable_player_cutout;
+        this->disable_player_cutout_is_set = true;
+    }
+    if (!this->distance_fade_end_is_set && underlay.distance_fade_end_is_set) {
+        this->distance_fade_end = underlay.distance_fade_end;
+        this->distance_fade_end_is_set = true;
+    }
+    if (!this->distance_fade_start_is_set && underlay.distance_fade_start_is_set) {
+        this->distance_fade_start = underlay.distance_fade_start;
+        this->distance_fade_start_is_set = true;
+    }
+    if (!this->festival_filter_is_set && underlay.festival_filter_is_set) {
+        this->festival_filter = underlay.festival_filter;
+        this->festival_filter_is_set = true;
+    }
+    if (!this->guid_is_set && underlay.guid_is_set) {
+        this->guid = underlay.guid;
+        this->guid_is_set = true;
+    }
+    if (!this->is_wall_is_set && underlay.is_wall_is_set) {
+        this->is_wall = underlay.is_wall;
+        this->is_wall_is_set = true;
+    }
+    if (!this->map_display_size_is_set && underlay.map_display_size_is_set) {
+        this->map_display_size = underlay.map_display_size;
+        this->map_display_size_is_set = true;
+    }
+    if (!this->map_id_is_set && underlay.map_id_is_set) {
+        this->map_id = underlay.map_id;
+        this->map_id_is_set = true;
+    }
+    if (!this->map_type_filter_is_set && underlay.map_type_filter_is_set) {
+        this->map_type_filter = underlay.map_type_filter;
+        this->map_type_filter_is_set = true;
+    }
+    if (!this->mount_filter_is_set && underlay.mount_filter_is_set) {
+        this->mount_filter = underlay.mount_filter;
+        this->mount_filter_is_set = true;
+    }
+    if (!this->profession_filter_is_set && underlay.profession_filter_is_set) {
+        this->profession_filter = underlay.profession_filter;
+        this->profession_filter_is_set = true;
+    }
+    if (!this->render_ingame_is_set && underlay.render_ingame_is_set) {
+        this->render_ingame = underlay.render_ingame;
+        this->render_ingame_is_set = true;
+    }
+    if (!this->render_on_map_is_set && underlay.render_on_map_is_set) {
+        this->render_on_map = underlay.render_on_map;
+        this->render_on_map_is_set = true;
+    }
+    if (!this->render_on_minimap_is_set && underlay.render_on_minimap_is_set) {
+        this->render_on_minimap = underlay.render_on_minimap;
+        this->render_on_minimap_is_set = true;
+    }
+    if (!this->schedule_is_set && underlay.schedule_is_set) {
+        this->schedule = underlay.schedule;
+        this->schedule_is_set = true;
+    }
+    if (!this->schedule_duration_is_set && underlay.schedule_duration_is_set) {
+        this->schedule_duration = underlay.schedule_duration;
+        this->schedule_duration_is_set = true;
+    }
+    if (!this->specialization_filter_is_set && underlay.specialization_filter_is_set) {
+        this->specialization_filter = underlay.specialization_filter;
+        this->specialization_filter_is_set = true;
+    }
+    if (!this->species_filter_is_set && underlay.species_filter_is_set) {
+        this->species_filter = underlay.species_filter;
+        this->species_filter_is_set = true;
+    }
+    if (!this->texture_is_set && underlay.texture_is_set) {
+        this->texture = underlay.texture;
+        this->texture_is_set = true;
+    }
+    if (!this->trail_data_is_set && underlay.trail_data_is_set) {
+        this->trail_data = underlay.trail_data;
+        this->trail_data_is_set = true;
+    }
+    if (!this->trail_scale_is_set && underlay.trail_scale_is_set) {
+        this->trail_scale = underlay.trail_scale;
+        this->trail_scale_is_set = true;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_overlay
+//
+// Transforms this Trail as if the overlay argument were overlayed on
+// top of this class.
+////////////////////////////////////////////////////////////////////////////////
+void Trail::apply_overlay(const Trail& overlay) {
+    if (overlay.achievement_bitmask_is_set) {
+        this->achievement_bitmask = overlay.achievement_bitmask;
+        this->achievement_bitmask_is_set = true;
+    }
+    if (overlay.achievement_id_is_set) {
+        this->achievement_id = overlay.achievement_id;
+        this->achievement_id_is_set = true;
+    }
+    if (overlay.animation_speed_is_set) {
+        this->animation_speed = overlay.animation_speed;
+        this->animation_speed_is_set = true;
+    }
+    if (overlay.category_is_set) {
+        this->category = overlay.category;
+        this->category_is_set = true;
+    }
+    if (overlay.color_is_set) {
+        this->color = overlay.color;
+        this->color_is_set = true;
+    }
+    if (overlay.cull_chirality_is_set) {
+        this->cull_chirality = overlay.cull_chirality;
+        this->cull_chirality_is_set = true;
+    }
+    if (overlay.disable_player_cutout_is_set) {
+        this->disable_player_cutout = overlay.disable_player_cutout;
+        this->disable_player_cutout_is_set = true;
+    }
+    if (overlay.distance_fade_end_is_set) {
+        this->distance_fade_end = overlay.distance_fade_end;
+        this->distance_fade_end_is_set = true;
+    }
+    if (overlay.distance_fade_start_is_set) {
+        this->distance_fade_start = overlay.distance_fade_start;
+        this->distance_fade_start_is_set = true;
+    }
+    if (overlay.festival_filter_is_set) {
+        this->festival_filter = overlay.festival_filter;
+        this->festival_filter_is_set = true;
+    }
+    if (overlay.guid_is_set) {
+        this->guid = overlay.guid;
+        this->guid_is_set = true;
+    }
+    if (overlay.is_wall_is_set) {
+        this->is_wall = overlay.is_wall;
+        this->is_wall_is_set = true;
+    }
+    if (overlay.map_display_size_is_set) {
+        this->map_display_size = overlay.map_display_size;
+        this->map_display_size_is_set = true;
+    }
+    if (overlay.map_id_is_set) {
+        this->map_id = overlay.map_id;
+        this->map_id_is_set = true;
+    }
+    if (overlay.map_type_filter_is_set) {
+        this->map_type_filter = overlay.map_type_filter;
+        this->map_type_filter_is_set = true;
+    }
+    if (overlay.mount_filter_is_set) {
+        this->mount_filter = overlay.mount_filter;
+        this->mount_filter_is_set = true;
+    }
+    if (overlay.profession_filter_is_set) {
+        this->profession_filter = overlay.profession_filter;
+        this->profession_filter_is_set = true;
+    }
+    if (overlay.render_ingame_is_set) {
+        this->render_ingame = overlay.render_ingame;
+        this->render_ingame_is_set = true;
+    }
+    if (overlay.render_on_map_is_set) {
+        this->render_on_map = overlay.render_on_map;
+        this->render_on_map_is_set = true;
+    }
+    if (overlay.render_on_minimap_is_set) {
+        this->render_on_minimap = overlay.render_on_minimap;
+        this->render_on_minimap_is_set = true;
+    }
+    if (overlay.schedule_is_set) {
+        this->schedule = overlay.schedule;
+        this->schedule_is_set = true;
+    }
+    if (overlay.schedule_duration_is_set) {
+        this->schedule_duration = overlay.schedule_duration;
+        this->schedule_duration_is_set = true;
+    }
+    if (overlay.specialization_filter_is_set) {
+        this->specialization_filter = overlay.specialization_filter;
+        this->specialization_filter_is_set = true;
+    }
+    if (overlay.species_filter_is_set) {
+        this->species_filter = overlay.species_filter;
+        this->species_filter_is_set = true;
+    }
+    if (overlay.texture_is_set) {
+        this->texture = overlay.texture;
+        this->texture_is_set = true;
+    }
+    if (overlay.trail_data_is_set) {
+        this->trail_data = overlay.trail_data;
+        this->trail_data_is_set = true;
+    }
+    if (overlay.trail_scale_is_set) {
+        this->trail_scale = overlay.trail_scale;
+        this->trail_scale_is_set = true;
+    }
+}

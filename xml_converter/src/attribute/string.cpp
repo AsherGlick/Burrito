@@ -17,8 +17,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 void xml_attribute_to_string(
     rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    std::vector<XMLError*>*,
+    XMLReaderState*,
     string* value,
     bool* is_set) {
     *value = get_attribute_value(input);
@@ -32,7 +32,7 @@ void xml_attribute_to_string(
 ////////////////////////////////////////////////////////////////////////////////
 string string_to_xml_attribute(
     const string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const string* value) {
     return " " + attribute_name + "=\"" + *value + "\"";
 }
@@ -44,7 +44,7 @@ string string_to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_string(
     string input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     string* value,
     bool* is_set) {
     *value = input;
@@ -58,14 +58,14 @@ void proto_to_string(
 ////////////////////////////////////////////////////////////////////////////////
 void string_to_proto(
     std::string value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(std::string)> setter) {
     setter(value);
 }
 
 void proto_display_name_to_display_name_and_name(
     std::string input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     std::string* display_name,
     bool* is_display_name_set,
     std::string* name,
@@ -78,7 +78,7 @@ void proto_display_name_to_display_name_and_name(
 
 void display_name_and_name_to_proto_display_name(
     std::string value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(std::string)> setter,
     const std::string* name,
     const bool* is_name_set) {

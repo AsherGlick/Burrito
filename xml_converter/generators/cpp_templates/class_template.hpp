@@ -28,6 +28,7 @@ class {{cpp_class}} : public Parseable {
         std::map<std::string, Category> children;
         Icon default_icon;
         Trail default_trail;
+        Category* parent;
 
         void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLReaderState* state);
     {% endif %}
@@ -39,4 +40,6 @@ class {{cpp_class}} : public Parseable {
     {% if attributes_of_type_marker_category %}
         bool validate_attributes_of_type_marker_category();
     {% endif %}
+    void apply_underlay(const {{cpp_class}}& underlay);
+    void apply_overlay(const {{cpp_class}}& overlay);
 };

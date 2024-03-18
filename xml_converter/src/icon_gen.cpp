@@ -742,3 +742,397 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
         proto_to_float(proto_icon.trigger().range(), state, &(this->trigger_range), &(this->trigger_range_is_set));
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_underlay
+//
+// Transforms this Icon as if this class was overlayed on top of the
+// underlay argument.
+////////////////////////////////////////////////////////////////////////////////
+void Icon::apply_underlay(const Icon& underlay) {
+    if (!this->achievement_bitmask_is_set && underlay.achievement_bitmask_is_set) {
+        this->achievement_bitmask = underlay.achievement_bitmask;
+        this->achievement_bitmask_is_set = true;
+    }
+    if (!this->achievement_id_is_set && underlay.achievement_id_is_set) {
+        this->achievement_id = underlay.achievement_id;
+        this->achievement_id_is_set = true;
+    }
+    if (!this->auto_trigger_is_set && underlay.auto_trigger_is_set) {
+        this->auto_trigger = underlay.auto_trigger;
+        this->auto_trigger_is_set = true;
+    }
+    if (!this->bounce_delay_is_set && underlay.bounce_delay_is_set) {
+        this->bounce_delay = underlay.bounce_delay;
+        this->bounce_delay_is_set = true;
+    }
+    if (!this->bounce_duration_is_set && underlay.bounce_duration_is_set) {
+        this->bounce_duration = underlay.bounce_duration;
+        this->bounce_duration_is_set = true;
+    }
+    if (!this->bounce_height_is_set && underlay.bounce_height_is_set) {
+        this->bounce_height = underlay.bounce_height;
+        this->bounce_height_is_set = true;
+    }
+    if (!this->category_is_set && underlay.category_is_set) {
+        this->category = underlay.category;
+        this->category_is_set = true;
+    }
+    if (!this->color_is_set && underlay.color_is_set) {
+        this->color = underlay.color;
+        this->color_is_set = true;
+    }
+    if (!this->copy_clipboard_is_set && underlay.copy_clipboard_is_set) {
+        this->copy_clipboard = underlay.copy_clipboard;
+        this->copy_clipboard_is_set = true;
+    }
+    if (!this->copy_message_is_set && underlay.copy_message_is_set) {
+        this->copy_message = underlay.copy_message;
+        this->copy_message_is_set = true;
+    }
+    if (!this->cull_chirality_is_set && underlay.cull_chirality_is_set) {
+        this->cull_chirality = underlay.cull_chirality;
+        this->cull_chirality_is_set = true;
+    }
+    if (!this->disable_player_cutout_is_set && underlay.disable_player_cutout_is_set) {
+        this->disable_player_cutout = underlay.disable_player_cutout;
+        this->disable_player_cutout_is_set = true;
+    }
+    if (!this->distance_fade_end_is_set && underlay.distance_fade_end_is_set) {
+        this->distance_fade_end = underlay.distance_fade_end;
+        this->distance_fade_end_is_set = true;
+    }
+    if (!this->distance_fade_start_is_set && underlay.distance_fade_start_is_set) {
+        this->distance_fade_start = underlay.distance_fade_start;
+        this->distance_fade_start_is_set = true;
+    }
+    if (!this->euler_rotation_is_set && underlay.euler_rotation_is_set) {
+        this->euler_rotation = underlay.euler_rotation;
+        this->euler_rotation_is_set = true;
+    }
+    if (!this->festival_filter_is_set && underlay.festival_filter_is_set) {
+        this->festival_filter = underlay.festival_filter;
+        this->festival_filter_is_set = true;
+    }
+    if (!this->guid_is_set && underlay.guid_is_set) {
+        this->guid = underlay.guid;
+        this->guid_is_set = true;
+    }
+    if (!this->has_countdown_is_set && underlay.has_countdown_is_set) {
+        this->has_countdown = underlay.has_countdown;
+        this->has_countdown_is_set = true;
+    }
+    if (!this->height_offset_is_set && underlay.height_offset_is_set) {
+        this->height_offset = underlay.height_offset;
+        this->height_offset_is_set = true;
+    }
+    if (!this->hide_category_is_set && underlay.hide_category_is_set) {
+        this->hide_category = underlay.hide_category;
+        this->hide_category_is_set = true;
+    }
+    if (!this->icon_is_set && underlay.icon_is_set) {
+        this->icon = underlay.icon;
+        this->icon_is_set = true;
+    }
+    if (!this->icon_size_is_set && underlay.icon_size_is_set) {
+        this->icon_size = underlay.icon_size;
+        this->icon_size_is_set = true;
+    }
+    if (!this->info_message_is_set && underlay.info_message_is_set) {
+        this->info_message = underlay.info_message;
+        this->info_message_is_set = true;
+    }
+    if (!this->invert_visibility_is_set && underlay.invert_visibility_is_set) {
+        this->invert_visibility = underlay.invert_visibility;
+        this->invert_visibility_is_set = true;
+    }
+    if (!this->map_display_size_is_set && underlay.map_display_size_is_set) {
+        this->map_display_size = underlay.map_display_size;
+        this->map_display_size_is_set = true;
+    }
+    if (!this->map_id_is_set && underlay.map_id_is_set) {
+        this->map_id = underlay.map_id;
+        this->map_id_is_set = true;
+    }
+    if (!this->map_type_filter_is_set && underlay.map_type_filter_is_set) {
+        this->map_type_filter = underlay.map_type_filter;
+        this->map_type_filter_is_set = true;
+    }
+    if (!this->maximum_size_on_screen_is_set && underlay.maximum_size_on_screen_is_set) {
+        this->maximum_size_on_screen = underlay.maximum_size_on_screen;
+        this->maximum_size_on_screen_is_set = true;
+    }
+    if (!this->minimum_size_on_screen_is_set && underlay.minimum_size_on_screen_is_set) {
+        this->minimum_size_on_screen = underlay.minimum_size_on_screen;
+        this->minimum_size_on_screen_is_set = true;
+    }
+    if (!this->mount_filter_is_set && underlay.mount_filter_is_set) {
+        this->mount_filter = underlay.mount_filter;
+        this->mount_filter_is_set = true;
+    }
+    if (!this->position_is_set && underlay.position_is_set) {
+        this->position = underlay.position;
+        this->position_is_set = true;
+    }
+    if (!this->profession_filter_is_set && underlay.profession_filter_is_set) {
+        this->profession_filter = underlay.profession_filter;
+        this->profession_filter_is_set = true;
+    }
+    if (!this->render_ingame_is_set && underlay.render_ingame_is_set) {
+        this->render_ingame = underlay.render_ingame;
+        this->render_ingame_is_set = true;
+    }
+    if (!this->render_on_map_is_set && underlay.render_on_map_is_set) {
+        this->render_on_map = underlay.render_on_map;
+        this->render_on_map_is_set = true;
+    }
+    if (!this->render_on_minimap_is_set && underlay.render_on_minimap_is_set) {
+        this->render_on_minimap = underlay.render_on_minimap;
+        this->render_on_minimap_is_set = true;
+    }
+    if (!this->reset_behavior_is_set && underlay.reset_behavior_is_set) {
+        this->reset_behavior = underlay.reset_behavior;
+        this->reset_behavior_is_set = true;
+    }
+    if (!this->reset_length_is_set && underlay.reset_length_is_set) {
+        this->reset_length = underlay.reset_length;
+        this->reset_length_is_set = true;
+    }
+    if (!this->scale_on_map_with_zoom_is_set && underlay.scale_on_map_with_zoom_is_set) {
+        this->scale_on_map_with_zoom = underlay.scale_on_map_with_zoom;
+        this->scale_on_map_with_zoom_is_set = true;
+    }
+    if (!this->schedule_is_set && underlay.schedule_is_set) {
+        this->schedule = underlay.schedule;
+        this->schedule_is_set = true;
+    }
+    if (!this->schedule_duration_is_set && underlay.schedule_duration_is_set) {
+        this->schedule_duration = underlay.schedule_duration;
+        this->schedule_duration_is_set = true;
+    }
+    if (!this->show_category_is_set && underlay.show_category_is_set) {
+        this->show_category = underlay.show_category;
+        this->show_category_is_set = true;
+    }
+    if (!this->specialization_filter_is_set && underlay.specialization_filter_is_set) {
+        this->specialization_filter = underlay.specialization_filter;
+        this->specialization_filter_is_set = true;
+    }
+    if (!this->species_filter_is_set && underlay.species_filter_is_set) {
+        this->species_filter = underlay.species_filter;
+        this->species_filter_is_set = true;
+    }
+    if (!this->toggle_category_is_set && underlay.toggle_category_is_set) {
+        this->toggle_category = underlay.toggle_category;
+        this->toggle_category_is_set = true;
+    }
+    if (!this->tooltip_description_is_set && underlay.tooltip_description_is_set) {
+        this->tooltip_description = underlay.tooltip_description;
+        this->tooltip_description_is_set = true;
+    }
+    if (!this->tooltip_name_is_set && underlay.tooltip_name_is_set) {
+        this->tooltip_name = underlay.tooltip_name;
+        this->tooltip_name_is_set = true;
+    }
+    if (!this->trigger_range_is_set && underlay.trigger_range_is_set) {
+        this->trigger_range = underlay.trigger_range;
+        this->trigger_range_is_set = true;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// apply_overlay
+//
+// Transforms this Icon as if the overlay argument were overlayed on
+// top of this class.
+////////////////////////////////////////////////////////////////////////////////
+void Icon::apply_overlay(const Icon& overlay) {
+    if (overlay.achievement_bitmask_is_set) {
+        this->achievement_bitmask = overlay.achievement_bitmask;
+        this->achievement_bitmask_is_set = true;
+    }
+    if (overlay.achievement_id_is_set) {
+        this->achievement_id = overlay.achievement_id;
+        this->achievement_id_is_set = true;
+    }
+    if (overlay.auto_trigger_is_set) {
+        this->auto_trigger = overlay.auto_trigger;
+        this->auto_trigger_is_set = true;
+    }
+    if (overlay.bounce_delay_is_set) {
+        this->bounce_delay = overlay.bounce_delay;
+        this->bounce_delay_is_set = true;
+    }
+    if (overlay.bounce_duration_is_set) {
+        this->bounce_duration = overlay.bounce_duration;
+        this->bounce_duration_is_set = true;
+    }
+    if (overlay.bounce_height_is_set) {
+        this->bounce_height = overlay.bounce_height;
+        this->bounce_height_is_set = true;
+    }
+    if (overlay.category_is_set) {
+        this->category = overlay.category;
+        this->category_is_set = true;
+    }
+    if (overlay.color_is_set) {
+        this->color = overlay.color;
+        this->color_is_set = true;
+    }
+    if (overlay.copy_clipboard_is_set) {
+        this->copy_clipboard = overlay.copy_clipboard;
+        this->copy_clipboard_is_set = true;
+    }
+    if (overlay.copy_message_is_set) {
+        this->copy_message = overlay.copy_message;
+        this->copy_message_is_set = true;
+    }
+    if (overlay.cull_chirality_is_set) {
+        this->cull_chirality = overlay.cull_chirality;
+        this->cull_chirality_is_set = true;
+    }
+    if (overlay.disable_player_cutout_is_set) {
+        this->disable_player_cutout = overlay.disable_player_cutout;
+        this->disable_player_cutout_is_set = true;
+    }
+    if (overlay.distance_fade_end_is_set) {
+        this->distance_fade_end = overlay.distance_fade_end;
+        this->distance_fade_end_is_set = true;
+    }
+    if (overlay.distance_fade_start_is_set) {
+        this->distance_fade_start = overlay.distance_fade_start;
+        this->distance_fade_start_is_set = true;
+    }
+    if (overlay.euler_rotation_is_set) {
+        this->euler_rotation = overlay.euler_rotation;
+        this->euler_rotation_is_set = true;
+    }
+    if (overlay.festival_filter_is_set) {
+        this->festival_filter = overlay.festival_filter;
+        this->festival_filter_is_set = true;
+    }
+    if (overlay.guid_is_set) {
+        this->guid = overlay.guid;
+        this->guid_is_set = true;
+    }
+    if (overlay.has_countdown_is_set) {
+        this->has_countdown = overlay.has_countdown;
+        this->has_countdown_is_set = true;
+    }
+    if (overlay.height_offset_is_set) {
+        this->height_offset = overlay.height_offset;
+        this->height_offset_is_set = true;
+    }
+    if (overlay.hide_category_is_set) {
+        this->hide_category = overlay.hide_category;
+        this->hide_category_is_set = true;
+    }
+    if (overlay.icon_is_set) {
+        this->icon = overlay.icon;
+        this->icon_is_set = true;
+    }
+    if (overlay.icon_size_is_set) {
+        this->icon_size = overlay.icon_size;
+        this->icon_size_is_set = true;
+    }
+    if (overlay.info_message_is_set) {
+        this->info_message = overlay.info_message;
+        this->info_message_is_set = true;
+    }
+    if (overlay.invert_visibility_is_set) {
+        this->invert_visibility = overlay.invert_visibility;
+        this->invert_visibility_is_set = true;
+    }
+    if (overlay.map_display_size_is_set) {
+        this->map_display_size = overlay.map_display_size;
+        this->map_display_size_is_set = true;
+    }
+    if (overlay.map_id_is_set) {
+        this->map_id = overlay.map_id;
+        this->map_id_is_set = true;
+    }
+    if (overlay.map_type_filter_is_set) {
+        this->map_type_filter = overlay.map_type_filter;
+        this->map_type_filter_is_set = true;
+    }
+    if (overlay.maximum_size_on_screen_is_set) {
+        this->maximum_size_on_screen = overlay.maximum_size_on_screen;
+        this->maximum_size_on_screen_is_set = true;
+    }
+    if (overlay.minimum_size_on_screen_is_set) {
+        this->minimum_size_on_screen = overlay.minimum_size_on_screen;
+        this->minimum_size_on_screen_is_set = true;
+    }
+    if (overlay.mount_filter_is_set) {
+        this->mount_filter = overlay.mount_filter;
+        this->mount_filter_is_set = true;
+    }
+    if (overlay.position_is_set) {
+        this->position = overlay.position;
+        this->position_is_set = true;
+    }
+    if (overlay.profession_filter_is_set) {
+        this->profession_filter = overlay.profession_filter;
+        this->profession_filter_is_set = true;
+    }
+    if (overlay.render_ingame_is_set) {
+        this->render_ingame = overlay.render_ingame;
+        this->render_ingame_is_set = true;
+    }
+    if (overlay.render_on_map_is_set) {
+        this->render_on_map = overlay.render_on_map;
+        this->render_on_map_is_set = true;
+    }
+    if (overlay.render_on_minimap_is_set) {
+        this->render_on_minimap = overlay.render_on_minimap;
+        this->render_on_minimap_is_set = true;
+    }
+    if (overlay.reset_behavior_is_set) {
+        this->reset_behavior = overlay.reset_behavior;
+        this->reset_behavior_is_set = true;
+    }
+    if (overlay.reset_length_is_set) {
+        this->reset_length = overlay.reset_length;
+        this->reset_length_is_set = true;
+    }
+    if (overlay.scale_on_map_with_zoom_is_set) {
+        this->scale_on_map_with_zoom = overlay.scale_on_map_with_zoom;
+        this->scale_on_map_with_zoom_is_set = true;
+    }
+    if (overlay.schedule_is_set) {
+        this->schedule = overlay.schedule;
+        this->schedule_is_set = true;
+    }
+    if (overlay.schedule_duration_is_set) {
+        this->schedule_duration = overlay.schedule_duration;
+        this->schedule_duration_is_set = true;
+    }
+    if (overlay.show_category_is_set) {
+        this->show_category = overlay.show_category;
+        this->show_category_is_set = true;
+    }
+    if (overlay.specialization_filter_is_set) {
+        this->specialization_filter = overlay.specialization_filter;
+        this->specialization_filter_is_set = true;
+    }
+    if (overlay.species_filter_is_set) {
+        this->species_filter = overlay.species_filter;
+        this->species_filter_is_set = true;
+    }
+    if (overlay.toggle_category_is_set) {
+        this->toggle_category = overlay.toggle_category;
+        this->toggle_category_is_set = true;
+    }
+    if (overlay.tooltip_description_is_set) {
+        this->tooltip_description = overlay.tooltip_description;
+        this->tooltip_description_is_set = true;
+    }
+    if (overlay.tooltip_name_is_set) {
+        this->tooltip_name = overlay.tooltip_name;
+        this->tooltip_name_is_set = true;
+    }
+    if (overlay.trigger_range_is_set) {
+        this->trigger_range = overlay.trigger_range;
+        this->trigger_range_is_set = true;
+    }
+}

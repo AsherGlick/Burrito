@@ -14,8 +14,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 void xml_attribute_to_float(
     rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    std::vector<XMLError*>*,
+    XMLReaderState*,
     float* value,
     bool* is_set) {
     *value = std::stof(get_attribute_value(input));
@@ -29,7 +29,7 @@ void xml_attribute_to_float(
 ////////////////////////////////////////////////////////////////////////////////
 string float_to_xml_attribute(
     const string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const float* value) {
     return " " + attribute_name + "=\"" + to_string(*value) + "\"";
 }
@@ -41,7 +41,7 @@ string float_to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_float(
     float input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     float* value,
     bool* is_set) {
     *value = input;
@@ -55,7 +55,7 @@ void proto_to_float(
 ////////////////////////////////////////////////////////////////////////////////
 void float_to_proto(
     float value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(float&)> setter) {
     setter(value);
 }

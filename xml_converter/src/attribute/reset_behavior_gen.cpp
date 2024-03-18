@@ -15,7 +15,7 @@ using namespace std;
 void xml_attribute_to_reset_behavior(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     ResetBehavior* value,
     bool* is_set) {
     ResetBehavior reset_behavior;
@@ -84,7 +84,7 @@ void xml_attribute_to_reset_behavior(
 
 string reset_behavior_to_xml_attribute(
     const std::string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const ResetBehavior* value) {
     if (*value == ResetBehavior::always_visible) {
         return " " + attribute_name + "=\"" + "0" + "\"";
@@ -147,7 +147,7 @@ string reset_behavior_to_xml_attribute(
 
 void proto_to_reset_behavior(
     waypoint::ResetBehavior input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     ResetBehavior* value,
     bool* is_set) {
     switch (input) {
@@ -196,7 +196,7 @@ void proto_to_reset_behavior(
 
 void reset_behavior_to_proto(
     ResetBehavior value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(waypoint::ResetBehavior)> setter) {
     switch (value) {
         case ResetBehavior::always_visible:

@@ -10,6 +10,8 @@ from schema import string_t, array_t, enum_t, union_t, union_partial_t, pattern_
 from protobuf_types import get_proto_field_type
 from util import capitalize, SchemaType, Document
 from generate_cpp import write_cpp_classes, write_attribute
+import argparse
+
 
 XML_ATTRIBUTE_REGEX: Final[str] = "^[A-Za-z]+$"
 PROTO_FIELD_REGEX: Final[str] = "^[a-z_.]+$"
@@ -123,6 +125,9 @@ class Generator:
 
     def load_input_doc(self, dir_path: str) -> None:
         for filepath in os.listdir(dir_path):
+            if not filepath.endswith(".md"):
+                continue
+
             filepath = os.path.join(dir_path, filepath)
             try:
                 document = frontmatter.load(filepath)
@@ -364,6 +369,14 @@ class Generator:
 # markdown files, and then creating the desired output files.
 ################################################################################
 def main() -> None:
+    parser = argparse.ArgumentParser(description='Process some flags.')
+    parser.add_argument('--cpp-nodes', help='Generate the XML Node Classes.', action='store_true')
+    parser.add_argument('--cpp-attributes', help='Generate the XML Attribute functions.', action='store_true')
+    parser.add_argument('--documentation', help='Generate the HTML documentation.', action='store_true')
+    args = parser.parse_args()
+
+    generate_all: bool = not args.cpp_nodes and not args.cpp_attributes and not args.documentation
+
     generator = Generator()
     markdown_doc_directory = "../doc"
 
@@ -372,13 +385,17 @@ def main() -> None:
         if os.path.isdir(full_markdown_doc_directory):
             generator.load_input_doc(full_markdown_doc_directory)
 
-    generator.delete_generated_docs("../web_docs")
-    generator.delete_generated_docs("../src/")
-    generator.write_webdocs("../web_docs/")
-    write_cpp_classes("../src/", generator.data)
+    if generate_all or args.documentation:
+        generator.delete_generated_docs("../web_docs")
+        generator.write_webdocs("../web_docs/")
 
-    written_attributes = write_attribute("../src/attribute", generator.data)
-    generator.delete_generated_docs("../src/attribute", skip=written_attributes)
+    if generate_all or args.cpp_nodes:
+        written_classes = write_cpp_classes("../src/", generator.data)
+        generator.delete_generated_docs("../src/", skip=written_classes)
+
+    if generate_all or args.cpp_attributes:
+        written_attributes = write_attribute("../src/attribute", generator.data)
+        generator.delete_generated_docs("../src/attribute", skip=written_attributes)
 
 
 main()

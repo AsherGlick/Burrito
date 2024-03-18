@@ -19,7 +19,7 @@ using namespace std;
 void xml_attribute_to_bool(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     bool* value,
     bool* is_set) {
     if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
@@ -42,7 +42,7 @@ void xml_attribute_to_bool(
 ////////////////////////////////////////////////////////////////////////////////
 string bool_to_xml_attribute(
     const string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const bool* value) {
     if (*value) {
         return " " + attribute_name + "=\"true\"";
@@ -62,7 +62,7 @@ string bool_to_xml_attribute(
 void inverted_xml_attribute_to_bool(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
-    XMLReaderState* state,
+    XMLReaderState*,
     bool* value,
     bool* is_set) {
     if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
@@ -85,7 +85,7 @@ void inverted_xml_attribute_to_bool(
 ////////////////////////////////////////////////////////////////////////////////
 string bool_to_inverted_xml_attribute(
     const string& attribute_name,
-    XMLWriterState* state,
+    XMLWriterState*,
     const bool* value) {
     if (*value) {
         return " " + attribute_name + "=\"false\"";
@@ -102,7 +102,7 @@ string bool_to_inverted_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_bool(
     bool input,
-    ProtoReaderState* state,
+    ProtoReaderState*,
     bool* value,
     bool* is_set) {
     *value = input;
@@ -116,7 +116,7 @@ void proto_to_bool(
 ////////////////////////////////////////////////////////////////////////////////
 void bool_to_proto(
     bool value,
-    ProtoWriterState* state,
+    ProtoWriterState*,
     std::function<void(bool)> setter) {
     setter(value);
 }

@@ -9,12 +9,6 @@
 
 using namespace std;
 
-string find_attribute_value(rapidxml::xml_node<>* node, string attribute_name) {
-    auto attribute = node->first_attribute(attribute_name.data(), attribute_name.size(), false);
-
-    return string(attribute->value(), attribute->value_size());
-}
-
 rapidxml::xml_attribute<>* find_attribute(rapidxml::xml_node<>* node, string attribute_name) {
     return node->first_attribute(attribute_name.data(), attribute_name.size(), false);
 }
