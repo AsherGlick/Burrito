@@ -1,28 +1,26 @@
-extends Control
-
-const executable_path: String = "./xml_converter/build/xml_converter"
-var protobin_data_folder: String
-var split_protobin_data_folder: String
+var downloaded_markers_dir: String
+var unsaved_markers_dir: String
 var user_data_dir: String 
 
-func _ready():
+func _init():
 	self.user_data_dir = str(OS.get_user_data_dir())
-	self.protobin_data_folder = self.user_data_dir.plus_file("packs")
-	self.split_protobin_data_folder = self.user_data_dir.plus_file("protobins")
-	ensure_folder_existance(self.protobin_data_folder)
-	ensure_folder_existance(self.split_protobin_data_folder)
+	self.downloaded_markers_dir = self.user_data_dir.plus_file("packs")
+	self.unsaved_markers_dir = self.user_data_dir.plus_file("protobins")
+	create_directory_if_missing(self.downloaded_markers_dir)
+	create_directory_if_missing(self.unsaved_markers_dir)
 
-func call_xml_converter(args):
+static func call_xml_converter(args):
+	var executable_path: String = "./xml_converter/build/xml_converter"
 	var output: Array = []
 	print(args)
-	var result: int = OS.execute(self.executable_path, args, true, output, true)
+	var result: int = OS.execute(executable_path, args, true, output, true)
 	print(output)
 	if result != OK:
 		print("Failed to execute the command. Error code:", result)
 	else:
 		print("Command executed successfully.")
 
-func ensure_folder_existance(path):
+static func create_directory_if_missing(path):
 	var dir = Directory.new()
 	if not dir.dir_exists(path):
 		var success = dir.make_dir(path)
