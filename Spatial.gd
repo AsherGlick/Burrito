@@ -392,7 +392,7 @@ var marker_file_path = ""
 
 func load_waypoint_markers(map_id):
 	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
-	self.waypoint_data.clear_category()
+	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
 	var file = File.new()
