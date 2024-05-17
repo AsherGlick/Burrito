@@ -1,10 +1,10 @@
-static func call_xml_converter(executable_path: String, args: PoolStringArray):
+static func call_xml_converter(args: PoolStringArray):
 	var output: Array = []
 	print(args)
-	var result: int = OS.execute(executable_path, args, true, output, true)
+	var result: int = OS.execute("./xml_converter/build/xml_converter", args, true, output, true)
 	print(output)
 	if result != OK:
-		print("Failed to execute the command. Error code:", result)
+		print("Failed to execute the converter. Error code:", result)
 	else:
 		print("Command executed successfully.")
 
