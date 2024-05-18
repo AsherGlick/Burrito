@@ -51,9 +51,10 @@ const category3d_scene = preload("res://Category3D.tscn")
 const category2d_scene = preload("res://Category2D.tscn")
 const path2d_scene = preload("res://Route2D.tscn")
 const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
+
+# Scripts containing code used by this scene
 const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
-const PackDialog = preload("res://PackDialog.gd")
 
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
@@ -816,22 +817,6 @@ func _on_NewPathPoint_pressed():
 		z_accurate_player_position.z = -z_accurate_player_position.z
 		self.currently_active_path.add_point(z_accurate_player_position)
 		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
-
-
-################################################################################
-#
-################################################################################
-func _on_SavePath_pressed():
-	$Control/Dialogs/SaveDialog.show()
-
-################################################################################
-# TODO: This function will be used when exporting packs
-################################################################################
-func _on_SaveDialog_file_selected(path):
-	self.markerdata[str(self.map_id)] = data_from_renderview()
-	var save_game = File.new()
-	save_game.open(path, File.WRITE)
-	save_game.store_string(JSON.print(self.markerdata))
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
