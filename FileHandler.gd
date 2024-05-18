@@ -1,7 +1,9 @@
+const converter_executable_path = "./xml_converter/build/xml_converter"
+
 static func call_xml_converter(args: PoolStringArray):
 	var output: Array = []
 	print(args)
-	var result: int = OS.execute("./xml_converter/build/xml_converter", args, true, output, true)
+	var result: int = OS.execute(converter_executable_path, args, true, output, true)
 	print(output)
 	if result != OK:
 		print("Failed to execute the converter. Error code:", result)
