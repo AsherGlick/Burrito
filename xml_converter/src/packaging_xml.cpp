@@ -83,10 +83,13 @@ void parse_marker_categories(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// get_category
+//
+// Gets the category that this node references as its "type" so that the
+// defaults of that category can be used when creating the new node.
+////////////////////////////////////////////////////////////////////////////////
 Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
-    // TODO: This is a slow linear search, replace with something faster.
-    //       maybe use data from already parsed node instead of searching for
-    //       the attribute.
     rapidxml::xml_attribute<>* attribute = find_attribute(node, "type");
 
     if (attribute == 0) {
@@ -133,10 +136,12 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
         if (get_node_name(node) == "POI") {
             Category* default_category = get_category(node, marker_categories, errors);
 
-            Icon* icon = new Icon();
-
+            Icon* icon;
             if (default_category != nullptr) {
-                *icon = default_category->default_icon;
+                icon = new Icon(default_category->default_icon);
+            }
+            else {
+                icon = new Icon();
             }
 
             icon->init_from_xml(node, errors, state);
@@ -145,10 +150,12 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
         else if (get_node_name(node) == "Trail") {
             Category* default_category = get_category(node, marker_categories, errors);
 
-            Trail* trail = new Trail();
-
+            Trail* trail;
             if (default_category != nullptr) {
-                *trail = default_category->default_trail;
+                trail = new Trail(default_category->default_trail);
+            }
+            else {
+                trail = new Trail();
             }
 
             trail->init_from_xml(node, errors, state);
