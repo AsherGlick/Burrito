@@ -30,8 +30,8 @@ class Category : public Parseable {
     bool name_is_set = false;
     bool tooltip_description_is_set = false;
     std::map<std::string, Category> children;
-    Icon default_icon;
-    Trail default_trail;
+    std::vector<rapidxml::xml_attribute<>*> icon_attributes;
+    std::vector<rapidxml::xml_attribute<>*> trail_attributes;
     Category* parent;
 
     void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLReaderState* state);
@@ -40,6 +40,4 @@ class Category : public Parseable {
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
     waypoint::Category as_protobuf(ProtoWriterState* state) const;
     void parse_protobuf(waypoint::Category proto_category, ProtoReaderState* state);
-    void apply_underlay(const Category& underlay);
-    void apply_overlay(const Category& overlay);
 };
