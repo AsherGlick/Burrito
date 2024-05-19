@@ -1,0 +1,16 @@
+<OverlayData>
+<MarkerCategory  ID="KOjMBsKTXpY=" Name="mycategory">
+</MarkerCategory>
+
+<MarkerCategory  ID="LJKn7WpADjo=" Name="NestedLevel1">
+	<MarkerCategory  ID="uJrcuLd4as8=" Name="NestedLevel2">
+	<MarkerCategory  ID="cCxU1IXfiKQ=" Name="NestedLevel3">
+</MarkerCategory>
+</MarkerCategory>
+</MarkerCategory>
+
+<POIs>
+<POI  Type="notmycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="nestedlevel1.nestedlevel2.nestedlevel3.nestedlevel4" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+</POIs>
+</OverlayData>
