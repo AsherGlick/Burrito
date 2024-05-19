@@ -25,7 +25,7 @@ class XMLError;
 
 class Trail : public Parseable {
  public:
-    int achievement_bitmask;
+    int achievement_bit_index;
     int achievement_id;
     float animation_speed;
     MarkerCategory category;
@@ -52,7 +52,7 @@ class Trail : public Parseable {
     Image texture;
     TrailData trail_data;
     float trail_scale;
-    bool achievement_bitmask_is_set = false;
+    bool achievement_bit_index_is_set = false;
     bool achievement_id_is_set = false;
     bool animation_speed_is_set = false;
     bool category_is_set = false;
