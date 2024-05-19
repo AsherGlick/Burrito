@@ -1,10 +1,13 @@
 #include "marker_category.hpp"
 
+#include <map>
 #include <string>
 #include <vector>
 
+#include "../category_gen.hpp"
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
 #include "waypoint.pb.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,11 +17,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 void xml_attribute_to_marker_category(
     rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>*,
-    XMLReaderState*,
+    std::vector<XMLError*>* errors,
+    XMLReaderState* state,
     MarkerCategory* value,
     bool* is_set) {
     value->category = get_attribute_value(input);
+
+    const std::map<std::string, Category>* current_node = state->marker_categories;
+    std::vector<std::string> category_name_segments = split(value->category, ".");
+    for (size_t i = 0; i < category_name_segments.size(); i++) {
+        std::string category_name_segment = category_name_segments[i];
+        auto child = current_node->find(lowercase(category_name_segment));
+        if (child == current_node->end()) {
+            errors->push_back(new XMLAttributeValueError("Category Not Found \"" + category_name_segment + "\"", input));
+            break;
+        }
+        current_node = &child->second.children;
+    }
     *is_set = true;
 }
 

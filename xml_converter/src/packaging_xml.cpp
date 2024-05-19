@@ -83,24 +83,8 @@ void parse_marker_categories(
     }
 }
 
-Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker_categories, vector<XMLError*>* errors) {
-    // TODO: This is a slow linear search, replace with something faster.
-    //       maybe use data from already parsed node instead of searching for
-    //       the attribute.
-    rapidxml::xml_attribute<>* attribute = find_attribute(node, "type");
-
-    if (attribute == 0) {
-        // TODO: This error should really be for the entire node not just the name
-        errors->push_back(new XMLNodeNameError("No Attribute Named Type", node));
-        return nullptr;
-    }
-
-    vector<string> split_categories = split(get_attribute_value(attribute), ".");
-
-    if (split_categories.size() == 0) {
-        errors->push_back(new XMLAttributeValueError("Empty Type", attribute));
-        return nullptr;
-    }
+Category* get_parent_icon_defaults(const Icon* icon, map<string, Category>* marker_categories) {
+    vector<string> split_categories = split(icon->category.category, ".");
 
     Category* output = nullptr;
 
@@ -108,9 +92,27 @@ Category* get_category(rapidxml::xml_node<>* node, map<string, Category>* marker
         string category_name = lowercase(split_categories[i]);
 
         auto category = marker_categories->find(category_name);
-
         if (category == marker_categories->end()) {
-            errors->push_back(new XMLAttributeValueError("Category Not Found \"" + category_name + "\"", attribute));
+            return nullptr;
+        }
+
+        output = &category->second;
+
+        marker_categories = &output->children;
+    }
+    return output;
+}
+
+Category* get_parent_trail_defaults(const Trail* trail, map<string, Category>* marker_categories) {
+    vector<string> split_categories = split(trail->category.category, ".");
+
+    Category* output = nullptr;
+
+    for (unsigned int i = 0; i < split_categories.size(); i++) {
+        string category_name = lowercase(split_categories[i]);
+
+        auto category = marker_categories->find(category_name);
+        if (category == marker_categories->end()) {
             return nullptr;
         }
 
@@ -131,27 +133,25 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "POI") {
-            Category* default_category = get_category(node, marker_categories, errors);
-
             Icon* icon = new Icon();
+            icon->init_from_xml(node, errors, state);
 
+            Category* default_category = get_parent_icon_defaults(icon, marker_categories);
             if (default_category != nullptr) {
-                *icon = default_category->default_icon;
+                icon->apply_underlay(default_category->default_icon);
             }
 
-            icon->init_from_xml(node, errors, state);
             markers.push_back(icon);
         }
         else if (get_node_name(node) == "Trail") {
-            Category* default_category = get_category(node, marker_categories, errors);
-
             Trail* trail = new Trail();
+            trail->init_from_xml(node, errors, state);
 
+            Category* default_category = get_parent_trail_defaults(trail, marker_categories);
             if (default_category != nullptr) {
-                *trail = default_category->default_trail;
+                trail->apply_underlay(default_category->default_trail);
             }
 
-            trail->init_from_xml(node, errors, state);
             markers.push_back(trail);
         }
         else {
@@ -171,6 +171,7 @@ void parse_xml_file(string xml_filepath, const string marker_pack_root_directory
     rapidxml::xml_document<> doc;
     rapidxml::xml_node<>* root_node;
     XMLReaderState state;
+    state.marker_categories = marker_categories;
     state.marker_pack_root_directory = marker_pack_root_directory;
 
     rapidxml::file<> xml_file(xml_filepath.c_str());
