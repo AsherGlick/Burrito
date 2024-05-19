@@ -194,7 +194,7 @@ class Generator:
 
     def get_examples(self, field_type: str, field_key: str) -> List[str]:
         if "examples" in self.data[field_key].metadata:
-            return  [f'"{x}"' for x in self.data[field_key].metadata["examples"]]
+            return [f'"{x}"' for x in self.data[field_key].metadata["examples"]]
         return ["???"]
 
     def get_fixed_option_examples(self, field_type: str, pairings: Any) -> List[str]:
