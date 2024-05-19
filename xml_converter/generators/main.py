@@ -19,7 +19,7 @@ INTERNAL_VARIABLE_REGEX: Final[str] = "^[a-z_]+$"
 ATTRIBUTE_NAME_REGEX: Final[str] = "^[A-Za-z ]+$"
 CUSTOM_SERIALIZER_REGEX: Final[str] = r"^(?:read|write)(?:\.xml|\.proto)(?:\.icon|\.trail)?$"
 
-shared_field_properties: Dict[str, DefType] = {
+shared_required_fields: Dict[str, DefType] = {
     "type": string_t(),
     "name": string_t(pattern=ATTRIBUTE_NAME_REGEX),
     "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
@@ -27,33 +27,34 @@ shared_field_properties: Dict[str, DefType] = {
     "protobuf_field": string_t(pattern=PROTO_FIELD_REGEX),
 }
 
-custom_serial_functions: Dict[str, DefType] = {
+shared_optional_fields: Dict[str, DefType] = {
     "custom_functions": pattern_dictionary_t({CUSTOM_SERIALIZER_REGEX: object_t({
         "function": string_t(),
         "side_effects": array_t(string_t()),
     })}),
+    "examples": array_t(string_t())
 }
 
 schema = union_t({
-    "Int32": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
-    "Fixed32": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
-    "Float32": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
-    "String": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
-    "Boolean": union_partial_t(required=shared_field_properties, optional=custom_serial_functions),
+    "Int32": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
+    "Fixed32": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
+    "Float32": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
+    "String": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
+    "Boolean": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
     "MultiflagValue": union_partial_t(
-        required={**shared_field_properties, **{
+        required={**shared_required_fields, **{
             "flags": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())}),
         }},
-        optional=custom_serial_functions,
+        optional=shared_optional_fields,
     ),
     "Enum": union_partial_t(
-        required={**shared_field_properties, **{
+        required={**shared_required_fields, **{
             "values": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())})
         }},
-        optional=custom_serial_functions,
+        optional=shared_optional_fields,
     ),
     "CompoundValue": union_partial_t(
-        required={**shared_field_properties, **{
+        required={**shared_required_fields, **{
             "xml_bundled_components": array_t(string_t()),
             "xml_separate_components": array_t(string_t()),
             "components": array_t(object_t({
@@ -63,10 +64,10 @@ schema = union_t({
                 "protobuf_field": string_t(PROTO_FIELD_REGEX),
             })),
         }},
-        optional=custom_serial_functions,
+        optional=shared_optional_fields,
     ),
     "CompoundCustomClass": union_partial_t(
-        required={**shared_field_properties, **{
+        required={**shared_required_fields, **{
             "class": string_t(),
             "xml_bundled_components": array_t(string_t()),
             "xml_separate_components": array_t(string_t()),
@@ -77,12 +78,12 @@ schema = union_t({
                 "protobuf_field": string_t(PROTO_FIELD_REGEX),
             })),
         }},
-        optional=custom_serial_functions,
+        optional=shared_optional_fields,
     ),
     "Custom": union_partial_t(
-        required={**shared_field_properties, **{"class": string_t()}},
+        required={**shared_required_fields, **{"class": string_t()}},
         optional={
-            **custom_serial_functions,
+            **shared_optional_fields,
             "uses_file_path": boolean_t(),  # This will eventually be part of a struct that is passed into everything
         }
     ),
@@ -191,7 +192,9 @@ class Generator:
                     content_nav=navigation_links
                 ))
 
-    def get_examples(self, field_type: str) -> List[str]:
+    def get_examples(self, field_type: str, field_key: str) -> List[str]:
+        if "examples" in self.data[field_key].metadata:
+            return  [f'"{x}"' for x in self.data[field_key].metadata["examples"]]
         return ["???"]
 
     def get_fixed_option_examples(self, field_type: str, pairings: Any) -> List[str]:
@@ -300,7 +303,7 @@ class Generator:
                     xml_field=fieldval['xml_fields'][0],
                     examples=self.get_examples(
                         field_type=fieldval['type'],
-                        # pairings=pairings
+                        field_key=fieldkey,
                     )
                 )
                 # self.get_examples(fieldval['type'], fieldval['applies_to'], fieldval['xml_fieldsval'][0])
