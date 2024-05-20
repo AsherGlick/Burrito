@@ -7,6 +7,5 @@
 		<POI AchievementBit="5" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
 		<POI AchievementBit="2147483647" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
 		<Trail AchievementBit="5" Type="mycategory" />
-		<POI AchievementBit="2147483647" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
 	</POIs>
 </OverlayData>
