@@ -41,54 +41,106 @@ class CustomFunctions:
     write_proto_trail: Optional[CustomFunction] = field(default=None, metadata={"json": "write.proto.trail"})
 
 
-@dataclass(kw_only=True)
+@dataclass
 class BaseMetadata:
     name: str  # TODO Match this to the regex ATTRIBUTE_NAME_REGEX
     applies_to: List[NodeType]
     xml_fields: List[str]  # TODO: Matche these to XML_ATTRIBUTE_REGEX
     protobuf_field: str  # TODO: Match this to PROTO_FIELD_REGEX
 
+@dataclass
+class OptionalBaseMetadata:
     custom_functions: CustomFunctions = CustomFunctions()
     examples: List[str] = field(default_factory=list)
 
 
-@dataclass(kw_only=True)
-class Int32Metadata(BaseMetadata):
+
+################################################################################
+# Int32Metadata
+################################################################################
+@dataclass
+class _Int32Metadata:
     variable_type: Literal["Int32"] = field(metadata={"json": "type"})
 
 
-@dataclass(kw_only=True)
-class Fixed32Metadata(BaseMetadata):
+@dataclass
+class Int32Metadata(OptionalBaseMetadata, _Int32Metadata, BaseMetadata):
+    pass
+
+
+################################################################################
+# Fixed32Metadata
+################################################################################
+@dataclass
+class _Fixed32Metadata:
     variable_type: Literal["Fixed32"] = field(metadata={"json": "type"})
 
 
-@dataclass(kw_only=True)
-class Float32Metadata(BaseMetadata):
+@dataclass
+class Fixed32Metadata(OptionalBaseMetadata, _Fixed32Metadata, BaseMetadata):
+    pass
+
+
+################################################################################
+# Float32Metadata
+################################################################################
+@dataclass
+class _Float32Metadata:
     variable_type: Literal["Float32"] = field(metadata={"json": "type"})
+@dataclass
+class Float32Metadata(OptionalBaseMetadata, _Float32Metadata, BaseMetadata):
+    pass
 
 
-@dataclass(kw_only=True)
-class StringMetadata(BaseMetadata):
+################################################################################
+# StringMetadata
+################################################################################
+@dataclass
+class _StringMetadata:
     variable_type: Literal["String"] = field(metadata={"json": "type"})
+@dataclass
+class StringMetadata(OptionalBaseMetadata, _StringMetadata, BaseMetadata):
+    pass
 
 
-@dataclass(kw_only=True)
-class BooleanMetadata(BaseMetadata):
+################################################################################
+# BooleanMetadata
+################################################################################
+@dataclass
+class _BooleanMetadata:
     variable_type: Literal["Boolean"] = field(metadata={"json": "type"})
+@dataclass
+class BooleanMetadata(OptionalBaseMetadata, _BooleanMetadata, BaseMetadata):
+    pass
 
 
-@dataclass(kw_only=True)
-class MultiFlagValueMetadata(BaseMetadata):
+################################################################################
+# MultiFlagValueMetadata
+################################################################################
+@dataclass
+class _MultiFlagValueMetadata:
     variable_type: Literal["MultiflagValue"] = field(metadata={"json": "type"})
     flags: Dict[str, List[str]]  # Validate keys against INTERNAL_VARIBLE_REGEX
+@dataclass
+class MultiFlagValueMetadata(OptionalBaseMetadata, _MultiFlagValueMetadata, BaseMetadata):
+    pass
 
 
-@dataclass(kw_only=True)
-class EnumMetadata(BaseMetadata):
+################################################################################
+# EnumMetadata
+################################################################################
+@dataclass
+class _EnumMetadata:
     variable_type: Literal["Enum"] = field(metadata={"json": "type"})
     values: Dict[str, List[str]]  # Validate keys against INTERNAL_VARIBLE_REGEX
 
+@dataclass
+class EnumMetadata(OptionalBaseMetadata, _EnumMetadata, BaseMetadata):
+    pass
 
+################################################################################
+# CompoundValueMetadata
+################################################################################
 @dataclass
 class CompoundSubComponent:
     name: str
@@ -97,8 +149,8 @@ class CompoundSubComponent:
     protobuf_field: str
 
 
-@dataclass(kw_only=True)
-class CompoundValueMetadata(BaseMetadata):
+@dataclass
+class _CompoundValueMetadata:
     variable_type: Literal["CompoundValue"] = field(metadata={"json": "type"})
     xml_bundled_components: List[str]
     xml_separate_components: List[str]
@@ -106,8 +158,16 @@ class CompoundValueMetadata(BaseMetadata):
     components: List[CompoundSubComponent]
 
 
-@dataclass(kw_only=True)
-class CompoundCustomClassMetadata(BaseMetadata):
+@dataclass
+class CompoundValueMetadata(OptionalBaseMetadata, _CompoundValueMetadata, BaseMetadata):
+    pass
+
+
+################################################################################
+# CompoundCustomClassMetadata
+################################################################################
+@dataclass
+class _CompoundCustomClassMetadata:
     variable_type: Literal["CompoundCustomClass"] = field(metadata={"json": "type"})
     cpp_class: str = field(metadata={"json": "class"})
     xml_bundled_components: List[str]
@@ -115,12 +175,24 @@ class CompoundCustomClassMetadata(BaseMetadata):
     components: List[CompoundSubComponent]
 
 
-@dataclass(kw_only=True)
-class CustomMetadata(BaseMetadata):
+@dataclass
+class CompoundCustomClassMetadata(OptionalBaseMetadata, _CompoundCustomClassMetadata, BaseMetadata):
+    pass
+
+
+################################################################################
+# CustomMetadata
+################################################################################
+@dataclass
+class _CustomMetadata:
     variable_type: Literal["Custom"] = field(metadata={"json": "type"})
     cpp_class: str = field(metadata={"json": "class"})
     uses_file_path: Optional[bool] = None
 
+
+@dataclass
+class CustomMetadata(OptionalBaseMetadata, _CustomMetadata, BaseMetadata):
+    pass
 
 MetadataType = Union[
     Int32Metadata,
