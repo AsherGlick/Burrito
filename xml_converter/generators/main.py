@@ -11,7 +11,7 @@ from protobuf_types import get_proto_field_type
 from util import capitalize, SchemaType, Document
 from generate_cpp import write_cpp_classes, write_attribute
 import argparse
-
+import metadata
 
 XML_ATTRIBUTE_REGEX: Final[str] = "^[A-Za-z]+$"
 PROTO_FIELD_REGEX: Final[str] = "^[a-z_.]+$"
@@ -136,6 +136,8 @@ class Generator:
                 print(filepath)
                 raise e
 
+            metadata_dataclass = metadata.parse_data(document.metadata)
+
             error = validate_front_matter_schema(document.metadata)
             if error != "":
                 print(filepath)
@@ -143,6 +145,7 @@ class Generator:
 
             self.data[filepath] = Document(
                 metadata=document.metadata,
+                metadata_dataclass=metadata_dataclass,
                 content=document.content
             )
 

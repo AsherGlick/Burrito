@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Dict, Any
+from metadata import MetadataType
 
 
 ################################################################################
@@ -62,4 +63,5 @@ SchemaType = Dict[str, Any]
 @dataclass
 class Document:
     metadata: SchemaType
+    metadata_dataclass: MetadataType
     content: str

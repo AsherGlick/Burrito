@@ -1,0 +1,146 @@
+from dataclasses import dataclass, field
+import enum
+from typing import Dict, List, Literal, Optional, Any, Union
+import classnotation
+
+
+class NodeType(enum.Enum):
+    icon = "Icon"
+    trail = "Trail"
+    category = "Category"
+
+
+class SubcomponentType(enum.Enum):
+    int32 = "Int32"
+    fixed32 = "Fixed32"
+    float32 = "Float32"
+
+
+@dataclass
+class CustomFunction:
+    function: str
+    side_effects: List[str]
+
+
+@dataclass
+class CustomFunctions:
+    read_xml: Optional[CustomFunction] = field(default=None, metadata={"json": "read.xml"})
+    read_xml_icon: Optional[CustomFunction] = field(default=None, metadata={"json": "read.xml.icon"})
+    read_xml_trail: Optional[CustomFunction] = field(default=None, metadata={"json": "read.xml.trail"})
+
+    read_proto: Optional[CustomFunction] = field(default=None, metadata={"json": "read.proto"})
+    read_proto_icon: Optional[CustomFunction] = field(default=None, metadata={"json": "read.proto.icon"})
+    read_proto_trail: Optional[CustomFunction] = field(default=None, metadata={"json": "read.proto.trail"})
+
+    write_xml: Optional[CustomFunction] = field(default=None, metadata={"json": "write.xml"})
+    write_xml_icon: Optional[CustomFunction] = field(default=None, metadata={"json": "write.xml.icon"})
+    write_xml_trail: Optional[CustomFunction] = field(default=None, metadata={"json": "write.xml.trail"})
+
+    write_proto: Optional[CustomFunction] = field(default=None, metadata={"json": "write.proto"})
+    write_proto_icon: Optional[CustomFunction] = field(default=None, metadata={"json": "write.proto.icon"})
+    write_proto_trail: Optional[CustomFunction] = field(default=None, metadata={"json": "write.proto.trail"})
+
+
+@dataclass(kw_only=True)
+class BaseMetadata:
+    name: str  # TODO Match this to the regex ATTRIBUTE_NAME_REGEX
+    applies_to: List[NodeType]
+    xml_fields: List[str]  # TODO: Matche these to XML_ATTRIBUTE_REGEX
+    protobuf_field: str  # TODO: Match this to PROTO_FIELD_REGEX
+
+    custom_functions: CustomFunctions = CustomFunctions()
+    examples: List[str] = field(default_factory=list)
+
+
+@dataclass(kw_only=True)
+class Int32Metadata(BaseMetadata):
+    variable_type: Literal["Int32"] = field(metadata={"json": "type"})
+
+
+@dataclass(kw_only=True)
+class Fixed32Metadata(BaseMetadata):
+    variable_type: Literal["Fixed32"] = field(metadata={"json": "type"})
+
+
+@dataclass(kw_only=True)
+class Float32Metadata(BaseMetadata):
+    variable_type: Literal["Float32"] = field(metadata={"json": "type"})
+
+
+@dataclass(kw_only=True)
+class StringMetadata(BaseMetadata):
+    variable_type: Literal["String"] = field(metadata={"json": "type"})
+
+
+@dataclass(kw_only=True)
+class BooleanMetadata(BaseMetadata):
+    variable_type: Literal["Boolean"] = field(metadata={"json": "type"})
+
+
+@dataclass(kw_only=True)
+class MultiFlagValueMetadata(BaseMetadata):
+    variable_type: Literal["MultiflagValue"] = field(metadata={"json": "type"})
+    flags: Dict[str, List[str]]  # Validate keys against INTERNAL_VARIBLE_REGEX
+
+
+@dataclass(kw_only=True)
+class EnumMetadata(BaseMetadata):
+    variable_type: Literal["Enum"] = field(metadata={"json": "type"})
+    values: Dict[str, List[str]]  # Validate keys against INTERNAL_VARIBLE_REGEX
+
+
+@dataclass
+class CompoundSubComponent:
+    name: str
+    subcomponent_type: SubcomponentType = field(metadata={"json": "type"})
+    xml_fields: List[str]
+    protobuf_field: str
+
+
+@dataclass(kw_only=True)
+class CompoundValueMetadata(BaseMetadata):
+    variable_type: Literal["CompoundValue"] = field(metadata={"json": "type"})
+    xml_bundled_components: List[str]
+    xml_separate_components: List[str]
+
+    components: List[CompoundSubComponent]
+
+
+@dataclass(kw_only=True)
+class CompoundCustomClassMetadata(BaseMetadata):
+    variable_type: Literal["CompoundCustomClass"] = field(metadata={"json": "type"})
+    cpp_class: str = field(metadata={"json": "class"})
+    xml_bundled_components: List[str]
+    xml_separate_components: List[str]
+    components: List[CompoundSubComponent]
+
+
+@dataclass(kw_only=True)
+class CustomMetadata(BaseMetadata):
+    variable_type: Literal["Custom"] = field(metadata={"json": "type"})
+    cpp_class: str = field(metadata={"json": "class"})
+    uses_file_path: Optional[bool] = None
+
+
+MetadataType = Union[
+    Int32Metadata,
+    Fixed32Metadata,
+    Float32Metadata,
+    StringMetadata,
+    BooleanMetadata,
+    MultiFlagValueMetadata,
+    EnumMetadata,
+    CompoundValueMetadata,
+    CompoundCustomClassMetadata,
+    CustomMetadata
+]
+
+
+@dataclass
+class Wrapper:
+    metadata: MetadataType
+
+
+def parse_data(document: Any) -> MetadataType:
+    wrapper: Wrapper = classnotation.load_data(Wrapper, {"metadata": document})
+    return wrapper.metadata
