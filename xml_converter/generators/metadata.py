@@ -48,11 +48,11 @@ class BaseMetadata:
     xml_fields: List[str]  # TODO: Matche these to XML_ATTRIBUTE_REGEX
     protobuf_field: str  # TODO: Match this to PROTO_FIELD_REGEX
 
+
 @dataclass
 class OptionalBaseMetadata:
     custom_functions: CustomFunctions = CustomFunctions()
     examples: List[str] = field(default_factory=list)
-
 
 
 ################################################################################
@@ -87,6 +87,8 @@ class Fixed32Metadata(OptionalBaseMetadata, _Fixed32Metadata, BaseMetadata):
 @dataclass
 class _Float32Metadata:
     variable_type: Literal["Float32"] = field(metadata={"json": "type"})
+
+
 @dataclass
 class Float32Metadata(OptionalBaseMetadata, _Float32Metadata, BaseMetadata):
     pass
@@ -98,6 +100,8 @@ class Float32Metadata(OptionalBaseMetadata, _Float32Metadata, BaseMetadata):
 @dataclass
 class _StringMetadata:
     variable_type: Literal["String"] = field(metadata={"json": "type"})
+
+
 @dataclass
 class StringMetadata(OptionalBaseMetadata, _StringMetadata, BaseMetadata):
     pass
@@ -109,6 +113,8 @@ class StringMetadata(OptionalBaseMetadata, _StringMetadata, BaseMetadata):
 @dataclass
 class _BooleanMetadata:
     variable_type: Literal["Boolean"] = field(metadata={"json": "type"})
+
+
 @dataclass
 class BooleanMetadata(OptionalBaseMetadata, _BooleanMetadata, BaseMetadata):
     pass
@@ -121,6 +127,8 @@ class BooleanMetadata(OptionalBaseMetadata, _BooleanMetadata, BaseMetadata):
 class _MultiFlagValueMetadata:
     variable_type: Literal["MultiflagValue"] = field(metadata={"json": "type"})
     flags: Dict[str, List[str]]  # Validate keys against INTERNAL_VARIBLE_REGEX
+
+
 @dataclass
 class MultiFlagValueMetadata(OptionalBaseMetadata, _MultiFlagValueMetadata, BaseMetadata):
     pass
@@ -134,9 +142,11 @@ class _EnumMetadata:
     variable_type: Literal["Enum"] = field(metadata={"json": "type"})
     values: Dict[str, List[str]]  # Validate keys against INTERNAL_VARIBLE_REGEX
 
+
 @dataclass
 class EnumMetadata(OptionalBaseMetadata, _EnumMetadata, BaseMetadata):
     pass
+
 
 ################################################################################
 # CompoundValueMetadata
@@ -193,6 +203,7 @@ class _CustomMetadata:
 @dataclass
 class CustomMetadata(OptionalBaseMetadata, _CustomMetadata, BaseMetadata):
     pass
+
 
 MetadataType = Union[
     Int32Metadata,
