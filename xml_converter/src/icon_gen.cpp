@@ -23,7 +23,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     if (attributename == "achievementbit") {
-        xml_attribute_to_int(attribute, errors, state, &(this->achievement_bitmask), &(this->achievement_bitmask_is_set));
+        xml_attribute_to_int(attribute, errors, state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
+    }
+    else if (attributename == "achievementbitindex") {
+        xml_attribute_to_int(attribute, errors, state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
     }
     else if (attributename == "achievementid") {
         xml_attribute_to_int(attribute, errors, state, &(this->achievement_id), &(this->achievement_id_is_set));
@@ -255,8 +258,8 @@ bool Icon::validate_attributes_of_type_marker_category() {
 vector<string> Icon::as_xml(XMLWriterState* state) const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<POI ");
-    if (this->achievement_bitmask_is_set) {
-        xml_node_contents.push_back(int_to_xml_attribute("AchievementBit", state, &this->achievement_bitmask));
+    if (this->achievement_bit_index_is_set) {
+        xml_node_contents.push_back(int_to_xml_attribute("AchievementBit", state, &this->achievement_bit_index));
     }
     if (this->achievement_id_is_set) {
         xml_node_contents.push_back(int_to_xml_attribute("AchievementId", state, &this->achievement_id));
@@ -408,9 +411,9 @@ vector<string> Icon::as_xml(XMLWriterState* state) const {
 
 waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
     waypoint::Icon proto_icon;
-    if (this->achievement_bitmask_is_set) {
-        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_bit(val); };
-        int_to_proto(this->achievement_bitmask, state, setter);
+    if (this->achievement_bit_index_is_set) {
+        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_bit_index(val); };
+        int_to_proto(this->achievement_bit_index, state, setter);
     }
     if (this->achievement_id_is_set) {
         std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_id(val); };
@@ -600,8 +603,8 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
 }
 
 void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
-    if (proto_icon.achievement_bit() != 0) {
-        proto_to_int(proto_icon.achievement_bit(), state, &(this->achievement_bitmask), &(this->achievement_bitmask_is_set));
+    if (proto_icon.achievement_bit_index() != 0) {
+        proto_to_int(proto_icon.achievement_bit_index(), state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
     }
     if (proto_icon.achievement_id() != 0) {
         proto_to_int(proto_icon.achievement_id(), state, &(this->achievement_id), &(this->achievement_id_is_set));
@@ -750,9 +753,9 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
 // underlay argument.
 ////////////////////////////////////////////////////////////////////////////////
 void Icon::apply_underlay(const Icon& underlay) {
-    if (!this->achievement_bitmask_is_set && underlay.achievement_bitmask_is_set) {
-        this->achievement_bitmask = underlay.achievement_bitmask;
-        this->achievement_bitmask_is_set = true;
+    if (!this->achievement_bit_index_is_set && underlay.achievement_bit_index_is_set) {
+        this->achievement_bit_index = underlay.achievement_bit_index;
+        this->achievement_bit_index_is_set = true;
     }
     if (!this->achievement_id_is_set && underlay.achievement_id_is_set) {
         this->achievement_id = underlay.achievement_id;
@@ -947,9 +950,9 @@ void Icon::apply_underlay(const Icon& underlay) {
 // top of this class.
 ////////////////////////////////////////////////////////////////////////////////
 void Icon::apply_overlay(const Icon& overlay) {
-    if (overlay.achievement_bitmask_is_set) {
-        this->achievement_bitmask = overlay.achievement_bitmask;
-        this->achievement_bitmask_is_set = true;
+    if (overlay.achievement_bit_index_is_set) {
+        this->achievement_bit_index = overlay.achievement_bit_index;
+        this->achievement_bit_index_is_set = true;
     }
     if (overlay.achievement_id_is_set) {
         this->achievement_id = overlay.achievement_id;

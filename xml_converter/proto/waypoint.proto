@@ -37,8 +37,9 @@ message Icon {
     Trigger trigger = 9;
     EulerRotation euler_rotation = 10;
 
-    fixed32 achievement_bit = 16;
-    int32 achievement_id = 17;
+    int32 achievement_id = 16;
+    int32 achievement_bit_index = 17;
+
     bool disable_player_cutout = 19;
     int32 minimum_size_on_screen = 20;
     int32 map_display_size = 21;
@@ -75,8 +76,9 @@ message Trail {
     TrailData trail_data = 7;
     float animation_speed = 8;
 
-    fixed32 achievement_bit = 16;
-    int32 achievement_id = 17;
+    int32 achievement_id = 16;
+    int32 achievement_bit_index = 17;
+
     bool disable_player_cutout = 19;
     bool is_wall = 20;
     float scale = 21;

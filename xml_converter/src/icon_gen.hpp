@@ -27,7 +27,7 @@ class XMLError;
 
 class Icon : public Parseable {
  public:
-    int achievement_bitmask;
+    int achievement_bit_index;
     int achievement_id;
     bool auto_trigger;
     float bounce_delay;
@@ -74,7 +74,7 @@ class Icon : public Parseable {
     std::string tooltip_description;
     std::string tooltip_name;
     float trigger_range;
-    bool achievement_bitmask_is_set = false;
+    bool achievement_bit_index_is_set = false;
     bool achievement_id_is_set = false;
     bool auto_trigger_is_set = false;
     bool bounce_delay_is_set = false;
