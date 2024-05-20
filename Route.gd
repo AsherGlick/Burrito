@@ -7,6 +7,11 @@ var color = Color(0.9, 0.1, 0.1)
 var waypoint: Waypoint.Trail
 var category: TreeItem
 
+signal remove_point(index)
+signal add_point(position, index)
+signal set_point_position(position, index)
+signal reverse()
+
 var point_list := PoolVector3Array()
 
 func create_mesh(point_list: PoolVector3Array):
@@ -70,6 +75,7 @@ func update_point_vertical(index, y_value):
 
 func reverse():
 	self.point_list.invert()
+	emit_signal("reverse")
 	refresh_mesh()
 
 func get_point_count():
@@ -80,6 +86,7 @@ func get_point_position(index: int):
 
 func set_point_position(index: int, position: Vector3):
 	self.point_list[index] = position
+	emit_signal("set_point_position", index, Vector2(position.x, position.z))
 	refresh_mesh()
 
 func add_point(position: Vector3, index: int = -1):
@@ -87,10 +94,12 @@ func add_point(position: Vector3, index: int = -1):
 		self.point_list.append(position)
 	else:
 		self.point_list.insert(index, position)
+	emit_signal("add_point", Vector2(position.x, position.z), index)
 	refresh_mesh()
 
 func remove_point(index: int):
 	self.point_list.remove(index)
+	emit_signal("remove_point", index)
 	refresh_mesh()
 
 

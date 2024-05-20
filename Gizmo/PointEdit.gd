@@ -28,16 +28,14 @@ func select(camera, event):
 	emit_signal("selected", self)
 
 var object_link = null
-var object_2d_link = null
 var object_index:int = 0
 var point_type: String
 
 
-func link_point(point_type: String, object_link, object_2d_link = null, object_index = 0):
+func link_point(point_type: String, object_link, object_index = 0):
 	self.point_type = point_type
 	self.object_link = object_link
 	if point_type == "path" || point_type == "area":
-		self.object_2d_link = object_2d_link
 		self.object_index = object_index
 	if point_type == "icon":
 		pass
@@ -47,7 +45,6 @@ func update_point():
 	if self.translation != self.last_translation:
 		if point_type == "path" || point_type == "area":
 			self.object_link.set_point_position(self.object_index, self.translation)
-			self.object_2d_link.points[self.object_index] = Vector2(self.translation.x, self.translation.z)
 		if point_type == "icon":
 			self.object_link.translation = self.translation
 		print("update")

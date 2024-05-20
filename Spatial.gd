@@ -18,7 +18,6 @@ var next_texture_path: String = ""
 # the value is null then a new path will be created the next time a path point
 # will be created.
 var currently_active_path = null
-var currently_active_path_2d = null
 var currently_active_category = null
 
 var map_was_open = false
@@ -619,9 +618,12 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_2d_path.points = points_2d
 	new_2d_path.texture = texture
 	category_data.category2d.add_path2d(new_2d_path)
+	new_route.connect("remove_point", new_2d_path, "remove_point")
+	new_route.connect("add_point", new_2d_path, "add_point")
+	new_route.connect("set_point_position", new_2d_path, "set_point_position")
+	new_route.connect("reverse", new_2d_path, "reverse")
 
 	self.currently_active_path = new_route
-	self.currently_active_path_2d = new_2d_path
 
 
 func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem):
@@ -679,10 +681,8 @@ func gen_adjustment_nodes():
 		return
 
 	var category3d = self.currently_active_category.get_metadata(0).category3d
-	var category2d = self.currently_active_category.get_metadata(0).category2d
 	for index in category3d.paths.size():
 		var route = category3d.paths[index]
-		var path2d = category2d.paths2d[index]
 		for i in range(route.get_point_count()):
 			var gizmo_position = route.get_point_position(i)
 			# Simplistic cull to prevent nodes that are too far away to be
@@ -692,7 +692,7 @@ func gen_adjustment_nodes():
 				continue
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.link_point("path", route, path2d, i)
+			new_gizmo.link_point("path", route, i)
 			new_gizmo.connect("selected", self, "on_gizmo_selected")
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 			$Gizmos.add_child(new_gizmo)
@@ -816,7 +816,6 @@ func _on_NewPathPoint_pressed():
 		var z_accurate_player_position = player_position
 		z_accurate_player_position.z = -z_accurate_player_position.z
 		self.currently_active_path.add_point(z_accurate_player_position)
-		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
 
 func _on_NodeEditorDialog_hide():
 	self.currently_selected_node = null
@@ -830,11 +829,9 @@ func _on_DeleteNode_pressed():
 		self.currently_selected_node.object_link.queue_free()
 	elif self.currently_selected_node.point_type == "path":
 		var path =   self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
 		var index =  self.currently_selected_node.object_index
 
 		path.remove_point(index)
-		path2d.remove_point(index)
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
 	on_gizmo_deselected(self.currently_selected_node)
@@ -846,7 +843,6 @@ func _on_NewNodeAfter_pressed():
 	elif self.currently_selected_node.point_type == "path":
 		print("insert path node")
 		var path = self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
 		var index = self.currently_selected_node.object_index
 
 		var start = path.get_point_position(index)
@@ -857,7 +853,6 @@ func _on_NewNodeAfter_pressed():
 			midpoint = ((start-end)/2) + end
 
 		path.add_point(midpoint, index+1)
-		path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
 
 		clear_adjustment_nodes()
 		gen_adjustment_nodes()
@@ -882,7 +877,6 @@ func _on_SetActivePath_pressed():
 		print("Warning: Cannot set icon as active path")
 	elif self.currently_selected_node.point_type == "path":
 		self.currently_active_path = self.currently_selected_node.object_link
-		self.currently_active_path_2d = self.currently_selected_node.object_2d_link
 
 
 func _on_ReversePathDirection_pressed():
