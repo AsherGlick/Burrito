@@ -200,7 +200,7 @@ class CompoundCustomClassMetadata(OptionalBaseMetadata, _CompoundCustomClassMeta
 class _CustomMetadata:
     variable_type: Literal["Custom"] = field(metadata={"json": "type"})
     cpp_class: str = field(metadata={"json": "class"})
-    uses_file_path: Optional[bool] = None
+    uses_file_path: bool = False
 
 
 @dataclass

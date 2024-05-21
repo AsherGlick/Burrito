@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
-from typing import Set, List, Dict, Optional, Tuple, TypedDict, Any
+from typing import Set, List, Dict, Optional, Tuple, TypedDict
 from jinja2 import FileSystemLoader, Environment, Template
+from metadata import CustomFunction, MetadataType
 from jinja_helpers import UnindentBlocks
-from util import lowercase, capitalize, normalize, Document, SchemaType
+from util import lowercase, capitalize, normalize, Document
 import os
 from protobuf_types import is_proto_field_scalar, get_proto_field_cpp_type, get_proto_field_cpp_prototype
 
@@ -209,14 +210,22 @@ def write_cpp_classes(
     return written_files
 
 
-def build_custom_function_data(config: Dict[str, Any]) -> Tuple[str, List[str]]:
-    function = config["function"]
-    side_effects = []
-    for side_effect in config["side_effects"]:
-        side_effects.append(attribute_name_from_markdown_data(side_effect))
-        side_effects.append(attribute_name_from_markdown_data(side_effect) + "_is_set")
+################################################################################
+# convert_side_effects_to_variable_names
+#
+# The side effects defined in the markdown documentation files are not the same
+# as the internal variables used. This function takes the markdown side effects
+# and converts them to thir variable names, it also adds the boolean is_set
+# flags as part of the arguments passed.
+################################################################################
+def convert_side_effects_to_variable_names(side_effects: List[str]) -> List[str]:
+    side_effect_variables: List[str] = []
 
-    return function, side_effects
+    for side_effect in side_effects:
+        side_effect_variables.append(attribute_name_from_markdown_data(side_effect))
+        side_effect_variables.append(attribute_name_from_markdown_data(side_effect) + "_is_set")
+
+    return side_effect_variables
 
 
 ############################################################################
@@ -260,26 +269,27 @@ def generate_cpp_variable_data(
         cpp_includes.cpp_absolute_includes.add("type_traits")
 
     for filepath, document in sorted(data.items()):
-        fieldval = document.metadata
-        attribute_name: str = attribute_name_from_markdown_data(fieldval['name'])
+        fieldval = document.metadata_dataclass
+        attribute_name: str = attribute_name_from_markdown_data(fieldval.name)
 
-        if doc_type in fieldval['applies_to']:
+        if doc_type in fieldval.applies_to_as_str():
             xml_fields: List[str] = []
             side_effects: List[str] = []
             write_to_xml: bool = True
             default_xml_field: str = ""
 
-            if fieldval['type'] in documentation_type_data:
-                cpp_type = documentation_type_data[fieldval['type']]["cpp_type"]
-                class_name = documentation_type_data[fieldval['type']]["class_name"]
+            if fieldval.variable_type in documentation_type_data:
+                cpp_type = documentation_type_data[fieldval.variable_type]["cpp_type"]
+                class_name = documentation_type_data[fieldval.variable_type]["class_name"]
                 cpp_includes.cpp_relative_includes.add("attribute/{}.hpp".format(class_name))
 
-            elif fieldval['type'] in ["Custom", "CompoundCustomClass"]:
-                cpp_type = fieldval['class']
-                class_name = insert_delimiter(fieldval['class'], delimiter="_")
+            # elif fieldval.variable_type in ("Custom", "CompoundCustomClass"):
+            elif fieldval.variable_type == "Custom" or fieldval.variable_type == "CompoundCustomClass":
+                cpp_type = fieldval.cpp_class
+                class_name = insert_delimiter(fieldval.cpp_class, delimiter="_")
                 cpp_includes.hpp_relative_includes.add("attribute/{}.hpp".format(class_name))
 
-            elif fieldval['type'] in ["Enum", "MultiflagValue", "CompoundValue"]:
+            elif fieldval.variable_type in ("Enum", "MultiflagValue", "CompoundValue"):
                 cpp_type = capitalize(attribute_name, delimiter="")
                 class_name = attribute_name
 
@@ -287,44 +297,45 @@ def generate_cpp_variable_data(
 
             else:
                 raise ValueError("Unexpected type {field_type} for attribute {attribute_name}".format(
-                    field_type=fieldval['type'],
+                    field_type=fieldval.variable_type,
                     attribute_name=attribute_name,
                 ))
 
-            for x in fieldval['xml_fields']:
+            for x in fieldval.xml_fields:
                 xml_fields.append(lowercase(x, delimiter=""))
-            default_xml_field = fieldval['xml_fields'][0]
+            default_xml_field = fieldval.xml_fields[0]
 
             proto_drilldown_calls: str
             mutable_proto_drilldown_calls: str
             protobuf_field: str
-            proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval["protobuf_field"])
+            proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval.protobuf_field)
 
             # Compound Values are unique in that the components have xml fields in addition to the compound variable
-            if fieldval['type'] in ["CompoundValue", "CompoundCustomClass"]:
-                for component in fieldval['components']:
+            # if fieldval.variable_type in ("CompoundValue", "CompoundCustomClass"):
+            if fieldval.variable_type == "CompoundValue" or fieldval.variable_type == "CompoundCustomClass":
+                for component in fieldval.components:
                     component_xml_fields: List[str] = []
-                    component_name: str = attribute_name_from_markdown_data(component['name'])
+                    component_name: str = attribute_name_from_markdown_data(component.name)
                     component_default_xml_field: str = ""
-                    for x in component['xml_fields']:
+                    for x in component.xml_fields:
                         component_xml_fields.append(lowercase(x, delimiter=""))
-                    component_class_name = documentation_type_data[component['type']]["class_name"]
-                    if component['name'] in fieldval['xml_separate_components']:
-                        component_default_xml_field = component['xml_fields'][0]
+                    component_class_name = documentation_type_data[component.subcomponent_type.value]["class_name"]
+                    if component.name in fieldval.xml_separate_components:
+                        component_default_xml_field = component.xml_fields[0]
                         write_to_xml = True
-                    if component['name'] in fieldval['xml_bundled_components']:
-                        component_default_xml_field = fieldval['xml_fields'][0]
+                    if component.name in fieldval.xml_bundled_components:
+                        component_default_xml_field = fieldval.xml_fields[0]
                         write_to_xml = False
                     component_attribute_variable = AttributeVariable(
                         attribute_name=attribute_name + "." + component_name,
                         attribute_type="CompoundValue",
-                        cpp_type=documentation_type_data[component['type']]["cpp_type"],
+                        cpp_type=documentation_type_data[component.subcomponent_type.value]["cpp_type"],
                         class_name=component_class_name,
                         xml_fields=component_xml_fields,
                         default_xml_field=component_default_xml_field,
-                        protobuf_field=component["protobuf_field"],
-                        protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval["protobuf_field"] + "." + component["protobuf_field"]),
-                        is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval["protobuf_field"] + "." + component["protobuf_field"]),
+                        protobuf_field=component.protobuf_field,
+                        protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
+                        is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
                         attribute_flag_name=attribute_name + "_is_set",
                         write_to_xml=write_to_xml,
                         is_component=True,
@@ -340,65 +351,67 @@ def generate_cpp_variable_data(
                     )
                     attribute_variables.append(component_attribute_variable)
                 # If there aren't any components to bundle, we don't want to render the attribute
-                if fieldval['xml_bundled_components'] == []:
+                if fieldval.xml_bundled_components == []:
                     write_to_xml = False
 
-            serialize_xml_function: str = class_name + "_to_xml_attribute"
-            serialize_xml_side_effects: List[str] = []
-            deserialize_xml_function: str = "xml_attribute_to_" + class_name
-            deserialize_xml_side_effects: List[str] = []
-            serialize_proto_function: str = class_name + "_to_proto"
-            serialize_proto_side_effects: List[str] = []
-            deserialize_proto_function: str = "proto_to_" + class_name
-            deserialize_proto_side_effects: List[str] = []
-            if "custom_functions" in fieldval:
-                # Overwrite defaults with xml/proto read/write functions
-                for custom_function in fieldval["custom_functions"]:
-                    if custom_function == "read.xml":
-                        deserialize_xml_function, deserialize_xml_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
-                    elif custom_function == "write.xml":
-                        serialize_xml_function, serialize_xml_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
-                    elif custom_function == "read.proto":
-                        deserialize_proto_function, deserialize_proto_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
-                    elif custom_function == "write.proto":
-                        serialize_proto_function, serialize_proto_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
-                # Overwrite with marker type specific functions
-                for custom_function in fieldval["custom_functions"]:
-                    if custom_function == "read.xml." + doc_type:
-                        deserialize_xml_function, deserialize_xml_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
-                    elif custom_function == "write.xml." + doc_type:
-                        serialize_xml_function, serialize_xml_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
-                    elif custom_function == "read.proto." + doc_type:
-                        deserialize_proto_function, deserialize_proto_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
-                    elif custom_function == "write.proto." + doc_type:
-                        serialize_proto_function, serialize_proto_side_effects = build_custom_function_data(
-                            fieldval["custom_functions"][custom_function]
-                        )
+            # Identify the XML serialize function info
+            serialize_xml_function: CustomFunction = CustomFunction(
+                function=class_name + "_to_xml_attribute",
+                side_effects=[],
+            )
+            if fieldval.custom_functions.write_xml_trail is not None and doc_type == "Trail":
+                serialize_xml_function = fieldval.custom_functions.write_xml_trail
+            if fieldval.custom_functions.write_xml_icon is not None and doc_type == "Icon":
+                serialize_xml_function = fieldval.custom_functions.write_xml_icon
+            elif fieldval.custom_functions.write_xml is not None:
+                serialize_xml_function = fieldval.custom_functions.write_xml
+
+            # Identify the XML deserialize function info
+            deserialize_xml_function: CustomFunction = CustomFunction(
+                function="xml_attribute_to_" + class_name,
+                side_effects=[],
+            )
+            if fieldval.custom_functions.read_xml_trail is not None and doc_type == "Trail":
+                deserialize_xml_function = fieldval.custom_functions.read_xml_trail
+            if fieldval.custom_functions.read_xml_icon is not None and doc_type == "Icon":
+                deserialize_xml_function = fieldval.custom_functions.read_xml_icon
+            elif fieldval.custom_functions.read_xml is not None:
+                deserialize_xml_function = fieldval.custom_functions.read_xml
+
+            # Identify the proto serialize function info
+            serialize_proto_function: CustomFunction = CustomFunction(
+                function=class_name + "_to_proto",
+                side_effects=[],
+            )
+            if fieldval.custom_functions.write_proto_trail is not None and doc_type == "Trail":
+                serialize_proto_function = fieldval.custom_functions.write_proto_trail
+            if fieldval.custom_functions.write_proto_icon is not None and doc_type == "Icon":
+                serialize_proto_function = fieldval.custom_functions.write_proto_icon
+            elif fieldval.custom_functions.write_proto is not None:
+                serialize_proto_function = fieldval.custom_functions.write_proto
+
+            # Identify the proto deserialize function info
+            deserialize_proto_function: CustomFunction = CustomFunction(
+                function="proto_to_" + class_name,
+                side_effects=[],
+            )
+            if fieldval.custom_functions.read_proto_trail is not None and doc_type == "Trail":
+                deserialize_proto_function = fieldval.custom_functions.read_proto_trail
+            if fieldval.custom_functions.read_proto_icon is not None and doc_type == "Icon":
+                deserialize_proto_function = fieldval.custom_functions.read_proto_icon
+            elif fieldval.custom_functions.read_proto is not None:
+                deserialize_proto_function = fieldval.custom_functions.read_proto
 
             attribute_variable = AttributeVariable(
                 attribute_name=attribute_name,
-                attribute_type=fieldval["type"],
+                attribute_type=fieldval.variable_type,
                 cpp_type=cpp_type,
                 class_name=class_name,
                 xml_fields=xml_fields,
                 default_xml_field=default_xml_field,
                 protobuf_field=protobuf_field,
-                protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval["protobuf_field"]),
-                is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval["protobuf_field"]),
+                protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field),
+                is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field),
                 proto_drilldown_calls=proto_drilldown_calls,
                 mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
 
@@ -406,16 +419,16 @@ def generate_cpp_variable_data(
                 attribute_flag_name=attribute_name + "_is_set",
                 side_effects=side_effects,
 
-                serialize_xml_function=serialize_xml_function,
-                serialize_xml_side_effects=serialize_xml_side_effects,
-                deserialize_xml_function=deserialize_xml_function,
-                deserialize_xml_side_effects=deserialize_xml_side_effects,
-                serialize_proto_function=serialize_proto_function,
-                serialize_proto_side_effects=serialize_proto_side_effects,
-                deserialize_proto_function=deserialize_proto_function,
-                deserialize_proto_side_effects=deserialize_proto_side_effects,
+                serialize_xml_function=serialize_xml_function.function,
+                serialize_xml_side_effects=convert_side_effects_to_variable_names(serialize_xml_function.side_effects),
+                deserialize_xml_function=deserialize_xml_function.function,
+                deserialize_xml_side_effects=convert_side_effects_to_variable_names(deserialize_xml_function.side_effects),
+                serialize_proto_function=serialize_proto_function.function,
+                serialize_proto_side_effects=convert_side_effects_to_variable_names(serialize_proto_function.side_effects),
+                deserialize_proto_function=deserialize_proto_function.function,
+                deserialize_proto_side_effects=convert_side_effects_to_variable_names(deserialize_proto_function.side_effects),
 
-                uses_file_path=fieldval.get("uses_file_path", False)
+                uses_file_path=fieldval.uses_file_path if fieldval.variable_type == "Custom" else False
             )
             attribute_variables.append(attribute_variable)
 
@@ -441,7 +454,6 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         lstrip_blocks=True
     )
     attribute_names: Dict[str, str] = {}
-    metadata: Dict[str, SchemaType] = {}
     template: Dict[str, Template] = {
         "MultiflagValue": env.get_template("attribute_template_multiflagvalue.cpp"),
         "CompoundValue": env.get_template("attribute_template_compoundvalue.cpp"),
@@ -455,29 +467,29 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
     for filepath in attribute_names:
         attribute_components: List[AttributeComponent] = []
         xml_bundled_components: List[str] = []
-        metadata[filepath] = data[filepath].metadata
-        attribute_name = attribute_name_from_markdown_data(metadata[filepath]['name'])
+        attribute_data: MetadataType = data[filepath].metadata_dataclass
+        attribute_name = attribute_name_from_markdown_data(attribute_data.name)
 
         proto_field_type: str = ""
         proto_field_prototype: Optional[str] = None
-        for marker_type in metadata[filepath]["applies_to"]:
-            new_type = get_proto_field_cpp_type(marker_type, metadata[filepath]["protobuf_field"])
+        for marker_type in attribute_data.applies_to_as_str():
+            new_type = get_proto_field_cpp_type(marker_type, attribute_data.protobuf_field)
             if proto_field_type != "" and proto_field_type != new_type:
-                print("Proto Field type differes between different marker types for ", metadata[filepath]["protobuf_field"])
+                print("Proto Field type differes between different marker types for ", attribute_data.protobuf_field)
             proto_field_type = new_type
 
-            new_prototype = get_proto_field_cpp_prototype(marker_type, metadata[filepath]["protobuf_field"])
+            new_prototype = get_proto_field_cpp_prototype(marker_type, attribute_data.protobuf_field)
             if proto_field_prototype is not None and proto_field_prototype != new_prototype:
-                print("Proto Field prototype differes between different marker types for ", metadata[filepath]["protobuf_field"])
+                print("Proto Field prototype differes between different marker types for ", attribute_data.protobuf_field)
             proto_field_prototype = new_prototype
 
         protobuf_field: str
-        _, _, protobuf_field = split_field_into_drilldown(metadata[filepath]["protobuf_field"])
+        _, _, protobuf_field = split_field_into_drilldown(attribute_data.protobuf_field)
 
-        if metadata[filepath]['type'] == "MultiflagValue":
-            for flag in metadata[filepath]['flags']:
+        if attribute_data.variable_type == "MultiflagValue":
+            for flag in attribute_data.flags:
                 xml_fields = []
-                for item in metadata[filepath]['flags'][flag]:
+                for item in attribute_data.flags[flag]:
                     xml_fields.append(normalize(item))
                 attribute_component = AttributeComponent(
                     attribute_name=flag,
@@ -487,30 +499,30 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                 )
                 attribute_components.append(attribute_component)
 
-        elif metadata[filepath]['type'] == "CompoundValue":
-            for component in metadata[filepath]['components']:
+        elif attribute_data.variable_type == "CompoundValue":
+            for component in attribute_data.components:
                 xml_fields = []
-                if component['type'] not in documentation_type_data:
+                if component.subcomponent_type.value not in documentation_type_data:
                     raise ValueError("Unexpected type for component. Look at markdown file {attribute_name}".format(
                         attribute_name=attribute_name
                     ))
-                component_attribute_name: str = attribute_name_from_markdown_data(component['name'])
-                for item in component['xml_fields']:
+                component_attribute_name: str = attribute_name_from_markdown_data(component.name)
+                for item in component.xml_fields:
                     xml_fields.append(normalize(item))
-                if component['name'] in metadata[filepath]['xml_bundled_components']:
+                if component.name in attribute_data.xml_bundled_components:
                     xml_bundled_components.append(component_attribute_name)
                 attribute_component = AttributeComponent(
                     attribute_name=component_attribute_name,
-                    cpp_type=documentation_type_data[component['type']]["cpp_type"],
+                    cpp_type=documentation_type_data[component.subcomponent_type.value]["cpp_type"],
                     xml_fields=xml_fields,
-                    protobuf_field=component["protobuf_field"],
+                    protobuf_field=component.protobuf_field,
                 )
                 attribute_components.append(attribute_component)
 
-        elif metadata[filepath]['type'] == "Enum":
-            for value in metadata[filepath]['values']:
+        elif attribute_data.variable_type == "Enum":
+            for value in attribute_data.values:
                 xml_fields = []
-                for item in metadata[filepath]['values'][value]:
+                for item in attribute_data.values[value]:
                     xml_fields.append(normalize(item))
                 attribute_component = AttributeComponent(
                     attribute_name=value,
@@ -530,7 +542,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                 attribute_name=attribute_name,
                 attribute_components=sorted(attribute_components, key=get_attribute_component_key),
                 class_name=capitalize(attribute_name, delimiter=""),
-                type=metadata[filepath]['type'],
+                type=attribute_data.variable_type,
                 proto_field_cpp_type=proto_field_type,
                 proto_field_cpp_type_prototype=proto_field_prototype,
             )
@@ -540,7 +552,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         cpp_filepath = os.path.join(output_directory, attribute_name + "_gen.cpp")
         write_if_different(
             cpp_filepath,
-            template[metadata[filepath]['type']].render(
+            template[attribute_data.variable_type].render(
                 attribute_name=attribute_name,
                 # TODO: Should this attribute_components list be sorted? The hpp one is.
                 attribute_components=attribute_components,
