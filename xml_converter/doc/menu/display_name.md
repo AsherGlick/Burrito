@@ -4,6 +4,9 @@ type: String
 applies_to: [Category]
 xml_fields: [DisplayName]
 protobuf_field: name
+examples:
+  - "My Category"
+  - "Tribulation Mode 203"
 custom_functions:
   read.proto:
     function: proto_display_name_to_display_name_and_name
