@@ -20,14 +20,26 @@ string {{cpp_class}}::classname() {
 {% if cpp_class == "Category" %}
     void {{cpp_class}}::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLReaderState* state) {
         for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
-            bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
-            bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors, state);
+            bool handled = false;
 
             if (init_xml_attribute(attribute, errors, state)) {
+                handled = true;
             }
-            else if (is_icon_value || is_trail_value) {
+            // Attempt to parse the attributes and throw away the results. We
+            // perform this extra work here to identify if the attribute is
+            // part of the particular marker, and to gather any errors there
+            // might be with that attribute so they can be correctly attributed
+            // to this node instead of the children that inherit the field.
+            if (Icon().init_xml_attribute(attribute, errors, state)) {
+                this->icon_attributes.push_back(attribute);
+                handled = true;
             }
-            else {
+            if (Trail().init_xml_attribute(attribute, errors, state)) {
+                this->trail_attributes.push_back(attribute);
+                handled = true;
+            }
+
+            if (!handled) {
                 errors->push_back(new XMLAttributeNameError("Unknown " + this->classname() + " attribute ", attribute));
             }
         }
@@ -119,48 +131,4 @@ void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_hea
             }
         {% endif %}
     {% endfor %}
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// apply_underlay
-//
-// Transforms this {{cpp_class}} as if this class was overlayed on top of the
-// underlay argument.
-////////////////////////////////////////////////////////////////////////////////
-void {{cpp_class}}::apply_underlay(const {{cpp_class}}& underlay) {
-    {% for attribute_variable in attribute_variables %}
-        {% if attribute_variable.is_component == false %}
-            if (!this->{{attribute_variable.attribute_flag_name}} && underlay.{{attribute_variable.attribute_flag_name}}) {
-                this->{{attribute_variable.attribute_name}} = underlay.{{attribute_variable.attribute_name}};
-                this->{{attribute_variable.attribute_flag_name}} = true;
-            }
-        {% endif %}
-    {% endfor %}
-    {% if cpp_class == "Category" %}
-
-        this->default_icon.apply_underlay(underlay.default_icon);
-        this->default_trail.apply_underlay(underlay.default_trail);
-    {% endif %}
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// apply_overlay
-//
-// Transforms this {{cpp_class}} as if the overlay argument were overlayed on
-// top of this class.
-////////////////////////////////////////////////////////////////////////////////
-void {{cpp_class}}::apply_overlay(const {{cpp_class}}& overlay) {
-    {% for attribute_variable in attribute_variables %}
-        {% if attribute_variable.is_component == false %}
-            if (overlay.{{attribute_variable.attribute_flag_name}}) {
-                this->{{attribute_variable.attribute_name}} = overlay.{{attribute_variable.attribute_name}};
-                this->{{attribute_variable.attribute_flag_name}} = true;
-            }
-        {% endif %}
-    {% endfor %}
-    {% if cpp_class == "Category" %}
-
-        this->default_icon.apply_overlay(overlay.default_icon);
-        this->default_trail.apply_overlay(overlay.default_trail);
-    {% endif %}
 }

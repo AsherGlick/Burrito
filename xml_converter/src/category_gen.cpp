@@ -20,14 +20,26 @@ string Category::classname() {
 }
 void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* errors, XMLReaderState* state) {
     for (rapidxml::xml_attribute<>* attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute()) {
-        bool is_icon_value = this->default_icon.init_xml_attribute(attribute, errors, state);
-        bool is_trail_value = this->default_trail.init_xml_attribute(attribute, errors, state);
+        bool handled = false;
 
         if (init_xml_attribute(attribute, errors, state)) {
+            handled = true;
         }
-        else if (is_icon_value || is_trail_value) {
+        // Attempt to parse the attributes and throw away the results. We
+        // perform this extra work here to identify if the attribute is
+        // part of the particular marker, and to gather any errors there
+        // might be with that attribute so they can be correctly attributed
+        // to this node instead of the children that inherit the field.
+        if (Icon().init_xml_attribute(attribute, errors, state)) {
+            this->icon_attributes.push_back(attribute);
+            handled = true;
         }
-        else {
+        if (Trail().init_xml_attribute(attribute, errors, state)) {
+            this->trail_attributes.push_back(attribute);
+            handled = true;
+        }
+
+        if (!handled) {
             errors->push_back(new XMLAttributeNameError("Unknown " + this->classname() + " attribute ", attribute));
         }
     }
@@ -147,76 +159,4 @@ void Category::parse_protobuf(waypoint::Category proto_category, ProtoReaderStat
     if (proto_category.tip_description() != "") {
         proto_to_string(proto_category.tip_description(), state, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// apply_underlay
-//
-// Transforms this Category as if this class was overlayed on top of the
-// underlay argument.
-////////////////////////////////////////////////////////////////////////////////
-void Category::apply_underlay(const Category& underlay) {
-    if (!this->default_visibility_is_set && underlay.default_visibility_is_set) {
-        this->default_visibility = underlay.default_visibility;
-        this->default_visibility_is_set = true;
-    }
-    if (!this->display_name_is_set && underlay.display_name_is_set) {
-        this->display_name = underlay.display_name;
-        this->display_name_is_set = true;
-    }
-    if (!this->is_separator_is_set && underlay.is_separator_is_set) {
-        this->is_separator = underlay.is_separator;
-        this->is_separator_is_set = true;
-    }
-    if (!this->menu_id_is_set && underlay.menu_id_is_set) {
-        this->menu_id = underlay.menu_id;
-        this->menu_id_is_set = true;
-    }
-    if (!this->name_is_set && underlay.name_is_set) {
-        this->name = underlay.name;
-        this->name_is_set = true;
-    }
-    if (!this->tooltip_description_is_set && underlay.tooltip_description_is_set) {
-        this->tooltip_description = underlay.tooltip_description;
-        this->tooltip_description_is_set = true;
-    }
-
-    this->default_icon.apply_underlay(underlay.default_icon);
-    this->default_trail.apply_underlay(underlay.default_trail);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// apply_overlay
-//
-// Transforms this Category as if the overlay argument were overlayed on
-// top of this class.
-////////////////////////////////////////////////////////////////////////////////
-void Category::apply_overlay(const Category& overlay) {
-    if (overlay.default_visibility_is_set) {
-        this->default_visibility = overlay.default_visibility;
-        this->default_visibility_is_set = true;
-    }
-    if (overlay.display_name_is_set) {
-        this->display_name = overlay.display_name;
-        this->display_name_is_set = true;
-    }
-    if (overlay.is_separator_is_set) {
-        this->is_separator = overlay.is_separator;
-        this->is_separator_is_set = true;
-    }
-    if (overlay.menu_id_is_set) {
-        this->menu_id = overlay.menu_id;
-        this->menu_id_is_set = true;
-    }
-    if (overlay.name_is_set) {
-        this->name = overlay.name;
-        this->name_is_set = true;
-    }
-    if (overlay.tooltip_description_is_set) {
-        this->tooltip_description = overlay.tooltip_description;
-        this->tooltip_description_is_set = true;
-    }
-
-    this->default_icon.apply_overlay(overlay.default_icon);
-    this->default_trail.apply_overlay(overlay.default_trail);
 }
