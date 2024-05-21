@@ -49,10 +49,10 @@ class Generator:
                 print(filepath)
                 raise e
 
-            metadata_dataclass = parse_data(document.metadata)
+            metadata = parse_data(document.metadata)
 
             self.data[filepath] = Document(
-                metadata_dataclass=metadata_dataclass,
+                metadata=metadata,
                 content=document.content
             )
 
@@ -88,7 +88,7 @@ class Generator:
 
             for subpage in categories[page]:
                 content[subpage] = markdown.markdown(self.data[subpage].content, extensions=['extra', 'codehilite'])
-                metadata[subpage] = self.data[subpage].metadata_dataclass
+                metadata[subpage] = self.data[subpage].metadata
 
             generated_doc, field_rows = self.generate_auto_docs(metadata, content)
 
@@ -103,7 +103,7 @@ class Generator:
                 ))
 
     def get_examples(self, field_type: str, field_key: str) -> List[str]:
-        field_examples = self.data[field_key].metadata_dataclass.examples
+        field_examples = self.data[field_key].metadata.examples
         if len(field_examples) > 0:
             return [f'"{x}"' for x in field_examples]
 

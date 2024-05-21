@@ -58,5 +58,5 @@ def normalize(word: str) -> str:
 
 @dataclass
 class Document:
-    metadata_dataclass: MetadataType
+    metadata: MetadataType
     content: str
