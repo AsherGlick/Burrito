@@ -93,10 +93,10 @@ func remove_point(index: int):
 	self.point_list.remove(index)
 	refresh_mesh()
 
-func new_point_after(midpoint, index):
-	var start = self.get_point_position(index)
+func new_point_after(midpoint: Vector3, index):
+	var start: Vector3 = self.get_point_position(index)
 	if self.get_point_count() > index+1:
-		var end = self.get_point_position(index+1)
+		var end: Vector3 = self.get_point_position(index+1)
 		midpoint = ((start-end)/2) + end
 	add_point(midpoint, index+1)
 

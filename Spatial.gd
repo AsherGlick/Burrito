@@ -681,7 +681,7 @@ func gen_adjustment_nodes():
 	var category2d = self.currently_active_category.get_metadata(0).category2d
 	for index in category3d.paths.size():
 		var route = category3d.paths[index]
-		var paths2d = category2d.paths2d[index]
+		var path2d = category2d.paths2d[index]
 		for i in range(route.get_point_count()):
 			var gizmo_position = route.get_point_position(i)
 			# Simplistic cull to prevent nodes that are too far away to be
@@ -691,16 +691,18 @@ func gen_adjustment_nodes():
 				continue
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.connect("selected", self, "on_gizmo_selected", [route, "path", paths2d, i])
-			new_gizmo.connect("deselected", self, "on_gizmo_deselected", [route, "path", paths2d, i])
+			new_gizmo.connect("selected", self, "on_gizmo_selected", [route, "path", path2d, i])
+			new_gizmo.connect("deselected", self, "on_gizmo_deselected", [route, "path", path2d, i])
+			self.connect("deselected", self, "on_gizmo_deselected", [route, "path", path2d, i])
 			new_gizmo.connect("updated", route, "update_point_poistion", [i])
-			new_gizmo.connect("updated", paths2d, "update_point_poistion", [i])
+			new_gizmo.connect("updated", path2d, "update_point_poistion", [i])
 			$Gizmos.add_child(new_gizmo)
 	for icon in category3d.icons:
 		var new_gizmo = gizmo_scene.instance()
 		new_gizmo.translation = icon.translation
 		new_gizmo.connect("selected", self, "on_gizmo_selected", [icon, "icon"])
 		new_gizmo.connect("deselected", self, "on_gizmo_deselected", [icon, "icon"])
+		self.connect("deselected", self, "on_gizmo_deselected", [icon, "icon"])
 		new_gizmo.connect("updated", icon, "update_point_poistion")
 		$Gizmos.add_child(new_gizmo)
 
@@ -710,8 +712,9 @@ signal add_point(position)
 signal new_node_after(position)
 signal reverse()
 signal set_active_path(path)
+signal deselected(gizmo)
 
-func on_gizmo_selected(object, node, point_type, node2d=null, index=-1):
+func on_gizmo_selected(object, node, point_type: String, node2d = null, index: int = -1):
 	self.currently_selected_gizmo = object
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
 	self.connect("delete_node", node, "remove_point", [index])
@@ -732,7 +735,7 @@ func on_gizmo_selected(object, node, point_type, node2d=null, index=-1):
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
 
 
-func on_gizmo_deselected(object, node=null, point_type="", node2d=null):
+func on_gizmo_deselected(object, node, point_type: String, node2d = null):
 	self.disconnect("delete_node", node, "remove_point")
 	self.disconnect("delete_node", node2d, "remove_point")
 	self.disconnect("add_point", node, "add_point")
@@ -848,7 +851,7 @@ func _on_DeleteNode_pressed():
 	emit_signal("delete_node")
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
-	on_gizmo_deselected(self.currently_selected_gizmo)
+	emit_signal("deselected", self.currently_selected_gizmo)
 
 
 func _on_NewNodeAfter_pressed():
@@ -859,7 +862,7 @@ func _on_NewNodeAfter_pressed():
 
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
-	on_gizmo_deselected(self.currently_selected_gizmo)
+	emit_signal("deselected", self.currently_selected_gizmo)
 
 func _on_XZSnapToPlayer_pressed():
 	self.currently_selected_gizmo.translation.x = self.player_position.x
