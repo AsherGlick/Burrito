@@ -8,10 +8,10 @@ from dataclasses import dataclass
 from jinja2 import FileSystemLoader, Environment
 from schema import string_t, array_t, enum_t, union_t, union_partial_t, pattern_dictionary_t, object_t, boolean_t, DefType
 from protobuf_types import get_proto_field_type
-from util import capitalize, SchemaType, Document
+from util import capitalize, Document
 from generate_cpp import write_cpp_classes, write_attribute
 import argparse
-import metadata
+from metadata import parse_data, MetadataType
 
 XML_ATTRIBUTE_REGEX: Final[str] = "^[A-Za-z]+$"
 PROTO_FIELD_REGEX: Final[str] = "^[a-z_.]+$"
@@ -136,7 +136,7 @@ class Generator:
                 print(filepath)
                 raise e
 
-            metadata_dataclass = metadata.parse_data(document.metadata)
+            metadata_dataclass = parse_data(document.metadata)
 
             error = validate_front_matter_schema(document.metadata)
             if error != "":
@@ -176,12 +176,12 @@ class Generator:
 
         for page in sorted(categories):
             content: Dict[str, str] = {}
-            metadata: Dict[str, SchemaType] = {}
+            metadata: Dict[str, MetadataType] = {}
             # Resets the content and metadata to empty for each loop
 
             for subpage in categories[page]:
                 content[subpage] = markdown.markdown(self.data[subpage].content, extensions=['extra', 'codehilite'])
-                metadata[subpage] = self.data[subpage].metadata
+                metadata[subpage] = self.data[subpage].metadata_dataclass
 
             generated_doc, field_rows = self.generate_auto_docs(metadata, content)
 
@@ -196,8 +196,12 @@ class Generator:
                 ))
 
     def get_examples(self, field_type: str, field_key: str) -> List[str]:
-        if "examples" in self.data[field_key].metadata:
-            return [f'"{x}"' for x in self.data[field_key].metadata["examples"]]
+        field_examples = self.data[field_key].metadata_dataclass.examples
+        if len(field_examples) > 0:
+            return [f'"{x}"' for x in field_examples]
+
+        # TODO: Type Examples
+
         return ["???"]
 
     def get_fixed_option_examples(self, field_type: str, pairings: Any) -> List[str]:
@@ -247,7 +251,7 @@ class Generator:
     #
     # This will output documentation for a single category of attributes.
     ############################################################################
-    def generate_auto_docs(self, metadata: Dict[str, SchemaType], content: Dict[str, str]) -> Tuple[str, List[FieldRow]]:
+    def generate_auto_docs(self, metadata: Dict[str, MetadataType], content: Dict[str, str]) -> Tuple[str, List[FieldRow]]:
         file_loader = FileSystemLoader('web_templates')
         env = Environment(loader=file_loader)
         template = env.get_template("infotable.html")
@@ -256,30 +260,29 @@ class Generator:
         for fieldkey, fieldval in metadata.items():
             valid_values = ""
 
-            if fieldval['type'] == "MultiflagValue" or fieldval['type'] == "Enum":
-
-                if (fieldval["type"] == "MultiflagValue"):
-                    pairings = fieldval["flags"]
-                elif (fieldval["type"] == "Enum"):
-                    pairings = fieldval["values"]
+            if fieldval.variable_type == "MultiflagValue" or fieldval.variable_type == "Enum":
+                if fieldval.variable_type == "MultiflagValue":
+                    pairings = fieldval.flags
+                elif (fieldval.variable_type == "Enum"):
+                    pairings = fieldval.values
                 else:
                     raise ValueError("Type was MultiflagValue or Enum but not MultiflagValue or Enum. Not sure what happened.")
 
                 example = self.build_example(
-                    type=fieldval['type'],
-                    applies_to=fieldval['applies_to'],
-                    xml_field=fieldval['xml_fields'][0],
+                    type=fieldval.variable_type,
+                    applies_to=fieldval.applies_to_as_str(),
+                    xml_field=fieldval.xml_fields[0],
                     examples=self.get_fixed_option_examples(
-                        field_type=fieldval['type'],
+                        field_type=fieldval.variable_type,
                         pairings=pairings
                     )
                 )
 
                 valid_values = "<table class='flagbox'><tr><th>XML Value</th><td></td><th>"
 
-                if (fieldval["type"] == "MultiflagValue"):
+                if (fieldval.variable_type == "MultiflagValue"):
                     valid_values += "Set Flag"
-                elif (fieldval["type"] == "Enum"):
+                elif (fieldval.variable_type == "Enum"):
                     valid_values += "Enum Value"
                 valid_values += "</th></tr>"
 
@@ -290,42 +293,42 @@ class Generator:
                     valid_values += "</td><td class='flag_arrowbox'>&#10142;</td><td class='flag_namebox'>" + elem + "</td></tr>"
                 valid_values += "</table>"
 
-            elif fieldval['type'] == "CompoundValue":
+            elif fieldval.variable_type == "CompoundValue":
 
                 example = self.build_example(
-                    type=fieldval['type'],
-                    applies_to=fieldval['applies_to'],
-                    xml_field=fieldval['xml_fields'][0],
+                    type=fieldval.variable_type,
+                    applies_to=fieldval.applies_to_as_str(),
+                    xml_field=fieldval.xml_fields[0],
                     examples=["???TODO???"]
                 )
                 # ",".join( [ self.get_examples(x['type'], fieldval['applies_to'], fieldval['xml_fields'][0]) for x in fieldval['components'] ])
             else:
                 example = self.build_example(
-                    type=fieldval['type'],
-                    applies_to=fieldval['applies_to'],
-                    xml_field=fieldval['xml_fields'][0],
+                    type=fieldval.variable_type,
+                    applies_to=fieldval.applies_to_as_str(),
+                    xml_field=fieldval.xml_fields[0],
                     examples=self.get_examples(
-                        field_type=fieldval['type'],
+                        field_type=fieldval.variable_type,
                         field_key=fieldkey,
                     )
                 )
                 # self.get_examples(fieldval['type'], fieldval['applies_to'], fieldval['xml_fieldsval'][0])
 
             proto_field_type: str = ""
-            for marker_type in fieldval["applies_to"]:
-                proto_field_type = get_proto_field_type(marker_type, fieldval["protobuf_field"])
+            for marker_type in fieldval.applies_to_as_str():
+                proto_field_type = get_proto_field_type(marker_type, fieldval.protobuf_field)
                 # TODO: catch discrepencies if the proto field types across
                 # different messages have differing types. This will be caught
                 # in the cpp code regardless.
 
             field_rows.append(FieldRow(
-                name=fieldval["name"],
-                xml_attribute=fieldval["xml_fields"][0],
-                alternate_xml_attributes=fieldval["xml_fields"][1:],
-                binary_field=fieldval["protobuf_field"],
+                name=fieldval.name,
+                xml_attribute=fieldval.xml_fields[0],
+                alternate_xml_attributes=fieldval.xml_fields[1:],
+                binary_field=fieldval.protobuf_field,
                 binary_field_type=proto_field_type,
-                data_type=fieldval["type"],
-                usable_on_html="<br>".join(fieldval["applies_to"]),
+                data_type=fieldval.variable_type,
+                usable_on_html="<br>".join(fieldval.applies_to_as_str()),
                 example=example,
                 valid_values_html=valid_values,
                 is_sub_field=False,
@@ -333,30 +336,30 @@ class Generator:
                 description=content[fieldkey]  # todo:
             ))
 
-            if fieldval['type'] == "CompoundValue":
-                for component_field in fieldval["components"]:
+            if fieldval.variable_type == "CompoundValue":
+                for component_field in fieldval.components:
 
-                    binary_field_name = fieldval["protobuf_field"] + "." + component_field["protobuf_field"]
+                    binary_field_name = fieldval.protobuf_field + "." + component_field.protobuf_field
 
                     component_field_type: str = ""
-                    for marker_type in fieldval["applies_to"]:
+                    for marker_type in fieldval.applies_to_as_str():
                         component_field_type = get_proto_field_type(marker_type, binary_field_name)
                         # TODO: catch discrepencies if the proto field types across
                         # different messages have differing types. This will be caught
                         # in the cpp code regardless.
 
                     field_rows.append(FieldRow(
-                        name=component_field["name"],
-                        xml_attribute=component_field["xml_fields"][0],
-                        alternate_xml_attributes=component_field["xml_fields"][1:],
+                        name=component_field.name,
+                        xml_attribute=component_field.xml_fields[0],
+                        alternate_xml_attributes=component_field.xml_fields[1:],
                         binary_field=binary_field_name,
                         binary_field_type=component_field_type,
-                        data_type=component_field["type"],
-                        usable_on_html="<br>".join(fieldval["applies_to"]),
+                        data_type=component_field.subcomponent_type.value,
+                        usable_on_html="<br>".join(fieldval.applies_to_as_str()),
                         example=self.build_example(
-                            type=component_field["type"],
-                            applies_to=fieldval["applies_to"],
-                            xml_field=fieldval["xml_fields"][0],
+                            type=component_field.subcomponent_type.value,
+                            applies_to=fieldval.applies_to_as_str(),
+                            xml_field=fieldval.xml_fields[0],
                             examples=["???TODO2???"],
                         ),
                         description=content[fieldkey],
