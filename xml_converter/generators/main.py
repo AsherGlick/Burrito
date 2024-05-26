@@ -207,14 +207,27 @@ class Generator:
                 valid_values += "</table>"
 
             elif fieldval.variable_type == "CompoundValue":
-                print("  Unknown examples for {} {}".format(fieldval.variable_type, fieldkey))
+                subcomponent_examples = [
+                    self.get_examples(
+                        field_type=x.subcomponent_type.value,
+                        field_key=fieldkey + "[" + x.name + "]",
+                        examples=x.examples
+                    ) for x in fieldval.components
+                ]
+
+                compound_examples = build_combinations(
+                    subcomponent_examples
+                )
+
+                # TODO: the get_examples function above is not great because it puts quotes around everything and we need to remove them before joining
+                examples = ["\"" + ",".join([y.strip("\"") for y in x]) + "\"" for x in compound_examples]
+
                 example = self.build_example(
                     type=fieldval.variable_type,
                     applies_to=fieldval.applies_to_as_str(),
                     xml_field=fieldval.xml_fields[0],
-                    examples=["???TODO???"]
+                    examples=examples
                 )
-                # ",".join( [ self.get_examples(x['type'], fieldval['applies_to'], fieldval['xml_fields'][0]) for x in fieldval['components'] ])
             else:
                 example = self.build_example(
                     type=fieldval.variable_type,
@@ -225,7 +238,6 @@ class Generator:
                         field_key=fieldkey,
                     )
                 )
-                # self.get_examples(fieldval['type'], fieldval['applies_to'], fieldval['xml_fieldsval'][0])
 
             proto_field_type: str = ""
             for marker_type in fieldval.applies_to_as_str():
@@ -288,6 +300,21 @@ class Generator:
                     ))
 
         return template.render(field_rows=field_rows), field_rows
+
+
+def build_combinations(inputs: List[List[str]]) -> List[List[str]]:
+    output_list: List[List[str]] = []
+
+    longest_input_list = max([len(x) for x in inputs])
+
+    for i in range(longest_input_list):
+        inner_list: List[str] = []
+        for input_list in inputs:
+            inner_list.append(input_list[i % len(input_list)])
+
+        output_list.append(inner_list)
+
+    return output_list
 
 
 ################################################################################
