@@ -269,7 +269,7 @@ def generate_cpp_variable_data(
         cpp_includes.cpp_absolute_includes.add("type_traits")
 
     for filepath, document in sorted(data.items()):
-        fieldval = document.metadata_dataclass
+        fieldval = document.metadata
         attribute_name: str = attribute_name_from_markdown_data(fieldval.name)
 
         if doc_type in fieldval.applies_to_as_str():
@@ -467,7 +467,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
     for filepath in attribute_names:
         attribute_components: List[AttributeComponent] = []
         xml_bundled_components: List[str] = []
-        attribute_data: MetadataType = data[filepath].metadata_dataclass
+        attribute_data: MetadataType = data[filepath].metadata
         attribute_name = attribute_name_from_markdown_data(attribute_data.name)
 
         proto_field_type: str = ""

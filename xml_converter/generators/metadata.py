@@ -1,7 +1,12 @@
 from dataclasses import dataclass, field
 import enum
-from typing import Dict, List, Literal, Optional, Any, Union
+from typing import Dict, List, Literal, Optional, Any, Union, Final
 import classnotation
+
+XML_ATTRIBUTE_REGEX: Final[str] = "^[A-Za-z]+$"
+PROTO_FIELD_REGEX: Final[str] = "^[a-z_.]+$"
+INTERNAL_VARIABLE_REGEX: Final[str] = "^[a-z_]+$"
+ATTRIBUTE_NAME_REGEX: Final[str] = "^[A-Za-z ]+$"
 
 
 class NodeType(enum.Enum):

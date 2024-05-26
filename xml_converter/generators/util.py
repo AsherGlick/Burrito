@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Dict, Any
 from metadata import MetadataType
 
 
@@ -57,11 +56,7 @@ def normalize(word: str) -> str:
     return "".join(normalized_word_array)
 
 
-SchemaType = Dict[str, Any]
-
-
 @dataclass
 class Document:
-    metadata: SchemaType
-    metadata_dataclass: MetadataType
+    metadata: MetadataType
     content: str

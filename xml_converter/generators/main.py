@@ -1,101 +1,14 @@
-from jsonschema import validate  # type:ignore
-from jsonschema.exceptions import ValidationError  # type:ignore
 import frontmatter  # type:ignore
-from typing import Any, Dict, List, Tuple, Final, Set
+from typing import Any, Dict, List, Tuple, Set
 import os
 import markdown
 from dataclasses import dataclass
 from jinja2 import FileSystemLoader, Environment
-from schema import string_t, array_t, enum_t, union_t, union_partial_t, pattern_dictionary_t, object_t, boolean_t, DefType
 from protobuf_types import get_proto_field_type
 from util import capitalize, Document
 from generate_cpp import write_cpp_classes, write_attribute
 import argparse
 from metadata import parse_data, MetadataType
-
-XML_ATTRIBUTE_REGEX: Final[str] = "^[A-Za-z]+$"
-PROTO_FIELD_REGEX: Final[str] = "^[a-z_.]+$"
-INTERNAL_VARIABLE_REGEX: Final[str] = "^[a-z_]+$"
-ATTRIBUTE_NAME_REGEX: Final[str] = "^[A-Za-z ]+$"
-CUSTOM_SERIALIZER_REGEX: Final[str] = r"^(?:read|write)(?:\.xml|\.proto)(?:\.icon|\.trail)?$"
-
-shared_required_fields: Dict[str, DefType] = {
-    "type": string_t(),
-    "name": string_t(pattern=ATTRIBUTE_NAME_REGEX),
-    "applies_to": array_t(enum_t(["Icon", "Trail", "Category"])),
-    "xml_fields": array_t(string_t(pattern=XML_ATTRIBUTE_REGEX)),
-    "protobuf_field": string_t(pattern=PROTO_FIELD_REGEX),
-}
-
-shared_optional_fields: Dict[str, DefType] = {
-    "custom_functions": pattern_dictionary_t({CUSTOM_SERIALIZER_REGEX: object_t({
-        "function": string_t(),
-        "side_effects": array_t(string_t()),
-    })}),
-    "examples": array_t(string_t())
-}
-
-schema = union_t({
-    "Int32": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
-    "Fixed32": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
-    "Float32": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
-    "String": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
-    "Boolean": union_partial_t(required=shared_required_fields, optional=shared_optional_fields),
-    "MultiflagValue": union_partial_t(
-        required={**shared_required_fields, **{
-            "flags": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())}),
-        }},
-        optional=shared_optional_fields,
-    ),
-    "Enum": union_partial_t(
-        required={**shared_required_fields, **{
-            "values": pattern_dictionary_t({INTERNAL_VARIABLE_REGEX: array_t(string_t())})
-        }},
-        optional=shared_optional_fields,
-    ),
-    "CompoundValue": union_partial_t(
-        required={**shared_required_fields, **{
-            "xml_bundled_components": array_t(string_t()),
-            "xml_separate_components": array_t(string_t()),
-            "components": array_t(object_t({
-                "name": string_t(),
-                "type": enum_t(["Int32", "Fixed32", "Float32"]),
-                "xml_fields": array_t(string_t(XML_ATTRIBUTE_REGEX)),
-                "protobuf_field": string_t(PROTO_FIELD_REGEX),
-            })),
-        }},
-        optional=shared_optional_fields,
-    ),
-    "CompoundCustomClass": union_partial_t(
-        required={**shared_required_fields, **{
-            "class": string_t(),
-            "xml_bundled_components": array_t(string_t()),
-            "xml_separate_components": array_t(string_t()),
-            "components": array_t(object_t({
-                "name": string_t(),
-                "type": enum_t(["Int32", "Fixed32", "Float32"]),
-                "xml_fields": array_t(string_t(XML_ATTRIBUTE_REGEX)),
-                "protobuf_field": string_t(PROTO_FIELD_REGEX),
-            })),
-        }},
-        optional=shared_optional_fields,
-    ),
-    "Custom": union_partial_t(
-        required={**shared_required_fields, **{"class": string_t()}},
-        optional={
-            **shared_optional_fields,
-            "uses_file_path": boolean_t(),  # This will eventually be part of a struct that is passed into everything
-        }
-    ),
-})
-
-
-def validate_front_matter_schema(front_matter: Any) -> str:
-    try:
-        validate(front_matter, schema)
-    except ValidationError as e:
-        return "Error Message: {} (Path: {}".format(e.message, e.json_path)
-    return ""
 
 
 @dataclass
@@ -136,16 +49,10 @@ class Generator:
                 print(filepath)
                 raise e
 
-            metadata_dataclass = parse_data(document.metadata)
-
-            error = validate_front_matter_schema(document.metadata)
-            if error != "":
-                print(filepath)
-                print(error)
+            metadata = parse_data(document.metadata)
 
             self.data[filepath] = Document(
-                metadata=document.metadata,
-                metadata_dataclass=metadata_dataclass,
+                metadata=metadata,
                 content=document.content
             )
 
@@ -181,7 +88,7 @@ class Generator:
 
             for subpage in categories[page]:
                 content[subpage] = markdown.markdown(self.data[subpage].content, extensions=['extra', 'codehilite'])
-                metadata[subpage] = self.data[subpage].metadata_dataclass
+                metadata[subpage] = self.data[subpage].metadata
 
             generated_doc, field_rows = self.generate_auto_docs(metadata, content)
 
@@ -196,7 +103,7 @@ class Generator:
                 ))
 
     def get_examples(self, field_type: str, field_key: str) -> List[str]:
-        field_examples = self.data[field_key].metadata_dataclass.examples
+        field_examples = self.data[field_key].metadata.examples
         if len(field_examples) > 0:
             return [f'"{x}"' for x in field_examples]
 
