@@ -2,7 +2,7 @@ import frontmatter  # type:ignore
 from typing import Any, Dict, List, Tuple, Set
 import os
 import markdown
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from jinja2 import FileSystemLoader, Environment
 from protobuf_types import get_proto_field_type
 from util import capitalize, Document
@@ -263,7 +263,7 @@ class Generator:
 
                     examples = self.get_examples(
                         field_type=component_field.subcomponent_type.value,
-                        field_key=fieldkey + "[" + component_field.name + "]", # TODO
+                        field_key=fieldkey + "[" + component_field.name + "]",
                         examples=component_field.examples,
                     )
 
