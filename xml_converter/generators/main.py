@@ -144,15 +144,13 @@ class Generator:
         return examples
 
     def build_example(self, type: str, applies_to: List[str], xml_field: str, examples: List[str]) -> str:
-        example = "<div class='codeblock'>"
+        example = "<div class='codehilite'><pre><code>"
 
         for node_type in applies_to:
             for value in examples:
-                example += "&lt;" + node_type + " ... " + xml_field + "=<b>" + value + "</b> ... &gt;<br>"
+                example += f'<span class="nt">&lt;{node_type}</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="na">{xml_field}=</span><span class="s">{value}</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="nt">&gt;</span>\n'
             break
-            # example += "<br>"
-
-        example += "</div>"
+        example += "</pre></code></div>"
 
         return example
 
