@@ -4,6 +4,9 @@ type: String
 applies_to: [Category]
 xml_fields: [Name]
 protobuf_field: name
+examples:
+  - "mycategory"
+  - "tribulationmode203"
 custom_functions:
   read.proto:
     function: do_nothing

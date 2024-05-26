@@ -5,6 +5,11 @@ class: UniqueId
 xml_fields: [ID, MenuID]
 applies_to: [Category]
 protobuf_field: id
+examples:
+  - "KOjMBsKTXpY="
+  - "LJKn7WpADjo="
+  - "uJrcuLd4as8="
+  - "cCxU1IXfiKQ="
 ---
 
 Notes

@@ -6,6 +6,9 @@ xml_fields: ["TrailData"]
 uses_file_path: true
 protobuf_field: trail_data
 applies_to: [Trail]
+examples:
+  - "trails/my_trail.trl"
+  - "jumping_puzzle_path.trl"
 custom_functions:
   read.xml:
     function: xml_attribute_to_trail_data

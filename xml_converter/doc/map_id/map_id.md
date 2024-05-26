@@ -4,6 +4,10 @@ type: Int32
 applies_to: [Icon, Trail]
 xml_fields: [MapID]
 protobuf_field: map_id
+examples:
+  - "24"
+  - "50"
+  - "1509"
 ---
 The Map which this marker should be displayed on.
 

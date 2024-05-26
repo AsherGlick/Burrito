@@ -107,8 +107,11 @@ class Generator:
         if len(field_examples) > 0:
             return [f'"{x}"' for x in field_examples]
 
-        # TODO: Type Examples
+        # Type Examples
+        if field_type == "Boolean":
+            return ["\"True\"", "\"False\""]
 
+        print("  Unknown Examples for {} {}".format(field_type, field_key))
         return ["???"]
 
     def get_fixed_option_examples(self, field_type: str, pairings: Any) -> List[str]:
@@ -201,7 +204,7 @@ class Generator:
                 valid_values += "</table>"
 
             elif fieldval.variable_type == "CompoundValue":
-
+                print("  Unknown examples for {} {}".format(fieldval.variable_type, fieldkey))
                 example = self.build_example(
                     type=fieldval.variable_type,
                     applies_to=fieldval.applies_to_as_str(),
@@ -255,6 +258,7 @@ class Generator:
                         # different messages have differing types. This will be caught
                         # in the cpp code regardless.
 
+                    print("  Unknown examples for {} {}".format(fieldval.variable_type, fieldkey))
                     field_rows.append(FieldRow(
                         name=component_field.name,
                         xml_attribute=component_field.xml_fields[0],
