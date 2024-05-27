@@ -95,7 +95,7 @@ class AttributeVariable:
     cpp_type: str
     class_name: str
 
-    proto_info: AttributeVariableProtoInfo
+    proto_info: Optional[AttributeVariableProtoInfo]
     xml_info: AttributeVariableXMLInfo
 
     attribute_flag_name: Optional[str] = ""
@@ -312,11 +312,6 @@ def generate_cpp_variable_data(
                 xml_fields.append(lowercase(x, delimiter=""))
             default_xml_field = fieldval.xml_fields[0]
 
-            proto_drilldown_calls: str
-            mutable_proto_drilldown_calls: str
-            protobuf_field: str
-            proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval.protobuf_field)
-
             # Compound Values are unique in that the components have xml fields in addition to the compound variable
             # if fieldval.variable_type in ("CompoundValue", "CompoundCustomClass"):
             if fieldval.variable_type == "CompoundValue" or fieldval.variable_type == "CompoundCustomClass":
@@ -348,7 +343,7 @@ def generate_cpp_variable_data(
                             serialize_proto_side_effects=[],
                             deserialize_proto_function="from_proto_" + component_class_name,
                             deserialize_proto_side_effects=[],
-                        ),
+                        ) if fieldval.protobuf_field is not None else None,
 
                         xml_info=AttributeVariableXMLInfo(
                             xml_fields=component_xml_fields,
@@ -413,14 +408,14 @@ def generate_cpp_variable_data(
             elif fieldval.custom_functions.read_proto is not None:
                 deserialize_proto_function = fieldval.custom_functions.read_proto
 
-            attribute_variable = AttributeVariable(
-                attribute_name=attribute_name,
-                cpp_type=cpp_type,
-                class_name=class_name,
+            proto_info: Optional[AttributeVariableProtoInfo] = None
+            if fieldval.protobuf_field is not None:
+                proto_drilldown_calls: str
+                mutable_proto_drilldown_calls: str
+                protobuf_field: str
+                proto_drilldown_calls, mutable_proto_drilldown_calls, protobuf_field = split_field_into_drilldown(fieldval.protobuf_field)
 
-                attribute_flag_name=attribute_name + "_is_set",
-
-                proto_info=AttributeVariableProtoInfo(
+                proto_info = AttributeVariableProtoInfo(
                     protobuf_field=protobuf_field,
                     protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field),
                     is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field),
@@ -430,7 +425,16 @@ def generate_cpp_variable_data(
                     serialize_proto_side_effects=convert_side_effects_to_variable_names(serialize_proto_function.side_effects),
                     deserialize_proto_function=deserialize_proto_function.function,
                     deserialize_proto_side_effects=convert_side_effects_to_variable_names(deserialize_proto_function.side_effects),
-                ),
+                )
+
+            attribute_variable = AttributeVariable(
+                attribute_name=attribute_name,
+                cpp_type=cpp_type,
+                class_name=class_name,
+
+                attribute_flag_name=attribute_name + "_is_set",
+
+                proto_info=proto_info,
 
                 xml_info=AttributeVariableXMLInfo(
                     xml_fields=xml_fields,
@@ -482,6 +486,12 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         xml_bundled_components: List[str] = []
         attribute_data: MetadataType = data[filepath].metadata
         attribute_name = attribute_name_from_markdown_data(attribute_data.name)
+
+        # Early exit if this attribute is not an attribute to generate code for
+        if attribute_data.variable_type not in template:
+            continue
+        if attribute_data.protobuf_field is None:
+            raise ValueError("We dont yet support null protobuf fields for generated attribute classes {}".format(attribute_data))
 
         proto_field_type: str = ""
         proto_field_prototype: Optional[str] = None

@@ -435,10 +435,6 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_height(val); };
         float_to_proto(this->bounce_height, state, setter);
     }
-    if (this->category_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_category(val); };
-        do_nothing(this->category, state, setter);
-    }
     if (this->color_is_set) {
         std::function<void(waypoint::RGBAColor*)> setter = [&proto_icon](waypoint::RGBAColor* val) { proto_icon.set_allocated_rgba_color(val); };
         color_to_proto(this->color, state, setter);
@@ -620,9 +616,6 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
     }
     if (proto_icon.trigger().bounce_height() != 0) {
         proto_to_float(proto_icon.trigger().bounce_height(), state, &(this->bounce_height), &(this->bounce_height_is_set));
-    }
-    if (proto_icon.category() != 0) {
-        do_nothing(proto_icon.category(), state, &(this->category), &(this->category_is_set));
     }
     if (proto_icon.has_rgba_color()) {
         proto_to_color(proto_icon.rgba_color(), state, &(this->color), &(this->color_is_set));

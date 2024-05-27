@@ -103,7 +103,7 @@ vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
 waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) const {
     waypoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% for attribute_variable in attribute_variables %}
-        {% if attribute_variable.is_component == false %}
+        {% if attribute_variable.is_component == false and attribute_variable.proto_info != None %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
                 {% if not attribute_variable.proto_info.is_proto_field_scalar %}
                     std::function<void({{attribute_variable.proto_info.protobuf_cpp_type}}*)> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.proto_info.protobuf_cpp_type}}* val) { proto_{{cpp_class_header}}.{{attribute_variable.proto_info.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.proto_info.protobuf_field}}(val); };
@@ -119,7 +119,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) cons
 
 void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}, ProtoReaderState* state) {
     {% for attribute_variable in attribute_variables %}
-        {% if attribute_variable.is_component == false %}
+        {% if attribute_variable.is_component == false and attribute_variable.proto_info != None %}
             {% if not attribute_variable.proto_info.is_proto_field_scalar %}
                 if (proto_{{cpp_class_header}}{{attribute_variable.proto_info.proto_drilldown_calls}}.has_{{attribute_variable.proto_info.protobuf_field}}()) {
             {% elif attribute_variable.proto_info.protobuf_cpp_type == "std::string" %}

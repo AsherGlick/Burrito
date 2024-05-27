@@ -3,17 +3,10 @@ name: Name
 type: String
 applies_to: [Category]
 xml_fields: [Name]
-protobuf_field: name
+protobuf_field: null
 examples:
   - "mycategory"
   - "tribulationmode203"
-custom_functions:
-  read.proto:
-    function: do_nothing
-    side_effects: []
-  write.proto:
-    function: do_nothing
-    side_effects: []
 ---
 
 Notes

@@ -129,10 +129,6 @@ waypoint::Category Category::as_protobuf(ProtoWriterState* state) const {
         std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_id(val); };
         unique_id_to_proto(this->menu_id, state, setter);
     }
-    if (this->name_is_set) {
-        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
-        do_nothing(this->name, state, setter);
-    }
     if (this->tooltip_description_is_set) {
         std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_tip_description(val); };
         string_to_proto(this->tooltip_description, state, setter);
@@ -152,9 +148,6 @@ void Category::parse_protobuf(waypoint::Category proto_category, ProtoReaderStat
     }
     if (proto_category.id() != "") {
         proto_to_unique_id(proto_category.id(), state, &(this->menu_id), &(this->menu_id_is_set));
-    }
-    if (proto_category.name() != "") {
-        do_nothing(proto_category.name(), state, &(this->name), &(this->name_is_set));
     }
     if (proto_category.tip_description() != "") {
         proto_to_string(proto_category.tip_description(), state, &(this->tooltip_description), &(this->tooltip_description_is_set));
