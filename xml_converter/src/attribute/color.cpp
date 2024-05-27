@@ -123,18 +123,17 @@ string color_to_xml_attribute(
 // Parses a Color from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_color(
-    waypoint::RGBAColor input,
+    uint32_t input,
     ProtoReaderState*,
     Color* value,
     bool* is_set) {
     Color color;
     std::stringstream stream;
-    uint32_t rgba = input.rgba_color();
 
-    color.red = convert_color_channel_int_to_float((rgba >> 24) & 0xff);
-    color.green = convert_color_channel_int_to_float((rgba >> 16) & 0xff);
-    color.blue = convert_color_channel_int_to_float((rgba >> 8) & 0xff);
-    color.alpha = convert_color_channel_int_to_float(rgba & 0xff);
+    color.red = convert_color_channel_int_to_float((input >> 24) & 0xff);
+    color.green = convert_color_channel_int_to_float((input >> 16) & 0xff);
+    color.blue = convert_color_channel_int_to_float((input >> 8) & 0xff);
+    color.alpha = convert_color_channel_int_to_float(input & 0xff);
 
     *value = color;
     *is_set = true;
@@ -148,8 +147,7 @@ void proto_to_color(
 void color_to_proto(
     Color value,
     ProtoWriterState*,
-    std::function<void(waypoint::RGBAColor*)> setter) {
-    waypoint::RGBAColor* color = new waypoint::RGBAColor();
+    std::function<void(uint32_t)> setter) {
     // The default RGB in burrito will be 000000 (i.e. black)
     // Default value of alpha in Burrito is 1.0 (i.e. 255)
     int int_alpha = 255;
@@ -164,6 +162,5 @@ void color_to_proto(
     uint32_t a = (int_alpha & 0xff);
     uint32_t rgba = r | g | b | a;
 
-    color->set_rgba_color(rgba);
-    setter(color);
+    setter(rgba);
 }

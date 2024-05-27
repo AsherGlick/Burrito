@@ -262,7 +262,7 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         float_to_proto(this->animation_speed, state, setter);
     }
     if (this->color_is_set) {
-        std::function<void(waypoint::RGBAColor*)> setter = [&proto_trail](waypoint::RGBAColor* val) { proto_trail.set_allocated_rgba_color(val); };
+        std::function<void(uint32_t)> setter = [&proto_trail](uint32_t val) { proto_trail.set_rgba_color(val); };
         color_to_proto(this->color, state, setter);
     }
     if (this->cull_chirality_is_set) {
@@ -366,7 +366,7 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state)
     if (proto_trail.animation_speed() != 0) {
         proto_to_float(proto_trail.animation_speed(), state, &(this->animation_speed), &(this->animation_speed_is_set));
     }
-    if (proto_trail.has_rgba_color()) {
+    if (proto_trail.rgba_color() != 0) {
         proto_to_color(proto_trail.rgba_color(), state, &(this->color), &(this->color_is_set));
     }
     if (proto_trail.cull_chirality() != 0) {

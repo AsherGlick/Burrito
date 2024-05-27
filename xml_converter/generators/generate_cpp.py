@@ -107,7 +107,7 @@ class AttributeVariable:
 class AttributeComponent:
     attribute_name: str
     cpp_type: str
-    protobuf_field: str
+    protobuf_field: Optional[str]
     xml_fields: List[str]
 
 
@@ -337,13 +337,13 @@ def generate_cpp_variable_data(
 
                         proto_info=AttributeVariableProtoInfo(
                             protobuf_field=component.protobuf_field,
-                            protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
-                            is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
+                            protobuf_cpp_type=get_proto_field_cpp_type(doc_type, combine_fields(fieldval.protobuf_field, component.protobuf_field)),
+                            is_proto_field_scalar=is_proto_field_scalar(doc_type, combine_fields(fieldval.protobuf_field, component.protobuf_field)),
                             serialize_proto_function="to_proto_" + component_class_name,
                             serialize_proto_side_effects=[],
                             deserialize_proto_function="from_proto_" + component_class_name,
                             deserialize_proto_side_effects=[],
-                        ) if fieldval.protobuf_field is not None else None,
+                        ) if fieldval.protobuf_field is not None and component.protobuf_field is not None else None,
 
                         xml_info=AttributeVariableXMLInfo(
                             xml_fields=component_xml_fields,
@@ -589,6 +589,12 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         files_written.append(cpp_filepath)
 
     return files_written
+
+
+def combine_fields(base_field: str, sub_field: Optional[str]) -> str:
+    if sub_field is None:
+        return base_field
+    return base_field + "." + sub_field
 
 
 ################################################################################
