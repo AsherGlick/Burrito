@@ -165,6 +165,7 @@ class CompoundSubComponent:
     subcomponent_type: SubcomponentType = field(metadata={"json": "type"})
     xml_fields: List[str]
     protobuf_field: str
+    examples: List[str] = field(default_factory=list)
 
 
 @dataclass

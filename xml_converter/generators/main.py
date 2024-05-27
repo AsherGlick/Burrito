@@ -102,10 +102,15 @@ class Generator:
                     content_nav=navigation_links
                 ))
 
-    def get_examples(self, field_type: str, field_key: str) -> List[str]:
-        field_examples = self.data[field_key].metadata.examples
-        if len(field_examples) > 0:
-            return [f'"{x}"' for x in field_examples]
+    # TODO: This might not be a great tool unless we want to add special logic here for compound types
+    def get_examples(self, field_type: str, field_key: str, examples: List[str] = []) -> List[str]:
+        if len(examples) > 0:
+            return [f'"{x}"' for x in examples]
+
+        if field_key in self.data:
+            field_examples = self.data[field_key].metadata.examples
+            if len(field_examples) > 0:
+                return [f'"{x}"' for x in field_examples]
 
         # Type Examples
         if field_type == "Boolean":
@@ -256,7 +261,12 @@ class Generator:
                         # different messages have differing types. This will be caught
                         # in the cpp code regardless.
 
-                    print("  Unknown examples for {} {}".format(fieldval.variable_type, fieldkey))
+                    examples = self.get_examples(
+                        field_type=component_field.subcomponent_type.value,
+                        field_key=fieldkey + "[" + component_field.name + "]",
+                        examples=component_field.examples,
+                    )
+
                     field_rows.append(FieldRow(
                         name=component_field.name,
                         xml_attribute=component_field.xml_fields[0],
@@ -268,8 +278,8 @@ class Generator:
                         example=self.build_example(
                             type=component_field.subcomponent_type.value,
                             applies_to=fieldval.applies_to_as_str(),
-                            xml_field=fieldval.xml_fields[0],
-                            examples=["???TODO2???"],
+                            xml_field=component_field.xml_fields[0],
+                            examples=examples,
                         ),
                         description=content[fieldkey],
                         valid_values_html=valid_values,
