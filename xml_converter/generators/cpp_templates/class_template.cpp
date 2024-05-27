@@ -50,9 +50,9 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
     {% for n, attribute_variable in enumerate(attribute_variables) %}
-        {% for i, value in enumerate(attribute_variable.xml_fields) %}
+        {% for i, value in enumerate(attribute_variable.xml_info.xml_fields) %}
             {{ "if" if i == n == 0 else "else if" }} (attributename == "{{value}}") {
-                {{attribute_variable.deserialize_xml_function}}(attribute, errors, state, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %});
+                {{attribute_variable.xml_info.deserialize_xml_function}}(attribute, errors, state, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.xml_info.deserialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endfor %}
     {% endfor %}
@@ -75,9 +75,9 @@ vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<{{xml_class_name}} ");
     {% for attribute_variable in attribute_variables %}
-        {% if attribute_variable.write_to_xml == true %}
+        {% if attribute_variable.xml_info.write_to_xml == true %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                xml_node_contents.push_back({{attribute_variable.serialize_xml_function}}("{{attribute_variable.default_xml_field}}", state, &this->{{attribute_variable.attribute_name}}{% for side_effect in attribute_variable.serialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %}));
+                xml_node_contents.push_back({{attribute_variable.xml_info.serialize_xml_function}}("{{attribute_variable.xml_info.default_xml_field}}", state, &this->{{attribute_variable.attribute_name}}{% for side_effect in attribute_variable.xml_info.serialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %}));
             }
         {% endif %}
     {% endfor %}
