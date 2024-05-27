@@ -52,5 +52,3 @@ void display_name_and_name_to_proto_display_name(
     std::function<void(std::string)> setter,
     const std::string* name,
     const bool* is_name_set);
-
-#define do_nothing(...)

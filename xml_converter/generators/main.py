@@ -239,18 +239,27 @@ class Generator:
                     )
                 )
 
-            proto_field_type: str = ""
-            for marker_type in fieldval.applies_to_as_str():
-                proto_field_type = get_proto_field_type(marker_type, fieldval.protobuf_field)
-                # TODO: catch discrepencies if the proto field types across
-                # different messages have differing types. This will be caught
-                # in the cpp code regardless.
+            proto_field_type: str
+            proto_field_name: str
+            if fieldval.protobuf_field is not None:
+                proto_field_name = fieldval.protobuf_field
+                proto_field_type = ""
+                for marker_type in fieldval.applies_to_as_str():
+                    proto_field_type = get_proto_field_type(marker_type, fieldval.protobuf_field)
+                    # TODO: catch discrepencies if the proto field types across
+                    # different messages have differing types. This will be caught
+                    # in the cpp code regardless.
+                if proto_field_type == "":
+                    print("Could not find proto field type from proto schema")
+            else:
+                proto_field_name = ""
+                proto_field_type = "None"
 
             field_rows.append(FieldRow(
                 name=fieldval.name,
                 xml_attribute=fieldval.xml_fields[0],
                 alternate_xml_attributes=fieldval.xml_fields[1:],
-                binary_field=fieldval.protobuf_field,
+                binary_field=proto_field_name,
                 binary_field_type=proto_field_type,
                 data_type=fieldval.variable_type,
                 usable_on_html="<br>".join(fieldval.applies_to_as_str()),
@@ -265,7 +274,10 @@ class Generator:
             if fieldval.variable_type == "CompoundValue" or fieldval.variable_type == "CompoundCustomClass":
                 for component_field in fieldval.components:
 
-                    binary_field_name = fieldval.protobuf_field + "." + component_field.protobuf_field
+                    if fieldval.protobuf_field is not None:
+                        binary_field_name = fieldval.protobuf_field + "." + component_field.protobuf_field
+                    else:
+                        binary_field_name = ""
 
                     component_field_type: str = ""
                     for marker_type in fieldval.applies_to_as_str():

@@ -51,7 +51,7 @@ class BaseMetadata:
     name: str  # TODO Match this to the regex ATTRIBUTE_NAME_REGEX
     applies_to: List[NodeType]
     xml_fields: List[str]  # TODO: Matche these to XML_ATTRIBUTE_REGEX
-    protobuf_field: str  # TODO: Match this to PROTO_FIELD_REGEX
+    protobuf_field: Optional[str]  # TODO: Match this to PROTO_FIELD_REGEX
 
     def applies_to_as_str(self) -> List[str]:
         return [x.value for x in self.applies_to]
