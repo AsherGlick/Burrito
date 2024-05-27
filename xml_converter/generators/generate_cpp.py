@@ -86,24 +86,20 @@ class AttributeVariableXMLInfo:
     deserialize_xml_side_effects: List[str]
 
     default_xml_field: str = ""
-    xml_bundled_components: List[str] = field(default_factory=list)
     write_to_xml: bool = True
 
 
 @dataclass
 class AttributeVariable:
     attribute_name: str
-    attribute_type: str
     cpp_type: str
     class_name: str
 
     proto_info: AttributeVariableProtoInfo
     xml_info: AttributeVariableXMLInfo
 
-    side_effects: List[str] = field(default_factory=list)
     attribute_flag_name: Optional[str] = ""
 
-    uses_file_path: bool = False
     is_component: bool = False
 
 
@@ -286,7 +282,6 @@ def generate_cpp_variable_data(
 
         if doc_type in fieldval.applies_to_as_str():
             xml_fields: List[str] = []
-            side_effects: List[str] = []
             write_to_xml: bool = True
             default_xml_field: str = ""
 
@@ -340,7 +335,6 @@ def generate_cpp_variable_data(
                         write_to_xml = False
                     component_attribute_variable = AttributeVariable(
                         attribute_name=attribute_name + "." + component_name,
-                        attribute_type="CompoundValue",
                         cpp_type=documentation_type_data[component.subcomponent_type.value]["cpp_type"],
                         class_name=component_class_name,
                         attribute_flag_name=attribute_name + "_is_set",
@@ -421,14 +415,10 @@ def generate_cpp_variable_data(
 
             attribute_variable = AttributeVariable(
                 attribute_name=attribute_name,
-                attribute_type=fieldval.variable_type,
                 cpp_type=cpp_type,
                 class_name=class_name,
 
                 attribute_flag_name=attribute_name + "_is_set",
-                side_effects=side_effects,
-
-                uses_file_path=fieldval.uses_file_path if fieldval.variable_type == "Custom" else False,
 
                 proto_info=AttributeVariableProtoInfo(
                     protobuf_field=protobuf_field,
