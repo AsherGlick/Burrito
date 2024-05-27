@@ -46,6 +46,5 @@ func _process(delta):
 		$Pillar.scale = new_scale
 
 		if self.translation != self.last_translation:
-			#print("update")
 			emit_signal("updated", self.translation)
 			self.last_translation  = self.translation

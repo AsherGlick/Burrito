@@ -23,8 +23,8 @@ func set_icon_image(texture_path: String):
 	self.texture = texture
 	self.material_override.set_shader_param("texture_albedo", texture)
 
-func update_point_poistion(position: Vector3):
+func update_poistion(position: Vector3):
 	self.translation = position
 
-func remove_point(index):
+func remove(index = 0):
 	queue_free()
