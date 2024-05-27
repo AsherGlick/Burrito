@@ -252,29 +252,45 @@ def generate_cpp_variable_data(
     attribute_variables: List[AttributeVariable] = []
     cpp_includes: CPPInclude = CPPInclude()
 
-    cpp_includes.hpp_absolute_includes.add("string")
-    cpp_includes.hpp_absolute_includes.add("vector")
-    cpp_includes.hpp_absolute_includes.add("functional")
-    cpp_includes.hpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
-    cpp_includes.hpp_relative_includes.add("parseable.hpp")
-    cpp_includes.hpp_relative_includes.add("waypoint.pb.h")
-    cpp_includes.hpp_relative_includes.add("state_structs/xml_reader_state.hpp")
-    cpp_includes.hpp_forward_declarations.add("XMLError")
+    cpp_includes.hpp_absolute_includes.update([
+        "string",
+        "vector",
+        "functional",
+    ])
+    cpp_includes.hpp_relative_includes.update([
+        "rapidxml-1.13/rapidxml.hpp",
+        "parseable.hpp",
+        "waypoint.pb.h",
+        "state_structs/xml_reader_state.hpp",
+    ])
+    cpp_includes.hpp_forward_declarations.update([
+        "XMLError",
+    ])
 
-    cpp_includes.cpp_absolute_includes.add("iosfwd")
-    cpp_includes.cpp_absolute_includes.add("string")
-    cpp_includes.cpp_relative_includes.add("rapidxml-1.13/rapidxml.hpp")
-    cpp_includes.cpp_relative_includes.add("string_helper.hpp")
-    cpp_includes.cpp_relative_includes.add("rapid_helpers.hpp")
-    cpp_includes.cpp_relative_includes.add("waypoint.pb.h")
+    cpp_includes.cpp_absolute_includes.update([
+        "iosfwd",
+        "string",
+    ])
+    cpp_includes.cpp_relative_includes.update([
+        "rapidxml-1.13/rapidxml.hpp",
+        "string_helper.hpp",
+        "rapid_helpers.hpp",
+        "waypoint.pb.h",
+    ])
 
     if (doc_type == "Category"):
-        cpp_includes.hpp_absolute_includes.add("map")
-        cpp_includes.hpp_relative_includes.add("icon_gen.hpp")
-        cpp_includes.hpp_relative_includes.add("trail_gen.hpp")
+        cpp_includes.hpp_absolute_includes.update([
+            "map",
+        ])
+        cpp_includes.hpp_relative_includes.update([
+            "icon_gen.hpp",
+            "trail_gen.hpp",
+        ])
 
-        cpp_includes.cpp_absolute_includes.add("utility")
-        cpp_includes.cpp_absolute_includes.add("type_traits")
+        cpp_includes.cpp_absolute_includes.update([
+            "utility",
+            "type_traits",
+        ])
 
     for filepath, document in sorted(data.items()):
         fieldval = document.metadata
