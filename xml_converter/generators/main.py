@@ -261,7 +261,8 @@ class Generator:
                 description=content[fieldkey]  # todo:
             ))
 
-            if fieldval.variable_type == "CompoundValue":
+            # Include the "component" fields of any compound fields
+            if fieldval.variable_type == "CompoundValue" or fieldval.variable_type == "CompoundCustomClass":
                 for component_field in fieldval.components:
 
                     binary_field_name = fieldval.protobuf_field + "." + component_field.protobuf_field
