@@ -74,11 +74,7 @@ class AttributeVariableProtoInfo:
 
 
 @dataclass
-class AttributeVariable:
-    attribute_name: str
-    attribute_type: str
-    cpp_type: str
-    class_name: str
+class AttributeVariableXMLInfo:
     xml_fields: List[str]
 
     # The function name and additional side effect pointers for xml serialization.
@@ -89,13 +85,23 @@ class AttributeVariable:
     deserialize_xml_function: str
     deserialize_xml_side_effects: List[str]
 
-    proto_info: AttributeVariableProtoInfo
-
     default_xml_field: str = ""
-    side_effects: List[str] = field(default_factory=list)
     xml_bundled_components: List[str] = field(default_factory=list)
-    attribute_flag_name: Optional[str] = ""
     write_to_xml: bool = True
+
+
+@dataclass
+class AttributeVariable:
+    attribute_name: str
+    attribute_type: str
+    cpp_type: str
+    class_name: str
+
+    proto_info: AttributeVariableProtoInfo
+    xml_info: AttributeVariableXMLInfo
+
+    side_effects: List[str] = field(default_factory=list)
+    attribute_flag_name: Optional[str] = ""
 
     uses_file_path: bool = False
     is_component: bool = False
@@ -337,16 +343,8 @@ def generate_cpp_variable_data(
                         attribute_type="CompoundValue",
                         cpp_type=documentation_type_data[component.subcomponent_type.value]["cpp_type"],
                         class_name=component_class_name,
-                        xml_fields=component_xml_fields,
-                        default_xml_field=component_default_xml_field,
                         attribute_flag_name=attribute_name + "_is_set",
-                        write_to_xml=write_to_xml,
                         is_component=True,
-
-                        serialize_xml_function=component_class_name + "_to_xml_attribute",
-                        serialize_xml_side_effects=[],
-                        deserialize_xml_function="xml_attribute_to_" + component_class_name,
-                        deserialize_xml_side_effects=[],
 
                         proto_info=AttributeVariableProtoInfo(
                             protobuf_field=component.protobuf_field,
@@ -358,6 +356,15 @@ def generate_cpp_variable_data(
                             deserialize_proto_side_effects=[],
                         ),
 
+                        xml_info=AttributeVariableXMLInfo(
+                            xml_fields=component_xml_fields,
+                            default_xml_field=component_default_xml_field,
+                            write_to_xml=write_to_xml,
+                            serialize_xml_function=component_class_name + "_to_xml_attribute",
+                            serialize_xml_side_effects=[],
+                            deserialize_xml_function="xml_attribute_to_" + component_class_name,
+                            deserialize_xml_side_effects=[],
+                        )
                     )
                     attribute_variables.append(component_attribute_variable)
                 # If there aren't any components to bundle, we don't want to render the attribute
@@ -417,17 +424,9 @@ def generate_cpp_variable_data(
                 attribute_type=fieldval.variable_type,
                 cpp_type=cpp_type,
                 class_name=class_name,
-                xml_fields=xml_fields,
-                default_xml_field=default_xml_field,
 
-                write_to_xml=write_to_xml,
                 attribute_flag_name=attribute_name + "_is_set",
                 side_effects=side_effects,
-
-                serialize_xml_function=serialize_xml_function.function,
-                serialize_xml_side_effects=convert_side_effects_to_variable_names(serialize_xml_function.side_effects),
-                deserialize_xml_function=deserialize_xml_function.function,
-                deserialize_xml_side_effects=convert_side_effects_to_variable_names(deserialize_xml_function.side_effects),
 
                 uses_file_path=fieldval.uses_file_path if fieldval.variable_type == "Custom" else False,
 
@@ -441,8 +440,17 @@ def generate_cpp_variable_data(
                     serialize_proto_side_effects=convert_side_effects_to_variable_names(serialize_proto_function.side_effects),
                     deserialize_proto_function=deserialize_proto_function.function,
                     deserialize_proto_side_effects=convert_side_effects_to_variable_names(deserialize_proto_function.side_effects),
-                )
+                ),
 
+                xml_info=AttributeVariableXMLInfo(
+                    xml_fields=xml_fields,
+                    default_xml_field=default_xml_field,
+                    write_to_xml=write_to_xml,
+                    serialize_xml_function=serialize_xml_function.function,
+                    serialize_xml_side_effects=convert_side_effects_to_variable_names(serialize_xml_function.side_effects),
+                    deserialize_xml_function=deserialize_xml_function.function,
+                    deserialize_xml_side_effects=convert_side_effects_to_variable_names(deserialize_xml_function.side_effects),
+                ),
             )
             attribute_variables.append(attribute_variable)
 
