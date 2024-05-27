@@ -44,6 +44,7 @@ documentation_type_data: Dict[str, DocumentationTypeData] = {
     }
 }
 
+
 @dataclass
 class AttributeVariableProtoInfo:
     # The function name and additional side effect pointers for proto serialization.
@@ -72,7 +73,6 @@ class AttributeVariableProtoInfo:
     mutable_proto_drilldown_calls: str = ""
 
 
-
 @dataclass
 class AttributeVariable:
     attribute_name: str
@@ -99,7 +99,6 @@ class AttributeVariable:
 
     uses_file_path: bool = False
     is_component: bool = False
-
 
 
 @dataclass
@@ -437,7 +436,7 @@ def generate_cpp_variable_data(
                     protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field),
                     is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field),
                     proto_drilldown_calls=proto_drilldown_calls,
-                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls, # Is this used?
+                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
                     serialize_proto_function=serialize_proto_function.function,
                     serialize_proto_side_effects=convert_side_effects_to_variable_names(serialize_proto_function.side_effects),
                     deserialize_proto_function=deserialize_proto_function.function,
