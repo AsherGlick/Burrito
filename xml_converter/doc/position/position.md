@@ -17,7 +17,7 @@ components:
   type: Float32
   xml_fields: [YPos, PositionY]
   protobuf_field: "y"
-  examples: ["81.727", "24.5189", "9.12564", "3.91473"]
+  examples: ["81.727", "24.5189", "-9.12564", "3.91473"]
 
 - name: Z Position
   type: Float32
