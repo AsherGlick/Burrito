@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Set, List, Dict, Optional, Tuple, TypedDict
-from jinja2 import FileSystemLoader, Environment, Template
+from jinja2 import FileSystemLoader, Environment, StrictUndefined, Template
 from metadata import CustomFunction, MetadataType
 from jinja_helpers import UnindentBlocks
 from util import lowercase, capitalize, normalize, Document
@@ -44,23 +44,8 @@ documentation_type_data: Dict[str, DocumentationTypeData] = {
     }
 }
 
-
 @dataclass
-class AttributeVariable:
-    attribute_name: str
-    attribute_type: str
-    cpp_type: str
-    class_name: str
-    xml_fields: List[str]
-
-    # The function name and additional side effect pointers for xml serialization.
-    serialize_xml_function: str
-    serialize_xml_side_effects: List[str]
-
-    # The function name and additional side effect pointers for xml deserialization.
-    deserialize_xml_function: str
-    deserialize_xml_side_effects: List[str]
-
+class AttributeVariableProtoInfo:
     # The function name and additional side effect pointers for proto serialization.
     serialize_proto_function: str
     serialize_proto_side_effects: List[str]
@@ -78,12 +63,6 @@ class AttributeVariable:
     # Protoc cares if a field is scalar or not in the case of "set" vs "set allocated".
     is_proto_field_scalar: bool
 
-    default_xml_field: str = ""
-    side_effects: List[str] = field(default_factory=list)
-    xml_bundled_components: List[str] = field(default_factory=list)
-    attribute_flag_name: Optional[str] = ""
-    write_to_xml: bool = True
-
     # The CPP code to inject into the variable getter to drill down to the
     # variable we are looking for. eg ".trigger()" or ".one().two()"
     proto_drilldown_calls: str = ""
@@ -92,8 +71,35 @@ class AttributeVariable:
     # variable we are looking for. eg ".mutable_trigger()" or "mutable_one()->mutable_two()->"
     mutable_proto_drilldown_calls: str = ""
 
+
+
+@dataclass
+class AttributeVariable:
+    attribute_name: str
+    attribute_type: str
+    cpp_type: str
+    class_name: str
+    xml_fields: List[str]
+
+    # The function name and additional side effect pointers for xml serialization.
+    serialize_xml_function: str
+    serialize_xml_side_effects: List[str]
+
+    # The function name and additional side effect pointers for xml deserialization.
+    deserialize_xml_function: str
+    deserialize_xml_side_effects: List[str]
+
+    proto_info: AttributeVariableProtoInfo
+
+    default_xml_field: str = ""
+    side_effects: List[str] = field(default_factory=list)
+    xml_bundled_components: List[str] = field(default_factory=list)
+    attribute_flag_name: Optional[str] = ""
+    write_to_xml: bool = True
+
     uses_file_path: bool = False
     is_component: bool = False
+
 
 
 @dataclass
@@ -158,7 +164,8 @@ def write_cpp_classes(
         extensions=[UnindentBlocks],
         keep_trailing_newline=True,
         trim_blocks=True,
-        lstrip_blocks=True
+        lstrip_blocks=True,
+        undefined=StrictUndefined
     )
     header_template: Template = env.get_template("class_template.hpp")
     code_template: Template = env.get_template("class_template.cpp")
@@ -333,9 +340,6 @@ def generate_cpp_variable_data(
                         class_name=component_class_name,
                         xml_fields=component_xml_fields,
                         default_xml_field=component_default_xml_field,
-                        protobuf_field=component.protobuf_field,
-                        protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
-                        is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
                         attribute_flag_name=attribute_name + "_is_set",
                         write_to_xml=write_to_xml,
                         is_component=True,
@@ -344,10 +348,17 @@ def generate_cpp_variable_data(
                         serialize_xml_side_effects=[],
                         deserialize_xml_function="xml_attribute_to_" + component_class_name,
                         deserialize_xml_side_effects=[],
-                        serialize_proto_function="to_proto_" + component_class_name,
-                        serialize_proto_side_effects=[],
-                        deserialize_proto_function="from_proto_" + component_class_name,
-                        deserialize_proto_side_effects=[],
+
+                        proto_info=AttributeVariableProtoInfo(
+                            protobuf_field=component.protobuf_field,
+                            protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
+                            is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field + "." + component.protobuf_field),
+                            serialize_proto_function="to_proto_" + component_class_name,
+                            serialize_proto_side_effects=[],
+                            deserialize_proto_function="from_proto_" + component_class_name,
+                            deserialize_proto_side_effects=[],
+                        ),
+
                     )
                     attribute_variables.append(component_attribute_variable)
                 # If there aren't any components to bundle, we don't want to render the attribute
@@ -409,11 +420,6 @@ def generate_cpp_variable_data(
                 class_name=class_name,
                 xml_fields=xml_fields,
                 default_xml_field=default_xml_field,
-                protobuf_field=protobuf_field,
-                protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field),
-                is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field),
-                proto_drilldown_calls=proto_drilldown_calls,
-                mutable_proto_drilldown_calls=mutable_proto_drilldown_calls,
 
                 write_to_xml=write_to_xml,
                 attribute_flag_name=attribute_name + "_is_set",
@@ -423,12 +429,21 @@ def generate_cpp_variable_data(
                 serialize_xml_side_effects=convert_side_effects_to_variable_names(serialize_xml_function.side_effects),
                 deserialize_xml_function=deserialize_xml_function.function,
                 deserialize_xml_side_effects=convert_side_effects_to_variable_names(deserialize_xml_function.side_effects),
-                serialize_proto_function=serialize_proto_function.function,
-                serialize_proto_side_effects=convert_side_effects_to_variable_names(serialize_proto_function.side_effects),
-                deserialize_proto_function=deserialize_proto_function.function,
-                deserialize_proto_side_effects=convert_side_effects_to_variable_names(deserialize_proto_function.side_effects),
 
-                uses_file_path=fieldval.uses_file_path if fieldval.variable_type == "Custom" else False
+                uses_file_path=fieldval.uses_file_path if fieldval.variable_type == "Custom" else False,
+
+                proto_info=AttributeVariableProtoInfo(
+                    protobuf_field=protobuf_field,
+                    protobuf_cpp_type=get_proto_field_cpp_type(doc_type, fieldval.protobuf_field),
+                    is_proto_field_scalar=is_proto_field_scalar(doc_type, fieldval.protobuf_field),
+                    proto_drilldown_calls=proto_drilldown_calls,
+                    mutable_proto_drilldown_calls=mutable_proto_drilldown_calls, # Is this used?
+                    serialize_proto_function=serialize_proto_function.function,
+                    serialize_proto_side_effects=convert_side_effects_to_variable_names(serialize_proto_function.side_effects),
+                    deserialize_proto_function=deserialize_proto_function.function,
+                    deserialize_proto_side_effects=convert_side_effects_to_variable_names(deserialize_proto_function.side_effects),
+                )
+
             )
             attribute_variables.append(attribute_variable)
 
@@ -451,7 +466,8 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         extensions=[UnindentBlocks],
         keep_trailing_newline=True,
         trim_blocks=True,
-        lstrip_blocks=True
+        lstrip_blocks=True,
+        undefined=StrictUndefined
     )
     attribute_names: Dict[str, str] = {}
     template: Dict[str, Template] = {

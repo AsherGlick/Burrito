@@ -105,12 +105,12 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) cons
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                {% if not attribute_variable.is_proto_field_scalar %}
-                    std::function<void({{attribute_variable.protobuf_cpp_type}}*)> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.protobuf_cpp_type}}* val) { proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.protobuf_field}}(val); };
+                {% if not attribute_variable.proto_info.is_proto_field_scalar %}
+                    std::function<void({{attribute_variable.proto_info.protobuf_cpp_type}}*)> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.proto_info.protobuf_cpp_type}}* val) { proto_{{cpp_class_header}}.{{attribute_variable.proto_info.mutable_proto_drilldown_calls}}set_allocated_{{attribute_variable.proto_info.protobuf_field}}(val); };
                 {% else %}
-                    std::function<void({{attribute_variable.protobuf_cpp_type}})> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.protobuf_cpp_type}} val) { proto_{{cpp_class_header}}.{{attribute_variable.mutable_proto_drilldown_calls}}set_{{attribute_variable.protobuf_field}}(val); };
+                    std::function<void({{attribute_variable.proto_info.protobuf_cpp_type}})> setter = [&proto_{{cpp_class_header}}]({{attribute_variable.proto_info.protobuf_cpp_type}} val) { proto_{{cpp_class_header}}.{{attribute_variable.proto_info.mutable_proto_drilldown_calls}}set_{{attribute_variable.proto_info.protobuf_field}}(val); };
                 {% endif %}
-                {{attribute_variable.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}, state, setter{% for side_effect in attribute_variable.serialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
+                {{attribute_variable.proto_info.serialize_proto_function}}(this->{{attribute_variable.attribute_name}}, state, setter{% for side_effect in attribute_variable.proto_info.serialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endif %}
     {% endfor %}
@@ -120,14 +120,14 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) cons
 void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}, ProtoReaderState* state) {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false %}
-            {% if not attribute_variable.is_proto_field_scalar %}
-                if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.has_{{attribute_variable.protobuf_field}}()) {
-            {% elif attribute_variable.protobuf_cpp_type == "std::string" %}
-                if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != "") {
+            {% if not attribute_variable.proto_info.is_proto_field_scalar %}
+                if (proto_{{cpp_class_header}}{{attribute_variable.proto_info.proto_drilldown_calls}}.has_{{attribute_variable.proto_info.protobuf_field}}()) {
+            {% elif attribute_variable.proto_info.protobuf_cpp_type == "std::string" %}
+                if (proto_{{cpp_class_header}}{{attribute_variable.proto_info.proto_drilldown_calls}}.{{attribute_variable.proto_info.protobuf_field}}() != "") {
             {% else %}
-                if (proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}() != 0) {
+                if (proto_{{cpp_class_header}}{{attribute_variable.proto_info.proto_drilldown_calls}}.{{attribute_variable.proto_info.protobuf_field}}() != 0) {
             {% endif %}
-                {{attribute_variable.deserialize_proto_function}}(proto_{{cpp_class_header}}{{attribute_variable.proto_drilldown_calls}}.{{attribute_variable.protobuf_field}}(), state, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.deserialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
+                {{attribute_variable.proto_info.deserialize_proto_function}}(proto_{{cpp_class_header}}{{attribute_variable.proto_info.proto_drilldown_calls}}.{{attribute_variable.proto_info.protobuf_field}}(), state, &(this->{{attribute_variable.attribute_name}}), &(this->{{attribute_variable.attribute_flag_name}}){% for side_effect in attribute_variable.proto_info.deserialize_proto_side_effects %}, &(this->{{side_effect}}){% endfor %});
             }
         {% endif %}
     {% endfor %}
