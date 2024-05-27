@@ -621,6 +621,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	category_data.category2d.add_path2d(new_2d_path)
 
 	self.currently_active_path = new_route
+	self.currently_active_path2d = new_2d_path
 
 
 func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem):
