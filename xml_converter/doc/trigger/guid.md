@@ -5,6 +5,13 @@ class: UniqueId
 xml_fields: ["GUID"]
 applies_to: ["Icon", "Trail"]
 protobuf_field: guid
+examples:
+    - oC75IfZgR3q+PO0T+6YJNQ==
+    - 0lBvpjZWS6edFG6kNFgutQ==
+    - tBQmxZ7XSfWxmSvAwKr1MA
+    - MeUxljBJSJSFgnCUFVFMyg
+    - XSGdb93xRxeCWm0fgMBCBQ
+    - OluemQSXQpSCeWb3RbWlNA
 ---
 A globally unique identifier value to make sure this maker's trigger reset data is always assocaited with this marker and never lost or confused with other markers.
 
