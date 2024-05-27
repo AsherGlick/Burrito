@@ -274,8 +274,10 @@ class Generator:
             if fieldval.variable_type == "CompoundValue" or fieldval.variable_type == "CompoundCustomClass":
                 for component_field in fieldval.components:
 
-                    if fieldval.protobuf_field is not None:
+                    if fieldval.protobuf_field is not None and component_field.protobuf_field is not None:
                         binary_field_name = fieldval.protobuf_field + "." + component_field.protobuf_field
+                    elif fieldval.protobuf_field is not None:
+                        binary_field_name = fieldval.protobuf_field
                     else:
                         binary_field_name = ""
 

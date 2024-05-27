@@ -37,7 +37,7 @@ std::string color_to_xml_attribute(
     const Color* value);
 
 void proto_to_color(
-    waypoint::RGBAColor input,
+    uint32_t input,
     ProtoReaderState* state,
     Color* value,
     bool* is_set);
@@ -45,4 +45,4 @@ void proto_to_color(
 void color_to_proto(
     Color value,
     ProtoWriterState* state,
-    std::function<void(waypoint::RGBAColor*)> setter);
+    std::function<void(uint32_t)> setter);

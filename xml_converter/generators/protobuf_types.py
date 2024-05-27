@@ -158,7 +158,7 @@ PROTO_TO_CPP_TYPES: Dict[str, str] = {
     "uint64": "unsigned long",
     "sint32": "int",
     "sint64": "long",
-    "fixed32": "int",
+    "fixed32": "uint32_t",
     "fixed64": "long",
     "sfixed32": "int",
     "sfixed64": "long",

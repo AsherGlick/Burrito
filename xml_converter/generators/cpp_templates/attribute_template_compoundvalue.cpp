@@ -59,7 +59,9 @@ void proto_to_{{attribute_name}}(
     bool* is_set) {
     {{class_name}} {{attribute_name}};
     {% for attribute_component in attribute_components %}
-        {{attribute_name}}.{{attribute_component.attribute_name}} = input.{{attribute_component.protobuf_field}}();
+        {% if attribute_component.protobuf_field != None %}
+            {{attribute_name}}.{{attribute_component.attribute_name}} = input.{{attribute_component.protobuf_field}}();
+        {% endif %}
     {% endfor %}
     *value = {{attribute_name}};
     *is_set = true;
@@ -71,7 +73,9 @@ void {{attribute_name}}_to_proto(
     std::function<void({{proto_field_cpp_type}}*)> setter) {
     {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
     {% for attribute_component in attribute_components %}
-        proto_{{attribute_name}}->set_{{attribute_component.protobuf_field}}(value.{{attribute_component.attribute_name}});
+        {% if attribute_component.protobuf_field != None %}
+            proto_{{attribute_name}}->set_{{attribute_component.protobuf_field}}(value.{{attribute_component.attribute_name}});
+        {% endif %}
     {% endfor %}
     setter(proto_{{attribute_name}});
 }

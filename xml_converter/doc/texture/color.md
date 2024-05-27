@@ -18,25 +18,25 @@ components:
 - name: Red
   type: Float32
   xml_fields: [Red]
-  protobuf_field: rgba_color
+  protobuf_field: null
   examples: ["0", "0.25", "0.5", "0.75", "1.0"]
 
 - name: Green
   type: Float32
   xml_fields: [Green]
-  protobuf_field: rgba_color
+  protobuf_field: null
   examples: ["0", "0.25", "0.5", "0.75", "1.0"]
 
 - name: Blue
   type: Float32
   xml_fields: [Blue]
-  protobuf_field: rgba_color
+  protobuf_field: null
   examples: ["0", "0.25", "0.5", "0.75", "1.0"]
 
 - name: Alpha
   type: Float32
   xml_fields: [Alpha]
-  protobuf_field: rgba_color
+  protobuf_field: null
   examples: ["0", "0.25", "0.5", "0.75", "1.0"]
 
 
