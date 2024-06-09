@@ -695,7 +695,7 @@ func gen_adjustment_nodes():
 			new_gizmo.connect("selected", self, "on_path_gizmo_selected", [route, path2d, i])
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
 			new_gizmo.connect("updated", route, "set_point_position", [i])
-			new_gizmo.connect("updated", path2d, "on_update_position", [i])
+			new_gizmo.connect("updated", self, "set_2D_position_from_3D_point", [path2d, i])
 			$Gizmos.add_child(new_gizmo)
 	for icon in category3d.icons:
 		var new_gizmo = gizmo_scene.instance()
@@ -709,7 +709,10 @@ var currently_selected_gizmo = null
 var currently_selected_icon = null
 var currently_selected_path3d = null
 var currently_selected_path2d = null
-var currently_selected_index = 0
+var currently_selected_index = null
+
+func set_2D_position_from_3D_point(position: Vector3, path2D: Line2D, index: int):
+	path2D.set_point_position(index, Vector2(position.x, position.z))
 
 func on_icon_gizmo_selected(object: Spatial, icon: Sprite3D):
 	self.currently_selected_gizmo = object
@@ -739,7 +742,7 @@ func on_gizmo_deselected():
 	self.currently_selected_icon = null
 	self.currently_selected_path3d = null
 	self.currently_selected_path2d = null
-	self.currently_selected_index = 0
+	self.currently_selected_index = null
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewPathPointAfter.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = true
@@ -871,6 +874,7 @@ func _on_NewPathPointAfter_pressed():
 func _on_XZSnapToPlayer_pressed():
 	if self.currently_selected_gizmo == null:
 		print("Warning: No Point Selected")
+		return
 	self.currently_selected_gizmo.translation.x = self.player_position.x
 	self.currently_selected_gizmo.translation.z = -self.player_position.z
 
@@ -878,12 +882,14 @@ func _on_XZSnapToPlayer_pressed():
 func _on_YSnapToPlayer_pressed():
 	if self.currently_selected_gizmo == null:
 		print("Warning: No Point Selected")
+		return
 	self.currently_selected_gizmo.translation.y = self.player_position.y
 
 
 func _on_SnapSelectedToPlayer_pressed():
 	if self.currently_selected_gizmo == null:
 		print("Warning: No Point Selected")
+		return
 	self.currently_selected_gizmo.translation.x = self.player_position.x
 	self.currently_selected_gizmo.translation.z = -self.player_position.z
 	self.currently_selected_gizmo.translation.y = self.player_position.y
