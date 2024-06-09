@@ -78,7 +78,7 @@ func get_point_count():
 func get_point_position(index: int):
 	return self.point_list[index]
 
-func update_poistion(position: Vector3, index: int):
+func set_point_position(position: Vector3, index: int):
 	self.point_list[index] = position
 	refresh_mesh()
 
@@ -89,11 +89,11 @@ func add_point(position: Vector3, index: int = -1):
 		self.point_list.insert(index, position)
 	refresh_mesh()
 
-func remove(index: int):
+func remove_point(index: int):
 	self.point_list.remove(index)
 	refresh_mesh()
 
-func new_point_after(midpoint: Vector3, index):
+func new_point_after(midpoint: Vector3, index: int):
 	var start: Vector3 = self.get_point_position(index)
 	if self.get_point_count() > index+1:
 		var end: Vector3 = self.get_point_position(index+1)

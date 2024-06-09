@@ -2,7 +2,7 @@ extends Spatial
 
 var camera: Camera
 signal selected(selected_object)
-signal deselected(selected_object)
+signal deselected()
 signal updated(point_position)
 var last_translation
 var selected: bool = false
