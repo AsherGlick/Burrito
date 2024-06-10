@@ -18,7 +18,7 @@ var next_texture_path: String = ""
 # the value is null then a new path will be created the next time a path point
 # will be created.
 var currently_active_path = null
-var currently_active_path_2d = null
+var currently_active_path2d = null
 var currently_active_category = null
 
 var map_was_open = false
@@ -621,7 +621,7 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	category_data.category2d.add_path2d(new_2d_path)
 
 	self.currently_active_path = new_route
-	self.currently_active_path_2d = new_2d_path
+	self.currently_active_path2d = new_2d_path
 
 
 func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem):
@@ -692,37 +692,59 @@ func gen_adjustment_nodes():
 				continue
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.link_point("path", route, path2d, i)
-			new_gizmo.connect("selected", self, "on_gizmo_selected")
+			new_gizmo.connect("selected", self, "on_path_gizmo_selected", [route, path2d, i])
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+			new_gizmo.connect("updated", route, "set_point_position", [i])
+			new_gizmo.connect("updated", self, "set_2D_position_from_3D_point", [path2d, i])
 			$Gizmos.add_child(new_gizmo)
 	for icon in category3d.icons:
 		var new_gizmo = gizmo_scene.instance()
 		new_gizmo.translation = icon.translation
-		new_gizmo.link_point("icon", icon)
-		new_gizmo.connect("selected", self, "on_gizmo_selected")
+		new_gizmo.connect("selected", self, "on_icon_gizmo_selected", [icon])
 		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+		new_gizmo.connect("updated", icon, "set_position")
 		$Gizmos.add_child(new_gizmo)
 
+var currently_selected_gizmo = null
+var currently_selected_icon = null
+var currently_selected_path3d = null
+var currently_selected_path2d = null
+var currently_selected_index = null
 
-var currently_selected_node = null
-func on_gizmo_selected(object):
-	self.currently_selected_node = object
+func set_2D_position_from_3D_point(position: Vector3, path2D: Line2D, index: int):
+	path2D.set_point_position(index, Vector2(position.x, position.z))
+
+func on_icon_gizmo_selected(object: Spatial, icon: Sprite3D):
+	self.currently_selected_gizmo = object
+	self.currently_selected_icon = icon
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
-	# Only enable these buttons if the object selected is a point on the path not an icon
-	if object.point_type == "path":
-		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = false
-		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
-		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
 
 
-func on_gizmo_deselected(object):
-	self.currently_selected_node = null
+func on_path_gizmo_selected(object: Spatial, path3d: Spatial, path2d: Line2D, index: int):
+	self.currently_selected_gizmo = object
+	self.currently_selected_path3d = path3d
+	self.currently_selected_path2d = path2d
+	self.currently_selected_index = index
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewPathPointAfter.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
+
+
+func on_gizmo_deselected():
+	self.currently_selected_gizmo = null
+	self.currently_selected_icon = null
+	self.currently_selected_path3d = null
+	self.currently_selected_path2d = null
+	self.currently_selected_index = null
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewPathPointAfter.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = true
@@ -816,77 +838,75 @@ func _on_NewPathPoint_pressed():
 		var z_accurate_player_position = player_position
 		z_accurate_player_position.z = -z_accurate_player_position.z
 		self.currently_active_path.add_point(z_accurate_player_position)
-		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
+		self.currently_active_path2d.add_point(Vector2(z_accurate_player_position.x, z_accurate_player_position.z))
 
 func _on_NodeEditorDialog_hide():
-	self.currently_selected_node = null
+	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	_on_Dialog_hide()
 
 
 func _on_DeleteNode_pressed():
-	if self.currently_selected_node.point_type == "icon":
-		self.currently_selected_node.object_link.get_parent().remove_child(self.currently_selected_node.object_link)
-		self.currently_selected_node.object_link.queue_free()
-	elif self.currently_selected_node.point_type == "path":
-		var path =   self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
-		var index =  self.currently_selected_node.object_index
-
-		path.remove_point(index)
-		path2d.remove_point(index)
+	if self.currently_selected_icon != null:
+		self.currently_selected_icon.remove_icon()
+	if self.currently_selected_path3d != null:
+		self.currently_selected_path3d.remove_point(self.currently_selected_index)
+	if self.currently_selected_path2d != null:
+		self.currently_selected_path2d.remove_point(self.currently_selected_index)
+	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
-	on_gizmo_deselected(self.currently_selected_node)
 
 
-func _on_NewNodeAfter_pressed():
-	if self.currently_selected_node.point_type == "icon":
-		print("Warning: Cannot add node to icon")
-	elif self.currently_selected_node.point_type == "path":
-		print("insert path node")
-		var path = self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
-		var index = self.currently_selected_node.object_index
+func _on_NewPathPointAfter_pressed():
+	print("insert path node")
+	var midpoint = self.player_position
+	midpoint.z = -midpoint.z
+	if self.currently_selected_path3d != null:
+		self.currently_selected_path3d.new_point_after(midpoint, self.currently_selected_index)
+	if self.currently_selected_path2d != null:
+		self.currently_selected_path2d.new_point_after(midpoint, self.currently_selected_index)
 
-		var start = path.get_point_position(index)
-		var midpoint = self.player_position
-		midpoint.z = -midpoint.z
-		if path.get_point_count() > index+1:
-			var end = path.get_point_position(index+1)
-			midpoint = ((start-end)/2) + end
-
-		path.add_point(midpoint, index+1)
-		path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
-
-		clear_adjustment_nodes()
-		gen_adjustment_nodes()
-		on_gizmo_deselected(self.currently_selected_node)
+	on_gizmo_deselected()
+	clear_adjustment_nodes()
+	gen_adjustment_nodes()
 
 func _on_XZSnapToPlayer_pressed():
-	self.currently_selected_node.translation.x = self.player_position.x
-	self.currently_selected_node.translation.z = -self.player_position.z
+	if self.currently_selected_gizmo == null:
+		print("Warning: No Point Selected")
+		return
+	self.currently_selected_gizmo.translation.x = self.player_position.x
+	self.currently_selected_gizmo.translation.z = -self.player_position.z
 
 
 func _on_YSnapToPlayer_pressed():
-	self.currently_selected_node.translation.y = self.player_position.y
+	if self.currently_selected_gizmo == null:
+		print("Warning: No Point Selected")
+		return
+	self.currently_selected_gizmo.translation.y = self.player_position.y
 
 
 func _on_SnapSelectedToPlayer_pressed():
-	self.currently_selected_node.translation.x = self.player_position.x
-	self.currently_selected_node.translation.z = -self.player_position.z
-	self.currently_selected_node.translation.y = self.player_position.y
+	if self.currently_selected_gizmo == null:
+		print("Warning: No Point Selected")
+		return
+	self.currently_selected_gizmo.translation.x = self.player_position.x
+	self.currently_selected_gizmo.translation.z = -self.player_position.z
+	self.currently_selected_gizmo.translation.y = self.player_position.y
 
 func _on_SetActivePath_pressed():
-	if self.currently_selected_node.point_type == "icon":
-		print("Warning: Cannot set icon as active path")
-	elif self.currently_selected_node.point_type == "path":
-		self.currently_active_path = self.currently_selected_node.object_link
-		self.currently_active_path_2d = self.currently_selected_node.object_2d_link
+	self.currently_active_path = self.currently_selected_path3d
+	self.currently_active_path2d = self.currently_selected_path2d
 
+func set_active_path(path):
+	self.currently_active_path = path
 
 func _on_ReversePathDirection_pressed():
-	self.currently_selected_node.object_link.reverse()
+	self.currently_selected_path3d.reverse()
+	self.currently_selected_path2d.reverse()
+	on_gizmo_deselected()
+	clear_adjustment_nodes()
+	gen_adjustment_nodes()
 
 
 func _on_ExitButton_pressed():

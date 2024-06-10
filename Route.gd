@@ -78,7 +78,7 @@ func get_point_count():
 func get_point_position(index: int):
 	return self.point_list[index]
 
-func set_point_position(index: int, position: Vector3):
+func set_point_position(position: Vector3, index: int):
 	self.point_list[index] = position
 	refresh_mesh()
 
@@ -93,6 +93,12 @@ func remove_point(index: int):
 	self.point_list.remove(index)
 	refresh_mesh()
 
+func new_point_after(midpoint: Vector3, index: int):
+	var start: Vector3 = self.get_point_position(index)
+	if self.get_point_count() > index+1:
+		var end: Vector3 = self.get_point_position(index+1)
+		midpoint = ((start-end)/2) + end
+	add_point(midpoint, index+1)
 
 func set_texture(texture):
 	$MeshInstance.material_override.set_shader_param("texture_albedo", texture)

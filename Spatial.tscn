@@ -550,7 +550,7 @@ size_flags_horizontal = 3
 disabled = true
 text = "Delete Selected"
 
-[node name="NewNodeAfter" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+[node name="NewPathPointAfter" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 margin_top = 44.0
 margin_right = 323.0
 margin_bottom = 84.0
@@ -917,7 +917,7 @@ material/0 = SubResource( 4 )
 [connection signal="hide" from="Control/Dialogs/SaveDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_NodeEditorDialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode" to="." method="_on_DeleteNode_pressed"]
-[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter" to="." method="_on_NewNodeAfter_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewPathPointAfter" to="." method="_on_NewPathPointAfter_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer" to="." method="_on_SnapSelectedToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer" to="." method="_on_XZSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
