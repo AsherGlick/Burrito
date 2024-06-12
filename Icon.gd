@@ -25,6 +25,3 @@ func set_icon_image(texture_path: String):
 
 func set_position(position: Vector3):
 	self.translation = position
-
-func remove_icon():
-	self.queue_free()

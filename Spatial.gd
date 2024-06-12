@@ -17,8 +17,7 @@ var next_texture_path: String = ""
 # A pointer to the path object that any new nodes should be appended to. If
 # the value is null then a new path will be created the next time a path point
 # will be created.
-var currently_active_path = null
-var currently_active_path2d = null
+var currently_active_path_index = null
 var currently_active_category = null
 
 var map_was_open = false
@@ -620,9 +619,6 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	new_2d_path.texture = texture
 	category_data.category2d.add_path2d(new_2d_path)
 
-	self.currently_active_path = new_route
-	self.currently_active_path2d = new_2d_path
-
 
 func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem):
 	position.z = -position.z
@@ -680,11 +676,11 @@ func gen_adjustment_nodes():
 
 	var category3d = self.currently_active_category.get_metadata(0).category3d
 	var category2d = self.currently_active_category.get_metadata(0).category2d
-	for index in category3d.paths.size():
-		var route = category3d.paths[index]
-		var path2d = category2d.paths2d[index]
-		for i in range(route.get_point_count()):
-			var gizmo_position = route.get_point_position(i)
+	for path_index in category3d.paths.size():
+		var route = category3d.paths[path_index]
+		var path2d = category2d.paths2d[path_index]
+		for point_index in get_trail_point_count(path_index):
+			var gizmo_position = get_trail_point_position(path_index, point_index)
 			# Simplistic cull to prevent nodes that are too far away to be
 			# visible from being created. Additional work can be done here
 			# if this is not enough of an optimization in the future.
@@ -692,42 +688,39 @@ func gen_adjustment_nodes():
 				continue
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.connect("selected", self, "on_path_gizmo_selected", [route, path2d, i])
+			new_gizmo.connect("selected", self, "on_path_gizmo_selected", [path_index, point_index])
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
-			new_gizmo.connect("updated", route, "set_point_position", [i])
-			new_gizmo.connect("updated", self, "set_2D_position_from_3D_point", [path2d, i])
+			new_gizmo.connect("updated", self, "set_trail_position", [path_index, point_index])
 			$Gizmos.add_child(new_gizmo)
-	for icon in category3d.icons:
+	for index in category3d.icons.size():
 		var new_gizmo = gizmo_scene.instance()
-		new_gizmo.translation = icon.translation
-		new_gizmo.connect("selected", self, "on_icon_gizmo_selected", [icon])
+		new_gizmo.translation = category3d.icons[index].translation
+		new_gizmo.connect("selected", self, "on_icon_gizmo_selected", [index])
 		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
-		new_gizmo.connect("updated", icon, "set_position")
+		new_gizmo.connect("updated", self, "set_icon_position", [index])
 		$Gizmos.add_child(new_gizmo)
 
 var currently_selected_gizmo = null
-var currently_selected_icon = null
-var currently_selected_path3d = null
-var currently_selected_path2d = null
-var currently_selected_index = null
+var currently_selected_icon_index = null
+var currently_selected_path_index = null
+var currently_selected_point_index = null
 
 func set_2D_position_from_3D_point(position: Vector3, path2D: Line2D, index: int):
 	path2D.set_point_position(index, Vector2(position.x, position.z))
 
-func on_icon_gizmo_selected(object: Spatial, icon: Sprite3D):
+func on_icon_gizmo_selected(object: Spatial, icon_index: int):
 	self.currently_selected_gizmo = object
-	self.currently_selected_icon = icon
+	self.currently_selected_icon_index = icon_index
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
 
 
-func on_path_gizmo_selected(object: Spatial, path3d: Spatial, path2d: Line2D, index: int):
+func on_path_gizmo_selected(object: Spatial, path_index: int, point_index: int):
 	self.currently_selected_gizmo = object
-	self.currently_selected_path3d = path3d
-	self.currently_selected_path2d = path2d
-	self.currently_selected_index = index
+	self.currently_selected_path_index = path_index
+	self.currently_selected_point_index = point_index
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewPathPointAfter.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
@@ -739,10 +732,9 @@ func on_path_gizmo_selected(object: Spatial, path3d: Spatial, path2d: Line2D, in
 
 func on_gizmo_deselected():
 	self.currently_selected_gizmo = null
-	self.currently_selected_icon = null
-	self.currently_selected_path3d = null
-	self.currently_selected_path2d = null
-	self.currently_selected_index = null
+	self.currently_selected_icon_index = null
+	self.currently_selected_path_index = null
+	self.currently_selected_point_index = null
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewPathPointAfter.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = true
@@ -756,6 +748,97 @@ func clear_adjustment_nodes():
 	for child in $Gizmos.get_children():
 		$Gizmos.remove_child(child)
 		child.queue_free()
+
+################################################################################
+# Update Waypoint datum
+################################################################################
+func set_icon_position(position: Vector3, icon_index: int):
+	var icon = self.currently_active_category.get_metadata(0).category3d.icons[icon_index]
+	icon.waypoint.new_position(position)
+	icon.set_position(icon.waypoint.get_position())
+
+func remove_icon(icon_index: int):
+	var category: CategoryData = self.currently_active_category.get_metadata(0)
+	var icons = category.waypoint_category.get_icon()
+	icons.remove(icon_index)
+	category.category3d.remove_icon(icon_index)
+
+func set_trail_position(position: Vector3, path_index: int, point_index: int):
+	var trail_data = self.currently_active_category.get_metadata(0).category3d.paths[path_index].waypoint.get_trail_data()
+	trail_data.get_points_x()[point_index] = position.x
+	trail_data.get_points_y()[point_index] = position.y
+	trail_data.get_points_z()[point_index] = -position.z
+	refresh_path3D_points(path_index)
+	refresh_path2D_points(path_index)
+
+func reverse_trail(path_index: int):
+	var trail_data = self.currently_active_category.get_metadata(0).category3d.paths[path_index].waypoint.get_trail_data()
+	trail_data.get_points_x().invert()
+	trail_data.get_points_y().invert()
+	trail_data.get_points_z().invert()
+	refresh_path3D_points(path_index)
+	refresh_path2D_points(path_index)
+
+func get_trail_point_count(path_index: int):
+	var trail_data = self.currently_active_category.get_metadata(0).category3d.paths[path_index].waypoint.get_trail_data()
+	return len(trail_data.get_points_x())
+
+func get_trail_point_position(path_index: int, point_index: int):
+	var position: Vector3
+	var trail_data = self.currently_active_category.get_metadata(0).category3d.paths[path_index].waypoint.get_trail_data()
+	position[0] = trail_data.get_points_x()[point_index]
+	position[1] = trail_data.get_points_y()[point_index]
+	position[2] = trail_data.get_points_z()[point_index]
+	return position
+
+func add_trail_point(position: Vector3, path_index: int, point_index: int = -1):
+	var trail_data = self.currently_active_category.get_metadata(0).category3d.paths[path_index].waypoint.get_trail_data()
+	if point_index == -1:
+		trail_data.get_points_x().append(position.x)
+		trail_data.get_points_y().append(position.y)
+		trail_data.get_points_z().append(-position.z)
+	else:
+		trail_data.get_points_x().insert(point_index, position.x)
+		trail_data.get_points_y().insert(point_index, position.y)
+		trail_data.get_points_z().insert(point_index, -position.z)
+	refresh_path3D_points(path_index)
+	refresh_path2D_points(path_index)
+
+func remove_trail_point(position: Vector3, path_index: int, point_index: int = -1):
+	var trail_data = self.currently_active_category.get_metadata(0).category3d.paths[path_index].waypoint.get_trail_data()
+	trail_data.get_points_x().remove(position.x)
+	trail_data.get_points_y().remove(position.y)
+	trail_data.get_points_z().remove(-position.z)
+	refresh_path3D_points(path_index)
+	refresh_path2D_points(path_index)
+
+func new_trail_point_after(path_index: int, point_index: int):
+	var start: Vector3 = get_trail_point_position(path_index, point_index)
+	var target_position: Vector3
+	if get_trail_point_count(path_index) > point_index+1:
+		var end: Vector3 = get_trail_point_position(path_index, point_index+1)
+		target_position = ((start-end)/2) + end
+	else:
+		target_position = Vector3(self.player_position.x, self.player_position.y, -self.player_position.z)
+	add_trail_point(target_position, point_index+1)
+
+func refresh_path3D_points(path_index: int):
+	var path_points := PoolVector3Array()
+	var path3d = self.currently_active_category.get_metadata(0).category3d.paths[path_index]
+	var trail_data = path3d.waypoint.get_trail_data()
+	for index in range(0, trail_data.get_points_z().size()):
+		path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], -trail_data.get_points_z()[index]))
+	path3d.point_list = path_points
+	path3d.refresh_mesh()
+
+func refresh_path2D_points(path_index: int):
+	var path_points := PoolVector2Array()
+	var path2d = self.currently_active_category.get_metadata(0).category2d.paths[path_index]
+	var trail_data = path2d.waypoint.get_trail_data()
+	for index in range(0, trail_data.get_points_z().size()):
+		path_points.append(Vector2(trail_data.get_points_x()[index], -trail_data.get_points_z()[index]))
+	path2d.points = path_points
+
 
 ################################################################################
 # Signal Functions
@@ -818,27 +901,33 @@ func _on_TexturePathOpen_file_selected(path):
 # a path node is created.
 ################################################################################
 func _on_NewPath_pressed():
-	self.currently_active_path = null
+	self.currently_active_path_index = null
 
 ################################################################################
 # Create a new icon and give it the texture
 ################################################################################
 func _on_NewIcon_pressed():
 	var waypoint_category: Waypoint.Category = self.currently_active_category.get_metadata(0).waypoint_category
-	var waypoint_icon = waypoint_category.new_icon()
+	var waypoint_icon = waypoint_category.add_icon()
+	var position = waypoint_icon.new_position()
+	position.set_x(self.player_position.x)
+	position.set_y(self.player_position.y)
+	position.set_z(-self.player_position.z)
 	gen_new_icon(self.player_position, self.next_texture_path, waypoint_icon, self.currently_active_category)
 
 # A new path point is created
 func _on_NewPathPoint_pressed():
-	if self.currently_active_path == null:
+	if self.currently_active_path_index == null:
 		var waypoint_category: Waypoint.Category = self.currently_active_category.get_metadata(0).waypoint_category
-		var waypoint_trail = waypoint_category.new_trail()
+		var waypoint_trail = waypoint_category.add_trail()
+		var trail_data = waypoint_trail.new_trail_data()
+		trail_data.add_points_x(self.player_position.x)
+		trail_data.add_points_y(self.player_position.y)
+		trail_data.add_points_z(-self.player_position.z)
 		gen_new_path([self.player_position], self.next_texture_path, waypoint_trail, self.currently_active_category)
+		self.currently_active_path_index = len(waypoint_category.get_trail()) - 1
 	else:
-		var z_accurate_player_position = player_position
-		z_accurate_player_position.z = -z_accurate_player_position.z
-		self.currently_active_path.add_point(z_accurate_player_position)
-		self.currently_active_path2d.add_point(Vector2(z_accurate_player_position.x, z_accurate_player_position.z))
+		add_trail_point(self.player_position, self.currently_active_path_index)
 
 func _on_NodeEditorDialog_hide():
 	on_gizmo_deselected()
@@ -847,26 +936,18 @@ func _on_NodeEditorDialog_hide():
 
 
 func _on_DeleteNode_pressed():
-	if self.currently_selected_icon != null:
-		self.currently_selected_icon.remove_icon()
-	if self.currently_selected_path3d != null:
-		self.currently_selected_path3d.remove_point(self.currently_selected_index)
-	if self.currently_selected_path2d != null:
-		self.currently_selected_path2d.remove_point(self.currently_selected_index)
+	if self.currently_selected_icon_index != null:
+		remove_icon(self.currently_selected_icon_index)
+	if self.currently_selected_path_index != null:
+		remove_trail_point(self.currently_selected_path_index, self.currently_selected_point_index)
 	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
 
 
 func _on_NewPathPointAfter_pressed():
-	print("insert path node")
-	var midpoint = self.player_position
-	midpoint.z = -midpoint.z
-	if self.currently_selected_path3d != null:
-		self.currently_selected_path3d.new_point_after(midpoint, self.currently_selected_index)
-	if self.currently_selected_path2d != null:
-		self.currently_selected_path2d.new_point_after(midpoint, self.currently_selected_index)
-
+	if self.currently_selected_path_index != null:
+		new_trail_point_after(self.currently_selected_path_index, self.currently_selected_point_index)
 	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
@@ -895,15 +976,11 @@ func _on_SnapSelectedToPlayer_pressed():
 	self.currently_selected_gizmo.translation.y = self.player_position.y
 
 func _on_SetActivePath_pressed():
-	self.currently_active_path = self.currently_selected_path3d
-	self.currently_active_path2d = self.currently_selected_path2d
+	self.currently_active_path_index = self.currently_selected_path_index
 
-func set_active_path(path):
-	self.currently_active_path = path
 
 func _on_ReversePathDirection_pressed():
-	self.currently_selected_path3d.reverse()
-	self.currently_selected_path2d.reverse()
+	reverse_trail(self.currently_selected_path_index)
 	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()

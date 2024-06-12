@@ -23,3 +23,8 @@ func clear_all():
 	self.subcategories = []
 	for child in self.get_children():
 		child.queue_free()
+
+func remove_icon(icon_index):
+	var icon = self.icons[icon_index]
+	self.icons.remove(icon)
+	icon.queue_free()
