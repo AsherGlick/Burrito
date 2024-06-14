@@ -783,7 +783,7 @@ func remove_icon(waypoint_icon: Waypoint.Icon, icon: Sprite3D):
 	var category: Node = icon.get_parent()
 	var icon_index: int = category.icons.find(icon)
 	category.waypoint_category.get_icon().remove(icon_index)
-	category.category3d.remove_icon(icon_index)
+	category.category3d.remove_icon(icon)
 
 func get_icon_position(waypoint_icon: Waypoint.Icon):
 	var position: Vector3

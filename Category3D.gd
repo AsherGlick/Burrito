@@ -24,7 +24,6 @@ func clear_all():
 	for child in self.get_children():
 		child.queue_free()
 
-func remove_icon(icon_index: int):
-	var icon = self.icons[icon_index]
+func remove_icon(icon):
 	self.icons.remove(icon)
 	icon.queue_free()
