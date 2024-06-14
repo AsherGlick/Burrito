@@ -17,9 +17,10 @@ func refresh_mesh():
 	var tmpMesh = Mesh.new()
 	var i = 0
 	var last_uv: float = 0.0
-	for point_index in range(len(point_list)-1):
-		var point:Vector3 = point_list[point_index]
-		var next_point:Vector3 = point_list[point_index+1]
+	var trail_data = self.waypoint.get_trail_data()
+	for point_index in range(trail_data.get_points_x().size()-1):
+		var point:Vector3 = Vector3(trail_data.get_points_x()[point_index], trail_data.get_points_y()[point_index], -trail_data.get_points_z()[point_index])
+		var next_point:Vector3 = Vector3(trail_data.get_points_x()[point_index+1], trail_data.get_points_y()[point_index+1], -trail_data.get_points_z()[point_index+1])
 		# If the line starts or ends at map coordinates (0,0,0), don't draw the line.
 		if point == Vector3(0,0,0) or next_point == Vector3(0,0,0):
 			continue

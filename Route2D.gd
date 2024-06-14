@@ -1,5 +1,8 @@
 extends Line2D
 
+const Waypoint = preload("res://waypoint.gd")
+var waypoint: Waypoint.Trail
+
 func new_point_after(midpoint: Vector3, index: int):
 	var midpoint2d: Vector2 = Vector2(midpoint.x, midpoint.z)
 	var start: Vector2 = self.get_point_position(index)
