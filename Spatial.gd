@@ -92,6 +92,8 @@ func _ready():
 	if (Settings.burrito_link_auto_launch_enabled):
 		launch_burrito_link()
 
+	if (Settings.start_with_open_menu):
+		_on_main_menu_toggle_pressed()
 
 ################################################################################
 # show_error
