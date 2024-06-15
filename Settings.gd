@@ -15,6 +15,7 @@ var burrito_link_auto_launch_enabled: bool = false
 var burrito_link_wine_path: String = ""
 var burrito_link_env_args: String = ""
 
+var start_with_open_menu: bool = false
 
 func _ready():
 	var file = File.new()
@@ -42,6 +43,8 @@ func _ready():
 		self.burrito_link_wine_path = self._config_data["burrito_link_wine_path"]
 	if "burrito_link_env_args" in self._config_data:
 		self.burrito_link_env_args = self._config_data["burrito_link_env_args"]
+	if "start_with_open_menu" in self._config_data:
+		self.start_with_open_menu = self._config_data["start_with_open_menu"]
 
 
 func save():
@@ -54,6 +57,7 @@ func save():
 		"burrito_link_auto_launch_enabled": burrito_link_auto_launch_enabled,
 		"burrito_link_wine_path": burrito_link_wine_path,
 		"burrito_link_env_args": burrito_link_env_args,
+		"start_with_open_menu": start_with_open_menu
 	}
 
 	var file = File.new()
