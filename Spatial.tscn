@@ -147,19 +147,19 @@ margin_right = 116.0
 margin_bottom = 35.0
 text = "APoint"
 
-[node name="NewPath" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+[node name="NewTrail" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
 margin_left = 100.0
 margin_right = 146.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 40, 0 )
-hint_tooltip = "Create New Path"
+hint_tooltip = "Create New Trail"
 icon = ExtResource( 10 )
 
-[node name="NewPathPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+[node name="NewTrailPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
 margin_left = 150.0
 margin_right = 196.0
 margin_bottom = 40.0
-hint_tooltip = "Create New Point on Active Path"
+hint_tooltip = "Create New Point on Active Trail"
 icon = ExtResource( 11 )
 
 [node name="NewIcon" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
@@ -173,7 +173,7 @@ icon = ExtResource( 7 )
 margin_left = 250.0
 margin_right = 296.0
 margin_bottom = 40.0
-hint_tooltip = "Adjust Path and Icon Positions"
+hint_tooltip = "Adjust Trail and Icon Positions"
 icon = ExtResource( 9 )
 
 [node name="Dialogs" type="Control" parent="Control"]
@@ -222,7 +222,7 @@ margin_right = 220.0
 margin_bottom = 336.0
 size_flags_horizontal = 3
 
-[node name="LoadPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="LoadTrail" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_right = 220.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 0, 40 )
@@ -243,7 +243,7 @@ margin_bottom = 92.0
 rect_min_size = Vector2( 0, 40 )
 text = "Import Marker Pack"
 
-[node name="SavePath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="SaveTrail" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 96.0
 margin_right = 220.0
 margin_bottom = 136.0
@@ -308,20 +308,20 @@ margin_top = 219.0
 margin_right = 213.0
 margin_bottom = 264.0
 bbcode_enabled = true
-bbcode_text = "[u]Active Path[/u]: Draws a line from your character to the final node in the currently active path."
-text = "Active Path: Draws a line from your character to the final node in the currently active path."
+bbcode_text = "[u]Active Trail[/u]: Draws a line from your character to the final node in the currently active trail."
+text = "Active Trail: Draws a line from your character to the final node in the currently active trail."
 fit_content_height = true
 scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ActivePath" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="ActiveTrail" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
 margin_top = 276.0
 margin_right = 220.0
 margin_bottom = 316.0
-text = "Active Path"
+text = "Active Trail"
 
 [node name="ExitButton" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 296.0
@@ -550,7 +550,7 @@ size_flags_horizontal = 3
 disabled = true
 text = "Delete Selected"
 
-[node name="NewPathPointAfter" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+[node name="NewTrailPointAfter" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 margin_top = 44.0
 margin_right = 323.0
 margin_bottom = 84.0
@@ -586,23 +586,23 @@ size_flags_horizontal = 3
 disabled = true
 text = "Vertical Snap Selected To Player"
 
-[node name="SetActivePath" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+[node name="SetActiveTrail" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 margin_top = 220.0
 margin_right = 323.0
 margin_bottom = 260.0
 rect_min_size = Vector2( 0, 40 )
 size_flags_horizontal = 3
 disabled = true
-text = "SetActivePath"
+text = "SetActiveTrail"
 
-[node name="ReversePathDirection" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+[node name="ReverseTrailDirection" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 margin_top = 264.0
 margin_right = 323.0
 margin_bottom = 304.0
 rect_min_size = Vector2( 0, 40 )
 size_flags_horizontal = 3
 disabled = true
-text = "Reverse Path Direction"
+text = "Reverse Trail Direction"
 
 [node name="Set Floating Mark" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 visible = false
@@ -612,7 +612,7 @@ margin_bottom = 348.0
 rect_min_size = Vector2( 0, 40 )
 size_flags_horizontal = 3
 disabled = true
-text = "Reverse Path Direction"
+text = "Reverse Trail Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
 margin_left = 592.0
@@ -869,7 +869,7 @@ anchor_bottom = 1.0
 margin_top = -6.0
 color = Color( 0, 0, 0, 1 )
 
-[node name="Paths" type="Spatial" parent="."]
+[node name="Trails" type="Spatial" parent="."]
 
 [node name="Icons" type="Spatial" parent="."]
 
@@ -882,16 +882,16 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]
-[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewPath" to="." method="_on_NewPath_pressed"]
-[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewPathPoint" to="." method="_on_NewPathPoint_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewTrail" to="." method="_on_NewTrail_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewTrailPoint" to="." method="_on_NewTrailPoint_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewIcon" to="." method="_on_NewIcon_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/AdjustPoints" to="." method="_on_AdjustNodesButton_pressed"]
 [connection signal="dir_selected" from="Control/Dialogs/ImportPackDialog" to="Control/Dialogs/ImportPackDialog" method="_on_FileDialog_dir_selected"]
 [connection signal="hide" from="Control/Dialogs/ImportPackDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
-[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadPath" to="." method="_on_LoadPath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportPath" to="." method="_on_ImportPath_pressed"]
-[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SavePath" to="." method="_on_SavePath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SaveTrail" to="." method="_on_SaveTrail_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Settings" to="." method="_on_Settings_pressed"]
@@ -917,12 +917,12 @@ material/0 = SubResource( 4 )
 [connection signal="hide" from="Control/Dialogs/SaveDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_NodeEditorDialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode" to="." method="_on_DeleteNode_pressed"]
-[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewPathPointAfter" to="." method="_on_NewPathPointAfter_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewTrailPointAfter" to="." method="_on_NewTrailPointAfter_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer" to="." method="_on_SnapSelectedToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer" to="." method="_on_XZSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
-[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath" to="." method="_on_SetActivePath_pressed"]
-[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection" to="." method="_on_ReversePathDirection_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail" to="." method="_on_SetActiveTrail_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection" to="." method="_on_ReverseTrailDirection_pressed"]
 [connection signal="hide" from="Control/Dialogs/SettingsDialog" to="." method="_on_NodeEditorDialog_hide"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumWidth" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumHeight" to="Control/Dialogs/SettingsDialog" method="save_settings"]
