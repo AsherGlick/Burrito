@@ -7,12 +7,6 @@ var color = Color(0.9, 0.1, 0.1)
 var waypoint: Waypoint.Trail
 var category: TreeItem
 
-var point_list := PoolVector3Array()
-
-func create_mesh(point_list: PoolVector3Array):
-	self.point_list = point_list
-	refresh_mesh()
-
 func refresh_mesh():
 	var tmpMesh = Mesh.new()
 	var i = 0
@@ -65,41 +59,6 @@ func refresh_mesh():
 		st.commit(tmpMesh)
 	$MeshInstance.mesh = tmpMesh
 
-
-func update_point_vertical(index, y_value):
-	pass
-
-func reverse():
-	self.point_list.invert()
-	refresh_mesh()
-
-func get_point_count():
-	return len(self.point_list)
-
-func get_point_position(index: int):
-	return self.point_list[index]
-
-func set_point_position(position: Vector3, index: int):
-	self.point_list[index] = position
-	refresh_mesh()
-
-func add_point(position: Vector3, index: int = -1):
-	if index == -1:
-		self.point_list.append(position)
-	else:
-		self.point_list.insert(index, position)
-	refresh_mesh()
-
-func remove_point(index: int):
-	self.point_list.remove(index)
-	refresh_mesh()
-
-func new_point_after(midpoint: Vector3, index: int):
-	var start: Vector3 = self.get_point_position(index)
-	if self.get_point_count() > index+1:
-		var end: Vector3 = self.get_point_position(index+1)
-		midpoint = ((start-end)/2) + end
-	add_point(midpoint, index+1)
 
 func set_texture(texture):
 	$MeshInstance.material_override.set_shader_param("texture_albedo", texture)

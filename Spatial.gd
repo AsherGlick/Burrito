@@ -533,32 +533,21 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 	godot_category2d.visible = category_data.is_visible
 
 	for path in waypoint_category.get_trail():
-		var path_points := PoolVector3Array()
-		var trail_data = path.get_trail_data()
-		if trail_data.get_points_x().size() != trail_data.get_points_y().size() or trail_data.get_points_x().size() != trail_data.get_points_z().size():
-			print("Warning: Trail ", category_name, " does not have equal number of X, Y, and Z coordinates.")
-		for index in range(0, trail_data.get_points_z().size()):
-			path_points.append(Vector3(trail_data.get_points_x()[index], trail_data.get_points_y()[index], trail_data.get_points_z()[index]))
 		var texture_id = path.get_texture_id()
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
 		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
-		gen_new_path(path_points, full_texture_path, path, category_item)
+		gen_new_path(full_texture_path, path, category_item)
 
 
 	for icon in waypoint_category.get_icon():
-		var position = icon.get_position()
-		if position == null:
-			print("Warning: No position found for icon ", category_name)
-			continue
-		var position_vector = Vector3(position.get_x(), position.get_y(), position.get_z())
 		var texture_id = icon.get_texture_id()
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
 		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
-		gen_new_icon(position_vector, full_texture_path, icon, category_item)
+		gen_new_icon(full_texture_path, icon, category_item)
 
 	for category_child in waypoint_category.get_children():
 		_waypoint_categories_to_godot_nodes(category_item, category_child, godot_category3d, godot_category2d, true)
@@ -579,13 +568,14 @@ func apply_category_visibility_to_nodes(category_item: TreeItem):
 	category_data.category2d.visible = category_data.is_visible
 
 
-func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_item: TreeItem):
+func gen_new_path(texture_path: String, waypoint_trail: Waypoint.Trail, category_item: TreeItem):
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
 	# TODO: We want to have two copies of each texture in memory one for 2D
 	# which does not use srgb to render properly, and one for 3D which forces
 	# srgb to render properly. Issue #23.
+	# TODO: Search within waypoint data for texture paths instead of input
 	var texture_file = File.new()
 	var image = Image.new()
 	if !texture_file.file_exists(texture_path):
@@ -600,11 +590,6 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 
 	var new_route = route_scene.instance()
 	new_route.texture_path = texture_path # Save the location of the image for later
-
-	var points_3d := PoolVector3Array()
-	for point in points:
-		points_3d.append(Vector3(point[0], point[1], -point[2]))
-
 	new_route.waypoint = waypoint_trail
 	new_route.refresh_mesh()
 	new_route.set_texture(texture)
@@ -615,19 +600,22 @@ func gen_new_path(points: Array, texture_path: String, waypoint_trail, category_
 	# Create a new 2D Path
 	var new_2d_path = path2d_scene.instance()
 	var points_2d := PoolVector2Array()
-	for point in points:
-		points_2d.append(Vector2(point[0], -point[2]))
-	new_2d_path.points = points_2d
 	new_2d_path.texture = texture
 	new_2d_path.waypoint = waypoint_trail
+	new_2d_path.refresh_points()
 	category_data.category2d.add_path2d(new_2d_path)
 
 	return [new_route, new_2d_path]
 
-func gen_new_icon(position: Vector3, texture_path: String, waypoint_icon, category_item: TreeItem):
-	position.z = -position.z
+func gen_new_icon(texture_path: String, waypoint_icon: Waypoint.Icon, category_item: TreeItem):
+	# TODO: Search within waypoint data for texture paths instead of input
+	var position = waypoint_icon.get_position()
+	if position == null:
+		print("Warning: No position found for icon ", category_item.get_metadata(0).waypoint_category.get_name())
+		return
+	var position_vector = Vector3(position.get_x(), position.get_y(), -position.get_z())
 	var new_icon = icon_scene.instance()
-	new_icon.translation = position
+	new_icon.translation = position_vector
 	new_icon.set_icon_image(texture_path)
 	new_icon.waypoint = waypoint_icon
 	var category_data = category_item.get_metadata(0)
@@ -695,7 +683,7 @@ func gen_adjustment_nodes():
 			new_gizmo.translation = gizmo_position
 			new_gizmo.connect("selected", self, "on_path_gizmo_selected", [waypoint_trail, route, path2d, point_index])
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
-			new_gizmo.connect("updated", self, "set_trail_position", [waypoint_trail, route, path2d, point_index])
+			new_gizmo.connect("updated", self, "set_trail_point_position", [waypoint_trail, route, path2d, point_index])
 			$Gizmos.add_child(new_gizmo)
 	for icon_index in waypoint_category.get_icon().size():
 		var waypoint_icon = waypoint_category.get_icon()[icon_index]
@@ -792,7 +780,7 @@ func get_icon_position(waypoint_icon: Waypoint.Icon):
 	position[2] = -waypoint_icon.get_position().get_z()
 	return position
 
-func set_trail_position(position: Vector3, waypoint_trail: Waypoint.Trail, path: Spatial, path2d: Line2D, point_index: int):
+func set_trail_point_position(position: Vector3, waypoint_trail: Waypoint.Trail, path: Spatial, path2d: Line2D, point_index: int):
 	if path.waypoint != path2d.waypoint or path2d.waypoint != waypoint_trail:
 		push_error("Desync between Waypoint, Route, and Route2D")
 	var trail_data = waypoint_trail.get_trail_data()
@@ -863,11 +851,7 @@ func refresh_path3d_points(path: Spatial):
 	path.refresh_mesh()
 
 func refresh_path2d_points(path2d: Line2D):
-	var path_points := PoolVector2Array()
-	var trail_data = path2d.waypoint.get_trail_data()
-	for index in range(0, trail_data.get_points_z().size()):
-		path_points.append(Vector2(trail_data.get_points_x()[index], -trail_data.get_points_z()[index]))
-	path2d.points = path_points
+	path2d.refresh_points()
 
 
 ################################################################################
@@ -945,7 +929,7 @@ func _on_NewIcon_pressed():
 	position.set_x(self.player_position.x)
 	position.set_y(self.player_position.y)
 	position.set_z(-self.player_position.z)
-	gen_new_icon(self.player_position, self.next_texture_path, waypoint_icon, self.currently_active_category)
+	gen_new_icon(self.next_texture_path, waypoint_icon, self.currently_active_category)
 
 # A new path point is created
 func _on_NewPathPoint_pressed():
@@ -959,7 +943,7 @@ func _on_NewPathPoint_pressed():
 		trail_data.add_points_x(self.player_position.x)
 		trail_data.add_points_y(self.player_position.y)
 		trail_data.add_points_z(-self.player_position.z)
-		var new_paths = gen_new_path([self.player_position], self.next_texture_path, waypoint_trail, self.currently_active_category)
+		var new_paths = gen_new_path(self.next_texture_path, waypoint_trail, self.currently_active_category)
 		self.currently_active_path3d = new_paths[0]
 		self.currently_active_path2d = new_paths[1]
 	else:

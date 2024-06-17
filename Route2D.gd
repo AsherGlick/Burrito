@@ -3,17 +3,9 @@ extends Line2D
 const Waypoint = preload("res://waypoint.gd")
 var waypoint: Waypoint.Trail
 
-func new_point_after(midpoint: Vector3, index: int):
-	var midpoint2d: Vector2 = Vector2(midpoint.x, midpoint.z)
-	var start: Vector2 = self.get_point_position(index)
-		
-	if self.get_point_count() > index+1:
-		var end: Vector2 = self.get_point_position(index+1)
-		midpoint2d = ((start-end)/2) + end
-	add_point(midpoint2d, index+1)
-
-func remove_point(index: int):
-	self.remove_point(index)
-
-func reverse():
-	self.points.invert()
+func refresh_points():
+	var path_points := PoolVector2Array()
+	var trail_data = self.waypoint.get_trail_data()
+	for index in range(0, trail_data.get_points_z().size()):
+		path_points.append(Vector2(trail_data.get_points_x()[index], -trail_data.get_points_z()[index]))
+	self.points = path_points
