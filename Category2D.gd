@@ -3,9 +3,9 @@ extends Node2D
 var trails2d: Array = []
 var subcategories: Array = []
 
-func add_trail2d(path):
-	self.add_child(path, true)
-	trails2d.push_back(path)
+func add_trail2d(trail2d):
+	self.add_child(trail2d, true)
+	trails2d.push_back(trail2d)
 
 func add_subcategory(subcategory):
 	self.add_child(subcategory, true)

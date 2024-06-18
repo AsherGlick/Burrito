@@ -1,13 +1,13 @@
 extends Spatial
 
-var trails: Array = []
+var trails3d: Array = []
 var icons: Array = []
 var subcategories: Array = []
 
 
-func add_trail(trail):
-	self.add_child(trail, true)
-	trails.push_back(trail)
+func add_trail3d(trail3d):
+	self.add_child(trail3d, true)
+	trails3d.push_back(trail3d)
 
 func add_icon(icon):
 	self.add_child(icon, true)
@@ -18,7 +18,7 @@ func add_subcategory(subcategory):
 	subcategories.push_back(subcategory)
 
 func clear_all():
-	self.trails = []
+	self.trails3d = []
 	self.icons = []
 	self.subcategories = []
 	for child in self.get_children():
