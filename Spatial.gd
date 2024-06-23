@@ -534,7 +534,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 	godot_category2d.visible = category_data.is_visible
 
 	for trail in waypoint_category.get_trail():
-		gen_new_path(trail, category_item)
+		gen_new_trail(trail, category_item)
 
 	for icon in waypoint_category.get_icon():
 		gen_new_icon(icon, category_item)
