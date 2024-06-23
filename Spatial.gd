@@ -56,6 +56,7 @@ const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 # Scripts containing code used by this scene
 const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
+const FileHandler = preload("res://FileHandler.gd")
 
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
@@ -533,21 +534,10 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 	godot_category2d.visible = category_data.is_visible
 
 	for path in waypoint_category.get_trail():
-		var texture_id = path.get_texture_id()
-		if texture_id == null:
-			print("Warning: No texture found in " , category_name)
-			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
-		gen_new_path(full_texture_path, path, category_item)
-
+		gen_new_path(path, category_item)
 
 	for icon in waypoint_category.get_icon():
-		var texture_id = icon.get_texture_id()
-		if texture_id == null:
-			print("Warning: No texture found in " , category_name)
-			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
-		gen_new_icon(full_texture_path, icon, category_item)
+		gen_new_icon(icon, category_item)
 
 	for category_child in waypoint_category.get_children():
 		_waypoint_categories_to_godot_nodes(category_item, category_child, godot_category3d, godot_category2d, true)
@@ -568,14 +558,17 @@ func apply_category_visibility_to_nodes(category_item: TreeItem):
 	category_data.category2d.visible = category_data.is_visible
 
 
-func gen_new_path(texture_path: String, waypoint_trail: Waypoint.Trail, category_item: TreeItem):
+func gen_new_path(waypoint_trail: Waypoint.Trail, category_item: TreeItem) -> PoolStringArray:
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
 	# TODO: We want to have two copies of each texture in memory one for 2D
 	# which does not use srgb to render properly, and one for 3D which forces
 	# srgb to render properly. Issue #23.
-	# TODO: Search within waypoint data for texture paths instead of input
+	var texture_id: int = waypoint_trail.get_texture_id()
+	if texture_id == null:
+		print("Warning: No texture found in " , category_item.get_metadata(0).waypoint_category.get_name())
+	var texture_path: String = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 	var texture_file = File.new()
 	var image = Image.new()
 	if !texture_file.file_exists(texture_path):
@@ -589,7 +582,6 @@ func gen_new_path(texture_path: String, waypoint_trail: Waypoint.Trail, category
 	texture.create_from_image(image, 22)
 
 	var new_route = route_scene.instance()
-	new_route.texture_path = texture_path # Save the location of the image for later
 	new_route.waypoint = waypoint_trail
 	new_route.refresh_mesh()
 	new_route.set_texture(texture)
@@ -605,10 +597,13 @@ func gen_new_path(texture_path: String, waypoint_trail: Waypoint.Trail, category
 	new_2d_path.refresh_points()
 	category_data.category2d.add_path2d(new_2d_path)
 
-	return [new_route, new_2d_path]
+	return PoolStringArray([new_route, new_2d_path])
 
-func gen_new_icon(texture_path: String, waypoint_icon: Waypoint.Icon, category_item: TreeItem):
-	# TODO: Search within waypoint data for texture paths instead of input
+func gen_new_icon(waypoint_icon: Waypoint.Icon, category_item: TreeItem):
+	var texture_id: int = waypoint_icon.get_texture_id()
+	if texture_id == null:
+		print("Warning: No texture found in " , category_item.get_metadata(0).waypoint_category.get_name())
+	var texture_path: String = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 	var position = waypoint_icon.get_position()
 	if position == null:
 		print("Warning: No position found for icon ", category_item.get_metadata(0).waypoint_category.get_name())
@@ -756,6 +751,12 @@ func clear_adjustment_nodes():
 ################################################################################
 # Update Waypoint datum
 ################################################################################
+func get_texture_index(path: String) -> int:
+	for i in self.waypoint_data.get_textures().size:
+		if path == self.waypoint_data.get_textures()[i].get_filepath():
+			return i
+	return -1
+
 func set_icon_position(new_position: Vector3, waypoint_icon: Waypoint.Icon, icon: Sprite3D):
 	if icon.waypoint != waypoint_icon:
 		push_error("Desync between Waypoint and Icon")
@@ -908,7 +909,12 @@ func _on_ChangeTexture_pressed():
 # or icon is created.
 ################################################################################
 func _on_TexturePathOpen_file_selected(path):
-	self.next_texture_path = path
+	var data_dir: String = self.marker_file_dir.plus_file("Data")
+	var new_texture_path: String = FileHandler.copy_supported_image_file(path, data_dir)
+	if new_texture_path != "":
+		self.next_texture_path = new_texture_path
+	else:
+		print("Warning: Error on selected file")
 
 ################################################################################
 # Null out the currently active path so that a new one is created the next time
@@ -929,7 +935,14 @@ func _on_NewIcon_pressed():
 	position.set_x(self.player_position.x)
 	position.set_y(self.player_position.y)
 	position.set_z(-self.player_position.z)
-	gen_new_icon(self.next_texture_path, waypoint_icon, self.currently_active_category)
+	var texture_id: int = get_texture_index(self.next_texture_path)
+	if texture_id != -1:
+		waypoint_icon.set_texture_id(texture_id)
+	else:
+		self.waypoint_data.get_textures().add_textures().set_filepath(self.next_texture_path)
+		texture_id = self.waypoint_data.get_textures().add_textures().size() - 1
+		waypoint_icon.set_texture_id(texture_id)
+	gen_new_icon(waypoint_icon, self.currently_active_category)
 
 # A new path point is created
 func _on_NewPathPoint_pressed():
@@ -943,7 +956,14 @@ func _on_NewPathPoint_pressed():
 		trail_data.add_points_x(self.player_position.x)
 		trail_data.add_points_y(self.player_position.y)
 		trail_data.add_points_z(-self.player_position.z)
-		var new_paths = gen_new_path(self.next_texture_path, waypoint_trail, self.currently_active_category)
+		var texture_id: int = get_texture_index(self.next_texture_path)
+		if texture_id != -1:
+			waypoint_trail.set_texture_id(texture_id)
+		else:
+			self.waypoint_data.get_textures().add_textures().set_filepath(self.next_texture_path)
+			texture_id = self.waypoint_data.get_textures().add_textures().size() - 1
+			waypoint_trail.set_texture_id(texture_id)
+		var new_paths: PoolStringArray = gen_new_path(waypoint_trail, self.currently_active_category)
 		self.currently_active_path3d = new_paths[0]
 		self.currently_active_path2d = new_paths[1]
 	else:
