@@ -908,7 +908,7 @@ func _on_ChangeTexture_pressed():
 # Set the file that will be used to create a new trail or icon when a new trail
 # or icon is created.
 ################################################################################
-func _on_TexturePathOpen_file_selected(path):
+func _on_TexturePathOpen_file_selected(path: String):
 	var data_dir: String = self.marker_file_dir.plus_file("Data")
 	var new_texture_path: String = FileHandler.copy_supported_image_file(path, data_dir)
 	if new_texture_path != "":
