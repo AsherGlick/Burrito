@@ -495,10 +495,10 @@ margin_right = 930.0
 margin_bottom = 560.0
 window_title = "Open a File"
 mode = 0
-access = 1
+access = 2
 filters = PoolStringArray( "*.png" )
-current_dir = "user://"
-current_path = "user://"
+current_dir = "/"
+current_path = "/"
 __meta__ = {
 "_edit_use_anchors_": false
 }

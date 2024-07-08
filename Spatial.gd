@@ -923,20 +923,20 @@ func _on_ChangeTexture_pressed():
 var temp_image_file_path: String = ""
 
 func _on_TexturePathOpen_file_selected(path: String):
-	var new_texture_path: String = FileHandler.find_image_duplicates(path, self.marker_file_dir)
-	if new_texture_path == "":
-		self.temp_image_file_path = path
-		$Control/Dialogs/TexturePathOpen.hide()
-		$Control/Dialogs/TexturePathSave.show()
-		$Control/Dialogs/TexturePathSave.set_current_file(path.get_file())
-	self.next_texture_id = get_texture_index(path)
+	var next_texture_path: String = FileHandler.find_image_duplicates(path, self.marker_file_dir)
+	if next_texture_path == "":
+		next_texture_path = "Data".plus_file(path.get_file())
+		var file = File.new()
+		if file.file_exists(self.marker_file_dir.plus_file(next_texture_path)):
+			print("Error: A different image with the name ", path.get_file(), " has already been imported. Please rename the file and try again.")
+			return
+		FileHandler.copy_file(path, self.marker_file_dir.plus_file(next_texture_path))
+	var texture_index = get_texture_index(next_texture_path)
+	if texture_index == -1:
+		self.waypoint_data.add_textures().set_filepath(next_texture_path)
+		texture_index = self.waypoint_data.get_textures().size() - 1
+	self.next_texture_id = texture_index
 
-func _on_TexturePathSave_file_selected(path):
-	FileHandler.copy_file(self.temp_image_file_path, path)
-	var prefix = self.marker_file_dir
-	var relative_path = path.substr(prefix.length(), path.length() - prefix.length())
-	self.waypoint_data.add_textures().set_filepath(relative_path)
-	self.next_texture_id = self.waypoint_data.get_textures().size() - 1
 
 ################################################################################
 # Null out the currently active trail so that a new one is created the next time
