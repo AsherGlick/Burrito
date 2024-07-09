@@ -503,19 +503,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TexturePathSave" type="FileDialog" parent="Control/Dialogs"]
-margin_left = 327.0
-margin_top = 967.0
-margin_right = 930.0
-margin_bottom = 560.0
-access = 1
-filters = PoolStringArray( "*.png" )
-current_dir = "user://protobins"
-current_path = "user://protobins/"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="SaveDialog" type="FileDialog" parent="Control/Dialogs"]
 margin_left = 180.169
 margin_top = 105.833
@@ -926,8 +913,6 @@ material/0 = SubResource( 4 )
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox7" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="file_selected" from="Control/Dialogs/TexturePathOpen" to="." method="_on_TexturePathOpen_file_selected"]
 [connection signal="hide" from="Control/Dialogs/TexturePathOpen" to="." method="_on_Dialog_hide"]
-[connection signal="file_selected" from="Control/Dialogs/TexturePathSave" to="." method="_on_TexturePathSave_file_selected"]
-[connection signal="hide" from="Control/Dialogs/TexturePathSave" to="." method="_on_Dialog_hide"]
 [connection signal="file_selected" from="Control/Dialogs/SaveDialog" to="." method="_on_SaveDialog_file_selected"]
 [connection signal="hide" from="Control/Dialogs/SaveDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_NodeEditorDialog_hide"]

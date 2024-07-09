@@ -866,6 +866,8 @@ func refresh_trail3d_points(trail3d: Spatial):
 func refresh_trail2d_points(trail2d: Line2D):
 	trail2d.refresh_points()
 
+func toast(message: String):
+	print(message)
 
 ################################################################################
 # Signal Functions
@@ -928,7 +930,7 @@ func _on_TexturePathOpen_file_selected(path: String):
 		next_texture_path = "Data".plus_file(path.get_file())
 		var file = File.new()
 		if file.file_exists(self.marker_file_dir.plus_file(next_texture_path)):
-			print("Error: A different image with the name ", path.get_file(), " has already been imported. Please rename the file and try again.")
+			toast(String(["Error: A different image with the name ", path.get_file(), " has already been imported. Please rename the file and try again."]))
 			return
 		FileHandler.copy_file(path, self.marker_file_dir.plus_file(next_texture_path))
 	var texture_index = get_texture_index(next_texture_path)
