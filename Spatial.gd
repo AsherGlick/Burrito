@@ -380,7 +380,7 @@ func reset_2D_minimap_masks(category2d: Node2D, compass_corner1: Vector2, compas
 		reset_2D_minimap_masks(subcategory, compass_corner1, compass_corner2)
 
 func reset_3D_minimap_masks(category: Spatial):
-	for trail in category.trails:
+	for trail in category.trails3d:
 		trail.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
 	for icon in category.icons:
 		icon.material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
@@ -393,7 +393,7 @@ var marker_file_dir = "user://protobins/"
 var marker_file_path = ""
 
 func load_waypoint_markers(map_id):
-	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
+	self.marker_file_path = self.marker_file_dir + String(map_id) + ".bin"
 	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
@@ -594,7 +594,7 @@ func gen_new_trail(texture_path: String, waypoint_trail: Waypoint.Trail, categor
 	new_trail3d.refresh_mesh()
 	new_trail3d.set_texture(texture)
 	var category_data = category_item.get_metadata(0)
-	category_data.category3d.add_trail(new_trail3d)
+	category_data.category3d.add_trail3d(new_trail3d)
 
 
 	# Create a new 2D Trail
