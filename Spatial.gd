@@ -341,6 +341,8 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if self.map_id != old_map_id:
 		print("New Map")
 		print("Saving Old Map")
+		if self.unsaved_changes:
+			save_current_map_data()
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 
