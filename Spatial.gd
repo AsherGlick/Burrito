@@ -9,6 +9,7 @@ var map_is_open: bool
 var compass_is_top_right: bool
 
 var edit_panel_open: bool = false
+var unsaved_changes: bool = false setget set_unsaved_changes
 
 # This is the path to the texture that will be used for the next created 3d-path
 # object or icon object in the UI
@@ -389,11 +390,14 @@ func reset_3D_minimap_masks(category: Spatial):
 
 
 var waypoint_data = Waypoint.Waypoint.new()
-var marker_file_dir = "user://protobins/"
+#We save the marker data in this directory when the files are have been split
+#by Map ID. All changes made by the editor are automatically saved in these
+#files prior to export.
+var unsaved_markers_dir = "user://protobins/"
 var marker_file_path = ""
 
-func load_waypoint_markers(map_id):
-	self.marker_file_path = self.marker_file_dir + String(map_id) + ".bin"
+func load_waypoint_markers(map_id_to_load: int):
+	self.marker_file_path = self.unsaved_markers_dir + String(map_id_to_load) + ".bin"
 	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
@@ -537,7 +541,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_trail(full_texture_path, trail, category_item)
 
 
@@ -546,7 +550,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = self.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_icon(full_texture_path, icon, category_item)
 
 	for category_child in waypoint_category.get_children():
@@ -621,31 +625,30 @@ func gen_new_icon(texture_path: String, waypoint_icon: Waypoint.Icon, category_i
 	var category_data = category_item.get_metadata(0)
 	category_data.category3d.add_icon(new_icon)
 
-# This function take all of the currently rendered objects and converts it into
-# the data format that is saved/loaded from.
-func data_from_renderview():
-	var icons_data = []
-	var paths_data = []
+################################################################################
+# Section of functions for saving data to file
+################################################################################
+func set_unsaved_changes(value):
+	if self.unsaved_changes != value:
+		unsaved_changes = value
+		update_burrito_icon()
 
-	for icon in $Icons.get_children():
-		icons_data.append({
-			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
-			"texture": icon.texture_path
-		})
+func update_burrito_icon():
+	if self.unsaved_changes:
+		#TODO: Determine if this is the best color and alpha value to use
+		$Control/GlobalMenuButton/TextureRect.modulate = ColorN("red", 1)
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
+	else:
+		$Control/GlobalMenuButton/TextureRect.modulate = ColorN("white", 0.44)
+		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""
 
-	for path in $Paths.get_children():
-		#print(path)
-		var points = []
-		for point in range(path.get_point_count()):
-			var point_position:Vector3 = path.get_point_position(point)
-			points.append([point_position.x, point_position.y, -point_position.z])
-		paths_data.append({
-			"points": points,
-			"texture": path.texture_path
-		})
+func save_current_map_data():
+	var packed_bytes = self.waypoint_data.to_bytes()
+	var file = File.new()
+	file.open(self.marker_file_path, file.WRITE)
+	file.store_buffer(packed_bytes)
+	set_unsaved_changes(false)
 
-	var data_out = {"icons": icons_data, "paths": paths_data}
-	return data_out
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -764,6 +767,7 @@ func set_icon_position(new_position: Vector3, waypoint_icon: Waypoint.Icon, icon
 	position.set_y(new_position.y)
 	position.set_z(new_position.z)
 	icon.set_position(new_position)
+	set_unsaved_changes(true)
 
 func remove_icon(waypoint_icon: Waypoint.Icon, icon: Sprite3D):
 	if icon.waypoint != waypoint_icon:
@@ -849,14 +853,19 @@ func new_trail_point_after(waypoint_trail: Waypoint.Trail, trail3d: Spatial, tra
 
 func refresh_trail3d_points(trail3d: Spatial):
 	trail3d.refresh_mesh()
+	set_unsaved_changes(true)
 
 func refresh_trail2d_points(trail2d: Line2D):
 	trail2d.refresh_points()
+	set_unsaved_changes(true)
 
 
 ################################################################################
 # Signal Functions
 ################################################################################
+func _on_SaveTrail_pressed():
+	save_current_map_data()
+
 func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
@@ -1011,6 +1020,8 @@ func _on_ReverseTrailDirection_pressed():
 
 
 func _on_ExitButton_pressed():
+	if self.unsaved_changes:
+		save_current_map_data()
 	exit_burrito()
 
 
