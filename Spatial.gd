@@ -394,9 +394,9 @@ func reset_3D_minimap_masks(category: Spatial):
 
 
 var waypoint_data = Waypoint.Waypoint.new()
-#We save the marker data in this directory when the files are have been split
-#by Map ID. All changes made by the editor are automatically saved in these
-#files prior to export.
+# We save the marker data in this directory when the files are have been split
+# by Map ID. All changes made by the editor are automatically saved in these
+# files prior to export.
 var unsaved_markers_dir = "user://protobin_by_map_id/"
 var marker_file_path = ""
 
@@ -1075,7 +1075,7 @@ func _on_ImportPackDialog_dir_selected(dir):
 	var args: PoolStringArray = [
 		"--input-taco-path", dir,
 		# TODO: This line is not working as intended and needs to be investigated
-		#"--input-waypoint-path", user_data_dir.plus_file("protobin"),
+		# "--input-waypoint-path", user_data_dir.plus_file("protobin"),
 		"--output-waypoint-path", user_data_dir.plus_file("protobin"),
 		"--output-split-waypoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir)
 	]
