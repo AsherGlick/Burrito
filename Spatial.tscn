@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
@@ -12,7 +12,6 @@
 [ext_resource path="res://icon_new_point.png" type="Texture" id=11]
 [ext_resource path="res://SettingsDialog.gd" type="Script" id=12]
 [ext_resource path="res://Category3D.gd" type="Script" id=13]
-[ext_resource path="res://ImportPackDialog.gd" type="Script" id=14]
 [ext_resource path="res://Category2D.gd" type="Script" id=15]
 
 [sub_resource type="Shader" id=1]
@@ -193,7 +192,6 @@ mode = 2
 access = 2
 current_dir = ""
 current_path = ""
-script = ExtResource( 14 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -886,7 +884,7 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewTrailPoint" to="." method="_on_NewTrailPoint_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewIcon" to="." method="_on_NewIcon_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/AdjustPoints" to="." method="_on_AdjustNodesButton_pressed"]
-[connection signal="dir_selected" from="Control/Dialogs/ImportPackDialog" to="Control/Dialogs/ImportPackDialog" method="_on_FileDialog_dir_selected"]
+[connection signal="dir_selected" from="Control/Dialogs/ImportPackDialog" to="." method="_on_ImportPackDialog_dir_selected"]
 [connection signal="hide" from="Control/Dialogs/ImportPackDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
