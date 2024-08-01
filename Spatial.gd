@@ -9,7 +9,6 @@ var map_is_open: bool
 var compass_is_top_right: bool
 
 var edit_panel_open: bool = false
-var unsaved_changes: bool = false setget set_unsaved_changes
 
 # This is the path to the texture that will be used for the next created 3d-path
 # object or icon object in the UI
@@ -57,6 +56,10 @@ const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
 # Scripts containing code used by this scene
 const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
+const FileHandler = preload("res://FileHandler.gd")
+
+# File path for the the json that contains a hash of the data files
+const HASH_BY_MAP_ID_FILEPATH: String = "user://hash_by_map_id.json"
 
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
@@ -342,7 +345,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
-		print("Saving Old Map")
+		if old_map_id != 0 and not read_hash(old_map_id) == make_hash(self.waypoint_data.to_bytes()):
+			print("Saving Old Map")
+			save_map_data(old_map_id)
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 
@@ -627,29 +632,42 @@ func gen_new_icon(texture_path: String, waypoint_icon: Waypoint.Icon, category_i
 ################################################################################
 # Section of functions for saving data to file
 ################################################################################
-func set_unsaved_changes(value):
-	if self.unsaved_changes != value:
-		unsaved_changes = value
-		Settings.unsaved_changes = self.unsaved_changes
-		Settings.save()
-		update_burrito_icon()
-
-func update_burrito_icon():
-	if self.unsaved_changes:
-		#TODO: Determine if this is the best color and alpha value to use
-		$Control/GlobalMenuButton/TextureRect.modulate = ColorN("red", 1)
-		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = "Unsaved Data"
-	else:
-		$Control/GlobalMenuButton/TextureRect.modulate = ColorN("white", 0.44)
-		$Control/GlobalMenuButton/main_menu_toggle.hint_tooltip = ""
-
-func save_current_map_data():
+func save_map_data(map_id: int):
 	var packed_bytes = self.waypoint_data.to_bytes()
 	var file = File.new()
 	file.open(self.marker_file_path, file.WRITE)
 	file.store_buffer(packed_bytes)
 
+func make_hash(data: PoolByteArray) -> String:
+	var ctx = HashingContext.new()
+	ctx.start(HashingContext.HASH_MD5)
+	ctx.update(data)
+	var res: PoolByteArray = ctx.finish()
+	return res.hex_encode()
 
+
+# Save all hashes
+func save_hashes():
+	var file = File.new()
+	var data = {}
+	var dir = Directory.new()
+	dir.open(self.unsaved_markers_dir)
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	while file_name != "":
+		if dir.file_exists(file_name):
+			file.open(file_name, File.READ)
+			data[file_name.get_basename()] = make_hash(file.get_buffer(file.get_len()))
+		file_name = dir.get_next()
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.WRITE)
+	file.store_string(JSON.print(data))
+
+func read_hash(map_id: int) -> String:
+	var file = File.new()
+	if not file.file_exists(HASH_BY_MAP_ID_FILEPATH):
+		return ""
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.READ)
+	return JSON.parse(file.get_as_text()).result.get(String(map_id), "")
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -768,7 +786,6 @@ func set_icon_position(new_position: Vector3, waypoint_icon: Waypoint.Icon, icon
 	position.set_y(new_position.y)
 	position.set_z(new_position.z)
 	icon.set_position(new_position)
-	Settings.set_unsaved_changes(true)
 
 func remove_icon(waypoint_icon: Waypoint.Icon, icon: Sprite3D):
 	if icon.waypoint != waypoint_icon:
@@ -854,20 +871,15 @@ func new_trail_point_after(waypoint_trail: Waypoint.Trail, trail3d: Spatial, tra
 
 func refresh_trail3d_points(trail3d: Spatial):
 	trail3d.refresh_mesh()
-	Settings.set_unsaved_changes(true)
 
 func refresh_trail2d_points(trail2d: Line2D):
 	trail2d.refresh_points()
-	Settings.set_unsaved_changes(true)
+
 
 
 ################################################################################
 # Signal Functions
 ################################################################################
-func _on_SaveTrail_pressed():
-	save_current_map_data()
-	Settings.set_unsaved_changes(false)
-
 func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
@@ -1022,8 +1034,8 @@ func _on_ReverseTrailDirection_pressed():
 
 
 func _on_ExitButton_pressed():
-	if self.unsaved_changes:
-		save_current_map_data()
+	if not read_hash(self.map_id) == make_hash(self.waypoint_data.to_bytes()):
+		save_map_data(self.map_id)
 	exit_burrito()
 
 
@@ -1050,3 +1062,17 @@ func _on_MarkersUI_item_edited():
 
 func _on_ImportPath_pressed():
 	$Control/Dialogs/ImportPackDialog.show()
+
+
+func _on_ImportPackDialog_dir_selected(dir):
+	var user_data_dir = str(OS.get_user_data_dir())
+	var args: PoolStringArray = [
+		"--input-taco-path", dir,
+		# TODO: This line is not working as intended and needs to be investigated
+		# "--input-waypoint-path", user_data_dir.plus_file("protobin"),
+		"--output-waypoint-path", user_data_dir.plus_file("protobin"),
+		"--output-split-waypoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir)
+	]
+	FileHandler.call_xml_converter(args)
+	save_hashes()
+	load_waypoint_markers(self.map_id)
