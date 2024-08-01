@@ -58,6 +58,9 @@ const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
 const FileHandler = preload("res://FileHandler.gd")
 
+# File path for the the json that contains a hash of the data files
+const HASH_BY_MAP_ID_FILEPATH: String = "user://hash_by_map_id.json"
+
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
@@ -340,11 +343,9 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
-		if old_map_id != 0:
-			if not read_hash(old_map_id) == get_hash(self.waypoint_data.to_bytes()):
-				print("Saving Old Map")
-				save_map_data(old_map_id)
-				print("not same")
+		if old_map_id != 0 and not read_hash(old_map_id) == make_hash(self.waypoint_data.to_bytes()):
+			print("Saving Old Map")
+			save_map_data(old_map_id)
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 
@@ -638,14 +639,13 @@ func save_map_data(map_id: int):
 	file.open(self.marker_file_path, file.WRITE)
 	file.store_buffer(packed_bytes)
 
-func get_hash(data: PoolByteArray) -> String:
+func make_hash(data: PoolByteArray) -> String:
 	var ctx = HashingContext.new()
 	ctx.start(HashingContext.HASH_MD5)
 	ctx.update(data)
 	var res: PoolByteArray = ctx.finish()
 	return res.hex_encode()
 
-const FILE_HASH_PATH: String = "user://file_hash.json"
 
 # Save all hashes
 func save_hashes():
@@ -658,20 +658,17 @@ func save_hashes():
 	while file_name != "":
 		if dir.file_exists(file_name):
 			file.open(file_name, File.READ)
-			var hash_data = get_hash(file.get_buffer(file.get_len()))
-			data[file_name.get_basename()] = hash_data
+			data[file_name.get_basename()] = make_hash(file.get_buffer(file.get_len()))
 		file_name = dir.get_next()
-	file.open(FILE_HASH_PATH, File.WRITE)
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.WRITE)
 	file.store_string(JSON.print(data))
 
 func read_hash(map_id: int) -> String:
 	var file = File.new()
-	if not file.file_exists(FILE_HASH_PATH):
+	if not file.file_exists(HASH_BY_MAP_ID_FILEPATH):
 		return ""
-	var data = {}
-	file.open(FILE_HASH_PATH, File.READ)
-	data = JSON.parse(file.get_as_text()).result
-	return data.get(String(map_id), "")
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.READ)
+	return JSON.parse(file.get_as_text()).result.get(String(map_id), "")
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -883,9 +880,6 @@ func refresh_trail2d_points(trail2d: Line2D):
 ################################################################################
 # Signal Functions
 ################################################################################
-func _on_SaveTrail_pressed():
-	save_map_data(self.map_id)
-
 func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
@@ -1040,7 +1034,7 @@ func _on_ReverseTrailDirection_pressed():
 
 
 func _on_ExitButton_pressed():
-	if not read_hash(self.map_id) == get_hash(self.waypoint_data.to_bytes()):
+	if not read_hash(self.map_id) == make_hash(self.waypoint_data.to_bytes()):
 		save_map_data(self.map_id)
 	exit_burrito()
 

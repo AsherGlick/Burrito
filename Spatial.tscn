@@ -911,7 +911,6 @@ material/0 = SubResource( 4 )
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox7" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="file_selected" from="Control/Dialogs/TexturePathOpen" to="." method="_on_TexturePathOpen_file_selected"]
 [connection signal="hide" from="Control/Dialogs/TexturePathOpen" to="." method="_on_Dialog_hide"]
-[connection signal="file_selected" from="Control/Dialogs/SaveDialog" to="." method="_on_SaveDialog_file_selected"]
 [connection signal="hide" from="Control/Dialogs/SaveDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_NodeEditorDialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode" to="." method="_on_DeleteNode_pressed"]
