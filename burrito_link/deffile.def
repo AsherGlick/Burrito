@@ -5,3 +5,4 @@ EXPORTS
 	D3D11CoreCreateDevice
 	get_init_addr
 	get_release_addr
+	GetAddonDef
