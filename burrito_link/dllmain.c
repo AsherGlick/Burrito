@@ -439,7 +439,7 @@ extern __declspec(dllexport) struct AddonDefinition* GetAddonDef()
 	AddonDef.Version.Major = 1;
 	AddonDef.Version.Minor = 4;
 	AddonDef.Version.Build = 0;
-	AddonDef.Version.Revision = 3;
+	AddonDef.Version.Revision = 1;
 	AddonDef.Author = "AsherGlick";
 	AddonDef.Description = "Automatically provides the link for Burrito.";
 	AddonDef.Load = start_burrito_link_thread;
