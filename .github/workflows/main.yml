@@ -120,3 +120,12 @@ jobs:
           if-no-files-found: error 
           # Duration after which artifact will expire in days. 0 means using default retention. 
           retention-days: 0
+
+      - uses: actions/upload-artifact@v2.2.4
+        with:
+          # Artifact name
+          name: "Burrito.dll" # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path:  "burrito_link/build/Burrito.dll"
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error 
