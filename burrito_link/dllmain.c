@@ -433,7 +433,7 @@ struct AddonDefinition {
 
 extern __declspec(dllexport) struct AddonDefinition* GetAddonDef()
 {
-	AddonDef.Signature = -217;
+	AddonDef.Signature = -1032686481;
 	AddonDef.APIVersion = 6; // taken from Nexus.h
 	AddonDef.Name = "Burrito Link";
 	AddonDef.Version.Major = 1;
