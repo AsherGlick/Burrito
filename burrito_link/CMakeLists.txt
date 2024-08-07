@@ -39,3 +39,22 @@ set_target_properties(${DX11LIB} PROPERTIES
     SUFFIX ""
     LINK_FLAGS "../deffile.def -Wl,--allow-shlib-undefined -Wl,-O1 -shared -static -static-libgcc -static-libstdc++ -Wl,--file-alignment=4096 -lm -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32"
 )
+
+# Create the Burrito.dll file for Nexus
+set(CMAKE_SYSTEM_NAME Windows)
+
+SET(NEXUSLIB Burrito.dll)
+
+# Will this build a library
+add_library(${NEXUSLIB} SHARED dllmain_nexus.c burrito_link.c)
+
+target_compile_options(${NEXUSLIB} PRIVATE -mwindows)
+target_compile_options(${NEXUSLIB} PRIVATE -static-libgcc -static-libstdc++)
+
+target_link_libraries(${NEXUSLIB} PRIVATE "ws2_32")
+
+set_target_properties(${NEXUSLIB} PROPERTIES
+    PREFIX ""
+    SUFFIX ""
+    LINK_FLAGS "-Wl,--allow-shlib-undefined -Wl,-O1 -shared -static -static-libgcc -static-libstdc++ -Wl,--file-alignment=4096 -lm -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32"
+)
