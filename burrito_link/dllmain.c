@@ -436,8 +436,8 @@ extern __declspec(dllexport) struct AddonDefinition* GetAddonDef()
 	AddonDef.Signature = -1032686481;
 	AddonDef.APIVersion = 6; // taken from Nexus.h
 	AddonDef.Name = "Burrito Link";
-	AddonDef.Version.Major = 1;
-	AddonDef.Version.Minor = 4;
+	AddonDef.Version.Major = 0;
+	AddonDef.Version.Minor = 0;
 	AddonDef.Version.Build = 0;
 	AddonDef.Version.Revision = 1;
 	AddonDef.Author = "AsherGlick";
