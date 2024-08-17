@@ -804,6 +804,11 @@ class Category:
 		service.field = _tip_description
 		data[_tip_description.tag] = service
 		
+		_id = PBField.new("id", PB_DATA_TYPE.BYTES, PB_RULE.OPTIONAL, 8, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES])
+		service = PBServiceField.new()
+		service.field = _id
+		data[_id.tag] = service
+		
 	var data = {}
 	
 	var _name: PBField
@@ -874,6 +879,15 @@ class Category:
 		_tip_description.value = DEFAULT_VALUES_3[PB_DATA_TYPE.STRING]
 	func set_tip_description(value : String) -> void:
 		_tip_description.value = value
+	
+	var _id: PBField
+	func get_id() -> PoolByteArray:
+		return _id.value
+	func clear_id() -> void:
+		data[8].state = PB_SERVICE_STATE.UNFILLED
+		_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BYTES]
+	func set_id(value : PoolByteArray) -> void:
+		_id.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
@@ -948,15 +962,15 @@ class Icon:
 		service.func_ref = funcref(self, "new_euler_rotation")
 		data[_euler_rotation.tag] = service
 		
-		_achievement_bit = PBField.new("achievement_bit", PB_DATA_TYPE.FIXED32, PB_RULE.OPTIONAL, 16, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32])
-		service = PBServiceField.new()
-		service.field = _achievement_bit
-		data[_achievement_bit.tag] = service
-		
-		_achievement_id = PBField.new("achievement_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 17, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		_achievement_id = PBField.new("achievement_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 16, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
 		service = PBServiceField.new()
 		service.field = _achievement_id
 		data[_achievement_id.tag] = service
+		
+		_achievement_bit_index = PBField.new("achievement_bit_index", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 17, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		service = PBServiceField.new()
+		service.field = _achievement_bit_index
+		data[_achievement_bit_index.tag] = service
 		
 		_disable_player_cutout = PBField.new("disable_player_cutout", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
@@ -993,10 +1007,9 @@ class Icon:
 		service.field = _tip_name
 		data[_tip_name.tag] = service
 		
-		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 26, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.FIXED32, PB_RULE.OPTIONAL, 26, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32])
 		service = PBServiceField.new()
 		service.field = _rgba_color
-		service.func_ref = funcref(self, "new_rgba_color")
 		data[_rgba_color.tag] = service
 		
 		_festival_filter = PBField.new("festival_filter", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 27, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
@@ -1069,11 +1082,6 @@ class Icon:
 		service = PBServiceField.new()
 		service.field = _bhdraft__schedule_duration
 		data[_bhdraft__schedule_duration.tag] = service
-		
-		_category = PBField.new("category", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = _category
-		data[_category.tag] = service
 		
 	var data = {}
 	
@@ -1161,23 +1169,23 @@ class Icon:
 		_euler_rotation.value = EulerRotation.new()
 		return _euler_rotation.value
 	
-	var _achievement_bit: PBField
-	func get_achievement_bit() -> int:
-		return _achievement_bit.value
-	func clear_achievement_bit() -> void:
-		data[16].state = PB_SERVICE_STATE.UNFILLED
-		_achievement_bit.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32]
-	func set_achievement_bit(value : int) -> void:
-		_achievement_bit.value = value
-	
 	var _achievement_id: PBField
 	func get_achievement_id() -> int:
 		return _achievement_id.value
 	func clear_achievement_id() -> void:
-		data[17].state = PB_SERVICE_STATE.UNFILLED
+		data[16].state = PB_SERVICE_STATE.UNFILLED
 		_achievement_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
 	func set_achievement_id(value : int) -> void:
 		_achievement_id.value = value
+	
+	var _achievement_bit_index: PBField
+	func get_achievement_bit_index() -> int:
+		return _achievement_bit_index.value
+	func clear_achievement_bit_index() -> void:
+		data[17].state = PB_SERVICE_STATE.UNFILLED
+		_achievement_bit_index.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+	func set_achievement_bit_index(value : int) -> void:
+		_achievement_bit_index.value = value
 	
 	var _disable_player_cutout: PBField
 	func get_disable_player_cutout() -> bool:
@@ -1243,14 +1251,13 @@ class Icon:
 		_tip_name.value = value
 	
 	var _rgba_color: PBField
-	func get_rgba_color() -> RGBAColor:
+	func get_rgba_color() -> int:
 		return _rgba_color.value
 	func clear_rgba_color() -> void:
 		data[26].state = PB_SERVICE_STATE.UNFILLED
-		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_rgba_color() -> RGBAColor:
-		_rgba_color.value = RGBAColor.new()
-		return _rgba_color.value
+		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32]
+	func set_rgba_color(value : int) -> void:
+		_rgba_color.value = value
 	
 	var _festival_filter: PBField
 	func get_festival_filter() -> FestivalFilter:
@@ -1375,15 +1382,6 @@ class Icon:
 	func set_bhdraft__schedule_duration(value : float) -> void:
 		_bhdraft__schedule_duration.value = value
 	
-	var _category: PBField
-	func get_category() -> bool:
-		return _category.value
-	func clear_category() -> void:
-		data[2054].state = PB_SERVICE_STATE.UNFILLED
-		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_category(value : bool) -> void:
-		_category.value = value
-	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)
 		
@@ -1445,15 +1443,15 @@ class Trail:
 		service.field = _animation_speed
 		data[_animation_speed.tag] = service
 		
-		_achievement_bit = PBField.new("achievement_bit", PB_DATA_TYPE.FIXED32, PB_RULE.OPTIONAL, 16, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32])
-		service = PBServiceField.new()
-		service.field = _achievement_bit
-		data[_achievement_bit.tag] = service
-		
-		_achievement_id = PBField.new("achievement_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 17, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		_achievement_id = PBField.new("achievement_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 16, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
 		service = PBServiceField.new()
 		service.field = _achievement_id
 		data[_achievement_id.tag] = service
+		
+		_achievement_bit_index = PBField.new("achievement_bit_index", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 17, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		service = PBServiceField.new()
+		service.field = _achievement_bit_index
+		data[_achievement_bit_index.tag] = service
 		
 		_disable_player_cutout = PBField.new("disable_player_cutout", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 19, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
@@ -1470,10 +1468,9 @@ class Trail:
 		service.field = _scale
 		data[_scale.tag] = service
 		
-		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.FIXED32, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32])
 		service = PBServiceField.new()
 		service.field = _rgba_color
-		service.func_ref = funcref(self, "new_rgba_color")
 		data[_rgba_color.tag] = service
 		
 		_festival_filter = PBField.new("festival_filter", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 23, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
@@ -1547,11 +1544,6 @@ class Trail:
 		service.field = _bhdraft__schedule_duration
 		data[_bhdraft__schedule_duration.tag] = service
 		
-		_category = PBField.new("category", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2054, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = _category
-		data[_category.tag] = service
-		
 	var data = {}
 	
 	var _texture_id: PBField
@@ -1618,23 +1610,23 @@ class Trail:
 	func set_animation_speed(value : float) -> void:
 		_animation_speed.value = value
 	
-	var _achievement_bit: PBField
-	func get_achievement_bit() -> int:
-		return _achievement_bit.value
-	func clear_achievement_bit() -> void:
-		data[16].state = PB_SERVICE_STATE.UNFILLED
-		_achievement_bit.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32]
-	func set_achievement_bit(value : int) -> void:
-		_achievement_bit.value = value
-	
 	var _achievement_id: PBField
 	func get_achievement_id() -> int:
 		return _achievement_id.value
 	func clear_achievement_id() -> void:
-		data[17].state = PB_SERVICE_STATE.UNFILLED
+		data[16].state = PB_SERVICE_STATE.UNFILLED
 		_achievement_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
 	func set_achievement_id(value : int) -> void:
 		_achievement_id.value = value
+	
+	var _achievement_bit_index: PBField
+	func get_achievement_bit_index() -> int:
+		return _achievement_bit_index.value
+	func clear_achievement_bit_index() -> void:
+		data[17].state = PB_SERVICE_STATE.UNFILLED
+		_achievement_bit_index.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+	func set_achievement_bit_index(value : int) -> void:
+		_achievement_bit_index.value = value
 	
 	var _disable_player_cutout: PBField
 	func get_disable_player_cutout() -> bool:
@@ -1664,14 +1656,13 @@ class Trail:
 		_scale.value = value
 	
 	var _rgba_color: PBField
-	func get_rgba_color() -> RGBAColor:
+	func get_rgba_color() -> int:
 		return _rgba_color.value
 	func clear_rgba_color() -> void:
 		data[22].state = PB_SERVICE_STATE.UNFILLED
-		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
-	func new_rgba_color() -> RGBAColor:
-		_rgba_color.value = RGBAColor.new()
-		return _rgba_color.value
+		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32]
+	func set_rgba_color(value : int) -> void:
+		_rgba_color.value = value
 	
 	var _festival_filter: PBField
 	func get_festival_filter() -> FestivalFilter:
@@ -1795,56 +1786,6 @@ class Trail:
 		_bhdraft__schedule_duration.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
 	func set_bhdraft__schedule_duration(value : float) -> void:
 		_bhdraft__schedule_duration.value = value
-	
-	var _category: PBField
-	func get_category() -> bool:
-		return _category.value
-	func clear_category() -> void:
-		data[2054].state = PB_SERVICE_STATE.UNFILLED
-		_category.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_category(value : bool) -> void:
-		_category.value = value
-	
-	func to_string() -> String:
-		return PBPacker.message_to_string(data)
-		
-	func to_bytes() -> PoolByteArray:
-		return PBPacker.pack_message(data)
-		
-	func from_bytes(bytes : PoolByteArray, offset : int = 0, limit : int = -1) -> int:
-		var cur_limit = bytes.size()
-		if limit != -1:
-			cur_limit = limit
-		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
-		if result == cur_limit:
-			if PBPacker.check_required(data):
-				if limit == -1:
-					return PB_ERR.NO_ERRORS
-			else:
-				return PB_ERR.REQUIRED_FIELDS
-		elif limit == -1 && result > 0:
-			return PB_ERR.PARSE_INCOMPLETE
-		return result
-	
-class RGBAColor:
-	func _init():
-		var service
-		
-		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = _rgba_color
-		data[_rgba_color.tag] = service
-		
-	var data = {}
-	
-	var _rgba_color: PBField
-	func get_rgba_color() -> int:
-		return _rgba_color.value
-	func clear_rgba_color() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		_rgba_color.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_rgba_color(value : int) -> void:
-		_rgba_color.value = value
 	
 	func to_string() -> String:
 		return PBPacker.message_to_string(data)

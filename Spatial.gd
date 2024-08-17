@@ -58,6 +58,9 @@ const CategoryData = preload("res://CategoryData.gd")
 const Waypoint = preload("res://waypoint.gd")
 const FileHandler = preload("res://FileHandler.gd")
 
+# File path for the the json that contains a hash of the data files
+const HASH_BY_MAP_ID_FILEPATH: String = "user://hash_by_map_id.json"
+
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
@@ -341,9 +344,10 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if self.map_id != old_map_id:
 		print("New Map")
 		var old_textue_path: String = ""
-		if self.next_texture_id != 0:
-			old_textue_path = self.waypoint_data.get_textures()[self.next_texture_id]
-		print("Saving Old Map")
+		if old_map_id != 0 and not read_hash(old_map_id) == make_hash(self.waypoint_data.to_bytes()):
+			print("Saving Old Map")
+      old_textue_path = self.waypoint_data.get_textures()[self.next_texture_id]
+			save_map_data(old_map_id)
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
 		if old_textue_path != "":
@@ -390,7 +394,7 @@ func reset_2D_minimap_masks(category2d: Node2D, compass_corner1: Vector2, compas
 		reset_2D_minimap_masks(subcategory, compass_corner1, compass_corner2)
 
 func reset_3D_minimap_masks(category: Spatial):
-	for trail in category.trails:
+	for trail in category.trails3d:
 		trail.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
 	for icon in category.icons:
 		icon.material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
@@ -399,11 +403,14 @@ func reset_3D_minimap_masks(category: Spatial):
 
 
 var waypoint_data = Waypoint.Waypoint.new()
-var marker_file_dir = "user://protobins/"
+# We save the marker data in this directory when the files are have been split
+# by Map ID. All changes made by the editor are automatically saved in these
+# files prior to export.
+var unsaved_markers_dir = "user://protobin_by_map_id/"
 var marker_file_path = ""
 
-func load_waypoint_markers(map_id):
-	self.marker_file_path = self.marker_file_dir + String(map_id) + ".data"
+func load_waypoint_markers(map_id_to_load: int):
+	self.marker_file_path = self.unsaved_markers_dir + String(map_id_to_load) + ".bin"
 	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
@@ -548,6 +555,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 	for icon in waypoint_category.get_icon():
 		gen_new_icon(icon, category_item)
 
+
 	for category_child in waypoint_category.get_children():
 		_waypoint_categories_to_godot_nodes(category_item, category_child, godot_category3d, godot_category2d, true)
 
@@ -596,7 +604,7 @@ func gen_new_trail(waypoint_trail: Waypoint.Trail, category_item: TreeItem) -> A
 	new_trail3d.refresh_mesh()
 	new_trail3d.set_texture(texture)
 	var category_data = category_item.get_metadata(0)
-	category_data.category3d.add_trail(new_trail3d)
+	category_data.category3d.add_trail3d(new_trail3d)
 
 
 	# Create a new 2D Trail
@@ -628,31 +636,45 @@ func gen_new_icon(waypoint_icon: Waypoint.Icon, category_item: TreeItem):
 	var category_data = category_item.get_metadata(0)
 	category_data.category3d.add_icon(new_icon)
 
-# This function take all of the currently rendered objects and converts it into
-# the data format that is saved/loaded from.
-func data_from_renderview():
-	var icons_data = []
-	var paths_data = []
+################################################################################
+# Section of functions for saving data to file
+################################################################################
+func save_map_data(map_id: int):
+	var packed_bytes = self.waypoint_data.to_bytes()
+	var file = File.new()
+	file.open(self.marker_file_path, file.WRITE)
+	file.store_buffer(packed_bytes)
 
-	for icon in $Icons.get_children():
-		icons_data.append({
-			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
-			"texture": icon.texture_path
-		})
+func make_hash(data: PoolByteArray) -> String:
+	var ctx = HashingContext.new()
+	ctx.start(HashingContext.HASH_MD5)
+	ctx.update(data)
+	var res: PoolByteArray = ctx.finish()
+	return res.hex_encode()
 
-	for path in $Paths.get_children():
-		#print(path)
-		var points = []
-		for point in range(path.get_point_count()):
-			var point_position:Vector3 = path.get_point_position(point)
-			points.append([point_position.x, point_position.y, -point_position.z])
-		paths_data.append({
-			"points": points,
-			"texture": path.texture_path
-		})
 
-	var data_out = {"icons": icons_data, "paths": paths_data}
-	return data_out
+# Save all hashes
+func save_hashes():
+	var file = File.new()
+	var data = {}
+	var dir = Directory.new()
+	dir.open(self.unsaved_markers_dir)
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	while file_name != "":
+		if dir.file_exists(file_name):
+			file.open(file_name, File.READ)
+			data[file_name.get_basename()] = make_hash(file.get_buffer(file.get_len()))
+		file_name = dir.get_next()
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.WRITE)
+	file.store_string(JSON.print(data))
+
+func read_hash(map_id: int) -> String:
+	var file = File.new()
+	if not file.file_exists(HASH_BY_MAP_ID_FILEPATH):
+		return ""
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.READ)
+	return JSON.parse(file.get_as_text()).result.get(String(map_id), "")
 
 ################################################################################
 # Adjustment and gizmo functions
@@ -1043,6 +1065,8 @@ func _on_ReverseTrailDirection_pressed():
 
 
 func _on_ExitButton_pressed():
+	if not read_hash(self.map_id) == make_hash(self.waypoint_data.to_bytes()):
+		save_map_data(self.map_id)
 	exit_burrito()
 
 
@@ -1069,3 +1093,17 @@ func _on_MarkersUI_item_edited():
 
 func _on_ImportPath_pressed():
 	$Control/Dialogs/ImportPackDialog.show()
+
+
+func _on_ImportPackDialog_dir_selected(dir):
+	var user_data_dir = str(OS.get_user_data_dir())
+	var args: PoolStringArray = [
+		"--input-taco-path", dir,
+		# TODO: This line is not working as intended and needs to be investigated
+		# "--input-waypoint-path", user_data_dir.plus_file("protobin"),
+		"--output-waypoint-path", user_data_dir.plus_file("protobin"),
+		"--output-split-waypoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir)
+	]
+	FileHandler.call_xml_converter(args)
+	save_hashes()
+	load_waypoint_markers(self.map_id)
