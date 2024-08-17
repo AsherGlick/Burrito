@@ -346,7 +346,7 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		var old_textue_path: String = ""
 		if old_map_id != 0 and not read_hash(old_map_id) == make_hash(self.waypoint_data.to_bytes()):
 			print("Saving Old Map")
-      old_textue_path = self.waypoint_data.get_textures()[self.next_texture_id]
+			old_textue_path = self.waypoint_data.get_textures()[self.next_texture_id].get_filepath()
 			save_map_data(old_map_id)
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
@@ -586,7 +586,7 @@ func gen_new_trail(waypoint_trail: Waypoint.Trail, category_item: TreeItem) -> A
 	if texture_id == null:
 		var category_data = category_item.get_metadata(0)
 		print("Warning: No texture found in " , category_data.waypoint_category.get_name())
-	var texture_path: String = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+	var texture_path: String = self.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 	var texture_file = File.new()
 	var image = Image.new()
 	if !texture_file.file_exists(texture_path):
@@ -622,7 +622,7 @@ func gen_new_icon(waypoint_icon: Waypoint.Icon, category_item: TreeItem):
 	if texture_id == null:
 		var category_data = category_item.get_metadata(0)
 		print("Warning: No texture found in " , category_data.waypoint_category.get_name())
-	var texture_path: String = self.marker_file_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+	var texture_path: String = self.unsaved_markers_dir +  self.waypoint_data.get_textures()[texture_id].get_filepath()
 	var position = waypoint_icon.get_position()
 	if position == null:
 		var category_data = category_item.get_metadata(0)
