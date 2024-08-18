@@ -29,8 +29,10 @@ void parse_waypoint_categories(
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois,
     ProtoReaderState* state) {
-    full_category_name += proto_category.name();
-    Category* this_category = &(*marker_categories)[full_category_name];
+
+    string category_name = normalize(proto_category.name());
+    full_category_name += category_name;
+    Category* this_category = &(*marker_categories)[category_name];
 
     this_category->parse_protobuf(proto_category, state);
 
@@ -40,6 +42,7 @@ void parse_waypoint_categories(
         // TODO: The field category in Icon is being deprciated
         // This overwrites any icon.category with its position in the heirarchy
         icon->category.category = full_category_name;
+        icon->category_is_set = true;
         parsed_pois->push_back(icon);
     }
     for (int i = 0; i < proto_category.trail_size(); i++) {
@@ -48,6 +51,7 @@ void parse_waypoint_categories(
         // TODO: The field category in Trail is being deprciated
         // This overwrites any trail.category with its position in the heirarchy
         trail->category.category = full_category_name;
+        trail->category_is_set = true;
         parsed_pois->push_back(trail);
     }
 
@@ -216,10 +220,12 @@ void write_protobuf_file(
         Parseable* parsed_poi = (*parsed_pois)[i];
         if (parsed_poi->classname() == "POI") {
             Icon* icon = dynamic_cast<Icon*>(parsed_poi);
+            // TODO(331): This is the wrong place to lowercase() the category and is hiding some crimes elsewhere
             category_to_pois[lowercase(icon->category.category)].push_back(parsed_poi);
         }
         else if (parsed_poi->classname() == "Trail") {
             Trail* trail = dynamic_cast<Trail*>(parsed_poi);
+            // TODO(331): This is the wrong place to lowercase() the category and is hiding some crimes elsewhere
             category_to_pois[lowercase(trail->category.category)].push_back(parsed_poi);
         }
         else {
