@@ -343,19 +343,17 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
-		var old_textue_path: String = ""
+		var old_texture_path: String = ""
+		old_texture_path = get_texture_path(self.next_texture_id)
 		if old_map_id != 0 and not read_hash(old_map_id) == make_hash(self.waypoint_data.to_bytes()):
 			print("Saving Old Map")
-			old_textue_path = self.waypoint_data.get_textures()[self.next_texture_id].get_filepath()
 			save_map_data(old_map_id)
 		print("Loading New Map")
 		load_waypoint_markers(self.map_id)
-		if old_textue_path != "":
-			self.next_texture_id = get_texture_index(old_textue_path)
-			if self.next_texture_id == -1:
-				self.waypoint_data.add_textures().set_filepath(old_textue_path)
-				self.next_texture_id = self.waypoint_data.get_textures().size() - 1
-
+		self.next_texture_id = get_texture_index(old_texture_path)
+		if self.next_texture_id == -1:
+			self.waypoint_data.add_textures().set_filepath(old_texture_path)
+			self.next_texture_id = self.waypoint_data.get_textures().size() - 1
 
 	reset_minimap_masks()
 
@@ -583,10 +581,11 @@ func gen_new_trail(waypoint_trail: Waypoint.Trail, category_item: TreeItem) -> A
 	# which does not use srgb to render properly, and one for 3D which forces
 	# srgb to render properly. Issue #23.
 	var texture_id: int = waypoint_trail.get_texture_id()
-	if texture_id == null:
+	if texture_id == 0:
 		var category_data = category_item.get_metadata(0)
 		print("Warning: No texture found in " , category_data.waypoint_category.get_name())
-	var texture_path: String = self.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+	# TODO(330): Error Textures
+	var texture_path: String = self.unsaved_markers_dir + get_texture_path(texture_id)
 	var texture_file = File.new()
 	var image = Image.new()
 	if !texture_file.file_exists(texture_path):
@@ -615,14 +614,15 @@ func gen_new_trail(waypoint_trail: Waypoint.Trail, category_item: TreeItem) -> A
 	new_trail2d.refresh_points()
 	category_data.category2d.add_trail2d(new_trail2d)
 
-	return Array([new_trail3d, new_trail2d])
+	return [new_trail3d, new_trail2d]
 
 func gen_new_icon(waypoint_icon: Waypoint.Icon, category_item: TreeItem):
 	var texture_id: int = waypoint_icon.get_texture_id()
-	if texture_id == null:
+	if texture_id == 0:
 		var category_data = category_item.get_metadata(0)
 		print("Warning: No texture found in " , category_data.waypoint_category.get_name())
-	var texture_path: String = self.unsaved_markers_dir +  self.waypoint_data.get_textures()[texture_id].get_filepath()
+	# TODO(330) Error Textures
+	var texture_path: String = self.unsaved_markers_dir + get_texture_path(texture_id)
 	var position = waypoint_icon.get_position()
 	if position == null:
 		var category_data = category_item.get_metadata(0)
@@ -786,10 +786,21 @@ func clear_adjustment_nodes():
 # Update Waypoint datum
 ################################################################################
 func get_texture_index(path: String) -> int:
+	if path == "":
+		return 0
 	for i in self.waypoint_data.get_textures().size():
 		if path == self.waypoint_data.get_textures()[i].get_filepath():
 			return i
 	return -1
+
+func get_texture_path(texture_id: int) -> String:
+	if texture_id == 0:
+		return ""
+	if texture_id >= self.waypoint_data.get_textures().size() or texture_id < 0:
+		toast("Invalid texture index found")
+		# TODO(330): This should return an error texture filepath instead of empty string
+		return ""
+	return self.waypoint_data.get_textures()[texture_id].get_filepath()
 
 func set_icon_position(new_position: Vector3, waypoint_icon: Waypoint.Icon, icon: Sprite3D):
 	if icon.waypoint != waypoint_icon:
@@ -944,17 +955,16 @@ func _on_ChangeTexture_pressed():
 # Set the file that will be used to create a new trail or icon when a new trail
 # or icon is created.
 ################################################################################
-var temp_image_file_path: String = ""
-
 func _on_TexturePathOpen_file_selected(path: String):
-	var next_texture_path: String = FileHandler.find_image_duplicates(path, self.marker_file_dir)
-	if next_texture_path == "":
+	var next_texture_path = FileHandler.find_image_duplicates(path, self.unsaved_markers_dir)
+	if next_texture_path == null:
+		FileHandler.create_directory_if_missing(self.unsaved_markers_dir.plus_file("Data"))
 		next_texture_path = "Data".plus_file(path.get_file())
 		var file = File.new()
-		if file.file_exists(self.marker_file_dir.plus_file(next_texture_path)):
+		if file.file_exists(self.unsaved_markers_dir.plus_file(next_texture_path)):
 			toast(String(["Error: A different image with the name ", path.get_file(), " has already been imported. Please rename the file and try again."]))
 			return
-		FileHandler.copy_file(path, self.marker_file_dir.plus_file(next_texture_path))
+		FileHandler.copy_file(path, self.unsaved_markers_dir.plus_file(next_texture_path))
 	var texture_index = get_texture_index(next_texture_path)
 	if texture_index == -1:
 		self.waypoint_data.add_textures().set_filepath(next_texture_path)
@@ -997,7 +1007,7 @@ func _on_NewTrailPoint_pressed():
 		trail_data.add_points_y(self.player_position.y)
 		trail_data.add_points_z(-self.player_position.z)
 		waypoint_trail.set_texture_id(self.next_texture_id)
-		var new_trails: PoolStringArray = gen_new_trail(waypoint_trail, self.currently_active_category)
+		var new_trails: Array = gen_new_trail(waypoint_trail, self.currently_active_category)
 		self.currently_active_trail3d = new_trails[0]
 		self.currently_active_trail2d = new_trails[1]
 	else:
