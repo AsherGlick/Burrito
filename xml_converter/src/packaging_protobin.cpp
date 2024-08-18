@@ -29,7 +29,6 @@ void parse_waypoint_categories(
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois,
     ProtoReaderState* state) {
-
     string category_name = normalize(proto_category.name());
     full_category_name += category_name;
     Category* this_category = &(*marker_categories)[category_name];
