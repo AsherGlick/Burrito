@@ -118,6 +118,7 @@ def rebuild_xml_converter_binary() -> None:
 ################################################################################
 line_patterns_to_ignore = [
     r"^Loading taco pack .*$",
+    r"^Loading waypoint pack .*$",
     r"^The taco parse function took [0-9]+ milliseconds to run$",
     r"^The xml write function took [0-9]+ milliseconds to run$",
     r"^The protobuf read function took [0-9]+ milliseconds to run$",
@@ -170,6 +171,7 @@ def main() -> bool:
 
         rawstdout, rawstderr, returncode = run_xml_converter(
             input_xml=testcase.xml_input_paths,
+            input_proto=testcase.proto_input_paths,
             output_xml=[xml_output_dir_path],
             output_proto=[proto_output_dir_path],
         )
