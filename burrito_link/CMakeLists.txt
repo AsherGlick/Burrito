@@ -37,5 +37,5 @@ target_link_libraries(${DX11LIB} PRIVATE "ws2_32")
 set_target_properties(${DX11LIB} PROPERTIES
     PREFIX ""
     SUFFIX ""
-    LINK_FLAGS "../deffile.def -Wl,--allow-shlib-undefined -Wl,-O1 -shared -static -static-libgcc -static-libstdc++ -Wl,--file-alignment=4096 -lm -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32"
+    LINK_FLAGS "../deffile.def -Wl,--allow-shlib-undefined,--no-insert-timestamp -Wl,-O1 -shared -static -static-libgcc -static-libstdc++ -Wl,--file-alignment=4096 -lm -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32"
 )
