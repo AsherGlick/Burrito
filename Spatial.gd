@@ -85,6 +85,8 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
+	if Settings.unsaved_changes:
+		set_unsaved_changes(Settings.unsaved_changes)
 
 	server.listen(4242)
 
@@ -395,14 +397,11 @@ func reset_3D_minimap_masks(category: Spatial):
 
 
 var waypoint_data = Waypoint.Waypoint.new()
-# We save the marker data in this directory when the files are have been split
-# by Map ID. All changes made by the editor are automatically saved in these
-# files prior to export.
-var unsaved_markers_dir = "user://protobin_by_map_id/"
+# Filepath for the current map
 var marker_file_path = ""
 
 func load_waypoint_markers(map_id_to_load: int):
-	self.marker_file_path = self.unsaved_markers_dir + String(map_id_to_load) + ".bin"
+	self.marker_file_path = Settings.unsaved_markers_dir.plus_file(String(map_id_to_load) + ".bin")
 	self.waypoint_data = Waypoint.Waypoint.new()
 	clear_map_markers()
 	init_category_tree()
@@ -546,7 +545,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = Settings.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_trail(full_texture_path, trail, category_item)
 
 
@@ -555,7 +554,7 @@ func _waypoint_categories_to_godot_nodes(item: TreeItem, waypoint_category: Wayp
 		if texture_id == null:
 			print("Warning: No texture found in " , category_name)
 			continue
-		var full_texture_path = self.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
+		var full_texture_path = Settings.unsaved_markers_dir + self.waypoint_data.get_textures()[texture_id].get_filepath()
 		gen_new_icon(full_texture_path, icon, category_item)
 
 	for category_child in waypoint_category.get_children():
@@ -875,6 +874,7 @@ func refresh_trail3d_points(trail3d: Spatial):
 
 func refresh_trail2d_points(trail2d: Line2D):
 	trail2d.refresh_points()
+
 
 
 ################################################################################
