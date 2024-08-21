@@ -1,0 +1,57 @@
+name: Publish
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
+      release-message:
+        type: string
+      add-commits:
+        type: string
+      checksum:
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - name: Get the repository state
+        uses: ./.github/actions/repo-state
+        id: repo-state
+      - name: Download all available artifacts
+        uses: actions/download-artifact@v4
+      - name: Zip the output files for deployment
+        run: (cd burrito-binaries && zip -r ../${{ inputs.artifact-name }} .)
+      - name: Handle the manually entered release message if it exists
+        if: inputs.release-message != ''
+        run: |
+          echo "${{ inputs.release-message }}" >> release-notes-tmp
+          echo "" >> release-notes-tmp
+      - name: Create an automatic release message if requested or necessary
+        id: release-message-auto
+        if: inputs.release-message == '' || inputs.add-commits == 'true'
+        uses: simbo/changes-between-tags-action@v1
+        with:
+          tag-pattern: '^([a-z]+)?-[0-9]+\.[0-9]+\.?([0-9]+)?$'
+          validate-tag: 'false'
+      - name: Handle the automatically generated release message if requested or necessary
+        if: inputs.release-message == '' || inputs.add-commits == 'true'
+        run: echo "${{ steps.release-message-auto.outputs.changes }}" >> release-notes-tmp
+      - name: Create and publish the final release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.repo-state.outputs.tag }}
+          artifacts: ${{ inputs.artifact-name }}
+          bodyFile: release-notes-tmp
+      - name: Write a git-note with all checksums to the latest release
+        run: |
+          git fetch origin refs/notes/*:refs/notes/*
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git notes add -f -m "${{ inputs.checksum }}" $(git describe --tags --abbrev=0)
+          git push origin refs/notes/*

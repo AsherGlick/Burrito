@@ -1,0 +1,12 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  Build:
+    uses: ./.github/workflows/build.yml
+    with:
+      godot-version: 3.3.2
+      ubuntu-version: 20.04

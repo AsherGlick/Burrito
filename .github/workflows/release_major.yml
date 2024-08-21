@@ -1,0 +1,62 @@
+name: Release Major
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        required: true
+      add-commits:
+        type: boolean
+        default: true
+        description: Add commit messages to your release message.
+
+jobs:
+  Pre-Build:
+    uses: ./.github/workflows/build.yml
+    with:
+      godot-version: 3.3.2
+      ubuntu-version: 20.04
+
+  Check:
+    runs-on: ubuntu-latest
+    needs: Pre-Build
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - name: Get the repository state
+        uses: ./.github/actions/repo-state
+        id: repo-state
+      - name: Check if there are new commits to release
+        if: steps.repo-state.outputs.commits <= 0
+        run: |
+          echo "::error ::There is nothing to release. We need at least one unreleased commit."
+          exit 1
+      - name: Check if the binaries from the pre-build-job differ from the last release
+        if: steps.repo-state.outputs.note == needs.Pre-Build.outputs.checksum
+        run: |
+          echo "::error ::There is nothing to release. The produced binaries are exactly the same as in the latest release."
+          exit 1
+      - name: Add a new release-tag
+        env:
+          VERSION_MAJOR: ${{ steps.repo-state.outputs.version_major }}
+        run: |
+          git tag release-$(( $VERSION_MAJOR + 1)).0.0
+          git push origin release-$(( $VERSION_MAJOR + 1)).0.0
+
+  Build:
+    uses: ./.github/workflows/build.yml
+    needs: Check
+    with:
+      godot-version: 3.3.2
+      ubuntu-version: 20.04
+
+  Publish:
+    uses: ./.github/workflows/publish.yml
+    needs: Build
+    with:
+      artifact-name: Burrito_Linux.zip
+      release-message: ${{ github.event.inputs.message }}
+      add-commits: ${{ github.event.inputs.add-commits }}
+      checksum: ${{ needs.Build.outputs.checksum }}
