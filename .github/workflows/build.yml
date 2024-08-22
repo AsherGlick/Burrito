@@ -53,6 +53,7 @@ jobs:
       run: |
         mkdir output
         mkdir output/burrito_link
+        mkdir do_not_publish
     - name: Build X11_FG
       run: |
         cd burrito-fg
@@ -74,6 +75,8 @@ jobs:
         chmod +x build/burrito.x86_64
     - name: Fill the output folder
       run: |
+        cp burrito_link/build/burrito_link.exe do_not_publish
+        cp burrito_link/build/d3d11.dll do_not_publish
         mv burrito_link/build/burrito_link.exe output/burrito_link
         mv burrito_link/build/d3d11.dll output/burrito_link
         mv build/burrito.x86_64 output/
@@ -88,12 +91,12 @@ jobs:
         if-no-files-found: error
         overwrite: true
     - name: Strip the burrito_link binaries for reproducibility
-      run: strip output/burrito_link/*
+      run: strip do_not_publish/*
     - name: Get the sha256 sums for the produced output files
       id: final
       run: |
-        mv output/burrito_link/* output/
         rm -rf output/burrito_link
         echo 'checksum<<EOF' >> $GITHUB_OUTPUT
-        sha256sum output/* >> $GITHUB_OUTPUT
+        sha256sum  do_not_publish/* >> $GITHUB_OUTPUT
+        sha256sum  output/* >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
