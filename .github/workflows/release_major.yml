@@ -13,9 +13,6 @@ on:
 jobs:
   Pre-Build:
     uses: ./.github/workflows/build.yml
-    with:
-      godot-version: 3.3.2
-      ubuntu-version: 20.04
 
   Check:
     runs-on: ubuntu-latest
@@ -48,9 +45,6 @@ jobs:
   Build:
     uses: ./.github/workflows/build.yml
     needs: Check
-    with:
-      godot-version: 3.3.2
-      ubuntu-version: 20.04
 
   Publish:
     uses: ./.github/workflows/publish.yml
