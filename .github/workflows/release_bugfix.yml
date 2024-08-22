@@ -1,0 +1,52 @@
+name: Release Bugfix
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        required: true
+      add-commits:
+        type: boolean
+        default: true
+        description: Add commit messages to your release message.
+
+jobs:
+  Check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - name: Get the repository state
+        uses: ./.github/actions/repo-state
+        id: repo-state
+      - name: Check if there are new commits to release or add one if necessary
+        if: steps.repo-state.outputs.commits <= 0
+        run: |
+          echo "::warning ::There was nothing to release. So an empty commit was created automatically."
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git commit --allow-empty -m "Auto commit for bugfix release."
+          git push origin
+      - name: Add a new release-tag
+        env:
+          VERSION_MAJOR: ${{ steps.repo-state.outputs.version_major }}
+          VERSION_MINOR: ${{ steps.repo-state.outputs.version_minor }}
+          VERSION_REVISION: ${{ steps.repo-state.outputs.version_revision }}
+        run: |
+          git tag release-$(( $VERSION_MAJOR )).$(( $VERSION_MINOR )).$(( $VERSION_REVISION +1 ))
+          git push origin release-$(( $VERSION_MAJOR )).$(( $VERSION_MINOR )).$(( $VERSION_REVISION +1 ))
+
+  Build:
+    uses: ./.github/workflows/build.yml
+    needs: Check
+
+  Publish:
+    uses: ./.github/workflows/publish.yml
+    needs: Build
+    with:
+      artifact-name: Burrito_Linux.zip
+      release-message: ${{ github.event.inputs.message }}
+      add-commits: ${{ github.event.inputs.add-commits }}
+      checksum: ${{ needs.Build.outputs.checksum }}

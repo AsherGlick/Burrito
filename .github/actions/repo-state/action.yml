@@ -1,0 +1,51 @@
+name: 'Repository state'
+description: 'Get the latest tag, the latest process-note, the number of commits since the last tag and the version numbers from the last tag.'
+outputs:
+  tag:
+    description: "Last tagged version"
+    value: ${{ steps.tag.outputs.value }}
+  note:
+    description: "Note on the last tag"
+    value: ${{ steps.note.outputs.value }}
+  commits:
+    description: "Number of commits since the last tag"
+    value: ${{ steps.commits.outputs.value }}
+  version_major:
+    description: "Major version number"
+    value: ${{ steps.version.outputs.major }}
+  version_minor:
+    description: "Minor version number"
+    value: ${{ steps.version.outputs.minor }}
+  version_revision:
+    description: "Revision number"
+    value: ${{ steps.version.outputs.revision }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: 'master'
+    - name: Get the last release-tag
+      id: tag
+      shell: bash
+      run: echo "value=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+    - name: Get the note on the last release-tag
+      id: note
+      shell: bash
+      run: |
+        git fetch origin refs/notes/*:refs/notes/*
+        echo 'value<<EOF' >> $GITHUB_OUTPUT
+        (git notes show $(git describe --tags --abbrev=0) | cat || true) >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
+    - name: Get the commits since the last tag
+      id: commits
+      shell: bash
+      run: echo "value=$(git rev-list --count $(git describe --tags --abbrev=0)..HEAD)" >> $GITHUB_OUTPUT
+    - name: Get the version numbers
+      id: version
+      shell: bash
+      run: |
+        echo "major=$(git describe --tags --abbrev=0 | sed 's@^[^0-9]*\([0-9]\+\).*@\1@;tx;s/.*/0/;:x')" >> $GITHUB_OUTPUT
+        echo "minor=$(git describe --tags --abbrev=0 | sed 's@^[^0-9]*[0-9]*[.]\([0-9]\+\).*@\1@;tx;s/.*/0/;:x')" >> $GITHUB_OUTPUT
+        echo "revision=$(git describe --tags --abbrev=0 | sed 's@^[^0-9]*[0-9]*[.][0-9]*[.]\([0-9]\+\).*@\1@;tx;s/.*/0/;:x')" >> $GITHUB_OUTPUT

@@ -1,0 +1,102 @@
+name: Build
+
+on:
+  workflow_call:
+    outputs:
+      checksum:
+        description: "sha256 sums of the generated output files"
+        value: ${{ jobs.build.outputs.checksum }}
+
+env:
+  GODOT_VERSION: 3.3.2
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    outputs:
+      checksum: ${{ steps.final.outputs.checksum }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Restore cached dependencies
+      uses: actions/cache/restore@v4
+      id: cache-godot
+      with:
+        path: |
+          Godot_v${{ env.GODOT_VERSION }}-stable_linux_headless.64.zip
+          Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+        key: ${{ runner.os }}-${{ env.GODOT_VERSION }}
+    - name: Download Godot and its Export Templates
+      if: steps.cache-godot.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_linux_headless.64.zip
+        wget -q https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+    - name: Add dependencies to the cache if necessary
+      if: steps.cache-godot.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          Godot_v${{ env.GODOT_VERSION }}-stable_linux_headless.64.zip
+          Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+        key: ${{ steps.cache-godot.outputs.cache-primary-key }}
+    - name: Install Godot and the export templates
+      run: |
+        unzip Godot_v${{ env.GODOT_VERSION }}-stable_linux_headless.64.zip
+        rm Godot_v${{ env.GODOT_VERSION }}-stable_linux_headless.64.zip
+        unzip Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+        rm Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+        mkdir -v -p ~/.local/share/godot/templates/${{ env.GODOT_VERSION }}.stable/
+        mv templates/* ~/.local/share/godot/templates/${{ env.GODOT_VERSION }}.stable/
+        ls ~/.local/share/godot/templates/${{ env.GODOT_VERSION }}.stable/
+    - name: Install mingw
+      run: sudo apt-get install gcc-mingw-w64
+    - name: Create the output directories
+      run: |
+        mkdir output
+        mkdir output/burrito_link
+        mkdir do_not_publish
+    - name: Build X11_FG
+      run: |
+        cd burrito-fg
+        cargo build --release
+    - name: Build taco_parser
+      run: |
+        cd taco_parser
+        cargo build --release
+    - name: Build Burrito Link
+      run: |
+        mkdir burrito_link/build
+        cd burrito_link/build
+        cmake ..
+        make
+    - name: Build Burrito
+      run: |
+        mkdir build
+        ./Godot_v${{ env.GODOT_VERSION }}-stable_linux_headless.64 --export "Linux/X11"
+        chmod +x build/burrito.x86_64
+    - name: Fill the output folder
+      run: |
+        cp burrito_link/build/burrito_link.exe do_not_publish
+        cp burrito_link/build/d3d11.dll do_not_publish
+        mv burrito_link/build/burrito_link.exe output/burrito_link
+        mv burrito_link/build/d3d11.dll output/burrito_link
+        mv build/burrito.x86_64 output/
+        mv build/libburrito_fg.so output/
+        mv build/libgw2_taco_parser.so output/
+    - name: Upload output folder as an artifact
+      uses: actions/upload-artifact@v4
+      id: artifact-upload
+      with:
+        name: burrito-binaries
+        path: output
+        if-no-files-found: error
+        overwrite: true
+    - name: Strip the burrito_link binaries for reproducibility
+      run: strip do_not_publish/*
+    - name: Get the sha256 sums for the produced output files
+      id: final
+      run: |
+        rm -rf output/burrito_link
+        echo 'checksum<<EOF' >> $GITHUB_OUTPUT
+        sha256sum  do_not_publish/* >> $GITHUB_OUTPUT
+        sha256sum  output/* >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
