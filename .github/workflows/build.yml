@@ -11,7 +11,7 @@ on:
         type: string
     outputs:
       checksum:
-        description: "md5 sums of the generated output files"
+        description: "sha256 sums of the generated output files"
         value: ${{ jobs.build.outputs.checksum }}
 
 jobs:
@@ -93,11 +93,11 @@ jobs:
         overwrite: true
     - name: Strip the burrito_link binaries for reproducibility
       run: strip output/burrito_link/*
-    - name: Get the md5 sums for the produced output files
+    - name: Get the sha256 sums for the produced output files
       id: final
       run: |
         mv output/burrito_link/* output/
         rm -rf output/burrito_link
         echo 'checksum<<EOF' >> $GITHUB_OUTPUT
-        md5sum output/* >> $GITHUB_OUTPUT
+        sha256sum output/* >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
