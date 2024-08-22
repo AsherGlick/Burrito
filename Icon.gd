@@ -2,13 +2,10 @@ extends Sprite3D
 
 const Waypoint = preload("res://waypoint.gd")
 
-var texture_path
 var waypoint: Waypoint.Icon
 var category: TreeItem
 
 func set_icon_image(texture_path: String):
-	self.texture_path = texture_path
-	
 	var texture_file = File.new()
 	var image = Image.new()
 	texture_file.open(texture_path, File.READ)
