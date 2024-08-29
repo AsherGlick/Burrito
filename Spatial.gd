@@ -405,6 +405,7 @@ var waypoint_data = Waypoint.Waypoint.new()
 # by Map ID. All changes made by the editor are automatically saved in these
 # files prior to export.
 var unsaved_markers_dir = "user://protobin_by_map_id/"
+var saved_markers_dir = "user://protobin/"
 var marker_file_path = ""
 
 func load_waypoint_markers(map_id_to_load: int):
@@ -1109,11 +1110,19 @@ func _on_ImportPackDialog_dir_selected(dir):
 	var user_data_dir = str(OS.get_user_data_dir())
 	var args: PoolStringArray = [
 		"--input-taco-path", dir,
-		# TODO: This line is not working as intended and needs to be investigated
-		# "--input-waypoint-path", user_data_dir.plus_file("protobin"),
-		"--output-waypoint-path", user_data_dir.plus_file("protobin"),
+		"--input-waypoint-path", self.saved_markers_dir,
+		"--output-waypoint-path", self.saved_markers_dir,
 		"--output-split-waypoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir)
 	]
 	FileHandler.call_xml_converter(args)
 	save_hashes()
 	load_waypoint_markers(self.map_id)
+
+
+func _on_SaveData_pressed():
+	var user_data_dir = str(OS.get_user_data_dir())
+	var args: PoolStringArray = [
+		"--input-waypoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
+		"--output-waypoint-path", self.saved_markers_dir,
+	]
+	FileHandler.call_xml_converter(args)
