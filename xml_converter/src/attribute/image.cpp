@@ -39,7 +39,7 @@ string image_to_xml_attribute(
     const Image* value) {
     if (filesystem::exists(filesystem::path(value->original_filepath))) {
         filesystem::path output_path = filesystem::path(state->marker_pack_root_directory) / value->filename;
-        if (value->original_filepath != output_path){
+        if (value->original_filepath != output_path) {
             filesystem::create_directories(output_path.parent_path());
             filesystem::copy_file(filesystem::path(value->original_filepath), output_path, filesystem::copy_options::overwrite_existing);
         }
@@ -89,7 +89,7 @@ void image_to_proto(
         state->textures.push_back(&value);
         if (filesystem::exists(filesystem::path(value.original_filepath))) {
             filesystem::path output_path = filesystem::path(state->marker_pack_root_directory) / value.filename;
-            if (value.original_filepath != output_path){
+            if (value.original_filepath != output_path) {
                 filesystem::create_directories(output_path.parent_path());
                 filesystem::copy_file(filesystem::path(value.original_filepath), output_path, filesystem::copy_options::overwrite_existing);
             }
