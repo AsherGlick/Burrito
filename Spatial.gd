@@ -1110,8 +1110,8 @@ func _on_ImportPackDialog_dir_selected(dir):
 	var user_data_dir = str(OS.get_user_data_dir())
 	var args: PoolStringArray = [
 		"--input-taco-path", dir,
-		"--input-waypoint-path", self.saved_markers_dir,
-		"--output-waypoint-path", self.saved_markers_dir,
+		"--input-waypoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--output-waypoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
 		"--output-split-waypoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir)
 	]
 	FileHandler.call_xml_converter(args)
@@ -1123,6 +1123,6 @@ func _on_SaveData_pressed():
 	var user_data_dir = str(OS.get_user_data_dir())
 	var args: PoolStringArray = [
 		"--input-waypoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
-		"--output-waypoint-path", self.saved_markers_dir,
+		"--output-waypoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
 	]
 	FileHandler.call_xml_converter(args)
