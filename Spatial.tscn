@@ -241,7 +241,7 @@ margin_bottom = 92.0
 rect_min_size = Vector2( 0, 40 )
 text = "Import Marker Pack"
 
-[node name="SaveTrail" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="SaveData" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 96.0
 margin_right = 220.0
 margin_bottom = 136.0
@@ -889,7 +889,7 @@ material/0 = SubResource( 4 )
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportPath" to="." method="_on_ImportPath_pressed"]
-[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SaveTrail" to="." method="_on_SaveTrail_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SaveData" to="." method="_on_SaveData_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Settings" to="." method="_on_Settings_pressed"]
