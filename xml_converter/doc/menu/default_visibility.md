@@ -3,7 +3,14 @@ name: Default Visibility
 type: Boolean
 applies_to: [Category]
 xml_fields: [DefaultToggle]
-protobuf_field: default_visibility
+protobuf_field: hide_category
+custom_functions:
+  read.xml:
+    function: inverted_xml_attribute_to_bool
+    side_effects: []
+  write.xml:
+    function: bool_to_inverted_xml_attribute
+    side_effects: []
 ---
 
 Notes
