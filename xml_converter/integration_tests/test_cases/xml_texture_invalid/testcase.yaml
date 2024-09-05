@@ -1,0 +1,7 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+    Warning: File path test_cases/xml_texture_invalid/input/pack/texture_01.png not found.
+    Warning: File path test_cases/xml_texture_invalid/input/pack/texture_01.png not found.
+expected_stderr: |
+expected_returncode: 0
