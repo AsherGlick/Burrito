@@ -17,14 +17,14 @@ class XMLError;
 
 class Category : public Parseable {
  public:
-    bool default_visibility;
     std::string display_name;
+    bool hide_category;
     bool is_separator;
     UniqueId menu_id;
     std::string name;
     std::string tooltip_description;
-    bool default_visibility_is_set = false;
     bool display_name_is_set = false;
+    bool hide_category_is_set = false;
     bool is_separator_is_set = false;
     bool menu_id_is_set = false;
     bool name_is_set = false;

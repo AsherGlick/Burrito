@@ -48,11 +48,11 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* erro
 bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLReaderState* state) {
     string attributename;
     attributename = normalize(get_attribute_name(attribute));
-    if (attributename == "defaulttoggle") {
-        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->default_visibility), &(this->default_visibility_is_set));
-    }
-    else if (attributename == "displayname") {
+    if (attributename == "displayname") {
         xml_attribute_to_string(attribute, errors, state, &(this->display_name), &(this->display_name_is_set));
+    }
+    else if (attributename == "defaulttoggle") {
+        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->hide_category), &(this->hide_category_is_set));
     }
     else if (attributename == "isseparator") {
         xml_attribute_to_bool(attribute, errors, state, &(this->is_separator), &(this->is_separator_is_set));
@@ -78,11 +78,11 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
 vector<string> Category::as_xml(XMLWriterState* state) const {
     vector<string> xml_node_contents;
     xml_node_contents.push_back("<MarkerCategory ");
-    if (this->default_visibility_is_set) {
-        xml_node_contents.push_back(bool_to_inverted_xml_attribute("DefaultToggle", state, &this->default_visibility));
-    }
     if (this->display_name_is_set) {
         xml_node_contents.push_back(string_to_xml_attribute("DisplayName", state, &this->display_name));
+    }
+    if (this->hide_category_is_set) {
+        xml_node_contents.push_back(bool_to_inverted_xml_attribute("DefaultToggle", state, &this->hide_category));
     }
     if (this->is_separator_is_set) {
         xml_node_contents.push_back(bool_to_xml_attribute("IsSeparator", state, &this->is_separator));
@@ -113,13 +113,13 @@ vector<string> Category::as_xml(XMLWriterState* state) const {
 
 waypoint::Category Category::as_protobuf(ProtoWriterState* state) const {
     waypoint::Category proto_category;
-    if (this->default_visibility_is_set) {
-        std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_hide_category(val); };
-        bool_to_proto(this->default_visibility, state, setter);
-    }
     if (this->display_name_is_set) {
         std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
         display_name_and_name_to_proto_display_name(this->display_name, state, setter, &(this->name), &(this->name_is_set));
+    }
+    if (this->hide_category_is_set) {
+        std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_hide_category(val); };
+        bool_to_proto(this->hide_category, state, setter);
     }
     if (this->is_separator_is_set) {
         std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_is_separator(val); };
@@ -137,11 +137,11 @@ waypoint::Category Category::as_protobuf(ProtoWriterState* state) const {
 }
 
 void Category::parse_protobuf(waypoint::Category proto_category, ProtoReaderState* state) {
-    if (proto_category.hide_category() != 0) {
-        proto_to_bool(proto_category.hide_category(), state, &(this->default_visibility), &(this->default_visibility_is_set));
-    }
     if (proto_category.name() != "") {
         proto_display_name_to_display_name_and_name(proto_category.name(), state, &(this->display_name), &(this->display_name_is_set), &(this->name), &(this->name_is_set));
+    }
+    if (proto_category.hide_category() != 0) {
+        proto_to_bool(proto_category.hide_category(), state, &(this->hide_category), &(this->hide_category_is_set));
     }
     if (proto_category.is_separator() != 0) {
         proto_to_bool(proto_category.is_separator(), state, &(this->is_separator), &(this->is_separator_is_set));

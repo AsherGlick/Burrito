@@ -1,5 +1,5 @@
 ---
-name: Default Visibility
+name: Hide Category
 type: Boolean
 applies_to: [Category]
 xml_fields: [DefaultToggle]

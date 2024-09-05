@@ -1,14 +1,14 @@
 <OverlayData>
-<MarkerCategory  DefaultToggle="false" DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory">
+<MarkerCategory  DisplayName="My Category" DefaultToggle="false" ID="KOjMBsKTXpY=" Name="mycategory">
 </MarkerCategory>
 
-<MarkerCategory  DefaultToggle="true" DisplayName="My Category 2" ID="KO1p4DQMMWI=" Name="mycategory2">
+<MarkerCategory  DisplayName="My Category 2" DefaultToggle="true" ID="KO1p4DQMMWI=" Name="mycategory2">
 </MarkerCategory>
 
-<MarkerCategory  DefaultToggle="false" DisplayName="My Category 3" ID="KO1p4DUMMWI=" Name="mycategory3">
+<MarkerCategory  DisplayName="My Category 3" DefaultToggle="false" ID="KO1p4DUMMWI=" Name="mycategory3">
 </MarkerCategory>
 
-<MarkerCategory  DefaultToggle="true" DisplayName="My Category 4" ID="KO1p4DYMMWI=" Name="mycategory4">
+<MarkerCategory  DisplayName="My Category 4" DefaultToggle="true" ID="KO1p4DYMMWI=" Name="mycategory4">
 </MarkerCategory>
 
 <POIs>
