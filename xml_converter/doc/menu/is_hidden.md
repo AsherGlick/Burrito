@@ -1,9 +1,9 @@
 ---
-name: Hide Category
+name: Is Hidden
 type: Boolean
 applies_to: [Category]
 xml_fields: [DefaultToggle]
-protobuf_field: hide_category
+protobuf_field: is_hidden
 custom_functions:
   read.xml:
     function: inverted_xml_attribute_to_bool
