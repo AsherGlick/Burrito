@@ -21,7 +21,7 @@ message Category {
     repeated Icon icon = 3;
     repeated Trail trail = 4;
     bool is_separator = 5;
-    bool default_visibility = 6;
+    bool is_hidden = 6;
     string tip_description = 7;
     bytes id = 8;
 }

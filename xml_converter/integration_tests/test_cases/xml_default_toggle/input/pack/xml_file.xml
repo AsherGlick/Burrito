@@ -1,0 +1,16 @@
+<OverlayData>
+    <MarkerCategory DisplayName="My Category" DefaultToggle="false" Name="mycategory">
+    </MarkerCategory>
+    <MarkerCategory DisplayName="My Category 2" DefaultToggle="true" Name="mycategory2">
+    </MarkerCategory>
+    <MarkerCategory DisplayName="My Category 3" DefaultToggle="0" Name="mycategory3">
+    </MarkerCategory>
+    <MarkerCategory DisplayName="My Category 4" DefaultToggle="1" Name="mycategory4">
+    </MarkerCategory>
+    <POIs>
+        <POI Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Type="mycategory2" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Type="mycategory3" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Type="mycategory4" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+    </POIs>
+</OverlayData>
