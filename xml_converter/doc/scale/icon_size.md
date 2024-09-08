@@ -5,7 +5,7 @@ applies_to: [Icon]
 xml_fields: [IconSize]
 protobuf_field: tentative__scale
 ---
-Unclear) Some value representation of how large an icon should be. Is this a scale multiplier or a fixed size value? How does this relate to MinSize and MaxSize.
+Multiplier on the size of an image (i.e. 1 is a 100%, 2 is 200%).
 
 Notes
 =====
