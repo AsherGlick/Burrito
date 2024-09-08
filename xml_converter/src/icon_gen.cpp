@@ -67,6 +67,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "red") {
         xml_attribute_to_float(attribute, errors, state, &(this->color.red), &(this->color_is_set));
     }
+    else if (attributename == "scaleonmapwithzoom") {
+        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->constant_size_on_map), &(this->constant_size_on_map_is_set));
+    }
     else if (attributename == "copy") {
         xml_attribute_to_string(attribute, errors, state, &(this->copy_clipboard), &(this->copy_clipboard_is_set));
     }
@@ -202,9 +205,6 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "resetlength") {
         xml_attribute_to_float(attribute, errors, state, &(this->reset_length), &(this->reset_length_is_set));
     }
-    else if (attributename == "scaleonmapwithzoom") {
-        xml_attribute_to_bool(attribute, errors, state, &(this->scale_on_map_with_zoom), &(this->scale_on_map_with_zoom_is_set));
-    }
     else if (attributename == "schedule") {
         xml_attribute_to_string(attribute, errors, state, &(this->schedule), &(this->schedule_is_set));
     }
@@ -284,6 +284,9 @@ vector<string> Icon::as_xml(XMLWriterState* state) const {
     }
     if (this->color_is_set) {
         xml_node_contents.push_back(float_to_xml_attribute("Alpha", state, &this->color.alpha));
+    }
+    if (this->constant_size_on_map_is_set) {
+        xml_node_contents.push_back(bool_to_inverted_xml_attribute("ScaleOnMapWithZoom", state, &this->constant_size_on_map));
     }
     if (this->copy_clipboard_is_set) {
         xml_node_contents.push_back(string_to_xml_attribute("Copy", state, &this->copy_clipboard));
@@ -375,9 +378,6 @@ vector<string> Icon::as_xml(XMLWriterState* state) const {
     if (this->reset_length_is_set) {
         xml_node_contents.push_back(float_to_xml_attribute("ResetLength", state, &this->reset_length));
     }
-    if (this->scale_on_map_with_zoom_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("ScaleOnMapWithZoom", state, &this->scale_on_map_with_zoom));
-    }
     if (this->schedule_is_set) {
         xml_node_contents.push_back(string_to_xml_attribute("Schedule", state, &this->schedule));
     }
@@ -438,6 +438,10 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
     if (this->color_is_set) {
         std::function<void(uint32_t)> setter = [&proto_icon](uint32_t val) { proto_icon.set_rgba_color(val); };
         color_to_proto(this->color, state, setter);
+    }
+    if (this->constant_size_on_map_is_set) {
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_constant_size_on_map(val); };
+        bool_to_proto(this->constant_size_on_map, state, setter);
     }
     if (this->copy_clipboard_is_set) {
         std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_copy_clipboard(val); };
@@ -555,10 +559,6 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_reset_length(val); };
         float_to_proto(this->reset_length, state, setter);
     }
-    if (this->scale_on_map_with_zoom_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_scale_on_map_with_zoom(val); };
-        bool_to_proto(this->scale_on_map_with_zoom, state, setter);
-    }
     if (this->schedule_is_set) {
         std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_bhdraft__schedule(val); };
         string_to_proto(this->schedule, state, setter);
@@ -619,6 +619,9 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
     }
     if (proto_icon.rgba_color() != 0) {
         proto_to_color(proto_icon.rgba_color(), state, &(this->color), &(this->color_is_set));
+    }
+    if (proto_icon.constant_size_on_map() != 0) {
+        proto_to_bool(proto_icon.constant_size_on_map(), state, &(this->constant_size_on_map), &(this->constant_size_on_map_is_set));
     }
     if (proto_icon.trigger().action_copy_clipboard() != "") {
         proto_to_string(proto_icon.trigger().action_copy_clipboard(), state, &(this->copy_clipboard), &(this->copy_clipboard_is_set));
@@ -706,9 +709,6 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
     }
     if (proto_icon.trigger().reset_length() != 0) {
         proto_to_float(proto_icon.trigger().reset_length(), state, &(this->reset_length), &(this->reset_length_is_set));
-    }
-    if (proto_icon.scale_on_map_with_zoom() != 0) {
-        proto_to_bool(proto_icon.scale_on_map_with_zoom(), state, &(this->scale_on_map_with_zoom), &(this->scale_on_map_with_zoom_is_set));
     }
     if (proto_icon.bhdraft__schedule() != "") {
         proto_to_string(proto_icon.bhdraft__schedule(), state, &(this->schedule), &(this->schedule_is_set));

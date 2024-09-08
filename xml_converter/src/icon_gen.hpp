@@ -35,6 +35,7 @@ class Icon : public Parseable {
     float bounce_height;
     MarkerCategory category;
     Color color;
+    bool constant_size_on_map;
     std::string copy_clipboard;
     std::string copy_message;
     CullChirality cull_chirality;
@@ -64,7 +65,6 @@ class Icon : public Parseable {
     bool render_on_minimap;
     ResetBehavior reset_behavior;
     float reset_length;
-    bool scale_on_map_with_zoom;
     std::string schedule;
     float schedule_duration;
     MarkerCategory show_category;
@@ -82,6 +82,7 @@ class Icon : public Parseable {
     bool bounce_height_is_set = false;
     bool category_is_set = false;
     bool color_is_set = false;
+    bool constant_size_on_map_is_set = false;
     bool copy_clipboard_is_set = false;
     bool copy_message_is_set = false;
     bool cull_chirality_is_set = false;
@@ -111,7 +112,6 @@ class Icon : public Parseable {
     bool render_on_minimap_is_set = false;
     bool reset_behavior_is_set = false;
     bool reset_length_is_set = false;
-    bool scale_on_map_with_zoom_is_set = false;
     bool schedule_is_set = false;
     bool schedule_duration_is_set = false;
     bool show_category_is_set = false;
