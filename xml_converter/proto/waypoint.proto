@@ -44,7 +44,7 @@ message Icon {
     int32 minimum_size_on_screen = 20;
     int32 map_display_size = 21;
     int32 maximum_size_on_screen = 22;
-    bool scale_on_map_with_zoom = 23;
+    bool constant_size_on_map = 23;
     string tip_description = 24;
     string tip_name = 25;
     fixed32 rgba_color = 26;
