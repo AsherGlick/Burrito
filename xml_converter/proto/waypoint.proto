@@ -55,10 +55,10 @@ message Icon {
     SpecializationFilter specialization_filter = 31;
     SpeciesFilter species_filter = 32;
     CullChirality cull_chirality = 33;
+    bool is_hidden_on_map = 35;
 
     float tentative__scale = 2048;
     bool tentative__render_ingame = 2049;
-    bool tentative__render_on_map = 2050;
     bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
@@ -87,9 +87,9 @@ message Trail {
     SpeciesFilter species_filter = 28;
     int32 map_display_size = 29;
     CullChirality cull_chirality = 30;
+    bool is_hidden_on_map = 32;
 
     bool tentative__render_ingame = 2049;
-    bool tentative__render_on_map = 2050;
     bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;

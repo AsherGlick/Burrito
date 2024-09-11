@@ -188,10 +188,10 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
         xml_attribute_to_bool(attribute, errors, state, &(this->render_ingame), &(this->render_ingame_is_set));
     }
     else if (attributename == "mapvisibility") {
-        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_map), &(this->render_on_map_is_set));
+        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "bhmapvisibility") {
-        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_map), &(this->render_on_map_is_set));
+        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "minimapvisibility") {
         xml_attribute_to_bool(attribute, errors, state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
@@ -367,7 +367,7 @@ vector<string> Icon::as_xml(XMLWriterState* state) const {
         xml_node_contents.push_back(bool_to_xml_attribute("IngameVisibility", state, &this->render_ingame));
     }
     if (this->render_on_map_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("MapVisibility", state, &this->render_on_map));
+        xml_node_contents.push_back(bool_to_inverted_xml_attribute("MapVisibility", state, &this->render_on_map));
     }
     if (this->render_on_minimap_is_set) {
         xml_node_contents.push_back(bool_to_xml_attribute("MinimapVisibility", state, &this->render_on_minimap));
@@ -544,7 +544,7 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         bool_to_proto(this->render_ingame, state, setter);
     }
     if (this->render_on_map_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_tentative__render_on_map(val); };
+        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_is_hidden_on_map(val); };
         bool_to_proto(this->render_on_map, state, setter);
     }
     if (this->render_on_minimap_is_set) {
@@ -698,8 +698,8 @@ void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
     if (proto_icon.tentative__render_ingame() != 0) {
         proto_to_bool(proto_icon.tentative__render_ingame(), state, &(this->render_ingame), &(this->render_ingame_is_set));
     }
-    if (proto_icon.tentative__render_on_map() != 0) {
-        proto_to_bool(proto_icon.tentative__render_on_map(), state, &(this->render_on_map), &(this->render_on_map_is_set));
+    if (proto_icon.is_hidden_on_map() != 0) {
+        proto_to_bool(proto_icon.is_hidden_on_map(), state, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     if (proto_icon.tentative__render_on_minimap() != 0) {
         proto_to_bool(proto_icon.tentative__render_on_minimap(), state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
