@@ -1,0 +1,9 @@
+<OverlayData>
+<MarkerCategory  DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory">
+</MarkerCategory>
+
+<POIs>
+<POI  Type="mycategory" IconFile="texture_one.png" MapID="50"/>
+<Trail  Type="mycategory" MapID="50" Texture="texture_one.png"/>
+</POIs>
+</OverlayData>

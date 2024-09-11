@@ -168,7 +168,7 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
             for (size_t category_index = 0; category_index < categories.size(); category_index++) {
                 for (size_t i = 0; i < categories[category_index]->icon_attributes.size(); i++) {
                     trail->init_xml_attribute(
-                        categories[category_index]->icon_attributes[i],
+                        categories[category_index]->trail_attributes[i],
                         &ignored_errors,
                         state);
                 }
