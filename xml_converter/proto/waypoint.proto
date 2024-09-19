@@ -57,9 +57,9 @@ message Icon {
     CullChirality cull_chirality = 33;
     bool is_hidden_ingame = 34;
     bool is_hidden_on_map = 35;
+    bool is_hidden_on_minimap = 36;
 
     float tentative__scale = 2048;
-    bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
 }
@@ -89,8 +89,8 @@ message Trail {
     CullChirality cull_chirality = 30;
     bool is_hidden_ingame = 31;
     bool is_hidden_on_map = 32;
+    bool is_hidden_on_minimap = 33;
 
-    bool tentative__render_on_minimap = 2051;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
 }

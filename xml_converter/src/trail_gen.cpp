@@ -116,10 +116,10 @@ bool Trail::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLE
         inverted_xml_attribute_to_bool(attribute, errors, state, &(this->render_on_map), &(this->render_on_map_is_set));
     }
     else if (attributename == "minimapvisibility") {
-        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
+        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "bhminimapvisibility") {
-        xml_attribute_to_bool(attribute, errors, state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
+        inverted_xml_attribute_to_bool(attribute, errors, state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     else if (attributename == "schedule") {
         xml_attribute_to_string(attribute, errors, state, &(this->schedule), &(this->schedule_is_set));
@@ -220,7 +220,7 @@ vector<string> Trail::as_xml(XMLWriterState* state) const {
         xml_node_contents.push_back(bool_to_inverted_xml_attribute("MapVisibility", state, &this->render_on_map));
     }
     if (this->render_on_minimap_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("MinimapVisibility", state, &this->render_on_minimap));
+        xml_node_contents.push_back(bool_to_inverted_xml_attribute("MinimapVisibility", state, &this->render_on_minimap));
     }
     if (this->schedule_is_set) {
         xml_node_contents.push_back(string_to_xml_attribute("Schedule", state, &this->schedule));
@@ -322,7 +322,7 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         bool_to_proto(this->render_on_map, state, setter);
     }
     if (this->render_on_minimap_is_set) {
-        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_tentative__render_on_minimap(val); };
+        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_is_hidden_on_minimap(val); };
         bool_to_proto(this->render_on_minimap, state, setter);
     }
     if (this->schedule_is_set) {
@@ -411,8 +411,8 @@ void Trail::parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state)
     if (proto_trail.is_hidden_on_map() != 0) {
         proto_to_bool(proto_trail.is_hidden_on_map(), state, &(this->render_on_map), &(this->render_on_map_is_set));
     }
-    if (proto_trail.tentative__render_on_minimap() != 0) {
-        proto_to_bool(proto_trail.tentative__render_on_minimap(), state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
+    if (proto_trail.is_hidden_on_minimap() != 0) {
+        proto_to_bool(proto_trail.is_hidden_on_minimap(), state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
     if (proto_trail.bhdraft__schedule() != "") {
         proto_to_string(proto_trail.bhdraft__schedule(), state, &(this->schedule), &(this->schedule_is_set));
