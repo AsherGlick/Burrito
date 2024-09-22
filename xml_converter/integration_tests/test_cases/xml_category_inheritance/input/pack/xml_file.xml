@@ -7,7 +7,12 @@
         </MarkerCategory>
     </MarkerCategory>
 
+    <MarkerCategory Name="TrailNestedLevel1" Texture="texture_one.png" TrailData="trail.trl" AnimationSpeed="1">
+        <MarkerCategory Name="TrailNestedLevel2"></MarkerCategory>
+    </MarkerCategory>
+
     <MarkerCategory Name="NestedLevel1" XPos="111"></MarkerCategory>
+
 
     <POIs>
         <POI Type="mycategory" MapID="50" />
@@ -17,5 +22,6 @@
         <POI Type="nestedlevel1" MapID="50" />
         <POI Type="nestedlevel1.nestedlevel2" MapID="50" />
         <POI Type="nestedlevel1.nestedlevel2.nestedlevel3" MapID="50" />
+        <Trail Type="trailnestedlevel1.trailnestedlevel2" />
     </POIs>
 </OverlayData>
