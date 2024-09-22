@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -106,7 +106,7 @@ string profession_filter_to_xml_attribute(
 }
 
 void proto_to_profession_filter(
-    waypoint::ProfessionFilter input,
+    guildpoint::ProfessionFilter input,
     ProtoReaderState*,
     ProfessionFilter* value,
     bool* is_set) {
@@ -127,8 +127,8 @@ void proto_to_profession_filter(
 void profession_filter_to_proto(
     ProfessionFilter value,
     ProtoWriterState*,
-    std::function<void(waypoint::ProfessionFilter*)> setter) {
-    waypoint::ProfessionFilter* proto_profession_filter = new waypoint::ProfessionFilter();
+    std::function<void(guildpoint::ProfessionFilter*)> setter) {
+    guildpoint::ProfessionFilter* proto_profession_filter = new guildpoint::ProfessionFilter();
     bool should_write = false;
     proto_profession_filter->set_guardian(value.guardian);
     should_write |= value.guardian;

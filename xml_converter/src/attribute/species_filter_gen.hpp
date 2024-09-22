@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class SpeciesFilter;
 }
 
@@ -40,7 +40,7 @@ std::string species_filter_to_xml_attribute(
     const SpeciesFilter* value);
 
 void proto_to_species_filter(
-    waypoint::SpeciesFilter input,
+    guildpoint::SpeciesFilter input,
     ProtoReaderState* state,
     SpeciesFilter* value,
     bool* is_set);
@@ -48,4 +48,4 @@ void proto_to_species_filter(
 void species_filter_to_proto(
     SpeciesFilter value,
     ProtoWriterState* state,
-    std::function<void(waypoint::SpeciesFilter*)> setter);
+    std::function<void(guildpoint::SpeciesFilter*)> setter);

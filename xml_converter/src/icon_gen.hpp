@@ -18,10 +18,10 @@
 #include "attribute/specialization_filter_gen.hpp"
 #include "attribute/species_filter_gen.hpp"
 #include "attribute/unique_id.hpp"
+#include "guildpoint.pb.h"
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "state_structs/xml_reader_state.hpp"
-#include "waypoint.pb.h"
 
 class XMLError;
 
@@ -124,7 +124,7 @@ class Icon : public Parseable {
     virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
-    waypoint::Icon as_protobuf(ProtoWriterState* state) const;
-    void parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state);
+    guildpoint::Icon as_protobuf(ProtoWriterState* state) const;
+    void parse_protobuf(guildpoint::Icon proto_icon, ProtoReaderState* state);
     bool validate_attributes_of_type_marker_category();
 };

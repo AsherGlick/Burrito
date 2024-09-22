@@ -7,7 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -35,7 +35,7 @@ void xml_attribute_to_position(
 }
 
 void proto_to_position(
-    waypoint::Position input,
+    guildpoint::Position input,
     ProtoReaderState*,
     Position* value,
     bool* is_set) {
@@ -50,8 +50,8 @@ void proto_to_position(
 void position_to_proto(
     Position value,
     ProtoWriterState*,
-    std::function<void(waypoint::Position*)> setter) {
-    waypoint::Position* proto_position = new waypoint::Position();
+    std::function<void(guildpoint::Position*)> setter) {
+    guildpoint::Position* proto_position = new guildpoint::Position();
     proto_position->set_x(value.x_position);
     proto_position->set_y(value.y_position);
     proto_position->set_z(value.z_position);

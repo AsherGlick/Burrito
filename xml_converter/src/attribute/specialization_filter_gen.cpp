@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -628,7 +628,7 @@ string specialization_filter_to_xml_attribute(
 }
 
 void proto_to_specialization_filter(
-    waypoint::SpecializationFilter input,
+    guildpoint::SpecializationFilter input,
     ProtoReaderState*,
     SpecializationFilter* value,
     bool* is_set) {
@@ -712,8 +712,8 @@ void proto_to_specialization_filter(
 void specialization_filter_to_proto(
     SpecializationFilter value,
     ProtoWriterState*,
-    std::function<void(waypoint::SpecializationFilter*)> setter) {
-    waypoint::SpecializationFilter* proto_specialization_filter = new waypoint::SpecializationFilter();
+    std::function<void(guildpoint::SpecializationFilter*)> setter) {
+    guildpoint::SpecializationFilter* proto_specialization_filter = new guildpoint::SpecializationFilter();
     bool should_write = false;
     proto_specialization_filter->set_elementalist_tempest(value.elementalist_tempest);
     should_write |= value.elementalist_tempest;

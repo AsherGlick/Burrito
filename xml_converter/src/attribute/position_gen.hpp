@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class Position;
 }
 
@@ -38,7 +38,7 @@ std::string position_to_xml_attribute(
     const Position* value);
 
 void proto_to_position(
-    waypoint::Position input,
+    guildpoint::Position input,
     ProtoReaderState* state,
     Position* value,
     bool* is_set);
@@ -46,4 +46,4 @@ void proto_to_position(
 void position_to_proto(
     Position value,
     ProtoWriterState* state,
-    std::function<void(waypoint::Position*)> setter);
+    std::function<void(guildpoint::Position*)> setter);

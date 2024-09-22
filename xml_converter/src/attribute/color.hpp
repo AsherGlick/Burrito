@@ -12,7 +12,7 @@
 
 class XMLError;
 
-namespace waypoint {
+namespace guildpoint {
 class RGBAColor;
 }
 

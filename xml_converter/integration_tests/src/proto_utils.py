@@ -13,8 +13,8 @@ def compare_protos(
     if files_are_equal:
         return []
 
-    expected_textproto = get_waypoint_textproto(expected_proto_path)
-    actual_textproto = get_waypoint_textproto(actual_proto_path)
+    expected_textproto = get_guildpoint_textproto(expected_proto_path)
+    actual_textproto = get_guildpoint_textproto(actual_proto_path)
 
     diff = list(difflib.unified_diff(actual_textproto.split("\n"), expected_textproto.split("\n"), fromfile=actual_proto_path, tofile=expected_proto_path, lineterm=""))
 
@@ -39,14 +39,14 @@ def compare_binary_file(file_path_1: str, file_path_2: str) -> bool:
 
 
 ################################################################################
-# get_waypoint_textproto
+# get_guildpoint_textproto
 #
-# Reads a waypoint protobin and returns a stringy textproto value of the
+# Reads a guildpoint protobin and returns a stringy textproto value of the
 # contents of the protobin. This makes it easier to diff the contents but also
 # can be used to easily inspect the values of the protobin.
 ################################################################################
-def get_waypoint_textproto(protobin_path: str) -> str:
-    proto_schema_path = "../proto/waypoint.proto"
+def get_guildpoint_textproto(protobin_path: str) -> str:
+    proto_schema_path = "../proto/guildpoint.proto"
     proto_schema_basedir = "../proto"
 
     if not os.path.exists(protobin_path):
@@ -56,7 +56,7 @@ def get_waypoint_textproto(protobin_path: str) -> str:
         result = subprocess.run(
             [
                 "protoc",
-                "--decode=waypoint.Waypoint",
+                "--decode=guildpoint.Guildpoint",
                 "--proto_path=" + proto_schema_basedir,
                 proto_schema_path
             ],

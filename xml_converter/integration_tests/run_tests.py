@@ -30,11 +30,11 @@ def run_xml_converter(
     if output_xml:
         cmd += ["--output-taco-path"] + output_xml
     if input_proto:
-        cmd += ["--input-waypoint-path"] + input_proto
+        cmd += ["--input-guildpoint-path"] + input_proto
     if output_proto:
-        cmd += ["--output-waypoint-path"] + output_proto
+        cmd += ["--output-guildpoint-path"] + output_proto
     if split_output_proto:
-        cmd += ["--output-split-waypoint-path"] + [split_output_proto]
+        cmd += ["--output-split-guildpoint-path"] + [split_output_proto]
 
     # Run the C++ program and capture its output
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -118,7 +118,7 @@ def rebuild_xml_converter_binary() -> None:
 ################################################################################
 line_patterns_to_ignore = [
     r"^Loading taco pack .*$",
-    r"^Loading waypoint pack .*$",
+    r"^Loading guildpoint pack .*$",
     r"^The taco parse function took [0-9]+ milliseconds to run$",
     r"^The xml write function took [0-9]+ milliseconds to run$",
     r"^The protobuf read function took [0-9]+ milliseconds to run$",

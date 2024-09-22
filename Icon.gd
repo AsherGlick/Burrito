@@ -1,8 +1,8 @@
 extends Sprite3D
 
-const Waypoint = preload("res://waypoint.gd")
+const Guildpoint = preload("res://guildpoint.gd")
 
-var waypoint: Waypoint.Icon
+var guildpoint: Guildpoint.Icon
 var category: TreeItem
 
 func set_icon_image(texture_path: String):

@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class EulerRotation;
 }
 
@@ -38,7 +38,7 @@ std::string euler_rotation_to_xml_attribute(
     const EulerRotation* value);
 
 void proto_to_euler_rotation(
-    waypoint::EulerRotation input,
+    guildpoint::EulerRotation input,
     ProtoReaderState* state,
     EulerRotation* value,
     bool* is_set);
@@ -46,4 +46,4 @@ void proto_to_euler_rotation(
 void euler_rotation_to_proto(
     EulerRotation value,
     ProtoWriterState* state,
-    std::function<void(waypoint::EulerRotation*)> setter);
+    std::function<void(guildpoint::EulerRotation*)> setter);

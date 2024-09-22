@@ -19,6 +19,7 @@
 #include "attribute/marker_category.hpp"
 #include "category_gen.hpp"
 #include "file_helper.hpp"
+#include "guildpoint.pb.h"
 #include "icon_gen.hpp"
 #include "packaging_protobin.hpp"
 #include "packaging_xml.hpp"
@@ -28,7 +29,6 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
 #include "trail_gen.hpp"
-#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -135,16 +135,16 @@ void write_burrito_directory(
 ////////////////////////////////////////////////////////////////////////////////
 void process_data(
     vector<string> input_taco_paths,
-    vector<string> input_waypoint_paths,
+    vector<string> input_guildpoint_paths,
 
     // These will eventually have additional arguments for each output path to
     // allow for splitting out a single markerpack
     vector<string> output_taco_paths,
-    vector<string> output_waypoint_paths,
+    vector<string> output_guildpoint_paths,
 
     // This is a special output path used for burrito internal use that splits
-    // the waypoint protobins by map id.
-    string output_split_waypoint_dir) {
+    // the guildpoint protobins by map id.
+    string output_split_guildpoint_dir) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
@@ -164,12 +164,12 @@ void process_data(
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The taco parse function took " << ms << " milliseconds to run" << endl;
 
-    // Read in all the protobin waypoint markerpacks
-    for (size_t i = 0; i < input_waypoint_paths.size(); i++) {
-        cout << "Loading waypoint pack " << input_waypoint_paths[i] << endl;
+    // Read in all the protobin guildpoint markerpacks
+    for (size_t i = 0; i < input_guildpoint_paths.size(); i++) {
+        cout << "Loading guildpoint pack " << input_guildpoint_paths[i] << endl;
 
         read_burrito_directory(
-            input_waypoint_paths[i],
+            input_guildpoint_paths[i],
             &marker_categories,
             &parsed_pois);
     }
@@ -184,17 +184,17 @@ void process_data(
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
-    // Write all of the protobin waypoint paths
-    for (size_t i = 0; i < output_waypoint_paths.size(); i++) {
-        write_burrito_directory(output_waypoint_paths[i], &marker_categories, &parsed_pois);
+    // Write all of the protobin guildpoint paths
+    for (size_t i = 0; i < output_guildpoint_paths.size(); i++) {
+        write_burrito_directory(output_guildpoint_paths[i], &marker_categories, &parsed_pois);
     }
 
-    // Write the special map-split protbin waypoint file
+    // Write the special map-split protbin guildpoint file
     begin = chrono::high_resolution_clock::now();
-    if (output_split_waypoint_dir != "") {
+    if (output_split_guildpoint_dir != "") {
         StringHierarchy category_filter;
         category_filter.add_path({}, true);
-        write_protobuf_file_per_map_id(output_split_waypoint_dir, category_filter, &marker_categories, &parsed_pois);
+        write_protobuf_file_per_map_id(output_split_guildpoint_dir, category_filter, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
@@ -210,18 +210,18 @@ void process_data(
 // receive.
 //
 // Example usage
-//   ./xml_converter --input-taco-paths ../packs/marker_pack --output-split-waypoint-path ../output_packs
-//   ./xml_converter --input-taco-paths ../packs/* --output-split-waypoint-path ../output_packs
+//   ./xml_converter --input-taco-paths ../packs/marker_pack --output-split-guildpoint-path ../output_packs
+//   ./xml_converter --input-taco-paths ../packs/* --output-split-guildpoint-path ../output_packs
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[]) {
     vector<string> input_taco_paths;
     vector<string> output_taco_paths;
-    vector<string> input_waypoint_paths;
-    vector<string> output_waypoint_paths;
+    vector<string> input_guildpoint_paths;
+    vector<string> output_guildpoint_paths;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
-    vector<string> output_split_waypoint_paths;
+    vector<string> output_split_guildpoint_paths;
 
     vector<string>* arg_target = &input_taco_paths;
 
@@ -232,39 +232,39 @@ int main(int argc, char* argv[]) {
         else if (!strcmp(argv[i], "--output-taco-path")) {
             arg_target = &output_taco_paths;
         }
-        else if (!strcmp(argv[i], "--input-waypoint-path")) {
-            arg_target = &input_waypoint_paths;
+        else if (!strcmp(argv[i], "--input-guildpoint-path")) {
+            arg_target = &input_guildpoint_paths;
         }
-        else if (!strcmp(argv[i], "--output-waypoint-path")) {
-            arg_target = &output_waypoint_paths;
+        else if (!strcmp(argv[i], "--output-guildpoint-path")) {
+            arg_target = &output_guildpoint_paths;
         }
-        else if (!strcmp(argv[i], "--output-split-waypoint-path")) {
+        else if (!strcmp(argv[i], "--output-split-guildpoint-path")) {
             // We dont actually support multiple values for this argument but
             // I am leaving this as-is because it is simpler. We can adjust the
             // CLI arg parsing later to properly capture this.
-            arg_target = &output_split_waypoint_paths;
+            arg_target = &output_split_guildpoint_paths;
         }
         else {
             arg_target->push_back(argv[i]);
         }
     }
 
-    // Strip all but the first output split waypoint argument, because we dont
+    // Strip all but the first output split guildpoint argument, because we dont
     // actually support multiple arguments.
-    string output_split_waypoint_dir = "";
-    if (output_split_waypoint_paths.size() > 0) {
-        output_split_waypoint_dir = output_split_waypoint_paths[0];
+    string output_split_guildpoint_dir = "";
+    if (output_split_guildpoint_paths.size() > 0) {
+        output_split_guildpoint_dir = output_split_guildpoint_paths[0];
     }
-    else if (output_split_waypoint_paths.size() > 1) {
-        cout << "Only one --output-split-waypoint-path is accepted" << endl;
+    else if (output_split_guildpoint_paths.size() > 1) {
+        cout << "Only one --output-split-guildpoint-path is accepted" << endl;
     }
 
     process_data(
         input_taco_paths,
-        input_waypoint_paths,
+        input_guildpoint_paths,
         output_taco_paths,
-        output_waypoint_paths,
-        output_split_waypoint_dir);
+        output_guildpoint_paths,
+        output_split_guildpoint_dir);
 
     return 0;
 }

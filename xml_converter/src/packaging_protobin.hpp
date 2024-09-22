@@ -6,9 +6,9 @@
 #include <vector>
 
 #include "category_gen.hpp"
+#include "guildpoint.pb.h"
 #include "parseable.hpp"
 #include "string_hierarchy.hpp"
-#include "waypoint.pb.h"
 
 void read_protobuf_file(
     std::string proto_filepath,

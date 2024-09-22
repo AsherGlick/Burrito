@@ -35,8 +35,8 @@ class {{cpp_class}} : public Parseable {
     virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
-    waypoint::{{cpp_class}} as_protobuf(ProtoWriterState* state) const;
-    void parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}, ProtoReaderState* state);
+    guildpoint::{{cpp_class}} as_protobuf(ProtoWriterState* state) const;
+    void parse_protobuf(guildpoint::{{cpp_class}} proto_{{cpp_class_header}}, ProtoReaderState* state);
     {% if attributes_of_type_marker_category %}
         bool validate_attributes_of_type_marker_category();
     {% endif %}

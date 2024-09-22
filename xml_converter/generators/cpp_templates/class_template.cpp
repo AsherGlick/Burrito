@@ -100,8 +100,8 @@ vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
-waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) const {
-    waypoint::{{cpp_class}} proto_{{cpp_class_header}};
+guildpoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) const {
+    guildpoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false and attribute_variable.proto_info != None %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
@@ -117,7 +117,7 @@ waypoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) cons
     return proto_{{cpp_class_header}};
 }
 
-void {{cpp_class}}::parse_protobuf(waypoint::{{cpp_class}} proto_{{cpp_class_header}}, ProtoReaderState* state) {
+void {{cpp_class}}::parse_protobuf(guildpoint::{{cpp_class}} proto_{{cpp_class_header}}, ProtoReaderState* state) {
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.is_component == false and attribute_variable.proto_info != None %}
             {% if not attribute_variable.proto_info.is_proto_field_scalar %}
