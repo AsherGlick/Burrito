@@ -8,11 +8,11 @@
 #include <vector>
 
 #include "category_gen.hpp"
+#include "guildpoint.pb.h"
 #include "parseable.hpp"
 #include "state_structs/proto_writer_state.hpp"
 #include "string_helper.hpp"
 #include "string_hierarchy.hpp"
-#include "guildpoint.pb.h"
 
 using namespace std;
 

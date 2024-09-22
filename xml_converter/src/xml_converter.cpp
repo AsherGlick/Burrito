@@ -19,6 +19,7 @@
 #include "attribute/marker_category.hpp"
 #include "category_gen.hpp"
 #include "file_helper.hpp"
+#include "guildpoint.pb.h"
 #include "icon_gen.hpp"
 #include "packaging_protobin.hpp"
 #include "packaging_xml.hpp"
@@ -28,7 +29,6 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "string_helper.hpp"
 #include "trail_gen.hpp"
-#include "guildpoint.pb.h"
 
 using namespace std;
 
