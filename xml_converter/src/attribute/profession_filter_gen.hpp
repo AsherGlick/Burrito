@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class ProfessionFilter;
 }
 
@@ -44,7 +44,7 @@ std::string profession_filter_to_xml_attribute(
     const ProfessionFilter* value);
 
 void proto_to_profession_filter(
-    waypoint::ProfessionFilter input,
+    guildpoint::ProfessionFilter input,
     ProtoReaderState* state,
     ProfessionFilter* value,
     bool* is_set);
@@ -52,4 +52,4 @@ void proto_to_profession_filter(
 void profession_filter_to_proto(
     ProfessionFilter value,
     ProtoWriterState* state,
-    std::function<void(waypoint::ProfessionFilter*)> setter);
+    std::function<void(guildpoint::ProfessionFilter*)> setter);

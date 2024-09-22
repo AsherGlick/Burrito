@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -95,7 +95,7 @@ string festival_filter_to_xml_attribute(
 }
 
 void proto_to_festival_filter(
-    waypoint::FestivalFilter input,
+    guildpoint::FestivalFilter input,
     ProtoReaderState*,
     FestivalFilter* value,
     bool* is_set) {
@@ -114,8 +114,8 @@ void proto_to_festival_filter(
 void festival_filter_to_proto(
     FestivalFilter value,
     ProtoWriterState*,
-    std::function<void(waypoint::FestivalFilter*)> setter) {
-    waypoint::FestivalFilter* proto_festival_filter = new waypoint::FestivalFilter();
+    std::function<void(guildpoint::FestivalFilter*)> setter) {
+    guildpoint::FestivalFilter* proto_festival_filter = new guildpoint::FestivalFilter();
     bool should_write = false;
     proto_festival_filter->set_dragonbash(value.dragonbash);
     should_write |= value.dragonbash;

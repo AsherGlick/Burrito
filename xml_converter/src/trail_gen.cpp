@@ -8,10 +8,10 @@
 #include "attribute/float.hpp"
 #include "attribute/int.hpp"
 #include "attribute/string.hpp"
+#include "guildpoint.pb.h"
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
-#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -247,8 +247,8 @@ vector<string> Trail::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
-waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
-    waypoint::Trail proto_trail;
+guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
+    guildpoint::Trail proto_trail;
     if (this->achievement_bit_index_is_set) {
         std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_achievement_bit_index(val); };
         int_to_proto(this->achievement_bit_index, state, setter);
@@ -266,7 +266,7 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         color_to_proto(this->color, state, setter);
     }
     if (this->cull_chirality_is_set) {
-        std::function<void(waypoint::CullChirality)> setter = [&proto_trail](waypoint::CullChirality val) { proto_trail.set_cull_chirality(val); };
+        std::function<void(guildpoint::CullChirality)> setter = [&proto_trail](guildpoint::CullChirality val) { proto_trail.set_cull_chirality(val); };
         cull_chirality_to_proto(this->cull_chirality, state, setter);
     }
     if (this->disable_player_cutout_is_set) {
@@ -282,7 +282,7 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         float_to_proto(this->distance_fade_start, state, setter);
     }
     if (this->festival_filter_is_set) {
-        std::function<void(waypoint::FestivalFilter*)> setter = [&proto_trail](waypoint::FestivalFilter* val) { proto_trail.set_allocated_festival_filter(val); };
+        std::function<void(guildpoint::FestivalFilter*)> setter = [&proto_trail](guildpoint::FestivalFilter* val) { proto_trail.set_allocated_festival_filter(val); };
         festival_filter_to_proto(this->festival_filter, state, setter);
     }
     if (this->guid_is_set) {
@@ -302,15 +302,15 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         int_to_proto(this->map_id, state, setter);
     }
     if (this->map_type_filter_is_set) {
-        std::function<void(waypoint::MapTypeFilter*)> setter = [&proto_trail](waypoint::MapTypeFilter* val) { proto_trail.set_allocated_map_type_filter(val); };
+        std::function<void(guildpoint::MapTypeFilter*)> setter = [&proto_trail](guildpoint::MapTypeFilter* val) { proto_trail.set_allocated_map_type_filter(val); };
         map_type_filter_to_proto(this->map_type_filter, state, setter);
     }
     if (this->mount_filter_is_set) {
-        std::function<void(waypoint::MountFilter*)> setter = [&proto_trail](waypoint::MountFilter* val) { proto_trail.set_allocated_mount_filter(val); };
+        std::function<void(guildpoint::MountFilter*)> setter = [&proto_trail](guildpoint::MountFilter* val) { proto_trail.set_allocated_mount_filter(val); };
         mount_filter_to_proto(this->mount_filter, state, setter);
     }
     if (this->profession_filter_is_set) {
-        std::function<void(waypoint::ProfessionFilter*)> setter = [&proto_trail](waypoint::ProfessionFilter* val) { proto_trail.set_allocated_profession_filter(val); };
+        std::function<void(guildpoint::ProfessionFilter*)> setter = [&proto_trail](guildpoint::ProfessionFilter* val) { proto_trail.set_allocated_profession_filter(val); };
         profession_filter_to_proto(this->profession_filter, state, setter);
     }
     if (this->render_ingame_is_set) {
@@ -334,11 +334,11 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         float_to_proto(this->schedule_duration, state, setter);
     }
     if (this->specialization_filter_is_set) {
-        std::function<void(waypoint::SpecializationFilter*)> setter = [&proto_trail](waypoint::SpecializationFilter* val) { proto_trail.set_allocated_specialization_filter(val); };
+        std::function<void(guildpoint::SpecializationFilter*)> setter = [&proto_trail](guildpoint::SpecializationFilter* val) { proto_trail.set_allocated_specialization_filter(val); };
         specialization_filter_to_proto(this->specialization_filter, state, setter);
     }
     if (this->species_filter_is_set) {
-        std::function<void(waypoint::SpeciesFilter*)> setter = [&proto_trail](waypoint::SpeciesFilter* val) { proto_trail.set_allocated_species_filter(val); };
+        std::function<void(guildpoint::SpeciesFilter*)> setter = [&proto_trail](guildpoint::SpeciesFilter* val) { proto_trail.set_allocated_species_filter(val); };
         species_filter_to_proto(this->species_filter, state, setter);
     }
     if (this->texture_is_set) {
@@ -346,7 +346,7 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         image_to_proto(this->texture, state, setter);
     }
     if (this->trail_data_is_set) {
-        std::function<void(waypoint::TrailData*)> setter = [&proto_trail](waypoint::TrailData* val) { proto_trail.set_allocated_trail_data(val); };
+        std::function<void(guildpoint::TrailData*)> setter = [&proto_trail](guildpoint::TrailData* val) { proto_trail.set_allocated_trail_data(val); };
         trail_data_to_proto(this->trail_data, state, setter);
     }
     if (this->trail_scale_is_set) {
@@ -356,7 +356,7 @@ waypoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
     return proto_trail;
 }
 
-void Trail::parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state) {
+void Trail::parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* state) {
     if (proto_trail.achievement_bit_index() != 0) {
         proto_to_int(proto_trail.achievement_bit_index(), state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
     }

@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -146,44 +146,44 @@ string reset_behavior_to_xml_attribute(
 }
 
 void proto_to_reset_behavior(
-    waypoint::ResetBehavior input,
+    guildpoint::ResetBehavior input,
     ProtoReaderState*,
     ResetBehavior* value,
     bool* is_set) {
     switch (input) {
-        case waypoint::ResetBehavior::always_visible:
+        case guildpoint::ResetBehavior::always_visible:
             *value = ResetBehavior::always_visible;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::map_change:
+        case guildpoint::ResetBehavior::map_change:
             *value = ResetBehavior::map_change;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::daily_reset:
+        case guildpoint::ResetBehavior::daily_reset:
             *value = ResetBehavior::daily_reset;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::never:
+        case guildpoint::ResetBehavior::never:
             *value = ResetBehavior::never;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::timer:
+        case guildpoint::ResetBehavior::timer:
             *value = ResetBehavior::timer;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::map_reset:
+        case guildpoint::ResetBehavior::map_reset:
             *value = ResetBehavior::map_reset;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::instance_change:
+        case guildpoint::ResetBehavior::instance_change:
             *value = ResetBehavior::instance_change;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::daily_reset_per_character:
+        case guildpoint::ResetBehavior::daily_reset_per_character:
             *value = ResetBehavior::daily_reset_per_character;
             *is_set = true;
             break;
-        case waypoint::ResetBehavior::weekly_reset:
+        case guildpoint::ResetBehavior::weekly_reset:
             *value = ResetBehavior::weekly_reset;
             *is_set = true;
             break;
@@ -197,37 +197,37 @@ void proto_to_reset_behavior(
 void reset_behavior_to_proto(
     ResetBehavior value,
     ProtoWriterState*,
-    std::function<void(waypoint::ResetBehavior)> setter) {
+    std::function<void(guildpoint::ResetBehavior)> setter) {
     switch (value) {
         case ResetBehavior::always_visible:
-            setter(waypoint::ResetBehavior::always_visible);
+            setter(guildpoint::ResetBehavior::always_visible);
             break;
         case ResetBehavior::map_change:
-            setter(waypoint::ResetBehavior::map_change);
+            setter(guildpoint::ResetBehavior::map_change);
             break;
         case ResetBehavior::daily_reset:
-            setter(waypoint::ResetBehavior::daily_reset);
+            setter(guildpoint::ResetBehavior::daily_reset);
             break;
         case ResetBehavior::never:
-            setter(waypoint::ResetBehavior::never);
+            setter(guildpoint::ResetBehavior::never);
             break;
         case ResetBehavior::timer:
-            setter(waypoint::ResetBehavior::timer);
+            setter(guildpoint::ResetBehavior::timer);
             break;
         case ResetBehavior::map_reset:
-            setter(waypoint::ResetBehavior::map_reset);
+            setter(guildpoint::ResetBehavior::map_reset);
             break;
         case ResetBehavior::instance_change:
-            setter(waypoint::ResetBehavior::instance_change);
+            setter(guildpoint::ResetBehavior::instance_change);
             break;
         case ResetBehavior::daily_reset_per_character:
-            setter(waypoint::ResetBehavior::daily_reset_per_character);
+            setter(guildpoint::ResetBehavior::daily_reset_per_character);
             break;
         case ResetBehavior::weekly_reset:
-            setter(waypoint::ResetBehavior::weekly_reset);
+            setter(guildpoint::ResetBehavior::weekly_reset);
             break;
         default:
-            setter(waypoint::ResetBehavior::always_visible);
+            setter(guildpoint::ResetBehavior::always_visible);
             break;
     }
 }

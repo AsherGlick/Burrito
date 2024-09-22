@@ -13,7 +13,7 @@
 
 class XMLError;
 
-namespace waypoint {
+namespace guildpoint {
 class GUID;
 }
 

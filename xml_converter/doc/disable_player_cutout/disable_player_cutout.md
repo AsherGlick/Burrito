@@ -14,7 +14,7 @@ custom_functions:
 ---
 A flag to determine if an object can be made transparent when it is possibly occluding the player.
 
-This value is inverted between the waypoint format value of "Disable Player Cutout" and the TacO xml format of "Can Fade"
+This value is inverted between the guildpoint format value of "Disable Player Cutout" and the TacO xml format of "Can Fade"
 
 
 Notes

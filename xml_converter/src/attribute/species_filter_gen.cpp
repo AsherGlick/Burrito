@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -78,7 +78,7 @@ string species_filter_to_xml_attribute(
 }
 
 void proto_to_species_filter(
-    waypoint::SpeciesFilter input,
+    guildpoint::SpeciesFilter input,
     ProtoReaderState*,
     SpeciesFilter* value,
     bool* is_set) {
@@ -95,8 +95,8 @@ void proto_to_species_filter(
 void species_filter_to_proto(
     SpeciesFilter value,
     ProtoWriterState*,
-    std::function<void(waypoint::SpeciesFilter*)> setter) {
-    waypoint::SpeciesFilter* proto_species_filter = new waypoint::SpeciesFilter();
+    std::function<void(guildpoint::SpeciesFilter*)> setter) {
+    guildpoint::SpeciesFilter* proto_species_filter = new guildpoint::SpeciesFilter();
     bool should_write = false;
     proto_species_filter->set_asura(value.asura);
     should_write |= value.asura;

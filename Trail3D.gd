@@ -1,17 +1,17 @@
 extends Spatial
 
-const Waypoint = preload("res://waypoint.gd")
+const Guildpoint = preload("res://guildpoint.gd")
 
 var texture_path
 var color = Color(0.9, 0.1, 0.1)
-var waypoint: Waypoint.Trail
+var guildpoint: Guildpoint.Trail
 var category: TreeItem
 
 func refresh_mesh():
 	var tmpMesh = Mesh.new()
 	var i = 0
 	var last_uv: float = 0.0
-	var trail_data = self.waypoint.get_trail_data()
+	var trail_data = self.guildpoint.get_trail_data()
 	for point_index in range(trail_data.get_points_x().size()-1):
 		var point:Vector3 = Vector3(trail_data.get_points_x()[point_index], trail_data.get_points_y()[point_index], -trail_data.get_points_z()[point_index])
 		var next_point:Vector3 = Vector3(trail_data.get_points_x()[point_index+1], trail_data.get_points_y()[point_index+1], -trail_data.get_points_z()[point_index+1])

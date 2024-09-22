@@ -8,10 +8,10 @@
 #include "attribute/float.hpp"
 #include "attribute/int.hpp"
 #include "attribute/string.hpp"
+#include "guildpoint.pb.h"
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
-#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -409,8 +409,8 @@ vector<string> Icon::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
-waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
-    waypoint::Icon proto_icon;
+guildpoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
+    guildpoint::Icon proto_icon;
     if (this->achievement_bit_index_is_set) {
         std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_bit_index(val); };
         int_to_proto(this->achievement_bit_index, state, setter);
@@ -452,7 +452,7 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         string_to_proto(this->copy_message, state, setter);
     }
     if (this->cull_chirality_is_set) {
-        std::function<void(waypoint::CullChirality)> setter = [&proto_icon](waypoint::CullChirality val) { proto_icon.set_cull_chirality(val); };
+        std::function<void(guildpoint::CullChirality)> setter = [&proto_icon](guildpoint::CullChirality val) { proto_icon.set_cull_chirality(val); };
         cull_chirality_to_proto(this->cull_chirality, state, setter);
     }
     if (this->disable_player_cutout_is_set) {
@@ -468,11 +468,11 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         float_to_proto(this->distance_fade_start, state, setter);
     }
     if (this->euler_rotation_is_set) {
-        std::function<void(waypoint::EulerRotation*)> setter = [&proto_icon](waypoint::EulerRotation* val) { proto_icon.set_allocated_euler_rotation(val); };
+        std::function<void(guildpoint::EulerRotation*)> setter = [&proto_icon](guildpoint::EulerRotation* val) { proto_icon.set_allocated_euler_rotation(val); };
         euler_rotation_to_proto(this->euler_rotation, state, setter);
     }
     if (this->festival_filter_is_set) {
-        std::function<void(waypoint::FestivalFilter*)> setter = [&proto_icon](waypoint::FestivalFilter* val) { proto_icon.set_allocated_festival_filter(val); };
+        std::function<void(guildpoint::FestivalFilter*)> setter = [&proto_icon](guildpoint::FestivalFilter* val) { proto_icon.set_allocated_festival_filter(val); };
         festival_filter_to_proto(this->festival_filter, state, setter);
     }
     if (this->guid_is_set) {
@@ -488,7 +488,7 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         float_to_proto(this->height_offset, state, setter);
     }
     if (this->hide_category_is_set) {
-        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_hide_category(val); };
+        std::function<void(guildpoint::Category*)> setter = [&proto_icon](guildpoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_hide_category(val); };
         marker_category_to_proto(this->hide_category, state, setter);
     }
     if (this->icon_is_set) {
@@ -516,7 +516,7 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         int_to_proto(this->map_id, state, setter);
     }
     if (this->map_type_filter_is_set) {
-        std::function<void(waypoint::MapTypeFilter*)> setter = [&proto_icon](waypoint::MapTypeFilter* val) { proto_icon.set_allocated_map_type_filter(val); };
+        std::function<void(guildpoint::MapTypeFilter*)> setter = [&proto_icon](guildpoint::MapTypeFilter* val) { proto_icon.set_allocated_map_type_filter(val); };
         map_type_filter_to_proto(this->map_type_filter, state, setter);
     }
     if (this->maximum_size_on_screen_is_set) {
@@ -528,15 +528,15 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         int_to_proto(this->minimum_size_on_screen, state, setter);
     }
     if (this->mount_filter_is_set) {
-        std::function<void(waypoint::MountFilter*)> setter = [&proto_icon](waypoint::MountFilter* val) { proto_icon.set_allocated_mount_filter(val); };
+        std::function<void(guildpoint::MountFilter*)> setter = [&proto_icon](guildpoint::MountFilter* val) { proto_icon.set_allocated_mount_filter(val); };
         mount_filter_to_proto(this->mount_filter, state, setter);
     }
     if (this->position_is_set) {
-        std::function<void(waypoint::Position*)> setter = [&proto_icon](waypoint::Position* val) { proto_icon.set_allocated_position(val); };
+        std::function<void(guildpoint::Position*)> setter = [&proto_icon](guildpoint::Position* val) { proto_icon.set_allocated_position(val); };
         position_to_proto(this->position, state, setter);
     }
     if (this->profession_filter_is_set) {
-        std::function<void(waypoint::ProfessionFilter*)> setter = [&proto_icon](waypoint::ProfessionFilter* val) { proto_icon.set_allocated_profession_filter(val); };
+        std::function<void(guildpoint::ProfessionFilter*)> setter = [&proto_icon](guildpoint::ProfessionFilter* val) { proto_icon.set_allocated_profession_filter(val); };
         profession_filter_to_proto(this->profession_filter, state, setter);
     }
     if (this->render_ingame_is_set) {
@@ -552,7 +552,7 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         bool_to_proto(this->render_on_minimap, state, setter);
     }
     if (this->reset_behavior_is_set) {
-        std::function<void(waypoint::ResetBehavior)> setter = [&proto_icon](waypoint::ResetBehavior val) { proto_icon.mutable_trigger()->set_reset_behavior(val); };
+        std::function<void(guildpoint::ResetBehavior)> setter = [&proto_icon](guildpoint::ResetBehavior val) { proto_icon.mutable_trigger()->set_reset_behavior(val); };
         reset_behavior_to_proto(this->reset_behavior, state, setter);
     }
     if (this->reset_length_is_set) {
@@ -568,19 +568,19 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         float_to_proto(this->schedule_duration, state, setter);
     }
     if (this->show_category_is_set) {
-        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_show_category(val); };
+        std::function<void(guildpoint::Category*)> setter = [&proto_icon](guildpoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_show_category(val); };
         marker_category_to_proto(this->show_category, state, setter);
     }
     if (this->specialization_filter_is_set) {
-        std::function<void(waypoint::SpecializationFilter*)> setter = [&proto_icon](waypoint::SpecializationFilter* val) { proto_icon.set_allocated_specialization_filter(val); };
+        std::function<void(guildpoint::SpecializationFilter*)> setter = [&proto_icon](guildpoint::SpecializationFilter* val) { proto_icon.set_allocated_specialization_filter(val); };
         specialization_filter_to_proto(this->specialization_filter, state, setter);
     }
     if (this->species_filter_is_set) {
-        std::function<void(waypoint::SpeciesFilter*)> setter = [&proto_icon](waypoint::SpeciesFilter* val) { proto_icon.set_allocated_species_filter(val); };
+        std::function<void(guildpoint::SpeciesFilter*)> setter = [&proto_icon](guildpoint::SpeciesFilter* val) { proto_icon.set_allocated_species_filter(val); };
         species_filter_to_proto(this->species_filter, state, setter);
     }
     if (this->toggle_category_is_set) {
-        std::function<void(waypoint::Category*)> setter = [&proto_icon](waypoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_toggle_category(val); };
+        std::function<void(guildpoint::Category*)> setter = [&proto_icon](guildpoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_toggle_category(val); };
         marker_category_to_proto(this->toggle_category, state, setter);
     }
     if (this->tooltip_description_is_set) {
@@ -598,7 +598,7 @@ waypoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
     return proto_icon;
 }
 
-void Icon::parse_protobuf(waypoint::Icon proto_icon, ProtoReaderState* state) {
+void Icon::parse_protobuf(guildpoint::Icon proto_icon, ProtoReaderState* state) {
     if (proto_icon.achievement_bit_index() != 0) {
         proto_to_int(proto_icon.achievement_bit_index(), state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
     }

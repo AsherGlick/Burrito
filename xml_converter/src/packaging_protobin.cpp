@@ -12,7 +12,7 @@
 #include "state_structs/proto_writer_state.hpp"
 #include "string_helper.hpp"
 #include "string_hierarchy.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -23,9 +23,9 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void parse_waypoint_categories(
+void parse_guildpoint_categories(
     string full_category_name,
-    ::waypoint::Category proto_category,
+    ::guildpoint::Category proto_category,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois,
     ProtoReaderState* state) {
@@ -55,7 +55,7 @@ void parse_waypoint_categories(
     }
 
     for (int i = 0; i < proto_category.children_size(); i++) {
-        parse_waypoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois, state);
+        parse_guildpoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois, state);
     }
 }
 
@@ -64,7 +64,7 @@ void parse_waypoint_categories(
 ////////////////////////////////////////////////////////////////////////////////
 void read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     fstream infile;
-    waypoint::Waypoint proto_message;
+    guildpoint::Guildpoint proto_message;
     ProtoReaderState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
 
@@ -74,7 +74,7 @@ void read_protobuf_file(string proto_filepath, const string marker_pack_root_dir
     state.textures = proto_message.textures();
 
     for (int i = 0; i < proto_message.category_size(); i++) {
-        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
+        parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
     }
 }
 
@@ -89,7 +89,7 @@ void read_protobuf_file(string proto_filepath, const string marker_pack_root_dir
 // has contents that exist in the category filter.
 ////////////////////////////////////////////////////////////////////////////////
 struct MaybeCategory {
-    waypoint::Category category;
+    guildpoint::Category category;
     bool is_category;
 };
 MaybeCategory build_category_objects(
@@ -98,10 +98,10 @@ MaybeCategory build_category_objects(
     const std::map<string, std::vector<Parseable*>>& category_to_pois,
     vector<string>* category_vector,
     ProtoWriterState* state) {
-    waypoint::Category category_proto = category->as_protobuf(state);
+    guildpoint::Category category_proto = category->as_protobuf(state);
     bool has_valid_contents = false;
 
-    vector<waypoint::Category> categories_to_write;
+    vector<guildpoint::Category> categories_to_write;
 
     for (map<string, Category>::const_iterator it = category->children.begin(); it != category->children.end(); it++) {
         // This is currently a copy operation which is kind expensive
@@ -156,13 +156,13 @@ MaybeCategory build_category_objects(
     return return_value;
 }
 
-void proto_post_processing(ProtoWriterState* state, waypoint::Waypoint* proto) {
+void proto_post_processing(ProtoWriterState* state, guildpoint::Guildpoint* proto) {
     if (state->textures.size() > 1) {
         // Handle the 0th index null value independently.
         proto->add_textures();
 
         for (size_t i = 1; i < state->textures.size(); i++) {
-            waypoint::TextureData* texture_data = proto->add_textures();
+            guildpoint::TextureData* texture_data = proto->add_textures();
             texture_data->set_filepath(state->textures[i]->filename);
         }
     }
@@ -181,7 +181,7 @@ void _write_protobuf_file(
         cout << "Unable to open " << filepath << endl;
     }
 
-    waypoint::Waypoint output_message;
+    guildpoint::Guildpoint output_message;
 
     for (map<string, Category>::const_iterator it = marker_categories->begin(); it != marker_categories->end(); it++) {
         string category_name = it->first;

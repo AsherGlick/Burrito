@@ -16,10 +16,10 @@
 #include "attribute/species_filter_gen.hpp"
 #include "attribute/trail_data.hpp"
 #include "attribute/unique_id.hpp"
+#include "guildpoint.pb.h"
 #include "parseable.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "state_structs/xml_reader_state.hpp"
-#include "waypoint.pb.h"
 
 class XMLError;
 
@@ -82,7 +82,7 @@ class Trail : public Parseable {
     virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
-    waypoint::Trail as_protobuf(ProtoWriterState* state) const;
-    void parse_protobuf(waypoint::Trail proto_trail, ProtoReaderState* state);
+    guildpoint::Trail as_protobuf(ProtoWriterState* state) const;
+    void parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* state);
     bool validate_attributes_of_type_marker_category();
 };

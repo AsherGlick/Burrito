@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class FestivalFilter;
 }
 
@@ -42,7 +42,7 @@ std::string festival_filter_to_xml_attribute(
     const FestivalFilter* value);
 
 void proto_to_festival_filter(
-    waypoint::FestivalFilter input,
+    guildpoint::FestivalFilter input,
     ProtoReaderState* state,
     FestivalFilter* value,
     bool* is_set);
@@ -50,4 +50,4 @@ void proto_to_festival_filter(
 void festival_filter_to_proto(
     FestivalFilter value,
     ProtoWriterState* state,
-    std::function<void(waypoint::FestivalFilter*)> setter);
+    std::function<void(guildpoint::FestivalFilter*)> setter);

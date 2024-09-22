@@ -134,7 +134,7 @@ def proto_to_dict(proto_str):  # type: ignore
 ################################################################################
 # Gets all of the field types of the proto.
 ################################################################################
-with open("../proto/waypoint.proto") as f:
+with open("../proto/guildpoint.proto") as f:
     proto_field_types = proto_to_dict(f.read())  # type: ignore
 
 
@@ -176,7 +176,7 @@ def get_proto_field_cpp_type(message: str, field: str) -> str:
         return PROTO_TO_CPP_TYPES[value]
 
     # Otherwise assume this is a message or enum and return the qualified path to that instead.
-    return "waypoint::" + value
+    return "guildpoint::" + value
 
 
 def get_proto_field_cpp_prototype(message: str, field: str) -> Optional[str]:
@@ -186,7 +186,7 @@ def get_proto_field_cpp_prototype(message: str, field: str) -> Optional[str]:
         return None
 
     return "namespace {package} {{\nclass {proto_field_type};\n}}".format(
-        package="waypoint",
+        package="guildpoint",
         proto_field_type=value,
     )
 

@@ -7,7 +7,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -45,7 +45,7 @@ string euler_rotation_to_xml_attribute(
 }
 
 void proto_to_euler_rotation(
-    waypoint::EulerRotation input,
+    guildpoint::EulerRotation input,
     ProtoReaderState*,
     EulerRotation* value,
     bool* is_set) {
@@ -60,8 +60,8 @@ void proto_to_euler_rotation(
 void euler_rotation_to_proto(
     EulerRotation value,
     ProtoWriterState*,
-    std::function<void(waypoint::EulerRotation*)> setter) {
-    waypoint::EulerRotation* proto_euler_rotation = new waypoint::EulerRotation();
+    std::function<void(guildpoint::EulerRotation*)> setter) {
+    guildpoint::EulerRotation* proto_euler_rotation = new guildpoint::EulerRotation();
     proto_euler_rotation->set_x(value.x_rotation);
     proto_euler_rotation->set_y(value.y_rotation);
     proto_euler_rotation->set_z(value.z_rotation);

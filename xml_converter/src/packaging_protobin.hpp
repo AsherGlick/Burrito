@@ -8,7 +8,7 @@
 #include "category_gen.hpp"
 #include "parseable.hpp"
 #include "string_hierarchy.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 void read_protobuf_file(
     std::string proto_filepath,

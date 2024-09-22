@@ -12,7 +12,7 @@
 
 class XMLError;
 
-namespace waypoint {
+namespace guildpoint {
 class TrailData;
 }
 
@@ -40,7 +40,7 @@ std::string trail_data_to_xml_attribute(
     const bool* is_map_id_set);
 
 void proto_to_trail_data(
-    waypoint::TrailData input,
+    guildpoint::TrailData input,
     ProtoReaderState* state,
     TrailData* value,
     bool* is_set);
@@ -48,4 +48,4 @@ void proto_to_trail_data(
 void trail_data_to_proto(
     TrailData value,
     ProtoWriterState* state,
-    std::function<void(waypoint::TrailData*)> setter);
+    std::function<void(guildpoint::TrailData*)> setter);

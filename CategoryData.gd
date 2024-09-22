@@ -1,6 +1,6 @@
-const Waypoint = preload("res://waypoint.gd")
+const Guildpoint = preload("res://guildpoint.gd")
 
 var category3d: Spatial
 var category2d: Node2D
-var waypoint_category: Waypoint.Category
+var guildpoint_category: Guildpoint.Category
 var is_visible = false

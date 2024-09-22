@@ -260,7 +260,7 @@ def generate_cpp_variable_data(
     cpp_includes.hpp_relative_includes.update([
         "rapidxml-1.13/rapidxml.hpp",
         "parseable.hpp",
-        "waypoint.pb.h",
+        "guildpoint.pb.h",
         "state_structs/xml_reader_state.hpp",
     ])
     cpp_includes.hpp_forward_declarations.update([
@@ -275,7 +275,7 @@ def generate_cpp_variable_data(
         "rapidxml-1.13/rapidxml.hpp",
         "string_helper.hpp",
         "rapid_helpers.hpp",
-        "waypoint.pb.h",
+        "guildpoint.pb.h",
     ])
 
     if (doc_type == "Category"):

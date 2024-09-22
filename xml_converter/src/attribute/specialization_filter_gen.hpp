@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class SpecializationFilter;
 }
 
@@ -107,7 +107,7 @@ std::string specialization_filter_to_xml_attribute(
     const SpecializationFilter* value);
 
 void proto_to_specialization_filter(
-    waypoint::SpecializationFilter input,
+    guildpoint::SpecializationFilter input,
     ProtoReaderState* state,
     SpecializationFilter* value,
     bool* is_set);
@@ -115,4 +115,4 @@ void proto_to_specialization_filter(
 void specialization_filter_to_proto(
     SpecializationFilter value,
     ProtoWriterState* state,
-    std::function<void(waypoint::SpecializationFilter*)> setter);
+    std::function<void(guildpoint::SpecializationFilter*)> setter);
