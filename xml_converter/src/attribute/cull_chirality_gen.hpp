@@ -9,7 +9,7 @@
 #include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
 #include "../state_structs/xml_writer_state.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 class XMLError;
 
@@ -31,7 +31,7 @@ std::string cull_chirality_to_xml_attribute(
     const CullChirality* value);
 
 void proto_to_cull_chirality(
-    waypoint::CullChirality input,
+    guildpoint::CullChirality input,
     ProtoReaderState* state,
     CullChirality* value,
     bool* is_set);
@@ -39,4 +39,4 @@ void proto_to_cull_chirality(
 void cull_chirality_to_proto(
     CullChirality value,
     ProtoWriterState* state,
-    std::function<void(waypoint::CullChirality)> setter);
+    std::function<void(guildpoint::CullChirality)> setter);

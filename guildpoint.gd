@@ -660,7 +660,7 @@ class PBPacker:
 ############### USER DATA BEGIN ################
 
 
-class Waypoint:
+class Guildpoint:
 	func _init():
 		var service
 		
@@ -794,10 +794,10 @@ class Category:
 		service.field = _is_separator
 		data[_is_separator.tag] = service
 		
-		_default_visibility = PBField.new("default_visibility", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 6, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		_is_hidden = PBField.new("is_hidden", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 6, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
-		service.field = _default_visibility
-		data[_default_visibility.tag] = service
+		service.field = _is_hidden
+		data[_is_hidden.tag] = service
 		
 		_tip_description = PBField.new("tip_description", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 7, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
 		service = PBServiceField.new()
@@ -862,14 +862,14 @@ class Category:
 	func set_is_separator(value : bool) -> void:
 		_is_separator.value = value
 	
-	var _default_visibility: PBField
-	func get_default_visibility() -> bool:
-		return _default_visibility.value
-	func clear_default_visibility() -> void:
+	var _is_hidden: PBField
+	func get_is_hidden() -> bool:
+		return _is_hidden.value
+	func clear_is_hidden() -> void:
 		data[6].state = PB_SERVICE_STATE.UNFILLED
-		_default_visibility.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_default_visibility(value : bool) -> void:
-		_default_visibility.value = value
+		_is_hidden.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_hidden(value : bool) -> void:
+		_is_hidden.value = value
 	
 	var _tip_description: PBField
 	func get_tip_description() -> String:
@@ -992,10 +992,10 @@ class Icon:
 		service.field = _maximum_size_on_screen
 		data[_maximum_size_on_screen.tag] = service
 		
-		_scale_on_map_with_zoom = PBField.new("scale_on_map_with_zoom", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 23, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		_constant_size_on_map = PBField.new("constant_size_on_map", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 23, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
-		service.field = _scale_on_map_with_zoom
-		data[_scale_on_map_with_zoom.tag] = service
+		service.field = _constant_size_on_map
+		data[_constant_size_on_map.tag] = service
 		
 		_tip_description = PBField.new("tip_description", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 24, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
 		service = PBServiceField.new()
@@ -1053,25 +1053,25 @@ class Icon:
 		service.field = _cull_chirality
 		data[_cull_chirality.tag] = service
 		
+		_is_hidden_ingame = PBField.new("is_hidden_ingame", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 34, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		service = PBServiceField.new()
+		service.field = _is_hidden_ingame
+		data[_is_hidden_ingame.tag] = service
+		
+		_is_hidden_on_map = PBField.new("is_hidden_on_map", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 35, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		service = PBServiceField.new()
+		service.field = _is_hidden_on_map
+		data[_is_hidden_on_map.tag] = service
+		
+		_is_hidden_on_minimap = PBField.new("is_hidden_on_minimap", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 36, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		service = PBServiceField.new()
+		service.field = _is_hidden_on_minimap
+		data[_is_hidden_on_minimap.tag] = service
+		
 		_tentative__scale = PBField.new("tentative__scale", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 2048, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
 		service = PBServiceField.new()
 		service.field = _tentative__scale
 		data[_tentative__scale.tag] = service
-		
-		_tentative__render_ingame = PBField.new("tentative__render_ingame", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2049, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = _tentative__render_ingame
-		data[_tentative__render_ingame.tag] = service
-		
-		_tentative__render_on_map = PBField.new("tentative__render_on_map", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2050, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = _tentative__render_on_map
-		data[_tentative__render_on_map.tag] = service
-		
-		_tentative__render_on_minimap = PBField.new("tentative__render_on_minimap", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2051, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = _tentative__render_on_minimap
-		data[_tentative__render_on_minimap.tag] = service
 		
 		_bhdraft__schedule = PBField.new("bhdraft__schedule", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 2052, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
 		service = PBServiceField.new()
@@ -1223,14 +1223,14 @@ class Icon:
 	func set_maximum_size_on_screen(value : int) -> void:
 		_maximum_size_on_screen.value = value
 	
-	var _scale_on_map_with_zoom: PBField
-	func get_scale_on_map_with_zoom() -> bool:
-		return _scale_on_map_with_zoom.value
-	func clear_scale_on_map_with_zoom() -> void:
+	var _constant_size_on_map: PBField
+	func get_constant_size_on_map() -> bool:
+		return _constant_size_on_map.value
+	func clear_constant_size_on_map() -> void:
 		data[23].state = PB_SERVICE_STATE.UNFILLED
-		_scale_on_map_with_zoom.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_scale_on_map_with_zoom(value : bool) -> void:
-		_scale_on_map_with_zoom.value = value
+		_constant_size_on_map.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_constant_size_on_map(value : bool) -> void:
+		_constant_size_on_map.value = value
 	
 	var _tip_description: PBField
 	func get_tip_description() -> String:
@@ -1328,6 +1328,33 @@ class Icon:
 	func set_cull_chirality(value) -> void:
 		_cull_chirality.value = value
 	
+	var _is_hidden_ingame: PBField
+	func get_is_hidden_ingame() -> bool:
+		return _is_hidden_ingame.value
+	func clear_is_hidden_ingame() -> void:
+		data[34].state = PB_SERVICE_STATE.UNFILLED
+		_is_hidden_ingame.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_hidden_ingame(value : bool) -> void:
+		_is_hidden_ingame.value = value
+	
+	var _is_hidden_on_map: PBField
+	func get_is_hidden_on_map() -> bool:
+		return _is_hidden_on_map.value
+	func clear_is_hidden_on_map() -> void:
+		data[35].state = PB_SERVICE_STATE.UNFILLED
+		_is_hidden_on_map.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_hidden_on_map(value : bool) -> void:
+		_is_hidden_on_map.value = value
+	
+	var _is_hidden_on_minimap: PBField
+	func get_is_hidden_on_minimap() -> bool:
+		return _is_hidden_on_minimap.value
+	func clear_is_hidden_on_minimap() -> void:
+		data[36].state = PB_SERVICE_STATE.UNFILLED
+		_is_hidden_on_minimap.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_hidden_on_minimap(value : bool) -> void:
+		_is_hidden_on_minimap.value = value
+	
 	var _tentative__scale: PBField
 	func get_tentative__scale() -> float:
 		return _tentative__scale.value
@@ -1336,33 +1363,6 @@ class Icon:
 		_tentative__scale.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
 	func set_tentative__scale(value : float) -> void:
 		_tentative__scale.value = value
-	
-	var _tentative__render_ingame: PBField
-	func get_tentative__render_ingame() -> bool:
-		return _tentative__render_ingame.value
-	func clear_tentative__render_ingame() -> void:
-		data[2049].state = PB_SERVICE_STATE.UNFILLED
-		_tentative__render_ingame.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_tentative__render_ingame(value : bool) -> void:
-		_tentative__render_ingame.value = value
-	
-	var _tentative__render_on_map: PBField
-	func get_tentative__render_on_map() -> bool:
-		return _tentative__render_on_map.value
-	func clear_tentative__render_on_map() -> void:
-		data[2050].state = PB_SERVICE_STATE.UNFILLED
-		_tentative__render_on_map.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_tentative__render_on_map(value : bool) -> void:
-		_tentative__render_on_map.value = value
-	
-	var _tentative__render_on_minimap: PBField
-	func get_tentative__render_on_minimap() -> bool:
-		return _tentative__render_on_minimap.value
-	func clear_tentative__render_on_minimap() -> void:
-		data[2051].state = PB_SERVICE_STATE.UNFILLED
-		_tentative__render_on_minimap.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_tentative__render_on_minimap(value : bool) -> void:
-		_tentative__render_on_minimap.value = value
 	
 	var _bhdraft__schedule: PBField
 	func get_bhdraft__schedule() -> String:
@@ -1519,20 +1519,20 @@ class Trail:
 		service.field = _cull_chirality
 		data[_cull_chirality.tag] = service
 		
-		_tentative__render_ingame = PBField.new("tentative__render_ingame", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2049, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		_is_hidden_ingame = PBField.new("is_hidden_ingame", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 31, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
-		service.field = _tentative__render_ingame
-		data[_tentative__render_ingame.tag] = service
+		service.field = _is_hidden_ingame
+		data[_is_hidden_ingame.tag] = service
 		
-		_tentative__render_on_map = PBField.new("tentative__render_on_map", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2050, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		_is_hidden_on_map = PBField.new("is_hidden_on_map", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 32, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
-		service.field = _tentative__render_on_map
-		data[_tentative__render_on_map.tag] = service
+		service.field = _is_hidden_on_map
+		data[_is_hidden_on_map.tag] = service
 		
-		_tentative__render_on_minimap = PBField.new("tentative__render_on_minimap", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2051, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		_is_hidden_on_minimap = PBField.new("is_hidden_on_minimap", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 33, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
-		service.field = _tentative__render_on_minimap
-		data[_tentative__render_on_minimap.tag] = service
+		service.field = _is_hidden_on_minimap
+		data[_is_hidden_on_minimap.tag] = service
 		
 		_bhdraft__schedule = PBField.new("bhdraft__schedule", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 2052, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
 		service = PBServiceField.new()
@@ -1742,32 +1742,32 @@ class Trail:
 	func set_cull_chirality(value) -> void:
 		_cull_chirality.value = value
 	
-	var _tentative__render_ingame: PBField
-	func get_tentative__render_ingame() -> bool:
-		return _tentative__render_ingame.value
-	func clear_tentative__render_ingame() -> void:
-		data[2049].state = PB_SERVICE_STATE.UNFILLED
-		_tentative__render_ingame.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_tentative__render_ingame(value : bool) -> void:
-		_tentative__render_ingame.value = value
+	var _is_hidden_ingame: PBField
+	func get_is_hidden_ingame() -> bool:
+		return _is_hidden_ingame.value
+	func clear_is_hidden_ingame() -> void:
+		data[31].state = PB_SERVICE_STATE.UNFILLED
+		_is_hidden_ingame.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_hidden_ingame(value : bool) -> void:
+		_is_hidden_ingame.value = value
 	
-	var _tentative__render_on_map: PBField
-	func get_tentative__render_on_map() -> bool:
-		return _tentative__render_on_map.value
-	func clear_tentative__render_on_map() -> void:
-		data[2050].state = PB_SERVICE_STATE.UNFILLED
-		_tentative__render_on_map.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_tentative__render_on_map(value : bool) -> void:
-		_tentative__render_on_map.value = value
+	var _is_hidden_on_map: PBField
+	func get_is_hidden_on_map() -> bool:
+		return _is_hidden_on_map.value
+	func clear_is_hidden_on_map() -> void:
+		data[32].state = PB_SERVICE_STATE.UNFILLED
+		_is_hidden_on_map.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_hidden_on_map(value : bool) -> void:
+		_is_hidden_on_map.value = value
 	
-	var _tentative__render_on_minimap: PBField
-	func get_tentative__render_on_minimap() -> bool:
-		return _tentative__render_on_minimap.value
-	func clear_tentative__render_on_minimap() -> void:
-		data[2051].state = PB_SERVICE_STATE.UNFILLED
-		_tentative__render_on_minimap.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_tentative__render_on_minimap(value : bool) -> void:
-		_tentative__render_on_minimap.value = value
+	var _is_hidden_on_minimap: PBField
+	func get_is_hidden_on_minimap() -> bool:
+		return _is_hidden_on_minimap.value
+	func clear_is_hidden_on_minimap() -> void:
+		data[33].state = PB_SERVICE_STATE.UNFILLED
+		_is_hidden_on_minimap.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
+	func set_is_hidden_on_minimap(value : bool) -> void:
+		_is_hidden_on_minimap.value = value
 	
 	var _bhdraft__schedule: PBField
 	func get_bhdraft__schedule() -> String:

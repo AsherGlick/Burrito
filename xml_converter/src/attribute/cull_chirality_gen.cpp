@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -56,20 +56,20 @@ string cull_chirality_to_xml_attribute(
 }
 
 void proto_to_cull_chirality(
-    waypoint::CullChirality input,
+    guildpoint::CullChirality input,
     ProtoReaderState*,
     CullChirality* value,
     bool* is_set) {
     switch (input) {
-        case waypoint::CullChirality::none:
+        case guildpoint::CullChirality::none:
             *value = CullChirality::none;
             *is_set = true;
             break;
-        case waypoint::CullChirality::clockwise:
+        case guildpoint::CullChirality::clockwise:
             *value = CullChirality::clockwise;
             *is_set = true;
             break;
-        case waypoint::CullChirality::counter_clockwise:
+        case guildpoint::CullChirality::counter_clockwise:
             *value = CullChirality::counter_clockwise;
             *is_set = true;
             break;
@@ -83,19 +83,19 @@ void proto_to_cull_chirality(
 void cull_chirality_to_proto(
     CullChirality value,
     ProtoWriterState*,
-    std::function<void(waypoint::CullChirality)> setter) {
+    std::function<void(guildpoint::CullChirality)> setter) {
     switch (value) {
         case CullChirality::none:
-            setter(waypoint::CullChirality::none);
+            setter(guildpoint::CullChirality::none);
             break;
         case CullChirality::clockwise:
-            setter(waypoint::CullChirality::clockwise);
+            setter(guildpoint::CullChirality::clockwise);
             break;
         case CullChirality::counter_clockwise:
-            setter(waypoint::CullChirality::counter_clockwise);
+            setter(guildpoint::CullChirality::counter_clockwise);
             break;
         default:
-            setter(waypoint::CullChirality::none);
+            setter(guildpoint::CullChirality::none);
             break;
     }
 }

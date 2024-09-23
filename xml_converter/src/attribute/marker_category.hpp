@@ -12,7 +12,7 @@
 
 class XMLError;
 
-namespace waypoint {
+namespace guildpoint {
 class Category;
 }
 
@@ -34,7 +34,7 @@ std::string marker_category_to_xml_attribute(
     const MarkerCategory* value);
 
 void proto_to_marker_category(
-    waypoint::Category input,
+    guildpoint::Category input,
     ProtoReaderState* state,
     MarkerCategory* value,
     bool* is_set);
@@ -42,4 +42,4 @@ void proto_to_marker_category(
 void marker_category_to_proto(
     MarkerCategory value,
     ProtoWriterState* state,
-    std::function<void(waypoint::Category*)> setter);
+    std::function<void(guildpoint::Category*)> setter);

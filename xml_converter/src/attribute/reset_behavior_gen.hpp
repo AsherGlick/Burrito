@@ -9,7 +9,7 @@
 #include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
 #include "../state_structs/xml_writer_state.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 class XMLError;
 
@@ -37,7 +37,7 @@ std::string reset_behavior_to_xml_attribute(
     const ResetBehavior* value);
 
 void proto_to_reset_behavior(
-    waypoint::ResetBehavior input,
+    guildpoint::ResetBehavior input,
     ProtoReaderState* state,
     ResetBehavior* value,
     bool* is_set);
@@ -45,4 +45,4 @@ void proto_to_reset_behavior(
 void reset_behavior_to_proto(
     ResetBehavior value,
     ProtoWriterState* state,
-    std::function<void(waypoint::ResetBehavior)> setter);
+    std::function<void(guildpoint::ResetBehavior)> setter);

@@ -5,7 +5,7 @@
 
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // parse_marker_category
@@ -40,7 +40,7 @@ std::string marker_category_to_xml_attribute(
 // Parses a marker category from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_marker_category(
-    waypoint::Category input,
+    guildpoint::Category input,
     ProtoReaderState*,
     MarkerCategory* value,
     bool* is_set) {
@@ -53,13 +53,13 @@ void proto_to_marker_category(
 ////////////////////////////////////////////////////////////////////////////////
 // to_proto_marker_category
 //
-// Returns a waypoint::Category so that it can be saved to proto.
+// Returns a guildpoint::Category so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
 void marker_category_to_proto(
     MarkerCategory value,
     ProtoWriterState*,
-    std::function<void(waypoint::Category*)> setter) {
-    waypoint::Category* category = new waypoint::Category();
+    std::function<void(guildpoint::Category*)> setter) {
+    guildpoint::Category* category = new guildpoint::Category();
     category->set_name(value.category);
     setter(category);
 }

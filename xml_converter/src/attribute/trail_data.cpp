@@ -13,7 +13,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -152,7 +152,7 @@ string trail_data_to_xml_attribute(
 // Parses a TrailData from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void proto_to_trail_data(
-    waypoint::TrailData input,
+    guildpoint::TrailData input,
     ProtoReaderState*,
     TrailData* value,
     bool* is_set) {
@@ -172,8 +172,8 @@ void proto_to_trail_data(
 void trail_data_to_proto(
     TrailData value,
     ProtoWriterState*,
-    std::function<void(waypoint::TrailData*)> setter) {
-    waypoint::TrailData* trail_data = new waypoint::TrailData();
+    std::function<void(guildpoint::TrailData*)> setter) {
+    guildpoint::TrailData* trail_data = new guildpoint::TrailData();
     *trail_data->mutable_points_x() = {value.points_x.begin(), value.points_x.end()};
     *trail_data->mutable_points_y() = {value.points_y.begin(), value.points_y.end()};
     *trail_data->mutable_points_z() = {value.points_z.begin(), value.points_z.end()};

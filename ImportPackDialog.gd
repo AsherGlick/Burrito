@@ -19,7 +19,7 @@ func _on_FileDialog_dir_selected(dir_path: String):
 	FileHandler.create_directory_if_missing(new_path)
 	var args: PoolStringArray = [
 		"--input-taco-path", dir_path,
-		"--output-waypoint-path", new_path,
-		"--output-split-waypoint-path", self.unsaved_markers_dir
+		"--output-guildpoint-path", new_path,
+		"--output-split-guildpoint-path", self.unsaved_markers_dir
 	]
 	FileHandler.call_xml_converter(args)

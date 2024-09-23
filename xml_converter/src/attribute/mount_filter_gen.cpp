@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -113,7 +113,7 @@ string mount_filter_to_xml_attribute(
 }
 
 void proto_to_mount_filter(
-    waypoint::MountFilter input,
+    guildpoint::MountFilter input,
     ProtoReaderState*,
     MountFilter* value,
     bool* is_set) {
@@ -135,8 +135,8 @@ void proto_to_mount_filter(
 void mount_filter_to_proto(
     MountFilter value,
     ProtoWriterState*,
-    std::function<void(waypoint::MountFilter*)> setter) {
-    waypoint::MountFilter* proto_mount_filter = new waypoint::MountFilter();
+    std::function<void(guildpoint::MountFilter*)> setter) {
+    guildpoint::MountFilter* proto_mount_filter = new guildpoint::MountFilter();
     bool should_write = false;
     proto_mount_filter->set_raptor(value.raptor);
     should_write |= value.raptor;

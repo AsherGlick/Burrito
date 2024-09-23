@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class MapTypeFilter;
 }
 
@@ -59,7 +59,7 @@ std::string map_type_filter_to_xml_attribute(
     const MapTypeFilter* value);
 
 void proto_to_map_type_filter(
-    waypoint::MapTypeFilter input,
+    guildpoint::MapTypeFilter input,
     ProtoReaderState* state,
     MapTypeFilter* value,
     bool* is_set);
@@ -67,4 +67,4 @@ void proto_to_map_type_filter(
 void map_type_filter_to_proto(
     MapTypeFilter value,
     ProtoWriterState* state,
-    std::function<void(waypoint::MapTypeFilter*)> setter);
+    std::function<void(guildpoint::MapTypeFilter*)> setter);

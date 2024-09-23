@@ -8,10 +8,10 @@
 
 #include "attribute/bool.hpp"
 #include "attribute/string.hpp"
+#include "guildpoint.pb.h"
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "string_helper.hpp"
-#include "waypoint.pb.h"
 
 using namespace std;
 
@@ -111,8 +111,8 @@ vector<string> Category::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
-waypoint::Category Category::as_protobuf(ProtoWriterState* state) const {
-    waypoint::Category proto_category;
+guildpoint::Category Category::as_protobuf(ProtoWriterState* state) const {
+    guildpoint::Category proto_category;
     if (this->display_name_is_set) {
         std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
         display_name_and_name_to_proto_display_name(this->display_name, state, setter, &(this->name), &(this->name_is_set));
@@ -136,7 +136,7 @@ waypoint::Category Category::as_protobuf(ProtoWriterState* state) const {
     return proto_category;
 }
 
-void Category::parse_protobuf(waypoint::Category proto_category, ProtoReaderState* state) {
+void Category::parse_protobuf(guildpoint::Category proto_category, ProtoReaderState* state) {
     if (proto_category.name() != "") {
         proto_display_name_to_display_name_and_name(proto_category.name(), state, &(this->display_name), &(this->display_name_is_set), &(this->name), &(this->name_is_set));
     }

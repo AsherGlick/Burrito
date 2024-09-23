@@ -8,7 +8,7 @@
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
-#include "waypoint.pb.h"
+#include "guildpoint.pb.h"
 
 using namespace std;
 
@@ -211,7 +211,7 @@ string map_type_filter_to_xml_attribute(
 }
 
 void proto_to_map_type_filter(
-    waypoint::MapTypeFilter input,
+    guildpoint::MapTypeFilter input,
     ProtoReaderState*,
     MapTypeFilter* value,
     bool* is_set) {
@@ -247,8 +247,8 @@ void proto_to_map_type_filter(
 void map_type_filter_to_proto(
     MapTypeFilter value,
     ProtoWriterState*,
-    std::function<void(waypoint::MapTypeFilter*)> setter) {
-    waypoint::MapTypeFilter* proto_map_type_filter = new waypoint::MapTypeFilter();
+    std::function<void(guildpoint::MapTypeFilter*)> setter) {
+    guildpoint::MapTypeFilter* proto_map_type_filter = new guildpoint::MapTypeFilter();
     bool should_write = false;
     proto_map_type_filter->set_unknown_map(value.unknown_map);
     should_write |= value.unknown_map;

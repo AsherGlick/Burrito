@@ -11,7 +11,7 @@
 #include "../state_structs/xml_writer_state.hpp"
 
 class XMLError;
-namespace waypoint {
+namespace guildpoint {
 class MountFilter;
 }
 
@@ -45,7 +45,7 @@ std::string mount_filter_to_xml_attribute(
     const MountFilter* value);
 
 void proto_to_mount_filter(
-    waypoint::MountFilter input,
+    guildpoint::MountFilter input,
     ProtoReaderState* state,
     MountFilter* value,
     bool* is_set);
@@ -53,4 +53,4 @@ void proto_to_mount_filter(
 void mount_filter_to_proto(
     MountFilter value,
     ProtoWriterState* state,
-    std::function<void(waypoint::MountFilter*)> setter);
+    std::function<void(guildpoint::MountFilter*)> setter);
