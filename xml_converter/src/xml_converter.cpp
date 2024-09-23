@@ -152,7 +152,7 @@ void process_data(
 
     // This is a special output path used for burrito internal use that splits
     // the guildpoint protobins by map id.
-    string output_split_guildpoint_dir) {
+    string output_split_guildpoint_dir,
     bool allow_duplicates) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
@@ -302,7 +302,7 @@ int main(int argc, char* argv[]) {
         input_guildpoint_paths,
         output_taco_paths,
         output_guildpoint_paths,
-        output_split_guildpoint_dir
+        output_split_guildpoint_dir,
         allow_duplicates);
 
     return 0;
