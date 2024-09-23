@@ -23,7 +23,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void parse_waypoint_categories(
+string parse_waypoint_categories(
     string full_category_name,
     ::waypoint::Category proto_category,
     map<string, Category>* marker_categories,
@@ -57,16 +57,18 @@ void parse_waypoint_categories(
     for (int i = 0; i < proto_category.children_size(); i++) {
         parse_waypoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois, state);
     }
+    return category_name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+set<string> read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     fstream infile;
     waypoint::Waypoint proto_message;
     ProtoReaderState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
+    set<string> category_names;
 
     infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
@@ -74,8 +76,9 @@ void read_protobuf_file(string proto_filepath, const string marker_pack_root_dir
     state.textures = proto_message.textures();
 
     for (int i = 0; i < proto_message.category_size(); i++) {
-        parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
+        category_names.insert(parse_waypoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state));
     }
+    return category_names;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

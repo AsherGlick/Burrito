@@ -1,5 +1,6 @@
 #include "packaging_xml.hpp"
 
+#include <set>
 #include <utility>
 
 #include "hash_helpers.hpp"
@@ -16,7 +17,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
-void parse_marker_categories(
+string parse_marker_categories(
     rapidxml::xml_node<>* node,
     map<string, Category>* marker_categories,
     Category* parent,
@@ -82,9 +83,11 @@ void parse_marker_categories(
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
             parse_marker_categories(child_node, &(category->children), category, errors, state, depth + 1);
         }
+        return name;
     }
     else {
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
+        return "";
     }
 }
 
@@ -189,12 +192,13 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
 //
 // A function which parses a single XML file into their corrisponding classes.
 ////////////////////////////////////////////////////////////////////////////////
-void parse_xml_file(string xml_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+set<string> parse_xml_file(string xml_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     vector<XMLError*> errors;
     rapidxml::xml_document<> doc;
     rapidxml::xml_node<>* root_node;
     XMLReaderState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
+    set<string> category_names;
 
     rapidxml::file<> xml_file(xml_filepath.c_str());
     doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), xml_filepath.c_str());
@@ -210,7 +214,7 @@ void parse_xml_file(string xml_filepath, const string marker_pack_root_directory
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
-            parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
+            category_names.insert(parse_marker_categories(node, marker_categories, nullptr, &errors, &state));
         }
         else if (get_node_name(node) == "POIs") {
             vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors, &state);
@@ -224,6 +228,7 @@ void parse_xml_file(string xml_filepath, const string marker_pack_root_directory
     for (auto error : errors) {
         error->print_error();
     }
+    return category_names;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

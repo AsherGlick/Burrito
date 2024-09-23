@@ -1,0 +1,11 @@
+input_paths: 
+    "pack": "xml"
+    "pack2": "proto"
+    "pack3": "xml"
+expected_stdout: |
+    The following top level categories were found in more than one pack
+    mycategory
+    mycategory
+    Did not write due to duplicates in categories. If you want to bypass this, use '--allow-duplicates'
+expected_stderr: |
+expected_returncode: 0

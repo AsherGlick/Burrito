@@ -62,40 +62,48 @@ vector<string> get_files_by_suffix(string directory, string suffix) {
     return files;
 }
 
-void read_taco_directory(
+set<string> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
+    set<string> top_level_categories;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
         for (const string& path : xml_files) {
-            parse_xml_file(path, input_path, marker_categories, parsed_pois);
+            set<string> category_names = (parse_xml_file(path, input_path, marker_categories, parsed_pois));
+            top_level_categories.insert(category_names.begin(), category_names.end());
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
-        parse_xml_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        set<string> category_names = parse_xml_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        top_level_categories.insert(category_names.begin(), category_names.end());
     }
+    return top_level_categories;
 }
 
-void read_burrito_directory(
+set<string> read_burrito_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
+    set<string> top_level_categories;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
         for (const string& path : burrito_files) {
-            read_protobuf_file(path, input_path, marker_categories, parsed_pois);
+            set<string> category_names = read_protobuf_file(path, input_path, marker_categories, parsed_pois);
+            top_level_categories.insert(category_names.begin(), category_names.end());
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
-        read_protobuf_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        set<string> category_names = read_protobuf_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        top_level_categories.insert(category_names.begin(), category_names.end());
     }
+    return top_level_categories;
 }
 
 void write_taco_directory(
@@ -144,20 +152,29 @@ void process_data(
 
     // This is a special output path used for burrito internal use that splits
     // the waypoint protobins by map id.
-    string output_split_waypoint_dir) {
+    string output_split_waypoint_dir,
+    bool allow_duplicates) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
+    set<string> top_level_categories;
+    vector<string> duplicate_categories;
 
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();
     for (size_t i = 0; i < input_taco_paths.size(); i++) {
         cout << "Loading taco pack " << input_taco_paths[i] << endl;
 
-        read_taco_directory(
+        set<string> category_names = read_taco_directory(
             input_taco_paths[i],
             &marker_categories,
             &parsed_pois);
+        for (string category_name : category_names) {
+            if (find(top_level_categories.begin(), top_level_categories.end(), category_name) != top_level_categories.end())
+                duplicate_categories.push_back(category_name);
+            else
+                top_level_categories.insert(category_name);
+        }
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -168,10 +185,27 @@ void process_data(
     for (size_t i = 0; i < input_waypoint_paths.size(); i++) {
         cout << "Loading waypoint pack " << input_waypoint_paths[i] << endl;
 
-        read_burrito_directory(
+        set<string> category_names = read_burrito_directory(
             input_waypoint_paths[i],
             &marker_categories,
             &parsed_pois);
+        for (string category_name : category_names) {
+            if (find(top_level_categories.begin(), top_level_categories.end(), category_name) != top_level_categories.end())
+                duplicate_categories.push_back(category_name);
+            else
+                top_level_categories.insert(category_name);
+        }
+    }
+
+    if (duplicate_categories.size() > 0) {
+        cout << "The following top level categories were found in more than one pack" << endl;
+        for (size_t i = 0; i < duplicate_categories.size(); i++) {
+            cout << duplicate_categories[i] << endl;
+        }
+        if (allow_duplicates != true) {
+            cout << "Did not write due to duplicates in categories. If you want to bypass this, use '--allow-duplicates'" << endl;
+            return;
+        }
     }
 
     // Write all of the xml taco paths
@@ -218,6 +252,7 @@ int main(int argc, char* argv[]) {
     vector<string> output_taco_paths;
     vector<string> input_waypoint_paths;
     vector<string> output_waypoint_paths;
+    bool allow_duplicates;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
@@ -244,6 +279,9 @@ int main(int argc, char* argv[]) {
             // CLI arg parsing later to properly capture this.
             arg_target = &output_split_waypoint_paths;
         }
+        else if (!strcmp(argv[i], "--allow-duplicates")) {
+            allow_duplicates = true;
+        }
         else {
             arg_target->push_back(argv[i]);
         }
@@ -264,7 +302,8 @@ int main(int argc, char* argv[]) {
         input_waypoint_paths,
         output_taco_paths,
         output_waypoint_paths,
-        output_split_waypoint_dir);
+        output_split_waypoint_dir,
+        allow_duplicates);
 
     return 0;
 }

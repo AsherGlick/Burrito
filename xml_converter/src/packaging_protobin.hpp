@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -10,7 +11,7 @@
 #include "string_hierarchy.hpp"
 #include "waypoint.pb.h"
 
-void read_protobuf_file(
+std::set<std::string> read_protobuf_file(
     std::string proto_filepath,
     const std::string marker_pack_root_directory,
     std::map<std::string, Category>* marker_categories,
