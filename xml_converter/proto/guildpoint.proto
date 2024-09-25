@@ -30,9 +30,9 @@ message Icon {
     uint32 texture_id = 2;
     bytes guid = 3;
     int32 map_id = 4;
-    float distance_fade_end = 5;
-    float distance_fade_start = 6;
-    float height_offset= 7;
+    // float distance_fade_end = 5;
+    // float distance_fade_start = 6;
+    // float height_offset= 7;
     Position position = 8;
     Trigger trigger = 9;
     EulerRotation euler_rotation = 10;
@@ -41,9 +41,9 @@ message Icon {
     int32 achievement_bit_index = 17;
 
     bool disable_player_cutout = 19;
-    int32 minimum_size_on_screen = 20;
-    int32 map_display_size = 21;
-    int32 maximum_size_on_screen = 22;
+    // int32 minimum_size_on_screen = 20;
+    // int32 map_display_size = 21;
+    // int32 maximum_size_on_screen = 22;
     bool constant_size_on_map = 23;
     string tip_description = 24;
     string tip_name = 25;
@@ -59,7 +59,7 @@ message Icon {
     bool is_hidden_on_map = 35;
     bool is_hidden_on_minimap = 36;
 
-    float tentative__scale = 2048;
+    // float tentative__scale = 2048;
     string bhdraft__schedule = 2052;
     float bhdraft__schedule_duration = 2053;
 }
@@ -68,16 +68,16 @@ message Trail {
     uint32 texture_id = 2;
     bytes guid = 3;
     int32 map_id = 4;
-    float distance_fade_end = 5;
-    float distance_fade_start = 6;
+    // float distance_fade_end = 5;
+    // float distance_fade_start = 6;
     TrailData trail_data = 7;
-    float animation_speed = 8;
+    // float animation_speed = 8;
 
     int32 achievement_id = 16;
     int32 achievement_bit_index = 17;
     bool disable_player_cutout = 19;
     bool is_wall = 20;
-    float scale = 21;
+    // float scale = 21;
     fixed32 rgba_color = 22;
     FestivalFilter festival_filter = 23;
     MapTypeFilter map_type_filter = 24;
@@ -85,7 +85,7 @@ message Trail {
     ProfessionFilter profession_filter = 26;
     SpecializationFilter specialization_filter = 27;
     SpeciesFilter species_filter = 28;
-    int32 map_display_size = 29;
+    // int32 map_display_size = 29;
     CullChirality cull_chirality = 30;
     bool is_hidden_ingame = 31;
     bool is_hidden_on_map = 32;
@@ -118,7 +118,7 @@ message Trigger {
     string action_info_message = 8;
     bool invert_display = 9;
     float reset_length = 10;
-    float range = 11;
+    // float range = 11;
     Category action_hide_category = 12;
     Category action_show_category = 13;
     Category action_toggle_category = 14;

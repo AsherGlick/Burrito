@@ -7,7 +7,7 @@
         </MarkerCategory>
     </MarkerCategory>
 
-    <MarkerCategory Name="TrailNestedLevel1" Texture="texture_one.png" TrailData="trail.trl" AnimationSpeed="1">
+    <MarkerCategory Name="TrailNestedLevel1" Texture="texture_one.png" TrailData="trail.trl">
         <MarkerCategory Name="TrailNestedLevel2"></MarkerCategory>
     </MarkerCategory>
 
