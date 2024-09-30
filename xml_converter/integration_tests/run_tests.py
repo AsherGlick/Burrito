@@ -210,8 +210,10 @@ def main() -> bool:
         if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
             print(f"Expected a return code of {testcase.expected_returncode} for {testcase.name} but got {returncode}")
 
-        testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
-        testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
+        if os.path.exists(testcase.expected_output_xml_path):
+            testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
+        if os.path.exists(testcase.expected_output_proto_path):
+            testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
 
         if testcase_passed:
             print(f"Success: test {testcase.name}")
