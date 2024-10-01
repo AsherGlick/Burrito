@@ -12,6 +12,8 @@ output_dir = ""
 source_path: str = ""
 target_path: str = ""
 
+unnamed_count: int = 0
+
 def main():
     if len(sys.argv) != 3:
         print(f"USAGE: {sys.argv[0]} SRC_DIR DEST_DIR")
@@ -50,11 +52,44 @@ def eprint(*args, **kwargs):
         print(eprint_title)
     print("   ", *args, **kwargs)
 
+other_ignored_tags = set([
+    "achievementBit",
+    "tip-name",
+    "tip-description",
+    "achievementId", 
+    "autotrigger",
+    "copy",
+    "copy-message",
+    "triggerrange",
+    "autotrigger",
+    "bh-color",
+    "bh-DisplayName",
+    "bh-heightOffset",
+    "bh-iconSize",
+    "bh-inGameVisibility",
+    "bh-mapVisibility",
+    "bh-miniMapVisibility",
+    "bh-name",
+    "bounce",
+    "bounce-height",
+    "copy",
+    "copy-message",
+    "inGameVisibility",
+    "Name",
+    "profession",
+    "triggerrange",
+])
+
+################################################################################
+# Strips namespace from tags
+################################################################################   
+def get_tag(element):
+    return element.tag.rpartition('}')[-1]
 
 ################################################################################
 #
 ################################################################################
-def parse_marker_category(marker_category_node, base=""):
+def parse_marker_category(marker_category_node, base="", parent_limited_attribs={}):
     required_keys = set(["DisplayName", "name" ])
     allowed_keys = set([
         "iconFile",
@@ -76,12 +111,12 @@ def parse_marker_category(marker_category_node, base=""):
         "texture",
         "trailScale", # Ignored
         "scaleOnMapWithZoom", # Ignored
-    ])
+    ]) | other_ignored_tags
 
 
     metadata_tree = {}
 
-    if marker_category_node.tag != "MarkerCategory":
+    if get_tag(marker_category_node) != "MarkerCategory":
         eprint("MarkerCategory Child not  MarkerCategory", marker_category_node.tag)
 
     attribs = marker_category_node.attrib
@@ -94,7 +129,7 @@ def parse_marker_category(marker_category_node, base=""):
             eprint("key {} missing from marker category".format(required_key))
 
 
-    limited_attribs = {}
+    limited_attribs = {k:v for (k, v) in parent_limited_attribs.items()}
     if "iconFile" in attribs:
         limited_attribs["icon_file"] = attribs["iconFile"]
 
@@ -110,12 +145,19 @@ def parse_marker_category(marker_category_node, base=""):
         limited_attribs["texture"] = attribs["texture"]
 
 
-    name = attribs["name"]
+    name = None
+    if "name" in attribs:
+        name = attribs["name"]
+
+    if name == None:
+        global unnamed_count
+        name = "Unnamed"+str(unnamed_count)
+        unnamed_count += 1
 
     metadata_tree[base + name] = limited_attribs
 
     for child in marker_category_node:
-        subtree = parse_marker_category(child, base + name + ".")
+        subtree = parse_marker_category(child, base + name + ".", parent_limited_attribs=limited_attribs)
         for elem in subtree:
             metadata_tree[elem] = subtree[elem]
 
@@ -126,11 +168,10 @@ def parse_marker_category(marker_category_node, base=""):
 ################################################################################
 def convert_markers(xml_path: str, output_dir: str):
     set_eprint_title(xml_path)
-    # print(xml_path)
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
-    if root.tag != "OverlayData":
+    if get_tag(root) != "OverlayData":
         eprint("Root not OverlayData", root.tag)
 
     if root.attrib != {}:
@@ -140,14 +181,14 @@ def convert_markers(xml_path: str, output_dir: str):
         eprint("Root has {} children instead of the expected 2".format(len(root)))
         return
 
-    if root[0].tag != "MarkerCategory":
+    if get_tag(root[0]) != "MarkerCategory":
         eprint("First element of root is {} not MarkerCategory".format(root[0].tag))
     else:
         marker_metadata = parse_marker_category(root[0])
 
     # print(marker_metadata)
 
-    if root[1].tag != "POIs":
+    if get_tag(root[1]) != "POIs":
         eprint("Second element of root is {} not POIs".format(root[1].tag))
     else:
         burrito_marker_data = parse_icons_and_paths(root[1], marker_metadata, os.path.dirname(xml_path))
@@ -198,7 +239,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
         "resetLength", # Ignored
         "info", # Ignored
         "infoRange", # Ignored
-    ])
+    ]) | other_ignored_tags
 
     required_trail_attrib = set([
         "texture",
@@ -213,7 +254,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
         "mapVisibility",  # Ignored
         "miniMapVisibility",  # Ignored
         "fadeNear",  # Ignored
-    ])
+    ]) | other_ignored_tags
 
     burrito_marker_data = {}
 
@@ -222,7 +263,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
         if len(child) > 0:
             eprint("POI element has children")
 
-        if child.tag == "POI":
+        if get_tag(child) == "POI":
             attribs = child.attrib
             for present_key in attribs:
                 if present_key not in required_poi_attrib and present_key not in allowed_poi_attrib:
@@ -261,7 +302,7 @@ def parse_icons_and_paths(poi_node, marker_metadata, dirname=""):
                 "texture": copyimage(icon_path)
             })
 
-        elif child.tag == "Trail":
+        elif get_tag(child) == "Trail":
             attribs = child.attrib
             for present_key in attribs:
                 if present_key not in required_trail_attrib and present_key not in allowed_trail_attrib:
@@ -353,6 +394,9 @@ def copyimage(image_path):
 
 
 def open_trail_format(trl_path: str) -> Tuple[int, List[float]]:
+    if not os.path.exists(trl_path):
+        eprint("Cannot find file {}".format(trl_path))
+        return (0, [])
     with open(trl_path, 'rb') as f:
         file_bytes = f.read()
 
