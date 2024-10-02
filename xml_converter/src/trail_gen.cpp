@@ -257,10 +257,6 @@ guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_achievement_id(val); };
         int_to_proto(this->achievement_id, state, setter);
     }
-    if (this->animation_speed_is_set) {
-        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_animation_speed(val); };
-        float_to_proto(this->animation_speed, state, setter);
-    }
     if (this->color_is_set) {
         std::function<void(uint32_t)> setter = [&proto_trail](uint32_t val) { proto_trail.set_rgba_color(val); };
         color_to_proto(this->color, state, setter);
@@ -273,14 +269,6 @@ guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_disable_player_cutout(val); };
         bool_to_proto(this->disable_player_cutout, state, setter);
     }
-    if (this->distance_fade_end_is_set) {
-        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_distance_fade_end(val); };
-        float_to_proto(this->distance_fade_end, state, setter);
-    }
-    if (this->distance_fade_start_is_set) {
-        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_distance_fade_start(val); };
-        float_to_proto(this->distance_fade_start, state, setter);
-    }
     if (this->festival_filter_is_set) {
         std::function<void(guildpoint::FestivalFilter*)> setter = [&proto_trail](guildpoint::FestivalFilter* val) { proto_trail.set_allocated_festival_filter(val); };
         festival_filter_to_proto(this->festival_filter, state, setter);
@@ -292,10 +280,6 @@ guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
     if (this->is_wall_is_set) {
         std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_is_wall(val); };
         bool_to_proto(this->is_wall, state, setter);
-    }
-    if (this->map_display_size_is_set) {
-        std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_map_display_size(val); };
-        int_to_proto(this->map_display_size, state, setter);
     }
     if (this->map_id_is_set) {
         std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_map_id(val); };
@@ -349,10 +333,6 @@ guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         std::function<void(guildpoint::TrailData*)> setter = [&proto_trail](guildpoint::TrailData* val) { proto_trail.set_allocated_trail_data(val); };
         trail_data_to_proto(this->trail_data, state, setter);
     }
-    if (this->trail_scale_is_set) {
-        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_scale(val); };
-        float_to_proto(this->trail_scale, state, setter);
-    }
     return proto_trail;
 }
 
@@ -363,9 +343,6 @@ void Trail::parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* stat
     if (proto_trail.achievement_id() != 0) {
         proto_to_int(proto_trail.achievement_id(), state, &(this->achievement_id), &(this->achievement_id_is_set));
     }
-    if (proto_trail.animation_speed() != 0) {
-        proto_to_float(proto_trail.animation_speed(), state, &(this->animation_speed), &(this->animation_speed_is_set));
-    }
     if (proto_trail.rgba_color() != 0) {
         proto_to_color(proto_trail.rgba_color(), state, &(this->color), &(this->color_is_set));
     }
@@ -375,12 +352,6 @@ void Trail::parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* stat
     if (proto_trail.disable_player_cutout() != 0) {
         proto_to_bool(proto_trail.disable_player_cutout(), state, &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
-    if (proto_trail.distance_fade_end() != 0) {
-        proto_to_float(proto_trail.distance_fade_end(), state, &(this->distance_fade_end), &(this->distance_fade_end_is_set));
-    }
-    if (proto_trail.distance_fade_start() != 0) {
-        proto_to_float(proto_trail.distance_fade_start(), state, &(this->distance_fade_start), &(this->distance_fade_start_is_set));
-    }
     if (proto_trail.has_festival_filter()) {
         proto_to_festival_filter(proto_trail.festival_filter(), state, &(this->festival_filter), &(this->festival_filter_is_set));
     }
@@ -389,9 +360,6 @@ void Trail::parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* stat
     }
     if (proto_trail.is_wall() != 0) {
         proto_to_bool(proto_trail.is_wall(), state, &(this->is_wall), &(this->is_wall_is_set));
-    }
-    if (proto_trail.map_display_size() != 0) {
-        proto_to_int(proto_trail.map_display_size(), state, &(this->map_display_size), &(this->map_display_size_is_set));
     }
     if (proto_trail.map_id() != 0) {
         proto_to_int(proto_trail.map_id(), state, &(this->map_id), &(this->map_id_is_set));
@@ -431,8 +399,5 @@ void Trail::parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* stat
     }
     if (proto_trail.has_trail_data()) {
         proto_to_trail_data(proto_trail.trail_data(), state, &(this->trail_data), &(this->trail_data_is_set));
-    }
-    if (proto_trail.scale() != 0) {
-        proto_to_float(proto_trail.scale(), state, &(this->trail_scale), &(this->trail_scale_is_set));
     }
 }

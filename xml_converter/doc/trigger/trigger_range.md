@@ -3,7 +3,8 @@ name: Trigger Range
 type: Float32
 applies_to: [Icon]
 xml_fields: [TriggerRange, InfoRange]
-protobuf_field: trigger.range
+#151 This field should be set to 0 in the protobuf when equal to the default value
+protobuf_field: null #trigger.range
 ---
 
 Used to indicate a trigger range. This attribute is used by multiple other attributes to define a distance from the marker in which those attributes will activate their functionality or behavior.

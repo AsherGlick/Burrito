@@ -929,21 +929,6 @@ class Icon:
 		service.field = _map_id
 		data[_map_id.tag] = service
 		
-		_distance_fade_end = PBField.new("distance_fade_end", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 5, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _distance_fade_end
-		data[_distance_fade_end.tag] = service
-		
-		_distance_fade_start = PBField.new("distance_fade_start", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 6, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _distance_fade_start
-		data[_distance_fade_start.tag] = service
-		
-		_height_offset = PBField.new("height_offset", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 7, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _height_offset
-		data[_height_offset.tag] = service
-		
 		_position = PBField.new("position", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 8, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
 		service.field = _position
@@ -976,21 +961,6 @@ class Icon:
 		service = PBServiceField.new()
 		service.field = _disable_player_cutout
 		data[_disable_player_cutout.tag] = service
-		
-		_minimum_size_on_screen = PBField.new("minimum_size_on_screen", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 20, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = _minimum_size_on_screen
-		data[_minimum_size_on_screen.tag] = service
-		
-		_map_display_size = PBField.new("map_display_size", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 21, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = _map_display_size
-		data[_map_display_size.tag] = service
-		
-		_maximum_size_on_screen = PBField.new("maximum_size_on_screen", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = _maximum_size_on_screen
-		data[_maximum_size_on_screen.tag] = service
 		
 		_constant_size_on_map = PBField.new("constant_size_on_map", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 23, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
@@ -1068,11 +1038,6 @@ class Icon:
 		service.field = _is_hidden_on_minimap
 		data[_is_hidden_on_minimap.tag] = service
 		
-		_tentative__scale = PBField.new("tentative__scale", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 2048, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _tentative__scale
-		data[_tentative__scale.tag] = service
-		
 		_bhdraft__schedule = PBField.new("bhdraft__schedule", PB_DATA_TYPE.STRING, PB_RULE.OPTIONAL, 2052, true, DEFAULT_VALUES_3[PB_DATA_TYPE.STRING])
 		service = PBServiceField.new()
 		service.field = _bhdraft__schedule
@@ -1111,33 +1076,6 @@ class Icon:
 		_map_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
 	func set_map_id(value : int) -> void:
 		_map_id.value = value
-	
-	var _distance_fade_end: PBField
-	func get_distance_fade_end() -> float:
-		return _distance_fade_end.value
-	func clear_distance_fade_end() -> void:
-		data[5].state = PB_SERVICE_STATE.UNFILLED
-		_distance_fade_end.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_distance_fade_end(value : float) -> void:
-		_distance_fade_end.value = value
-	
-	var _distance_fade_start: PBField
-	func get_distance_fade_start() -> float:
-		return _distance_fade_start.value
-	func clear_distance_fade_start() -> void:
-		data[6].state = PB_SERVICE_STATE.UNFILLED
-		_distance_fade_start.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_distance_fade_start(value : float) -> void:
-		_distance_fade_start.value = value
-	
-	var _height_offset: PBField
-	func get_height_offset() -> float:
-		return _height_offset.value
-	func clear_height_offset() -> void:
-		data[7].state = PB_SERVICE_STATE.UNFILLED
-		_height_offset.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_height_offset(value : float) -> void:
-		_height_offset.value = value
 	
 	var _position: PBField
 	func get_position() -> Position:
@@ -1195,33 +1133,6 @@ class Icon:
 		_disable_player_cutout.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
 	func set_disable_player_cutout(value : bool) -> void:
 		_disable_player_cutout.value = value
-	
-	var _minimum_size_on_screen: PBField
-	func get_minimum_size_on_screen() -> int:
-		return _minimum_size_on_screen.value
-	func clear_minimum_size_on_screen() -> void:
-		data[20].state = PB_SERVICE_STATE.UNFILLED
-		_minimum_size_on_screen.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_minimum_size_on_screen(value : int) -> void:
-		_minimum_size_on_screen.value = value
-	
-	var _map_display_size: PBField
-	func get_map_display_size() -> int:
-		return _map_display_size.value
-	func clear_map_display_size() -> void:
-		data[21].state = PB_SERVICE_STATE.UNFILLED
-		_map_display_size.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_map_display_size(value : int) -> void:
-		_map_display_size.value = value
-	
-	var _maximum_size_on_screen: PBField
-	func get_maximum_size_on_screen() -> int:
-		return _maximum_size_on_screen.value
-	func clear_maximum_size_on_screen() -> void:
-		data[22].state = PB_SERVICE_STATE.UNFILLED
-		_maximum_size_on_screen.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_maximum_size_on_screen(value : int) -> void:
-		_maximum_size_on_screen.value = value
 	
 	var _constant_size_on_map: PBField
 	func get_constant_size_on_map() -> bool:
@@ -1355,15 +1266,6 @@ class Icon:
 	func set_is_hidden_on_minimap(value : bool) -> void:
 		_is_hidden_on_minimap.value = value
 	
-	var _tentative__scale: PBField
-	func get_tentative__scale() -> float:
-		return _tentative__scale.value
-	func clear_tentative__scale() -> void:
-		data[2048].state = PB_SERVICE_STATE.UNFILLED
-		_tentative__scale.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_tentative__scale(value : float) -> void:
-		_tentative__scale.value = value
-	
 	var _bhdraft__schedule: PBField
 	func get_bhdraft__schedule() -> String:
 		return _bhdraft__schedule.value
@@ -1422,26 +1324,11 @@ class Trail:
 		service.field = _map_id
 		data[_map_id.tag] = service
 		
-		_distance_fade_end = PBField.new("distance_fade_end", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 5, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _distance_fade_end
-		data[_distance_fade_end.tag] = service
-		
-		_distance_fade_start = PBField.new("distance_fade_start", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 6, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _distance_fade_start
-		data[_distance_fade_start.tag] = service
-		
 		_trail_data = PBField.new("trail_data", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 7, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
 		service.field = _trail_data
 		service.func_ref = funcref(self, "new_trail_data")
 		data[_trail_data.tag] = service
-		
-		_animation_speed = PBField.new("animation_speed", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 8, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _animation_speed
-		data[_animation_speed.tag] = service
 		
 		_achievement_id = PBField.new("achievement_id", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 16, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
 		service = PBServiceField.new()
@@ -1462,11 +1349,6 @@ class Trail:
 		service = PBServiceField.new()
 		service.field = _is_wall
 		data[_is_wall.tag] = service
-		
-		_scale = PBField.new("scale", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 21, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _scale
-		data[_scale.tag] = service
 		
 		_rgba_color = PBField.new("rgba_color", PB_DATA_TYPE.FIXED32, PB_RULE.OPTIONAL, 22, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FIXED32])
 		service = PBServiceField.new()
@@ -1508,11 +1390,6 @@ class Trail:
 		service.field = _species_filter
 		service.func_ref = funcref(self, "new_species_filter")
 		data[_species_filter.tag] = service
-		
-		_map_display_size = PBField.new("map_display_size", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 29, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = _map_display_size
-		data[_map_display_size.tag] = service
 		
 		_cull_chirality = PBField.new("cull_chirality", PB_DATA_TYPE.ENUM, PB_RULE.OPTIONAL, 30, true, DEFAULT_VALUES_3[PB_DATA_TYPE.ENUM])
 		service = PBServiceField.new()
@@ -1573,24 +1450,6 @@ class Trail:
 	func set_map_id(value : int) -> void:
 		_map_id.value = value
 	
-	var _distance_fade_end: PBField
-	func get_distance_fade_end() -> float:
-		return _distance_fade_end.value
-	func clear_distance_fade_end() -> void:
-		data[5].state = PB_SERVICE_STATE.UNFILLED
-		_distance_fade_end.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_distance_fade_end(value : float) -> void:
-		_distance_fade_end.value = value
-	
-	var _distance_fade_start: PBField
-	func get_distance_fade_start() -> float:
-		return _distance_fade_start.value
-	func clear_distance_fade_start() -> void:
-		data[6].state = PB_SERVICE_STATE.UNFILLED
-		_distance_fade_start.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_distance_fade_start(value : float) -> void:
-		_distance_fade_start.value = value
-	
 	var _trail_data: PBField
 	func get_trail_data() -> TrailData:
 		return _trail_data.value
@@ -1600,15 +1459,6 @@ class Trail:
 	func new_trail_data() -> TrailData:
 		_trail_data.value = TrailData.new()
 		return _trail_data.value
-	
-	var _animation_speed: PBField
-	func get_animation_speed() -> float:
-		return _animation_speed.value
-	func clear_animation_speed() -> void:
-		data[8].state = PB_SERVICE_STATE.UNFILLED
-		_animation_speed.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_animation_speed(value : float) -> void:
-		_animation_speed.value = value
 	
 	var _achievement_id: PBField
 	func get_achievement_id() -> int:
@@ -1645,15 +1495,6 @@ class Trail:
 		_is_wall.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
 	func set_is_wall(value : bool) -> void:
 		_is_wall.value = value
-	
-	var _scale: PBField
-	func get_scale() -> float:
-		return _scale.value
-	func clear_scale() -> void:
-		data[21].state = PB_SERVICE_STATE.UNFILLED
-		_scale.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_scale(value : float) -> void:
-		_scale.value = value
 	
 	var _rgba_color: PBField
 	func get_rgba_color() -> int:
@@ -1723,15 +1564,6 @@ class Trail:
 	func new_species_filter() -> SpeciesFilter:
 		_species_filter.value = SpeciesFilter.new()
 		return _species_filter.value
-	
-	var _map_display_size: PBField
-	func get_map_display_size() -> int:
-		return _map_display_size.value
-	func clear_map_display_size() -> void:
-		data[29].state = PB_SERVICE_STATE.UNFILLED
-		_map_display_size.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_map_display_size(value : int) -> void:
-		_map_display_size.value = value
 	
 	var _cull_chirality: PBField
 	func get_cull_chirality():
@@ -2000,11 +1832,6 @@ class Trigger:
 		service.field = _reset_length
 		data[_reset_length.tag] = service
 		
-		_range = PBField.new("range", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 11, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = _range
-		data[_range.tag] = service
-		
 		_action_hide_category = PBField.new("action_hide_category", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 12, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
 		service = PBServiceField.new()
 		service.field = _action_hide_category
@@ -2119,15 +1946,6 @@ class Trigger:
 		_reset_length.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
 	func set_reset_length(value : float) -> void:
 		_reset_length.value = value
-	
-	var _range: PBField
-	func get_range() -> float:
-		return _range.value
-	func clear_range() -> void:
-		data[11].state = PB_SERVICE_STATE.UNFILLED
-		_range.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_range(value : float) -> void:
-		_range.value = value
 	
 	var _action_hide_category: PBField
 	func get_action_hide_category() -> Category:
