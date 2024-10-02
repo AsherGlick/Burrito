@@ -23,5 +23,6 @@ Roadmap
 
 Known Bug Workarounds
 =====================
-* Burrito launches off-center or on the wrong monitor
-  * This seems to be WM dependant. on Gnome it can be solved by holding down the super key and dragging burrito to the right position.
+* Burrito launches off-center or on the wrong monitor (This seems to be WM dependant.)
+  * On Gnome and KDE it can be solved by holding down the super key and dragging burrito to the right position.
+  * On KDE it is also possible to use [window-rules](https://docs.kde.org/stable5/en/kwin/kcontrol/windowspecific/examples.html) to set the position or a target monitor automatically by adding a new rule to `System Settings → Window Behavior → Window Rules` and setting `window class (application)` to `burrito`.
