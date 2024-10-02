@@ -1,0 +1,14 @@
+<OverlayData>
+<MarkerCategory  DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory">
+</MarkerCategory>
+
+<POIs>
+<POI  AchievementId="0" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  AchievementId="1" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  AchievementId="5" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  AchievementId="2147483647" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  AchievementId="-2147483648" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  AchievementId="-5" Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<Trail  AchievementId="5" Type="mycategory"/>
+</POIs>
+</OverlayData>

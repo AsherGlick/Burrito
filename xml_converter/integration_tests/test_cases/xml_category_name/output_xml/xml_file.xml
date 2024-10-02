@@ -1,0 +1,10 @@
+<OverlayData>
+<MarkerCategory  DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory">
+</MarkerCategory>
+
+<POIs>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="Mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mYcAtEgOrY" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+</POIs>
+</OverlayData>

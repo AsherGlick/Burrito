@@ -1,9 +1,8 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
-[ext_resource path="res://Route2D.tscn" type="PackedScene" id=4]
 [ext_resource path="res://icon_close.png" type="Texture" id=5]
 [ext_resource path="res://RangeDialog.gd" type="Script" id=6]
 [ext_resource path="res://icon_new_icon.png" type="Texture" id=7]
@@ -12,6 +11,8 @@
 [ext_resource path="res://icon_new_path.png" type="Texture" id=10]
 [ext_resource path="res://icon_new_point.png" type="Texture" id=11]
 [ext_resource path="res://SettingsDialog.gd" type="Script" id=12]
+[ext_resource path="res://Category3D.gd" type="Script" id=13]
+[ext_resource path="res://Category2D.gd" type="Script" id=15]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -50,6 +51,11 @@ shader_param/custom_7_value = 500.0
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 1 )
 
+[node name="Markers3D" type="Spatial" parent="."]
+script = ExtResource( 13 )
+
+[node name="Gizmos" type="Spatial" parent="."]
+
 [node name="CameraMount" type="Spatial" parent="."]
 
 [node name="Camera" type="Camera" parent="CameraMount"]
@@ -64,11 +70,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MiniMap" type="Node2D" parent="Control"]
+[node name="Markers2D" type="Node2D" parent="Control"]
 material = SubResource( 2 )
 scale = Vector2( 2, 2 )
-
-[node name="Line2D" parent="Control/MiniMap" instance=ExtResource( 4 )]
+script = ExtResource( 15 )
 
 [node name="GlobalMenuButton" type="Control" parent="Control"]
 margin_left = 323.0
@@ -141,19 +146,19 @@ margin_right = 116.0
 margin_bottom = 35.0
 text = "APoint"
 
-[node name="NewPath" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+[node name="NewTrail" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
 margin_left = 100.0
 margin_right = 146.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 40, 0 )
-hint_tooltip = "Create New Path"
+hint_tooltip = "Create New Trail"
 icon = ExtResource( 10 )
 
-[node name="NewPathPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
+[node name="NewTrailPoint" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
 margin_left = 150.0
 margin_right = 196.0
 margin_bottom = 40.0
-hint_tooltip = "Create New Point on Active Path"
+hint_tooltip = "Create New Point on Active Trail"
 icon = ExtResource( 11 )
 
 [node name="NewIcon" type="Button" parent="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer"]
@@ -167,7 +172,7 @@ icon = ExtResource( 7 )
 margin_left = 250.0
 margin_right = 296.0
 margin_bottom = 40.0
-hint_tooltip = "Adjust Path and Icon Positions"
+hint_tooltip = "Adjust Trail and Icon Positions"
 icon = ExtResource( 9 )
 
 [node name="Dialogs" type="Control" parent="Control"]
@@ -177,26 +182,25 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="FileDialog" type="FileDialog" parent="Control/Dialogs"]
-margin_left = 636.0
-margin_top = 174.0
-margin_right = 1307.0
-margin_bottom = 672.0
-window_title = "Open a File"
-mode = 0
+[node name="ImportPackDialog" type="FileDialog" parent="Control/Dialogs"]
+margin_left = 289.0
+margin_top = 36.0
+margin_right = 960.0
+margin_bottom = 534.0
+window_title = "Open a Directory"
+mode = 2
 access = 2
-current_dir = "."
-current_file = "."
-current_path = "."
+current_dir = ""
+current_path = ""
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="MainMenu" type="WindowDialog" parent="Control/Dialogs"]
-margin_left = 39.0
-margin_top = 71.0
-margin_right = 252.0
-margin_bottom = 583.0
+margin_left = 55.0
+margin_top = 60.0
+margin_right = 275.0
+margin_bottom = 693.0
 window_title = "Main Menu"
 resizable = true
 __meta__ = {
@@ -212,52 +216,59 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/MainMenu/ScrollContainer"]
-margin_right = 213.0
-margin_bottom = 284.0
+margin_right = 220.0
+margin_bottom = 336.0
 size_flags_horizontal = 3
 
-[node name="LoadPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_right = 213.0
+[node name="LoadTrail" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_right = 220.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 0, 40 )
-text = "Open Markers File"
+text = "Toggle Marker Visibility"
 
-[node name="SavePath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="HSeparator5" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 44.0
-margin_right = 213.0
-margin_bottom = 84.0
+margin_right = 220.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImportPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 52.0
+margin_right = 220.0
+margin_bottom = 92.0
+rect_min_size = Vector2( 0, 40 )
+text = "Import Marker Pack"
+
+[node name="SaveData" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 96.0
+margin_right = 220.0
+margin_bottom = 136.0
 rect_min_size = Vector2( 0, 40 )
 text = "Save Markers File"
 
 [node name="HSeparator" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 88.0
-margin_right = 213.0
-margin_bottom = 92.0
-
-[node name="PointEditor" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-visible = false
-margin_top = 96.0
-margin_right = 213.0
-margin_bottom = 136.0
-rect_min_size = Vector2( 0, 40 )
-text = "Editor Panel"
+margin_top = 140.0
+margin_right = 220.0
+margin_bottom = 144.0
 
 [node name="OpenEditorQuickPanel" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 96.0
-margin_right = 213.0
-margin_bottom = 136.0
+margin_top = 148.0
+margin_right = 220.0
+margin_bottom = 188.0
 rect_min_size = Vector2( 0, 40 )
 text = "Editor Panel"
 
 [node name="HSeparator3" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 140.0
-margin_right = 213.0
-margin_bottom = 144.0
+margin_top = 192.0
+margin_right = 220.0
+margin_bottom = 196.0
 
 [node name="Ranges" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 148.0
-margin_right = 213.0
-margin_bottom = 188.0
+margin_top = 200.0
+margin_right = 220.0
+margin_bottom = 240.0
 rect_min_size = Vector2( 0, 40 )
 text = "Range Indicators"
 
@@ -271,21 +282,21 @@ text = "Compass"
 
 [node name="GuacamoleScript" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
-margin_top = 192.0
-margin_right = 213.0
-margin_bottom = 232.0
+margin_top = 224.0
+margin_right = 220.0
+margin_bottom = 264.0
 rect_min_size = Vector2( 0, 40 )
 text = "Guacamole Script Editor"
 
 [node name="HSeparator4" type="HSeparator" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 192.0
-margin_right = 213.0
-margin_bottom = 196.0
+margin_top = 244.0
+margin_right = 220.0
+margin_bottom = 248.0
 
 [node name="Settings" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 200.0
-margin_right = 213.0
-margin_bottom = 240.0
+margin_top = 252.0
+margin_right = 220.0
+margin_bottom = 292.0
 rect_min_size = Vector2( 0, 40 )
 text = "Settings"
 
@@ -295,25 +306,25 @@ margin_top = 219.0
 margin_right = 213.0
 margin_bottom = 264.0
 bbcode_enabled = true
-bbcode_text = "[u]Active Path[/u]: Draws a line from your character to the final node in the currently active path."
-text = "Active Path: Draws a line from your character to the final node in the currently active path."
+bbcode_text = "[u]Active Trail[/u]: Draws a line from your character to the final node in the currently active trail."
+text = "Active Trail: Draws a line from your character to the final node in the currently active trail."
 fit_content_height = true
 scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ActivePath" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="ActiveTrail" type="CheckButton" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 visible = false
-margin_top = 268.0
-margin_right = 213.0
-margin_bottom = 308.0
-text = "Active Path"
+margin_top = 276.0
+margin_right = 220.0
+margin_bottom = 316.0
+text = "Active Trail"
 
 [node name="ExitButton" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
-margin_top = 244.0
-margin_right = 213.0
-margin_bottom = 284.0
+margin_top = 296.0
+margin_right = 220.0
+margin_bottom = 336.0
 rect_min_size = Vector2( 0, 40 )
 text = "Exit Burrito"
 
@@ -476,17 +487,16 @@ __meta__ = {
 }
 
 [node name="TexturePathOpen" type="FileDialog" parent="Control/Dialogs"]
-margin_left = 740.978
-margin_top = 139.437
-margin_right = 1343.98
-margin_bottom = 602.437
+margin_left = 327.0
+margin_top = 97.0
+margin_right = 930.0
+margin_bottom = 560.0
 window_title = "Open a File"
 mode = 0
 access = 2
 filters = PoolStringArray( "*.png" )
-current_dir = "."
-current_file = "."
-current_path = "."
+current_dir = "/"
+current_path = "/"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -498,10 +508,9 @@ margin_right = 883.169
 margin_bottom = 624.833
 window_title = "Save Path"
 resizable = true
-access = 2
-current_dir = "."
-current_file = "."
-current_path = "."
+access = 1
+current_dir = "user://"
+current_path = "user://"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -539,7 +548,7 @@ size_flags_horizontal = 3
 disabled = true
 text = "Delete Selected"
 
-[node name="NewNodeAfter" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+[node name="NewTrailPointAfter" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 margin_top = 44.0
 margin_right = 323.0
 margin_bottom = 84.0
@@ -575,23 +584,23 @@ size_flags_horizontal = 3
 disabled = true
 text = "Vertical Snap Selected To Player"
 
-[node name="SetActivePath" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+[node name="SetActiveTrail" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 margin_top = 220.0
 margin_right = 323.0
 margin_bottom = 260.0
 rect_min_size = Vector2( 0, 40 )
 size_flags_horizontal = 3
 disabled = true
-text = "SetActivePath"
+text = "SetActiveTrail"
 
-[node name="ReversePathDirection" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
+[node name="ReverseTrailDirection" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 margin_top = 264.0
 margin_right = 323.0
 margin_bottom = 304.0
 rect_min_size = Vector2( 0, 40 )
 size_flags_horizontal = 3
 disabled = true
-text = "Reverse Path Direction"
+text = "Reverse Trail Direction"
 
 [node name="Set Floating Mark" type="Button" parent="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer"]
 visible = false
@@ -601,10 +610,9 @@ margin_bottom = 348.0
 rect_min_size = Vector2( 0, 40 )
 size_flags_horizontal = 3
 disabled = true
-text = "Reverse Path Direction"
+text = "Reverse Trail Direction"
 
 [node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
-visible = true
 margin_left = 592.0
 margin_top = 146.0
 margin_right = 981.0
@@ -764,9 +772,6 @@ visible = false
 margin_top = 284.0
 margin_right = 112.0
 margin_bottom = 284.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="LoadLutrisProfile" type="Button" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 visible = false
@@ -775,6 +780,25 @@ margin_top = 284.0
 margin_right = 384.0
 margin_bottom = 304.0
 text = "Load Lutris Profile"
+
+[node name="CategoriesDialog" type="WindowDialog" parent="Control/Dialogs"]
+margin_left = 280.0
+margin_top = 105.0
+margin_right = 751.0
+margin_bottom = 486.0
+resizable = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarkersUI" type="Tree" parent="Control/Dialogs/CategoriesDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Border" type="Control" parent="Control"]
 visible = false
@@ -843,11 +867,9 @@ anchor_bottom = 1.0
 margin_top = -6.0
 color = Color( 0, 0, 0, 1 )
 
-[node name="Paths" type="Spatial" parent="."]
+[node name="Trails" type="Spatial" parent="."]
 
 [node name="Icons" type="Spatial" parent="."]
-
-[node name="Gizmos" type="Spatial" parent="."]
 
 [node name="FeetLocation" type="Spatial" parent="."]
 
@@ -858,15 +880,16 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]
-[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewPath" to="." method="_on_NewPath_pressed"]
-[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewPathPoint" to="." method="_on_NewPathPoint_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewTrail" to="." method="_on_NewTrail_pressed"]
+[connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewTrailPoint" to="." method="_on_NewTrailPoint_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewIcon" to="." method="_on_NewIcon_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/AdjustPoints" to="." method="_on_AdjustNodesButton_pressed"]
-[connection signal="file_selected" from="Control/Dialogs/FileDialog" to="." method="_on_FileDialog_file_selected"]
-[connection signal="hide" from="Control/Dialogs/FileDialog" to="." method="_on_Dialog_hide"]
+[connection signal="dir_selected" from="Control/Dialogs/ImportPackDialog" to="." method="_on_ImportPackDialog_dir_selected"]
+[connection signal="hide" from="Control/Dialogs/ImportPackDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
-[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadPath" to="." method="_on_LoadPath_pressed"]
-[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SavePath" to="." method="_on_SavePath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportPath" to="." method="_on_ImportPath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SaveData" to="." method="_on_SaveData_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Settings" to="." method="_on_Settings_pressed"]
@@ -888,16 +911,15 @@ material/0 = SubResource( 4 )
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox7" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="file_selected" from="Control/Dialogs/TexturePathOpen" to="." method="_on_TexturePathOpen_file_selected"]
 [connection signal="hide" from="Control/Dialogs/TexturePathOpen" to="." method="_on_Dialog_hide"]
-[connection signal="file_selected" from="Control/Dialogs/SaveDialog" to="." method="_on_SaveDialog_file_selected"]
 [connection signal="hide" from="Control/Dialogs/SaveDialog" to="." method="_on_Dialog_hide"]
 [connection signal="hide" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_NodeEditorDialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode" to="." method="_on_DeleteNode_pressed"]
-[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter" to="." method="_on_NewNodeAfter_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewTrailPointAfter" to="." method="_on_NewTrailPointAfter_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer" to="." method="_on_SnapSelectedToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer" to="." method="_on_XZSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
-[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath" to="." method="_on_SetActivePath_pressed"]
-[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection" to="." method="_on_ReversePathDirection_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail" to="." method="_on_SetActiveTrail_pressed"]
+[connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection" to="." method="_on_ReverseTrailDirection_pressed"]
 [connection signal="hide" from="Control/Dialogs/SettingsDialog" to="." method="_on_NodeEditorDialog_hide"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumWidth" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumHeight" to="Control/Dialogs/SettingsDialog" method="save_settings"]
@@ -907,3 +929,10 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/AutoLaunchBurritoLink" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/WinePath" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/EnvironmentVars" to="Control/Dialogs/SettingsDialog" method="save_settings"]
+[connection signal="hide" from="Control/Dialogs/CategoriesDialog" to="." method="_on_Dialog_hide"]
+[connection signal="cell_selected" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_MarkersUI_cell_selected"]
+[connection signal="cell_selected" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_MarkerPacks_cell_selected"]
+[connection signal="item_edited" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_MarkersUI_item_edited"]
+[connection signal="item_edited" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_MarkerPacks_item_edited"]
+[connection signal="multi_selected" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_Tree_multi_selected"]
+[connection signal="tree_entered" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_Tree_tree_entered"]

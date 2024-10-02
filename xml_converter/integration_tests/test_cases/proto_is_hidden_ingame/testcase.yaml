@@ -1,0 +1,5 @@
+input_paths: 
+    "pack": "proto"
+expected_stdout: |
+expected_stderr: |
+expected_returncode: 0

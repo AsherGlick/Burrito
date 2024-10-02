@@ -1,0 +1,10 @@
+<OverlayData>
+    <MarkerCategory DisplayName="My Category" Name="mycategory">
+    </MarkerCategory>
+    <POIs>
+        <POI ScaleOnMapWithZoom="true" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI ScaleOnMapWithZoom="false" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI ScaleOnMapWithZoom="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI ScaleOnMapWithZoom="1" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+    </POIs>
+</OverlayData>

@@ -1,0 +1,23 @@
+<OverlayData>
+<MarkerCategory  DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory">
+</MarkerCategory>
+
+<POIs>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="false"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="false"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="true"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="true"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="false"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="false"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="true"/>
+<POI  Type="mycategory" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002" IngameVisibility="true"/>
+<Trail  Type="mycategory" IngameVisibility="false"/>
+<Trail  Type="mycategory" IngameVisibility="false"/>
+<Trail  Type="mycategory" IngameVisibility="true"/>
+<Trail  Type="mycategory" IngameVisibility="true"/>
+<Trail  Type="mycategory" IngameVisibility="false"/>
+<Trail  Type="mycategory" IngameVisibility="false"/>
+<Trail  Type="mycategory" IngameVisibility="true"/>
+<Trail  Type="mycategory" IngameVisibility="true"/>
+</POIs>
+</OverlayData>

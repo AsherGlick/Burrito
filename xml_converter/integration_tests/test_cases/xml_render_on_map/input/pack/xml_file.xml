@@ -1,0 +1,23 @@
+<OverlayData>
+    <MarkerCategory DisplayName="My Category" Name="mycategory">
+    </MarkerCategory>
+
+    <POIs>
+        <POI MapVisibility="false" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MapVisibility="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MapVisibility="true" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MapVisibility="1" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMapVisibility="false" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMapVisibility="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMapVisibility="true" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMapVisibility="1" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <Trail MapVisibility="false" Type="mycategory" />
+        <Trail MapVisibility="0" Type="mycategory" />
+        <Trail MapVisibility="true" Type="mycategory"  />
+        <Trail MapVisibility="1" Type="mycategory"  />
+        <Trail BHMapVisibility="false" Type="mycategory" />
+        <Trail BHMapVisibility="0" Type="mycategory" />
+        <Trail BHMapVisibility="true" Type="mycategory"  />
+        <Trail BHMapVisibility="1" Type="mycategory"  />
+    </POIs>
+</OverlayData>

@@ -1,0 +1,13 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+    Error: Category Not Found "notmycategory"
+    test_cases/xml_type_invalid/input/pack/xml_file.xml
+    11 |        <POI Type="notmycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+       |                   ^^^^^^^^^^^^^
+    Error: Category Not Found "nestedlevel4"
+    test_cases/xml_type_invalid/input/pack/xml_file.xml
+    12 |        <POI Type="nestedlevel1.nestedlevel2.nestedlevel3.nestedlevel4" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+       |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+expected_stderr: |
+expected_returncode: 0

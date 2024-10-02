@@ -1,0 +1,347 @@
+syntax = "proto3";
+
+package guildpoint;
+
+message Guildpoint {
+    repeated Category category = 1;
+    repeated TextureData textures = 2;
+}
+
+message TextureData {
+    string filepath = 1;
+    // repeated string tags = 2;
+    // bytes filehash = 3;
+    // // Maybe useful for approximation or for loading in a base color on meshes before the texture data is ready
+    // RGBAColor approximate_color = 4;
+}
+
+message Category {
+    string name = 1;
+    repeated Category children = 2;
+    repeated Icon icon = 3;
+    repeated Trail trail = 4;
+    bool is_separator = 5;
+    bool is_hidden = 6;
+    string tip_description = 7;
+    bytes id = 8;
+}
+
+message Icon {
+    uint32 texture_id = 2;
+    bytes guid = 3;
+    int32 map_id = 4;
+    float distance_fade_end = 5;
+    float distance_fade_start = 6;
+    float height_offset= 7;
+    Position position = 8;
+    Trigger trigger = 9;
+    EulerRotation euler_rotation = 10;
+
+    int32 achievement_id = 16;
+    int32 achievement_bit_index = 17;
+
+    bool disable_player_cutout = 19;
+    int32 minimum_size_on_screen = 20;
+    int32 map_display_size = 21;
+    int32 maximum_size_on_screen = 22;
+    bool constant_size_on_map = 23;
+    string tip_description = 24;
+    string tip_name = 25;
+    fixed32 rgba_color = 26;
+    FestivalFilter festival_filter = 27;
+    MapTypeFilter map_type_filter = 28;
+    MountFilter mount_filter = 29;
+    ProfessionFilter profession_filter = 30;
+    SpecializationFilter specialization_filter = 31;
+    SpeciesFilter species_filter = 32;
+    CullChirality cull_chirality = 33;
+    bool is_hidden_ingame = 34;
+    bool is_hidden_on_map = 35;
+    bool is_hidden_on_minimap = 36;
+
+    float tentative__scale = 2048;
+    string bhdraft__schedule = 2052;
+    float bhdraft__schedule_duration = 2053;
+}
+
+message Trail {
+    uint32 texture_id = 2;
+    bytes guid = 3;
+    int32 map_id = 4;
+    float distance_fade_end = 5;
+    float distance_fade_start = 6;
+    TrailData trail_data = 7;
+    float animation_speed = 8;
+
+    int32 achievement_id = 16;
+    int32 achievement_bit_index = 17;
+    bool disable_player_cutout = 19;
+    bool is_wall = 20;
+    float scale = 21;
+    fixed32 rgba_color = 22;
+    FestivalFilter festival_filter = 23;
+    MapTypeFilter map_type_filter = 24;
+    MountFilter mount_filter = 25;
+    ProfessionFilter profession_filter = 26;
+    SpecializationFilter specialization_filter = 27;
+    SpeciesFilter species_filter = 28;
+    int32 map_display_size = 29;
+    CullChirality cull_chirality = 30;
+    bool is_hidden_ingame = 31;
+    bool is_hidden_on_map = 32;
+    bool is_hidden_on_minimap = 33;
+
+    string bhdraft__schedule = 2052;
+    float bhdraft__schedule_duration = 2053;
+}
+
+message Position {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message EulerRotation {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Trigger {
+    bool auto_trigger = 1;
+    float bounce_delay = 2;
+    float bounce_duration = 3;
+    float bounce_height = 4;
+    string action_copy_clipboard = 5;
+    string action_copy_message = 6;
+    bool has_countdown = 7;
+    string action_info_message = 8;
+    bool invert_display = 9;
+    float reset_length = 10;
+    float range = 11;
+    Category action_hide_category = 12;
+    Category action_show_category = 13;
+    Category action_toggle_category = 14;
+    ResetBehavior reset_behavior = 15;
+}
+
+enum CullChirality {
+    none = 0;
+    clockwise = 1;
+    counter_clockwise = 2;
+}
+
+enum ResetBehavior {
+    always_visible = 0;
+    map_change = 1;
+    daily_reset = 2;
+    never = 3;
+    timer = 4;
+    map_reset = 5;
+    instance_change = 6;
+    daily_reset_per_character = 7;
+    weekly_reset = 8;
+}
+
+message FestivalFilter {
+    bool dragonbash = 1;
+    bool festival_of_the_four_winds = 2;
+    bool halloween = 3;
+    bool lunar_new_year = 4;
+    bool super_adventure_festival = 5;
+    bool wintersday = 6;
+    bool none = 7;
+}
+
+message MapTypeFilter {
+    bool unknown_map = 1;
+    bool redirect_map = 2;
+    bool character_create_map = 3;
+    bool pvp_map = 4;
+    bool gvg_map = 5;
+    bool instance_map = 6;
+    bool public_map = 7;
+    bool tournament_map = 8;
+    bool tutorial_map = 9;
+    bool user_tournament_map = 10;
+    bool center_map = 11;
+    bool eternal_battlegrounds_map = 12;
+    bool bluehome_map = 13;
+    bool blue_borderlands_map = 14;
+    bool green_home_map = 15;
+    bool green_borderlands_map = 16;
+    bool red_home_map = 17;
+    bool red_borderlands_map = 18;
+    bool fortunes_vale_map = 19;
+    bool jump_puzzle_map = 20;
+    bool obsidian_sanctum_map = 21;
+    bool edge_of_the_mists_map = 22;
+    bool public_mini_map = 23;
+    bool wvw_lounge_map = 24;
+}
+
+message MountFilter {
+    bool raptor = 1;
+    bool springer = 2;
+    bool skimmer = 3;
+    bool jackal = 4;
+    bool griffon = 5;
+    bool roller_beetle = 6;
+    bool warclaw = 7;
+    bool skyscale = 8;
+    bool skiff = 9;
+    bool seige_turtle = 10;
+}
+
+message ProfessionFilter {
+    bool guardian = 1;
+    bool warrior = 2;
+    bool engineer = 3;
+    bool ranger = 4;
+    bool thief = 5;
+    bool elementalist = 6;
+    bool mesmer = 7;
+    bool necromancer = 8;
+    bool revenant = 9;
+}
+
+message SpecializationFilter {
+    // Heart of Thorns Spec
+    bool elementalist_tempest = 1;
+    bool engineer_scrapper = 2;
+    bool guardian_dragonhunter = 3;
+    bool mesmer_chronomancer = 4;
+    bool necromancer_reaper = 5;
+    bool ranger_druid = 6;
+    bool revenant_herald = 7;
+    bool thief_daredevil = 8;
+    bool warrior_berserker = 9;
+    // Path of Fire Spec
+    bool elementalist_weaver = 10;
+    bool engineer_holosmith = 11;
+    bool guardian_firebrand = 12;
+    bool mesmer_mirage = 13;
+    bool necromancer_scourge = 14;
+    bool ranger_soulbeast = 15;
+    bool revenant_renegade = 16;
+    bool thief_deadeye = 17;
+    bool warrior_spellbreaker = 18;
+    // End of Dragon Spec
+    bool elementalist_catalyst = 19;
+    bool engineer_mechanist = 20;
+    bool guardian_willbender = 21;
+    bool mesmer_virtuoso = 22;
+    bool necromancer_harbinger = 23;
+    bool ranger_untamed = 24;
+    bool revenant_vindicator = 25;
+    bool thief_specter = 26;
+    bool warrior_bladesworn = 27;
+    // Core Spec
+    bool elementalist_air = 28;
+    bool elementalist_arcane = 29;
+    bool elementalist_earth = 30;
+    bool elementalist_fire = 31;
+    bool elementalist_water = 32;
+    bool engineer_alchemy = 33;
+    bool engineer_explosives = 34;
+    bool engineer_firearms = 35;
+    bool engineer_inventions = 36;
+    bool engineer_tools = 37;
+    bool guardian_honor = 38;
+    bool guardian_radiance = 39;
+    bool guardian_valor = 40;
+    bool guardian_virtues = 41;
+    bool guardian_zeal = 42;
+    bool mesmer_chaos = 43;
+    bool mesmer_domination = 44;
+    bool mesmer_dueling = 45;
+    bool mesmer_illusions = 46;
+    bool mesmer_inspiration = 47;
+    bool necromancer_blood_magic = 48;
+    bool necromancer_curses = 49;
+    bool necromancer_death_magic = 50;
+    bool necromancer_soul_reaping = 51;
+    bool necromancer_spite = 52;
+    bool ranger_beastmastery = 53;
+    bool ranger_marksmanship = 54;
+    bool ranger_nature_magic = 55;
+    bool ranger_skirmishing = 56;
+    bool ranger_wilderness_survival = 57;
+    bool revenant_corruption = 58;
+    bool revenant_devastation = 59;
+    bool revenant_invocation = 60;
+    bool revenant_retribution = 61;
+    bool revenant_salvation = 62;
+    bool thief_acrobatics = 63;
+    bool thief_critical_strikes = 64;
+    bool thief_deadly_arts = 65;
+    bool thief_shadow_arts = 66;
+    bool thief_trickery = 67;
+    bool warrior_arms = 68;
+    bool warrior_defense = 69;
+    bool warrior_discipline = 70;
+    bool warrior_strength = 71;
+    bool warrior_tactics = 72;
+}
+
+message SpeciesFilter {
+    bool asura = 1;
+    bool charr = 2;
+    bool human = 3;
+    bool norn = 4;
+    bool sylvari = 5;
+}
+
+message TrailData {
+    repeated float points_x = 2;
+    repeated float points_y = 3;
+    repeated float points_z = 4;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// proto creation guidelines
+//
+// Fields
+// ======
+// Field indexes are backwards and forwards compatible per this design, meaning
+// that any proto should be parseable by both older and newer clients without
+// issue. This means that if an attribute is assigned an index then no other
+// field should ever be assigned that index as well. Larger indexes require
+// more bytes to encode. As a result the smaller indexes are highly protected
+// while larger indexes numbers a mostly unregulated.
+//
+// Core Fields: Indexes 1-15
+// -------------------------
+// The first 15 indexes are the only indexes that will take just a single byte
+// to store. These should only be used for attributes that are the most common.
+// In order to create a new field with a number in this range it must be an
+// effectively required field or very common field to warrant using only a
+// single byte.
+//
+// Additional Fields: Indexes 16-2047
+// ----------------------------------
+// The next 2032 numbers are for additional fields. These are fields that are
+// permanent but not as common as the Core Fields. Possibly optional arguments
+// for their message, or metadata. A field must be finalized before it can be
+// set with an ID in this range, no experimental values should be present.
+//
+// Experimental Fields: Indexes 2048-262143+
+// ---------------------------------------------
+// All other IDs are considered experimental. Any index up to 232143 will use
+// 3 bytes of identification. The only requirement for creating a field with
+// an id in this range is that no other field has ever used that ID before.
+// Fields that are experimental may be prefixed with some value to indicate
+// which project is experimenting with them. This will help ensure the name
+// of the experimental field does not conflict with name of the possible future
+// field the experiment is for.
+//
+// Messages
+// ========
+// Messages have little effective permanent costs outside of JSON exports and
+// imports. As such there is no issue with creating new messages for any
+// reason so long as they do not conflict with any other message names.
+// Messages that are still under development may be prefixed with some value to
+// indicate which project is experimenting with them. This will prevent the
+// name of the message from conflicting with the name of the possible future
+// message the experimental message is for.
+////////////////////////////////////////////////////////////////////////////////

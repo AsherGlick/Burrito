@@ -14,7 +14,7 @@ _global_script_classes=[ {
 "language": "NativeScript",
 "path": "res://tacoparser.gdns"
 }, {
-"base": "Node",
+"base": "",
 "class": "X11_FG",
 "language": "NativeScript",
 "path": "res://Spatial.gdns"
@@ -47,10 +47,15 @@ window/vsync/use_vsync=false
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
 
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/protobuf/plugin.cfg", "res://addons/version_restrict/plugin.cfg" )
+
 [global]
 
 logg=true
 logging=true
+target_engine_version="3.3.2"
 
 [rendering]
 

@@ -1,0 +1,27 @@
+<OverlayData>
+    <MarkerCategory Name="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83"></MarkerCategory>
+
+    <MarkerCategory Name="NestedLevel1" XPos="000" MapID="999">
+        <MarkerCategory Name="NestedLevel2" YPos="222">
+            <MarkerCategory Name="NestedLevel3" ZPos="333"></MarkerCategory>
+        </MarkerCategory>
+    </MarkerCategory>
+
+    <MarkerCategory Name="TrailNestedLevel1" Texture="texture_one.png" TrailData="trail.trl" AnimationSpeed="1">
+        <MarkerCategory Name="TrailNestedLevel2"></MarkerCategory>
+    </MarkerCategory>
+
+    <MarkerCategory Name="NestedLevel1" XPos="111"></MarkerCategory>
+
+
+    <POIs>
+        <POI Type="mycategory" MapID="50" />
+        <POI Type="mycategory" XPos="170.81" MapID="50" />
+        <POI Type="mycategory" YPos="211.65" MapID="50" />
+
+        <POI Type="nestedlevel1" MapID="50" />
+        <POI Type="nestedlevel1.nestedlevel2" MapID="50" />
+        <POI Type="nestedlevel1.nestedlevel2.nestedlevel3" MapID="50" />
+        <Trail Type="trailnestedlevel1.trailnestedlevel2" />
+    </POIs>
+</OverlayData>

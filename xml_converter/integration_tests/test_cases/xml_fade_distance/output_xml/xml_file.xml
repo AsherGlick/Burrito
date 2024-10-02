@@ -1,0 +1,18 @@
+<OverlayData>
+<MarkerCategory  DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory">
+</MarkerCategory>
+
+<POIs>
+<POI  Type="mycategory" FadeFar="1.000000" FadeNear="0.000000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" FadeFar="3.140000" FadeNear="0.000000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" FadeFar="123.456001" FadeNear="0.000000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<Trail  Type="mycategory" FadeFar="3.140000" FadeNear="0.000000"/>
+<POI  Type="mycategory" FadeFar="3.141590" FadeNear="3.140000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" FadeFar="123.456001" FadeNear="3.140000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<Trail  Type="mycategory" FadeFar="3.141590" FadeNear="3.140000"/>
+<POI  Type="mycategory" FadeFar="0.000000" FadeNear="0.000000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" FadeFar="3.140000" FadeNear="0.000000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="mycategory" FadeFar="123.456001" FadeNear="0.000000" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<Trail  Type="mycategory" FadeFar="3.140000" FadeNear="0.000000"/>
+</POIs>
+</OverlayData>

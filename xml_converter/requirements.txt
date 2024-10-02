@@ -1,0 +1,20 @@
+classnotation==1.2.1
+flake8==4.0.1
+Jinja2==3.1.2
+lark==1.1.8
+Markdown==3.4.1
+mypy==1.10.0
+python-frontmatter==1.0.0
+PyYAML==5.1
+types-Markdown==3.4.0
+types-PyYAML==6.0.10
+Pygments==2.17.2
+
+## The following requirements were added by pip freeze:
+MarkupSafe==2.1.5
+mccabe==0.6.1
+mypy-extensions==1.0.0
+pycodestyle==2.8.0
+pyflakes==2.4.0
+tomli==2.0.1
+typing_extensions==4.11.0

@@ -1,0 +1,92 @@
+name: Diff Protobin
+
+on:
+  pull_request_target:
+    paths:
+      - '**/*.bin'
+jobs:
+  custom-diff:
+    runs-on: ubuntu-latest
+    if: '!github.event.pull_request.draft'
+    permissions: write-all
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install ProtoC
+      run: sudo apt-get install -y protobuf-compiler
+
+    - name: Fetch PR commits
+      run: |
+        git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head:refs/pull/${{ github.event.pull_request.number }}/head
+        git fetch origin ${{ github.base_ref }}
+
+    - name: Get Filenames
+      run: |
+        for file in $(git diff --name-only origin/${{ github.base_ref }} refs/pull/${{ github.event.pull_request.number }}/head | grep '.bin$'); do
+          mkdir -p $(dirname "$file")
+          if [ -n "$(git ls-tree "origin/${{ github.base_ref }}" -- "$file")" ]; then
+            git show origin/${{ github.base_ref }}:$file > $file._old
+            protoc --decode=guildpoint.Guildpoint xml_converter/proto/guildpoint.proto < $file._old > $file.textproto._old
+          else
+            touch $file.textproto._old
+          fi
+
+          if [ -n "$(git ls-tree "refs/pull/${{ github.event.pull_request.number }}/head" -- "$file")" ]; then
+            git show refs/pull/${{ github.event.pull_request.number }}/head:$file > $file._new
+            protoc --decode=guildpoint.Guildpoint xml_converter/proto/guildpoint.proto < $file._new > $file.textproto._new
+          else
+            touch $file.textproto._new
+          fi
+
+          diff -u $file.textproto._old $file.textproto._new > $file._diff || true
+          echo $file >> file_list.txt
+        done
+
+    - name: Get PR commit hash
+      id: prcommithash
+      run: |
+          PR_COMMIT_HASH=$(git log --format="%H" -n 1 refs/pull/${{ github.event.pull_request.number }}/head)
+          echo "Latest PR Commit Hash: $PR_COMMIT_HASH"
+          echo "pr_commit_hash="$PR_COMMIT_HASH >> $GITHUB_OUTPUT
+
+    - name: Post Comment
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+
+          const issue_number = context.issue.number;
+          const githubToken = process.env.GITHUB_TOKEN;
+
+          const files = fs.readFileSync('file_list.txt', 'utf8').split("\n");
+
+          for (let file of files) {
+            if (file == "") {
+              continue;
+            }
+            const diff_contents = fs.readFileSync(file + "._diff", 'utf8')
+            let comment_body = [
+              "<details>",
+              "<summary>Full Diff</summary>",
+              "",
+              "```diff",
+              diff_contents,
+              "```",
+              "</details>",
+            ].join("\n");
+            
+            console.log(file)
+
+            await github.rest.pulls.createReviewComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: issue_number,
+              path: file,
+              body: comment_body,
+              commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
+              subject_type: "file",
+            });
+          }
