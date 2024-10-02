@@ -144,7 +144,9 @@ void write_burrito_directory(
 void process_data(
     vector<string> input_taco_paths,
     vector<string> input_guildpoint_paths,
-
+    // If multiple inputs are found to have the same top level categories,
+    // The program will skip writing to output unless the below is true
+    bool allow_duplicates,
     // These will eventually have additional arguments for each output path to
     // allow for splitting out a single markerpack
     vector<string> output_taco_paths,
@@ -152,8 +154,7 @@ void process_data(
 
     // This is a special output path used for burrito internal use that splits
     // the guildpoint protobins by map id.
-    string output_split_guildpoint_dir,
-    bool allow_duplicates) {
+    string output_split_guildpoint_dir) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
@@ -169,12 +170,7 @@ void process_data(
             input_taco_paths[i],
             &marker_categories,
             &parsed_pois);
-        for (string category_name : category_names) {
-            if (find(top_level_categories.begin(), top_level_categories.end(), category_name) != top_level_categories.end())
-                duplicate_categories.push_back(category_name);
-            else
-                top_level_categories.insert(category_name);
-        }
+        combine_sets(&category_names, &top_level_categories, &duplicate_categories);
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -189,23 +185,16 @@ void process_data(
             input_guildpoint_paths[i],
             &marker_categories,
             &parsed_pois);
-        for (string category_name : category_names) {
-            if (find(top_level_categories.begin(), top_level_categories.end(), category_name) != top_level_categories.end())
-                duplicate_categories.push_back(category_name);
-            else
-                top_level_categories.insert(category_name);
-        }
+        combine_sets(&category_names, &top_level_categories, &duplicate_categories);
     }
 
-    if (duplicate_categories.size() > 0) {
+    if (duplicate_categories.size() > 0 && allow_duplicates != true) {
+        cout << "Did not write due to duplicates in categories. If you want to bypass this, use '--allow-duplicates'" << endl;
         cout << "The following top level categories were found in more than one pack" << endl;
         for (size_t i = 0; i < duplicate_categories.size(); i++) {
             cout << duplicate_categories[i] << endl;
         }
-        if (allow_duplicates != true) {
-            cout << "Did not write due to duplicates in categories. If you want to bypass this, use '--allow-duplicates'" << endl;
-            return;
-        }
+        return;
     }
 
     // Write all of the xml taco paths
@@ -252,7 +241,7 @@ int main(int argc, char* argv[]) {
     vector<string> output_taco_paths;
     vector<string> input_guildpoint_paths;
     vector<string> output_guildpoint_paths;
-    bool allow_duplicates;
+    bool allow_duplicates = false;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
@@ -281,9 +270,16 @@ int main(int argc, char* argv[]) {
         }
         else if (!strcmp(argv[i], "--allow-duplicates")) {
             allow_duplicates = true;
+            arg_target = nullptr;
         }
         else {
-            arg_target->push_back(argv[i]);
+            if (arg_target != nullptr) {
+                arg_target->push_back(argv[i]);
+            }
+            else {
+                cout << "Unknown argument " << argv[i] << endl;
+                return -1;
+            }
         }
     }
 
@@ -300,10 +296,10 @@ int main(int argc, char* argv[]) {
     process_data(
         input_taco_paths,
         input_guildpoint_paths,
+        allow_duplicates,
         output_taco_paths,
         output_guildpoint_paths,
-        output_split_guildpoint_dir,
-        allow_duplicates);
+        output_split_guildpoint_dir);
 
     return 0;
 }

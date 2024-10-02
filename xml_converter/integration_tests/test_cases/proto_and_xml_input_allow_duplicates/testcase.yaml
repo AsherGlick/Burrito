@@ -3,10 +3,6 @@ input_paths:
     "pack2": "proto"
     "pack3": "xml"
 expected_stdout: |
-    The following top level categories were found in more than one pack
-    mycategory
-    mycategory
 expected_stderr: |
 expected_returncode: 0
-additional_arguments: |
-    --allow-duplicates
+allow_duplicates: true

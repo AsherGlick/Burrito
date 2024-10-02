@@ -17,33 +17,37 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
-string parse_marker_categories(
+OptionalString parse_marker_categories(
     rapidxml::xml_node<>* node,
     map<string, Category>* marker_categories,
     Category* parent,
     vector<XMLError*>* errors,
     XMLReaderState* state,
     int depth = 0) {
+    OptionalString name = {
+        "",  // value
+        false,  // error
+    };
     if (get_node_name(node) == "MarkerCategory") {
-        string name;
-
         rapidxml::xml_attribute<>* name_attribute = find_attribute(node, "name");
         if (name_attribute == 0) {
             // TODO: This error should really be for the entire node not just the name
             errors->push_back(new XMLNodeNameError("Category attribute 'name' is missing so it cannot be properly referenced", node));
+            name.error = true;
 
             // TODO: Maybe fall back on display name slugification.
-            name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            name.value = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
             UNKNOWN_CATEGORY_COUNTER++;
         }
         else {
-            name = lowercase(get_attribute_value(name_attribute));
+            name.value = lowercase(get_attribute_value(name_attribute));
         }
 
-        if (name == "") {
+        if (name.value == "") {
             errors->push_back(new XMLNodeNameError("Category attribute 'name' is an empty string so it cannot be properly referenced", node));
+            name.error = true;
             // TODO: Maybe fall back on display name slugification.
-            name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            name.value = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
             UNKNOWN_CATEGORY_COUNTER++;
         }
 
@@ -51,15 +55,16 @@ string parse_marker_categories(
         Category* category;
 
         // Create and initialize a new category if this one does not exist
-        auto existing_category_search = marker_categories->find(name);
+        auto existing_category_search = marker_categories->find(name.value);
         if (existing_category_search == marker_categories->end()) {
-            category = &(*marker_categories)[name];
+            category = &(*marker_categories)[name.value];
             category->parent = parent;
         }
         else {
             category = &existing_category_search->second;
             if (category->parent != parent) {
                 errors->push_back(new XMLNodeNameError("Category somehow has a different parent then it used to. This might be a bug in xml_converter", node));
+                name.error = true;
             }
         }
 
@@ -69,7 +74,7 @@ string parse_marker_categories(
         // based on the hashes of its name and its parents names.
         if (!category->menu_id_is_set) {
             Hash128 new_id;
-            new_id.update(name);
+            new_id.update(name.value);
 
             Category* next_node = parent;
             while (next_node != nullptr) {
@@ -87,7 +92,8 @@ string parse_marker_categories(
     }
     else {
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
-        return "";
+        name.error = true;
+        return name;
     }
 }
 
@@ -214,7 +220,10 @@ set<string> parse_xml_file(string xml_filepath, const string marker_pack_root_di
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
-            category_names.insert(parse_marker_categories(node, marker_categories, nullptr, &errors, &state));
+            OptionalString name = parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
+            if (name.error == false) {
+                category_names.insert(name.value);
+            }
         }
         else if (get_node_name(node) == "POIs") {
             vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors, &state);

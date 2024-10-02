@@ -21,7 +21,7 @@ class Testcase:
     expected_stdout: List[str]
     expected_stderr: List[str]
     expected_returncode: int
-    additional_arguments: List[str]
+    allow_duplicates: bool
 
 
 ################################################################################
@@ -59,7 +59,7 @@ def load_testcase(path: str) -> Optional[Testcase]:
     # Load all of the input paths into either xml input or proto inputs
     xml_input_paths: List[str] = []
     proto_input_paths: List[str] = []
-    additional_arguments: List[str] = []
+    allow_duplicates: bool = False
     for pack_name, pack_type in data["input_paths"].items():
         if not isinstance(pack_name, str):
             print(f"Invalid pack name, expecting a string but got {pack_name}")
@@ -106,12 +106,12 @@ def load_testcase(path: str) -> Optional[Testcase]:
         print(f"Invalid Test, expecting string value for 'expected_returncode' in {path}")
         return None
 
-    if "additional_arguments" in data:
-        if not isinstance(data["additional_arguments"], str):
-            print(f"Invalid Test, expecting string value for 'additional_arguments' in {path}")
+    if "allow_duplicates" in data:
+        if not isinstance(data["allow_duplicates"], bool):
+            print(f"Invalid Test, expecting bool value for 'allow_duplicates' in {path}")
             return None
         else:
-            additional_arguments = to_lines(data["additional_arguments"])
+            allow_duplicates = data["allow_duplicates"]
 
     return Testcase(
         name=os.path.basename(path),
@@ -122,7 +122,7 @@ def load_testcase(path: str) -> Optional[Testcase]:
         expected_stdout=to_lines(data["expected_stdout"]),
         expected_stderr=to_lines(data["expected_stderr"]),
         expected_returncode=data["expected_returncode"],
-        additional_arguments=additional_arguments
+        allow_duplicates=allow_duplicates
     )
 
 
