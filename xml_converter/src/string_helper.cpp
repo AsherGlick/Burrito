@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -313,4 +314,17 @@ std::string long_to_hex_string(uint64_t number) {
     }
 
     return hex_string;
+}
+
+void combine_sets(
+    std::set<std::string>* set_a,
+    std::set<std::string>* set_b,
+    std::vector<std::string>* duplicates) {
+    for (string str : *set_a) {
+        if (auto search = set_b->find(str); search != set_b->end()) {
+            duplicates->push_back(str);
+        }
+        else
+            set_b->insert(str);
+    }
 }

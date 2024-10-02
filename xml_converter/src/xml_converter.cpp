@@ -62,40 +62,48 @@ vector<string> get_files_by_suffix(string directory, string suffix) {
     return files;
 }
 
-void read_taco_directory(
+set<string> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
+    set<string> top_level_categories;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
         for (const string& path : xml_files) {
-            parse_xml_file(path, input_path, marker_categories, parsed_pois);
+            set<string> category_names = (parse_xml_file(path, input_path, marker_categories, parsed_pois));
+            top_level_categories.insert(category_names.begin(), category_names.end());
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
-        parse_xml_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        set<string> category_names = parse_xml_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        top_level_categories.insert(category_names.begin(), category_names.end());
     }
+    return top_level_categories;
 }
 
-void read_burrito_directory(
+set<string> read_burrito_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
+    set<string> top_level_categories;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
         vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
         for (const string& path : burrito_files) {
-            read_protobuf_file(path, input_path, marker_categories, parsed_pois);
+            set<string> category_names = read_protobuf_file(path, input_path, marker_categories, parsed_pois);
+            top_level_categories.insert(category_names.begin(), category_names.end());
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
-        read_protobuf_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        set<string> category_names = read_protobuf_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
+        top_level_categories.insert(category_names.begin(), category_names.end());
     }
+    return top_level_categories;
 }
 
 void write_taco_directory(
@@ -136,7 +144,9 @@ void write_burrito_directory(
 void process_data(
     vector<string> input_taco_paths,
     vector<string> input_guildpoint_paths,
-
+    // If multiple inputs are found to have the same top level categories,
+    // The program will skip writing to output unless the below is true
+    bool allow_duplicates,
     // These will eventually have additional arguments for each output path to
     // allow for splitting out a single markerpack
     vector<string> output_taco_paths,
@@ -148,16 +158,19 @@ void process_data(
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
+    set<string> top_level_categories;
+    vector<string> duplicate_categories;
 
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();
     for (size_t i = 0; i < input_taco_paths.size(); i++) {
         cout << "Loading taco pack " << input_taco_paths[i] << endl;
 
-        read_taco_directory(
+        set<string> category_names = read_taco_directory(
             input_taco_paths[i],
             &marker_categories,
             &parsed_pois);
+        combine_sets(&category_names, &top_level_categories, &duplicate_categories);
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -168,10 +181,20 @@ void process_data(
     for (size_t i = 0; i < input_guildpoint_paths.size(); i++) {
         cout << "Loading guildpoint pack " << input_guildpoint_paths[i] << endl;
 
-        read_burrito_directory(
+        set<string> category_names = read_burrito_directory(
             input_guildpoint_paths[i],
             &marker_categories,
             &parsed_pois);
+        combine_sets(&category_names, &top_level_categories, &duplicate_categories);
+    }
+
+    if (duplicate_categories.size() > 0 && allow_duplicates != true) {
+        cout << "Did not write due to duplicates in categories. If you want to bypass this, use '--allow-duplicates'" << endl;
+        cout << "The following top level categories were found in more than one pack" << endl;
+        for (size_t i = 0; i < duplicate_categories.size(); i++) {
+            cout << duplicate_categories[i] << endl;
+        }
+        return;
     }
 
     // Write all of the xml taco paths
@@ -218,6 +241,7 @@ int main(int argc, char* argv[]) {
     vector<string> output_taco_paths;
     vector<string> input_guildpoint_paths;
     vector<string> output_guildpoint_paths;
+    bool allow_duplicates = false;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
@@ -244,8 +268,18 @@ int main(int argc, char* argv[]) {
             // CLI arg parsing later to properly capture this.
             arg_target = &output_split_guildpoint_paths;
         }
+        else if (!strcmp(argv[i], "--allow-duplicates")) {
+            allow_duplicates = true;
+            arg_target = nullptr;
+        }
         else {
-            arg_target->push_back(argv[i]);
+            if (arg_target != nullptr) {
+                arg_target->push_back(argv[i]);
+            }
+            else {
+                cout << "Unknown argument " << argv[i] << endl;
+                return -1;
+            }
         }
     }
 
@@ -262,6 +296,7 @@ int main(int argc, char* argv[]) {
     process_data(
         input_taco_paths,
         input_guildpoint_paths,
+        allow_duplicates,
         output_taco_paths,
         output_guildpoint_paths,
         output_split_guildpoint_dir);
