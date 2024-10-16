@@ -52,7 +52,7 @@ jobs:
 
       - name: Install cpplint
         run: |
-          pip3 install cpplint
+          pip3 install cpplint==1.6.1
 
       - name: Install xml_converter python Dependencies
         run: |
