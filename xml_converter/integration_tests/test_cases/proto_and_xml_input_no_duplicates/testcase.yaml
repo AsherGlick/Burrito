@@ -3,9 +3,14 @@ input_paths:
     "pack2": "proto"
     "pack3": "xml"
 expected_stdout: |
-    The following top level categories were found in more than one pack
-    mycategory
-    mycategory
-    Did not write due to duplicates in categories. If you want to bypass this, use '--allow-duplicates'
+    Did not write due to duplicates in categories.
+    This commonly occurs when attempting to read the same pack multiple times or when separate packs coincidentally have the same name.
+    Please remove one of the packs or edit the name of the packs' top level category before running the program again.
+    If you want to bypass this stop, use '--allow-duplicates'.
+    The following top level categories were found in more than one pack:
+    mycategory in files
+    pack/xml_file.xml
+    pack3/xml_file.xml
+    pack2/markers.bin
 expected_stderr: |
 expected_returncode: 0

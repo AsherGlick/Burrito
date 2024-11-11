@@ -62,48 +62,62 @@ vector<string> get_files_by_suffix(string directory, string suffix) {
     return files;
 }
 
-set<string> read_taco_directory(
+map<string, vector<string>> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
-    set<string> top_level_categories;
+    map<string, vector<string>> category_to_filepath;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
+        string directory_name = filesystem::path(input_path).filename();
         vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
         for (const string& path : xml_files) {
             set<string> category_names = (parse_xml_file(path, input_path, marker_categories, parsed_pois));
-            top_level_categories.insert(category_names.begin(), category_names.end());
+            string relative_path = directory_name + path.substr(input_path.size());
+            for (set<string>::iterator it = category_names.begin(); it != category_names.end(); it++) {
+                category_to_filepath[*it].push_back(relative_path);
+            }
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
         set<string> category_names = parse_xml_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
-        top_level_categories.insert(category_names.begin(), category_names.end());
+        string filename = filesystem::path(input_path).filename();
+        for (set<string>::iterator it = category_names.begin(); it != category_names.end(); it++) {
+            category_to_filepath[*it].push_back(filename);
+        }
     }
-    return top_level_categories;
+    return category_to_filepath;
 }
 
-set<string> read_burrito_directory(
+map<string, vector<string>> read_burrito_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
-    set<string> top_level_categories;
+    map<string, vector<string>> category_to_filepath;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
+        string directory_name = filesystem::path(input_path).filename();
         vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
         for (const string& path : burrito_files) {
             set<string> category_names = read_protobuf_file(path, input_path, marker_categories, parsed_pois);
-            top_level_categories.insert(category_names.begin(), category_names.end());
+            string relative_path = directory_name + path.substr(input_path.size());
+            for (set<string>::iterator it = category_names.begin(); it != category_names.end(); it++) {
+                category_to_filepath[*it].push_back(relative_path);
+            }
         }
     }
     else if (filesystem::is_regular_file(input_path)) {
         set<string> category_names = read_protobuf_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
-        top_level_categories.insert(category_names.begin(), category_names.end());
+        string filename = filesystem::path(input_path).filename();
+        for (set<string>::iterator it = category_names.begin(); it != category_names.end(); it++) {
+            category_to_filepath[*it].push_back(filename);
+        }
     }
-    return top_level_categories;
+    return category_to_filepath;
 }
 
 void write_taco_directory(
@@ -158,19 +172,22 @@ void process_data(
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
-    set<string> top_level_categories;
-    vector<string> duplicate_categories;
+    map<string, vector<vector<string>>> category_to_marker_pack_names;
+    map<string, vector<string>> duplicate_categories;
 
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();
     for (size_t i = 0; i < input_taco_paths.size(); i++) {
         cout << "Loading taco pack " << input_taco_paths[i] << endl;
 
-        set<string> category_names = read_taco_directory(
+        // swap this to map <category, set<filenames>>)
+        map<string, vector<string>> category_names = read_taco_directory(
             input_taco_paths[i],
             &marker_categories,
             &parsed_pois);
-        combine_sets(&category_names, &top_level_categories, &duplicate_categories);
+        for (map<string, vector<string>>::iterator it = category_names.begin(); it != category_names.end(); it++) {
+            category_to_marker_pack_names[it->first].push_back(it->second);
+        }
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -181,18 +198,37 @@ void process_data(
     for (size_t i = 0; i < input_guildpoint_paths.size(); i++) {
         cout << "Loading guildpoint pack " << input_guildpoint_paths[i] << endl;
 
-        set<string> category_names = read_burrito_directory(
+        map<string, vector<string>> category_names = read_burrito_directory(
             input_guildpoint_paths[i],
             &marker_categories,
             &parsed_pois);
-        combine_sets(&category_names, &top_level_categories, &duplicate_categories);
+        for (map<string, vector<string>>::iterator it = category_names.begin(); it != category_names.end(); it++) {
+            category_to_marker_pack_names[it->first].push_back(it->second);
+        }
     }
 
-    if (duplicate_categories.size() > 0 && allow_duplicates != true) {
-        cout << "Did not write due to duplicates in categories. If you want to bypass this, use '--allow-duplicates'" << endl;
-        cout << "The following top level categories were found in more than one pack" << endl;
-        for (size_t i = 0; i < duplicate_categories.size(); i++) {
-            cout << duplicate_categories[i] << endl;
+    for (map<string, vector<vector<string>>>::iterator it = category_to_marker_pack_names.begin(); it != category_to_marker_pack_names.end(); it++) {
+        if (it->second.size() != 1) {
+            for (size_t i = 0; i < it->second.size(); i++) {
+                for (size_t j = 0; j < it->second[i].size(); j++) {
+                    duplicate_categories[it->first].push_back(it->second[i][j]);
+                }
+            }
+        }
+    }
+    if (duplicate_categories.size() > 0 && allow_duplicates == false) {
+        cout << "Did not write due to duplicates in categories." << endl;
+        cout << "This commonly occurs when attempting to read the same pack multiple times or when separate packs coincidentally have the same name." << endl;
+        // TODO: This is the current advice. Further updates could allow other
+        // options like selective merges or changing category names to be unique
+        cout << "Please remove one of the packs or edit the name of the packs' top level category before running the program again." << endl;
+        cout << "If you want to bypass this stop, use '--allow-duplicates'." << endl;
+        cout << "The following top level categories were found in more than one pack:" << endl;
+        for (map<string, vector<string>>::iterator it = duplicate_categories.begin(); it != duplicate_categories.end(); it++) {
+            cout << it->first << " in files:" << endl;
+            for (string str : it->second) {
+                cout << str << endl;
+            }
         }
         return;
     }
@@ -247,7 +283,7 @@ int main(int argc, char* argv[]) {
     // converting from xml markerpacks to internal protobuf files.
     vector<string> output_split_guildpoint_paths;
 
-    vector<string>* arg_target = &input_taco_paths;
+    vector<string>* arg_target = nullptr;
 
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--input-taco-path")) {

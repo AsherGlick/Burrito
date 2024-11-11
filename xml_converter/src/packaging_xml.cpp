@@ -26,28 +26,35 @@ OptionalString parse_marker_categories(
     int depth = 0) {
     OptionalString name = {
         "",  // value
-        false,  // error
+        false,  // is_null
     };
     if (get_node_name(node) == "MarkerCategory") {
         rapidxml::xml_attribute<>* name_attribute = find_attribute(node, "name");
         if (name_attribute == 0) {
             // TODO: This error should really be for the entire node not just the name
             errors->push_back(new XMLNodeNameError("Category attribute 'name' is missing so it cannot be properly referenced", node));
-            name.error = true;
 
             // TODO: Maybe fall back on display name slugification.
-            name.value = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            name = {
+                "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER),
+                false,
+            };
             UNKNOWN_CATEGORY_COUNTER++;
         }
         else {
-            name.value = lowercase(get_attribute_value(name_attribute));
+            name = {
+                lowercase(get_attribute_value(name_attribute)),
+                false,
+            };
         }
 
         if (name.value == "") {
             errors->push_back(new XMLNodeNameError("Category attribute 'name' is an empty string so it cannot be properly referenced", node));
-            name.error = true;
             // TODO: Maybe fall back on display name slugification.
-            name.value = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            name = {
+                "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER),
+                false,
+            };
             UNKNOWN_CATEGORY_COUNTER++;
         }
 
@@ -64,7 +71,6 @@ OptionalString parse_marker_categories(
             category = &existing_category_search->second;
             if (category->parent != parent) {
                 errors->push_back(new XMLNodeNameError("Category somehow has a different parent then it used to. This might be a bug in xml_converter", node));
-                name.error = true;
             }
         }
 
@@ -92,7 +98,10 @@ OptionalString parse_marker_categories(
     }
     else {
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
-        name.error = true;
+        name = {
+            "",
+            true,
+        };
         return name;
     }
 }
@@ -221,7 +230,7 @@ set<string> parse_xml_file(string xml_filepath, const string marker_pack_root_di
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
             OptionalString name = parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
-            if (name.error == false) {
+            if (name.is_null == false) {
                 category_names.insert(name.value);
             }
         }

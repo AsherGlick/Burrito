@@ -8,7 +8,7 @@
 
 struct OptionalString {
     std::string value;
-    bool error;
+    bool is_null;
 };
 
 bool matches_any(std::string test, std::initializer_list<std::string> list);
@@ -30,4 +30,3 @@ bool has_suffix(std::string const& fullString, std::string const& ending);
 std::string join_file_paths(const std::string& path_a, const std::string& path_b);
 
 std::string long_to_hex_string(uint64_t number);
-void combine_sets(std::set<std::string>* set_a, std::set<std::string>* set_b, std::vector<std::string>* duplicates);
