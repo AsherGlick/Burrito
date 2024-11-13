@@ -8,9 +8,9 @@ expected_stdout: |
     Please remove one of the packs or edit the name of the packs' top level category before running the program again.
     If you want to bypass this stop, use '--allow-duplicates'.
     The following top level categories were found in more than one pack:
-    mycategory in files
-    pack/xml_file.xml
-    pack3/xml_file.xml
-    pack2/markers.bin
+        "mycategory" in files:
+            pack/xml_file.xml
+            pack2/markers.bin
+            pack3/xml_file.xml
 expected_stderr: |
 expected_returncode: 0
