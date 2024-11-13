@@ -88,7 +88,7 @@ void read_burrito_directory(
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
     else if (filesystem::is_directory(input_path)) {
-        vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
+        vector<string> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
         for (const string& path : burrito_files) {
             read_protobuf_file(path, input_path, marker_categories, parsed_pois);
         }
