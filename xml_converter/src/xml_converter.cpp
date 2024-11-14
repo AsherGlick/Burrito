@@ -102,7 +102,7 @@ map<string, vector<string>> read_burrito_directory(
     }
     else if (filesystem::is_directory(input_path)) {
         string directory_name = filesystem::path(input_path).filename();
-        vector<string> burrito_files = get_files_by_suffix(input_path, ".bin");
+        vector<string> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
         for (const string& path : burrito_files) {
             set<string> top_level_category_names = read_protobuf_file(join_file_paths(input_path, path), input_path, marker_categories, parsed_pois);
             string relative_path = join_file_paths(directory_name, path);
