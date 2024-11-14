@@ -2,8 +2,14 @@
 
 #include <cstdint>
 #include <initializer_list>
+#include <set>
 #include <string>
 #include <vector>
+
+struct OptionalString {
+    std::string value;
+    bool is_null;
+};
 
 bool matches_any(std::string test, std::initializer_list<std::string> list);
 bool normalized_matches_any(std::string test, std::initializer_list<std::string> list);

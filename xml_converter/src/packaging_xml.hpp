@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -10,7 +11,7 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "state_structs/xml_reader_state.hpp"
 
-void parse_xml_file(
+std::set<std::string> parse_xml_file(
     std::string xml_filepath,
     const std::string marker_pack_root_directory,
     std::map<std::string, Category>* marker_categories,

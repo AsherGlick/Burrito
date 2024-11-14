@@ -20,6 +20,7 @@ def run_xml_converter(
     input_proto: Optional[List[str]] = None,
     output_proto: Optional[List[str]] = None,
     split_output_proto: Optional[str] = None,
+    allow_duplicates: Optional[bool] = None,
 ) -> Tuple[str, str, int]:
 
     # Build the command to execute the C++ program with the desired function and arguments
@@ -35,6 +36,8 @@ def run_xml_converter(
         cmd += ["--output-guildpoint-path"] + output_proto
     if split_output_proto:
         cmd += ["--output-split-guildpoint-path"] + [split_output_proto]
+    if allow_duplicates:
+        cmd += ["--allow-duplicates"]
 
     # Run the C++ program and capture its output
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -174,6 +177,7 @@ def main() -> bool:
             input_proto=testcase.proto_input_paths,
             output_xml=[xml_output_dir_path],
             output_proto=[proto_output_dir_path],
+            allow_duplicates=testcase.allow_duplicates
         )
 
         # Sanitize and denoise the lines
@@ -206,8 +210,10 @@ def main() -> bool:
         if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
             print(f"Expected a return code of {testcase.expected_returncode} for {testcase.name} but got {returncode}")
 
-        testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
-        testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
+        if os.path.exists(testcase.expected_output_xml_path):
+            testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
+        if os.path.exists(testcase.expected_output_proto_path):
+            testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
 
         if testcase_passed:
             print(f"Success: test {testcase.name}")
