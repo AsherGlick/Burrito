@@ -1,9 +1,9 @@
 <OverlayData>
-    <MarkerCategory Name="toplevel1" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" ></MarkerCategory>
+    <MarkerCategory DisplayName="TopLevel1" Name="toplevel1" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" ></MarkerCategory>
 
-    <MarkerCategory Name="toplevel2" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" ></MarkerCategory>
+    <MarkerCategory DisplayName="TopLevel2" Name="toplevel2" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" ></MarkerCategory>
 
-    <MarkerCategory Name="toplevel3" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" ></MarkerCategory>
+    <MarkerCategory DisplayName="TopLevel3" Name="toplevel3" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" ></MarkerCategory>
 
     <POIs>
         <POI Type="toplevel1" />

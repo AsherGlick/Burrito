@@ -1,11 +1,11 @@
 <OverlayData>
-<MarkerCategory  ID="CAdMXdpC8dM=" Name="toplevel1">
+<MarkerCategory  DisplayName="TopLevel1" ID="CAdMXdpC8dM=" Name="toplevel1">
 </MarkerCategory>
 
-<MarkerCategory  ID="CAdMXdtC8dM=" Name="toplevel2">
+<MarkerCategory  DisplayName="TopLevel2" ID="CAdMXdtC8dM=" Name="toplevel2">
 </MarkerCategory>
 
-<MarkerCategory  ID="CAdMXdxC8dM=" Name="toplevel3">
+<MarkerCategory  DisplayName="TopLevel3" ID="CAdMXdxC8dM=" Name="toplevel3">
 </MarkerCategory>
 
 <POIs>
