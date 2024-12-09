@@ -211,7 +211,6 @@ void _write_protobuf_file(
 
 void write_protobuf_file(
     const string& marker_pack_root_directory,
-    const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<string, std::vector<Parseable*>> category_to_pois;
@@ -235,18 +234,57 @@ void write_protobuf_file(
         }
     }
 
+    StringHierarchy category_filter;
+    category_filter.add_path({}, true);
     _write_protobuf_file(
         join_file_paths(state.marker_pack_root_directory, "markers.guildpoint"),
         category_filter,
         marker_categories,
         category_to_pois,
         &state);
+    }
+
+// Write protobuf per top level category
+void write_protobuf_file_per_category(
+    const string& marker_pack_root_directory,
+    const map<string, Category>* marker_categories,
+    const vector<Parseable*>* parsed_pois) {
+    std::map<string, std::vector<Parseable*>> category_to_pois;
+    ProtoWriterState state;
+    state.marker_pack_root_directory = marker_pack_root_directory;
+
+    for (size_t i = 0; i < parsed_pois->size(); i++) {
+        Parseable* parsed_poi = (*parsed_pois)[i];
+        if (parsed_poi->classname() == "POI") {
+            Icon* icon = dynamic_cast<Icon*>(parsed_poi);
+            // TODO(331): This is the wrong place to lowercase() the category and is hiding some crimes elsewhere
+            category_to_pois[lowercase(icon->category.category)].push_back(parsed_poi);
+        }
+        else if (parsed_poi->classname() == "Trail") {
+            Trail* trail = dynamic_cast<Trail*>(parsed_poi);
+            // TODO(331): This is the wrong place to lowercase() the category and is hiding some crimes elsewhere
+            category_to_pois[lowercase(trail->category.category)].push_back(parsed_poi);
+        }
+        else {
+            std::cout << "Unknown type" << std::endl;
+        }
+    }
+
+    for (map<string, Category>::const_iterator it = marker_categories->begin(); it != marker_categories->end(); it++){
+        StringHierarchy category_filter;
+        category_filter.add_path({it->first}, true);
+        _write_protobuf_file(
+            join_file_paths(state.marker_pack_root_directory, it->first + ".guildpoint"),
+            category_filter,
+            marker_categories,
+            category_to_pois,
+            &state);
+    }
 }
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
     const string& marker_pack_root_directory,
-    const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois) {
     std::map<int, std::map<string, std::vector<Parseable*>>> mapid_to_category_to_pois;
@@ -267,6 +305,9 @@ void write_protobuf_file_per_map_id(
             std::cout << "Unknown type" << std::endl;
         }
     }
+
+    StringHierarchy category_filter;
+    category_filter.add_path({}, true);
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
         string output_filepath = join_file_paths(state.marker_pack_root_directory, to_string(iterator->first) + ".guildpoint");

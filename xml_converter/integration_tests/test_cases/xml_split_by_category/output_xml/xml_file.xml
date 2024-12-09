@@ -1,0 +1,16 @@
+<OverlayData>
+<MarkerCategory  ID="CAdMXdpC8dM=" Name="toplevel1">
+</MarkerCategory>
+
+<MarkerCategory  ID="CAdMXdtC8dM=" Name="toplevel2">
+</MarkerCategory>
+
+<MarkerCategory  ID="CAdMXdxC8dM=" Name="toplevel3">
+</MarkerCategory>
+
+<POIs>
+<POI  Type="toplevel1" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="toplevel2" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+<POI  Type="toplevel3" MapID="50" XPos="169.809998" YPos="210.649994" ZPos="215.830002"/>
+</POIs>
+</OverlayData>

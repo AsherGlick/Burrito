@@ -21,6 +21,7 @@ def run_xml_converter(
     output_proto: Optional[List[str]] = None,
     split_output_proto: Optional[str] = None,
     allow_duplicates: Optional[bool] = None,
+    split_proto_by_category: Optional[bool] = None,
 ) -> Tuple[str, str, int]:
 
     # Build the command to execute the C++ program with the desired function and arguments
@@ -38,6 +39,8 @@ def run_xml_converter(
         cmd += ["--output-split-guildpoint-path"] + [split_output_proto]
     if allow_duplicates:
         cmd += ["--allow-duplicates"]
+    if split_proto_by_category:
+        cmd += ["--split-guildpoint-by-category"]
 
     # Run the C++ program and capture its output
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -177,7 +180,8 @@ def main() -> bool:
             input_proto=testcase.proto_input_paths,
             output_xml=[xml_output_dir_path],
             output_proto=[proto_output_dir_path],
-            allow_duplicates=testcase.allow_duplicates
+            allow_duplicates=testcase.allow_duplicates,
+            split_proto_by_category=testcase.split_proto_by_category
         )
 
         # Sanitize and denoise the lines

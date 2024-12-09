@@ -138,16 +138,21 @@ void write_taco_directory(
 void write_burrito_directory(
     string output_path,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois,
+    bool split_proto_by_category) {
     if (!filesystem::is_directory(output_path)) {
         if (!filesystem::create_directory(output_path)) {
             cout << "Error: " << output_path << "is not a valid directory path" << endl;
             return;
         }
     }
-    StringHierarchy category_filter;
-    category_filter.add_path({}, true);
-    write_protobuf_file(output_path, category_filter, marker_categories, parsed_pois);
+    if (split_proto_by_category) {
+        write_protobuf_file_per_category(output_path, marker_categories, parsed_pois);
+    }
+    else {
+        write_protobuf_file(output_path, marker_categories, parsed_pois);
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -166,6 +171,9 @@ void process_data(
     // allow for splitting out a single markerpack
     vector<string> output_taco_paths,
     vector<string> output_guildpoint_paths,
+    // This value will change how the guildpoint files are written so that
+    // each top level category is in its own file
+    bool split_proto_by_category,
 
     // This is a special output path used for burrito internal use that splits
     // the guildpoint protobins by map id.
@@ -245,15 +253,13 @@ void process_data(
 
     // Write all of the protobin guildpoint paths
     for (size_t i = 0; i < output_guildpoint_paths.size(); i++) {
-        write_burrito_directory(output_guildpoint_paths[i], &marker_categories, &parsed_pois);
+        write_burrito_directory(output_guildpoint_paths[i], &marker_categories, &parsed_pois, split_proto_by_category);
     }
 
     // Write the special map-split protbin guildpoint file
     begin = chrono::high_resolution_clock::now();
     if (output_split_guildpoint_dir != "") {
-        StringHierarchy category_filter;
-        category_filter.add_path({}, true);
-        write_protobuf_file_per_map_id(output_split_guildpoint_dir, category_filter, &marker_categories, &parsed_pois);
+        write_protobuf_file_per_map_id(output_split_guildpoint_dir, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
@@ -278,6 +284,7 @@ int main(int argc, char* argv[]) {
     vector<string> input_guildpoint_paths;
     vector<string> output_guildpoint_paths;
     bool allow_duplicates = false;
+    bool split_proto_by_category = false;
 
     // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
     // converting from xml markerpacks to internal protobuf files.
@@ -308,6 +315,10 @@ int main(int argc, char* argv[]) {
             allow_duplicates = true;
             arg_target = nullptr;
         }
+        else if (!strcmp(argv[i], "--split-guildpoint-by-category")) {
+            split_proto_by_category = true;
+            arg_target = nullptr;
+        }
         else {
             if (arg_target != nullptr) {
                 arg_target->push_back(argv[i]);
@@ -335,7 +346,9 @@ int main(int argc, char* argv[]) {
         allow_duplicates,
         output_taco_paths,
         output_guildpoint_paths,
-        output_split_guildpoint_dir);
+        split_proto_by_category,
+        output_split_guildpoint_dir
+        );
 
     return 0;
 }
