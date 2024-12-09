@@ -242,7 +242,7 @@ void write_protobuf_file(
         marker_categories,
         category_to_pois,
         &state);
-    }
+}
 
 // Write protobuf per top level category
 void write_protobuf_file_per_category(
@@ -270,7 +270,7 @@ void write_protobuf_file_per_category(
         }
     }
 
-    for (map<string, Category>::const_iterator it = marker_categories->begin(); it != marker_categories->end(); it++){
+    for (map<string, Category>::const_iterator it = marker_categories->begin(); it != marker_categories->end(); it++) {
         StringHierarchy category_filter;
         category_filter.add_path({it->first}, true);
         _write_protobuf_file(

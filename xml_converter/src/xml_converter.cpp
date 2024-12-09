@@ -152,7 +152,6 @@ void write_burrito_directory(
     else {
         write_protobuf_file(output_path, marker_categories, parsed_pois);
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -347,8 +346,6 @@ int main(int argc, char* argv[]) {
         output_taco_paths,
         output_guildpoint_paths,
         split_proto_by_category,
-        output_split_guildpoint_dir
-        );
-
+        output_split_guildpoint_dir);
     return 0;
 }
