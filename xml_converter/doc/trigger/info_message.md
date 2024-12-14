@@ -3,6 +3,7 @@ name: Info Message
 type: String
 applies_to: [Icon]
 xml_fields: [Info]
+exclude_from_protobuf: True
 protobuf_field: trigger.action_info_message
 ---
 Show a message to the user when triggered

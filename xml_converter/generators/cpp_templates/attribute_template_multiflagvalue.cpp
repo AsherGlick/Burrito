@@ -62,6 +62,7 @@ string {{attribute_name}}_to_xml_attribute(
     string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
+{% if exclude_from_protobuf == false %}
 
 void proto_to_{{attribute_name}}(
     {{proto_field_cpp_type}} input,
@@ -90,3 +91,4 @@ void {{attribute_name}}_to_proto(
         setter(proto_{{attribute_name}});
     }
 }
+{% endif %}

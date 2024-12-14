@@ -247,16 +247,21 @@ vector<string> Trail::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
+// The following attributes are not yet supported in Burrito
+// and are not written to or read from the protobuf file:
+//      achievement_bit_index
+//      achievement_id
+//      animation_speed
+//      disable_player_cutout
+//      distance_fade_end
+//      distance_fade_start
+//      map_display_size
+//      schedule
+//      schedule_duration
+//      trail_scale
+
 guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
     guildpoint::Trail proto_trail;
-    if (this->achievement_bit_index_is_set) {
-        std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_achievement_bit_index(val); };
-        int_to_proto(this->achievement_bit_index, state, setter);
-    }
-    if (this->achievement_id_is_set) {
-        std::function<void(int)> setter = [&proto_trail](int val) { proto_trail.set_achievement_id(val); };
-        int_to_proto(this->achievement_id, state, setter);
-    }
     if (this->color_is_set) {
         std::function<void(uint32_t)> setter = [&proto_trail](uint32_t val) { proto_trail.set_rgba_color(val); };
         color_to_proto(this->color, state, setter);
@@ -264,10 +269,6 @@ guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
     if (this->cull_chirality_is_set) {
         std::function<void(guildpoint::CullChirality)> setter = [&proto_trail](guildpoint::CullChirality val) { proto_trail.set_cull_chirality(val); };
         cull_chirality_to_proto(this->cull_chirality, state, setter);
-    }
-    if (this->disable_player_cutout_is_set) {
-        std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_disable_player_cutout(val); };
-        bool_to_proto(this->disable_player_cutout, state, setter);
     }
     if (this->festival_filter_is_set) {
         std::function<void(guildpoint::FestivalFilter*)> setter = [&proto_trail](guildpoint::FestivalFilter* val) { proto_trail.set_allocated_festival_filter(val); };
@@ -309,14 +310,6 @@ guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
         std::function<void(bool)> setter = [&proto_trail](bool val) { proto_trail.set_is_hidden_on_minimap(val); };
         bool_to_proto(this->render_on_minimap, state, setter);
     }
-    if (this->schedule_is_set) {
-        std::function<void(std::string)> setter = [&proto_trail](std::string val) { proto_trail.set_bhdraft__schedule(val); };
-        string_to_proto(this->schedule, state, setter);
-    }
-    if (this->schedule_duration_is_set) {
-        std::function<void(float)> setter = [&proto_trail](float val) { proto_trail.set_bhdraft__schedule_duration(val); };
-        float_to_proto(this->schedule_duration, state, setter);
-    }
     if (this->specialization_filter_is_set) {
         std::function<void(guildpoint::SpecializationFilter*)> setter = [&proto_trail](guildpoint::SpecializationFilter* val) { proto_trail.set_allocated_specialization_filter(val); };
         specialization_filter_to_proto(this->specialization_filter, state, setter);
@@ -337,20 +330,11 @@ guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
 }
 
 void Trail::parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* state) {
-    if (proto_trail.achievement_bit_index() != 0) {
-        proto_to_int(proto_trail.achievement_bit_index(), state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
-    }
-    if (proto_trail.achievement_id() != 0) {
-        proto_to_int(proto_trail.achievement_id(), state, &(this->achievement_id), &(this->achievement_id_is_set));
-    }
     if (proto_trail.rgba_color() != 0) {
         proto_to_color(proto_trail.rgba_color(), state, &(this->color), &(this->color_is_set));
     }
     if (proto_trail.cull_chirality() != 0) {
         proto_to_cull_chirality(proto_trail.cull_chirality(), state, &(this->cull_chirality), &(this->cull_chirality_is_set));
-    }
-    if (proto_trail.disable_player_cutout() != 0) {
-        proto_to_bool(proto_trail.disable_player_cutout(), state, &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
     if (proto_trail.has_festival_filter()) {
         proto_to_festival_filter(proto_trail.festival_filter(), state, &(this->festival_filter), &(this->festival_filter_is_set));
@@ -381,12 +365,6 @@ void Trail::parse_protobuf(guildpoint::Trail proto_trail, ProtoReaderState* stat
     }
     if (proto_trail.is_hidden_on_minimap() != 0) {
         proto_to_bool(proto_trail.is_hidden_on_minimap(), state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
-    }
-    if (proto_trail.bhdraft__schedule() != "") {
-        proto_to_string(proto_trail.bhdraft__schedule(), state, &(this->schedule), &(this->schedule_is_set));
-    }
-    if (proto_trail.bhdraft__schedule_duration() != 0) {
-        proto_to_float(proto_trail.bhdraft__schedule_duration(), state, &(this->schedule_duration), &(this->schedule_duration_is_set));
     }
     if (proto_trail.has_specialization_filter()) {
         proto_to_specialization_filter(proto_trail.specialization_filter(), state, &(this->specialization_filter), &(this->specialization_filter_is_set));

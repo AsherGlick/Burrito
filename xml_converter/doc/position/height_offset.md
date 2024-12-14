@@ -4,7 +4,8 @@ type: Float32
 applies_to: ["Icon"]
 xml_fields: ["HeightOffset", "BHHeightOffset"]
 #151 This field should be set to 0 in the protobuf when equal to the default value
-protobuf_field: null #height_offset
+exclude_from_protobuf: True
+protobuf_field: height_offset
 examples:
   - "0"
 ---

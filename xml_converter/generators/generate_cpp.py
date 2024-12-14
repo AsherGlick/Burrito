@@ -101,6 +101,7 @@ class AttributeVariable:
     attribute_flag_name: Optional[str] = ""
 
     is_component: bool = False
+    exclude_from_protobuf: bool = False
 
 
 @dataclass
@@ -109,6 +110,7 @@ class AttributeComponent:
     cpp_type: str
     protobuf_field: Optional[str]
     xml_fields: List[str]
+    exclude_from_protobuf: bool = False
 
 
 ################################################################################
@@ -350,6 +352,7 @@ def generate_cpp_variable_data(
                         class_name=component_class_name,
                         attribute_flag_name=attribute_name + "_is_set",
                         is_component=True,
+                        exclude_from_protobuf=fieldval.exclude_from_protobuf,
 
                         proto_info=AttributeVariableProtoInfo(
                             protobuf_field=component.protobuf_field,
@@ -359,7 +362,7 @@ def generate_cpp_variable_data(
                             serialize_proto_side_effects=[],
                             deserialize_proto_function="from_proto_" + component_class_name,
                             deserialize_proto_side_effects=[],
-                        ) if fieldval.protobuf_field is not None and component.protobuf_field is not None else None,
+                        ) if fieldval.protobuf_field is not None and component.protobuf_field is not None and fieldval.exclude_from_protobuf is not True else None,
 
                         xml_info=AttributeVariableXMLInfo(
                             xml_fields=component_xml_fields,
@@ -425,7 +428,7 @@ def generate_cpp_variable_data(
                 deserialize_proto_function = fieldval.custom_functions.read_proto
 
             proto_info: Optional[AttributeVariableProtoInfo] = None
-            if fieldval.protobuf_field is not None:
+            if fieldval.protobuf_field is not None and fieldval.exclude_from_protobuf is not True:
                 proto_drilldown_calls: str
                 mutable_proto_drilldown_calls: str
                 protobuf_field: str
@@ -451,6 +454,7 @@ def generate_cpp_variable_data(
                 attribute_flag_name=attribute_name + "_is_set",
 
                 proto_info=proto_info,
+                exclude_from_protobuf=fieldval.exclude_from_protobuf,
 
                 xml_info=AttributeVariableXMLInfo(
                     xml_fields=xml_fields,
@@ -512,15 +516,16 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         proto_field_type: str = ""
         proto_field_prototype: Optional[str] = None
         for marker_type in attribute_data.applies_to_as_str():
-            new_type = get_proto_field_cpp_type(marker_type, attribute_data.protobuf_field)
-            if proto_field_type != "" and proto_field_type != new_type:
-                print("Proto Field type differes between different marker types for ", attribute_data.protobuf_field)
-            proto_field_type = new_type
+            if attribute_data.exclude_from_protobuf is False:
+                new_type = get_proto_field_cpp_type(marker_type, attribute_data.protobuf_field)
+                if proto_field_type != "" and proto_field_type != new_type:
+                    print("Proto Field type differes between different marker types for ", attribute_data.protobuf_field)
+                proto_field_type = new_type
 
-            new_prototype = get_proto_field_cpp_prototype(marker_type, attribute_data.protobuf_field)
-            if proto_field_prototype is not None and proto_field_prototype != new_prototype:
-                print("Proto Field prototype differes between different marker types for ", attribute_data.protobuf_field)
-            proto_field_prototype = new_prototype
+                new_prototype = get_proto_field_cpp_prototype(marker_type, attribute_data.protobuf_field)
+                if proto_field_prototype is not None and proto_field_prototype != new_prototype:
+                    print("Proto Field prototype differes between different marker types for ", attribute_data.protobuf_field)
+                proto_field_prototype = new_prototype
 
         protobuf_field: str
         _, _, protobuf_field = split_field_into_drilldown(attribute_data.protobuf_field)
@@ -584,6 +589,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                 type=attribute_data.variable_type,
                 proto_field_cpp_type=proto_field_type,
                 proto_field_cpp_type_prototype=proto_field_prototype,
+                exclude_from_protobuf=attribute_data.exclude_from_protobuf,
             )
         )
         files_written.append(hpp_filepath)
@@ -600,6 +606,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                 xml_bundled_components=xml_bundled_components,
                 proto_field_cpp_type=proto_field_type,
                 proto_field_cpp_type_prototype=proto_field_prototype,
+                exclude_from_protobuf=attribute_data.exclude_from_protobuf,
             )
         )
         files_written.append(cpp_filepath)

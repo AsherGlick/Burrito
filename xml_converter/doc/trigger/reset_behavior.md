@@ -3,6 +3,7 @@ name: Reset Behavior
 type: Enum
 applies_to: [Icon]
 xml_fields: [Behavior]
+exclude_from_protobuf: True
 protobuf_field: trigger.reset_behavior
 values:
   always_visible: ["0", "always_visible"]

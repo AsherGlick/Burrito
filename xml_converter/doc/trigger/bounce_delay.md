@@ -3,6 +3,7 @@ name: Bounce Delay
 type: Float32
 applies_to: [Icon]
 xml_fields: [BounceDelay]
+exclude_from_protobuf: True
 protobuf_field: trigger.bounce_delay
 ---
 How many seconds should pass before the bouncing begins.

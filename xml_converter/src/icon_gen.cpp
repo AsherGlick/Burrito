@@ -409,55 +409,48 @@ vector<string> Icon::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
+// The following attributes are not yet supported in Burrito
+// and are not written to or read from the protobuf file:
+//      achievement_bit_index
+//      achievement_id
+//      auto_trigger
+//      bounce_delay
+//      bounce_duration
+//      bounce_height
+//      constant_size_on_map
+//      copy_clipboard
+//      copy_message
+//      disable_player_cutout
+//      distance_fade_end
+//      distance_fade_start
+//      has_countdown
+//      height_offset
+//      hide_category
+//      icon_size
+//      info_message
+//      invert_visibility
+//      map_display_size
+//      maximum_size_on_screen
+//      minimum_size_on_screen
+//      reset_behavior
+//      reset_length
+//      schedule
+//      schedule_duration
+//      show_category
+//      toggle_category
+//      tooltip_description
+//      tooltip_name
+//      trigger_range
+
 guildpoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
     guildpoint::Icon proto_icon;
-    if (this->achievement_bit_index_is_set) {
-        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_bit_index(val); };
-        int_to_proto(this->achievement_bit_index, state, setter);
-    }
-    if (this->achievement_id_is_set) {
-        std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_achievement_id(val); };
-        int_to_proto(this->achievement_id, state, setter);
-    }
-    if (this->auto_trigger_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_auto_trigger(val); };
-        bool_to_proto(this->auto_trigger, state, setter);
-    }
-    if (this->bounce_delay_is_set) {
-        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_delay(val); };
-        float_to_proto(this->bounce_delay, state, setter);
-    }
-    if (this->bounce_duration_is_set) {
-        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_duration(val); };
-        float_to_proto(this->bounce_duration, state, setter);
-    }
-    if (this->bounce_height_is_set) {
-        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_bounce_height(val); };
-        float_to_proto(this->bounce_height, state, setter);
-    }
     if (this->color_is_set) {
         std::function<void(uint32_t)> setter = [&proto_icon](uint32_t val) { proto_icon.set_rgba_color(val); };
         color_to_proto(this->color, state, setter);
     }
-    if (this->constant_size_on_map_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_constant_size_on_map(val); };
-        bool_to_proto(this->constant_size_on_map, state, setter);
-    }
-    if (this->copy_clipboard_is_set) {
-        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_copy_clipboard(val); };
-        string_to_proto(this->copy_clipboard, state, setter);
-    }
-    if (this->copy_message_is_set) {
-        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_copy_message(val); };
-        string_to_proto(this->copy_message, state, setter);
-    }
     if (this->cull_chirality_is_set) {
         std::function<void(guildpoint::CullChirality)> setter = [&proto_icon](guildpoint::CullChirality val) { proto_icon.set_cull_chirality(val); };
         cull_chirality_to_proto(this->cull_chirality, state, setter);
-    }
-    if (this->disable_player_cutout_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_disable_player_cutout(val); };
-        bool_to_proto(this->disable_player_cutout, state, setter);
     }
     if (this->euler_rotation_is_set) {
         std::function<void(guildpoint::EulerRotation*)> setter = [&proto_icon](guildpoint::EulerRotation* val) { proto_icon.set_allocated_euler_rotation(val); };
@@ -471,25 +464,9 @@ guildpoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_guid(val); };
         unique_id_to_proto(this->guid, state, setter);
     }
-    if (this->has_countdown_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_has_countdown(val); };
-        bool_to_proto(this->has_countdown, state, setter);
-    }
-    if (this->hide_category_is_set) {
-        std::function<void(guildpoint::Category*)> setter = [&proto_icon](guildpoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_hide_category(val); };
-        marker_category_to_proto(this->hide_category, state, setter);
-    }
     if (this->icon_is_set) {
         std::function<void(unsigned int)> setter = [&proto_icon](unsigned int val) { proto_icon.set_texture_id(val); };
         image_to_proto(this->icon, state, setter);
-    }
-    if (this->info_message_is_set) {
-        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.mutable_trigger()->set_action_info_message(val); };
-        string_to_proto(this->info_message, state, setter);
-    }
-    if (this->invert_visibility_is_set) {
-        std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.mutable_trigger()->set_invert_display(val); };
-        bool_to_proto(this->invert_visibility, state, setter);
     }
     if (this->map_id_is_set) {
         std::function<void(int)> setter = [&proto_icon](int val) { proto_icon.set_map_id(val); };
@@ -523,26 +500,6 @@ guildpoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         std::function<void(bool)> setter = [&proto_icon](bool val) { proto_icon.set_is_hidden_on_minimap(val); };
         bool_to_proto(this->render_on_minimap, state, setter);
     }
-    if (this->reset_behavior_is_set) {
-        std::function<void(guildpoint::ResetBehavior)> setter = [&proto_icon](guildpoint::ResetBehavior val) { proto_icon.mutable_trigger()->set_reset_behavior(val); };
-        reset_behavior_to_proto(this->reset_behavior, state, setter);
-    }
-    if (this->reset_length_is_set) {
-        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.mutable_trigger()->set_reset_length(val); };
-        float_to_proto(this->reset_length, state, setter);
-    }
-    if (this->schedule_is_set) {
-        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_bhdraft__schedule(val); };
-        string_to_proto(this->schedule, state, setter);
-    }
-    if (this->schedule_duration_is_set) {
-        std::function<void(float)> setter = [&proto_icon](float val) { proto_icon.set_bhdraft__schedule_duration(val); };
-        float_to_proto(this->schedule_duration, state, setter);
-    }
-    if (this->show_category_is_set) {
-        std::function<void(guildpoint::Category*)> setter = [&proto_icon](guildpoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_show_category(val); };
-        marker_category_to_proto(this->show_category, state, setter);
-    }
     if (this->specialization_filter_is_set) {
         std::function<void(guildpoint::SpecializationFilter*)> setter = [&proto_icon](guildpoint::SpecializationFilter* val) { proto_icon.set_allocated_specialization_filter(val); };
         specialization_filter_to_proto(this->specialization_filter, state, setter);
@@ -551,57 +508,15 @@ guildpoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
         std::function<void(guildpoint::SpeciesFilter*)> setter = [&proto_icon](guildpoint::SpeciesFilter* val) { proto_icon.set_allocated_species_filter(val); };
         species_filter_to_proto(this->species_filter, state, setter);
     }
-    if (this->toggle_category_is_set) {
-        std::function<void(guildpoint::Category*)> setter = [&proto_icon](guildpoint::Category* val) { proto_icon.mutable_trigger()->set_allocated_action_toggle_category(val); };
-        marker_category_to_proto(this->toggle_category, state, setter);
-    }
-    if (this->tooltip_description_is_set) {
-        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_tip_description(val); };
-        string_to_proto(this->tooltip_description, state, setter);
-    }
-    if (this->tooltip_name_is_set) {
-        std::function<void(std::string)> setter = [&proto_icon](std::string val) { proto_icon.set_tip_name(val); };
-        string_to_proto(this->tooltip_name, state, setter);
-    }
     return proto_icon;
 }
 
 void Icon::parse_protobuf(guildpoint::Icon proto_icon, ProtoReaderState* state) {
-    if (proto_icon.achievement_bit_index() != 0) {
-        proto_to_int(proto_icon.achievement_bit_index(), state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
-    }
-    if (proto_icon.achievement_id() != 0) {
-        proto_to_int(proto_icon.achievement_id(), state, &(this->achievement_id), &(this->achievement_id_is_set));
-    }
-    if (proto_icon.trigger().auto_trigger() != 0) {
-        proto_to_bool(proto_icon.trigger().auto_trigger(), state, &(this->auto_trigger), &(this->auto_trigger_is_set));
-    }
-    if (proto_icon.trigger().bounce_delay() != 0) {
-        proto_to_float(proto_icon.trigger().bounce_delay(), state, &(this->bounce_delay), &(this->bounce_delay_is_set));
-    }
-    if (proto_icon.trigger().bounce_duration() != 0) {
-        proto_to_float(proto_icon.trigger().bounce_duration(), state, &(this->bounce_duration), &(this->bounce_duration_is_set));
-    }
-    if (proto_icon.trigger().bounce_height() != 0) {
-        proto_to_float(proto_icon.trigger().bounce_height(), state, &(this->bounce_height), &(this->bounce_height_is_set));
-    }
     if (proto_icon.rgba_color() != 0) {
         proto_to_color(proto_icon.rgba_color(), state, &(this->color), &(this->color_is_set));
     }
-    if (proto_icon.constant_size_on_map() != 0) {
-        proto_to_bool(proto_icon.constant_size_on_map(), state, &(this->constant_size_on_map), &(this->constant_size_on_map_is_set));
-    }
-    if (proto_icon.trigger().action_copy_clipboard() != "") {
-        proto_to_string(proto_icon.trigger().action_copy_clipboard(), state, &(this->copy_clipboard), &(this->copy_clipboard_is_set));
-    }
-    if (proto_icon.trigger().action_copy_message() != "") {
-        proto_to_string(proto_icon.trigger().action_copy_message(), state, &(this->copy_message), &(this->copy_message_is_set));
-    }
     if (proto_icon.cull_chirality() != 0) {
         proto_to_cull_chirality(proto_icon.cull_chirality(), state, &(this->cull_chirality), &(this->cull_chirality_is_set));
-    }
-    if (proto_icon.disable_player_cutout() != 0) {
-        proto_to_bool(proto_icon.disable_player_cutout(), state, &(this->disable_player_cutout), &(this->disable_player_cutout_is_set));
     }
     if (proto_icon.has_euler_rotation()) {
         proto_to_euler_rotation(proto_icon.euler_rotation(), state, &(this->euler_rotation), &(this->euler_rotation_is_set));
@@ -612,20 +527,8 @@ void Icon::parse_protobuf(guildpoint::Icon proto_icon, ProtoReaderState* state) 
     if (proto_icon.guid() != "") {
         proto_to_unique_id(proto_icon.guid(), state, &(this->guid), &(this->guid_is_set));
     }
-    if (proto_icon.trigger().has_countdown() != 0) {
-        proto_to_bool(proto_icon.trigger().has_countdown(), state, &(this->has_countdown), &(this->has_countdown_is_set));
-    }
-    if (proto_icon.trigger().has_action_hide_category()) {
-        proto_to_marker_category(proto_icon.trigger().action_hide_category(), state, &(this->hide_category), &(this->hide_category_is_set));
-    }
     if (proto_icon.texture_id() != 0) {
         proto_to_image(proto_icon.texture_id(), state, &(this->icon), &(this->icon_is_set));
-    }
-    if (proto_icon.trigger().action_info_message() != "") {
-        proto_to_string(proto_icon.trigger().action_info_message(), state, &(this->info_message), &(this->info_message_is_set));
-    }
-    if (proto_icon.trigger().invert_display() != 0) {
-        proto_to_bool(proto_icon.trigger().invert_display(), state, &(this->invert_visibility), &(this->invert_visibility_is_set));
     }
     if (proto_icon.map_id() != 0) {
         proto_to_int(proto_icon.map_id(), state, &(this->map_id), &(this->map_id_is_set));
@@ -651,34 +554,10 @@ void Icon::parse_protobuf(guildpoint::Icon proto_icon, ProtoReaderState* state) 
     if (proto_icon.is_hidden_on_minimap() != 0) {
         proto_to_bool(proto_icon.is_hidden_on_minimap(), state, &(this->render_on_minimap), &(this->render_on_minimap_is_set));
     }
-    if (proto_icon.trigger().reset_behavior() != 0) {
-        proto_to_reset_behavior(proto_icon.trigger().reset_behavior(), state, &(this->reset_behavior), &(this->reset_behavior_is_set));
-    }
-    if (proto_icon.trigger().reset_length() != 0) {
-        proto_to_float(proto_icon.trigger().reset_length(), state, &(this->reset_length), &(this->reset_length_is_set));
-    }
-    if (proto_icon.bhdraft__schedule() != "") {
-        proto_to_string(proto_icon.bhdraft__schedule(), state, &(this->schedule), &(this->schedule_is_set));
-    }
-    if (proto_icon.bhdraft__schedule_duration() != 0) {
-        proto_to_float(proto_icon.bhdraft__schedule_duration(), state, &(this->schedule_duration), &(this->schedule_duration_is_set));
-    }
-    if (proto_icon.trigger().has_action_show_category()) {
-        proto_to_marker_category(proto_icon.trigger().action_show_category(), state, &(this->show_category), &(this->show_category_is_set));
-    }
     if (proto_icon.has_specialization_filter()) {
         proto_to_specialization_filter(proto_icon.specialization_filter(), state, &(this->specialization_filter), &(this->specialization_filter_is_set));
     }
     if (proto_icon.has_species_filter()) {
         proto_to_species_filter(proto_icon.species_filter(), state, &(this->species_filter), &(this->species_filter_is_set));
-    }
-    if (proto_icon.trigger().has_action_toggle_category()) {
-        proto_to_marker_category(proto_icon.trigger().action_toggle_category(), state, &(this->toggle_category), &(this->toggle_category_is_set));
-    }
-    if (proto_icon.tip_description() != "") {
-        proto_to_string(proto_icon.tip_description(), state, &(this->tooltip_description), &(this->tooltip_description_is_set));
-    }
-    if (proto_icon.tip_name() != "") {
-        proto_to_string(proto_icon.tip_name(), state, &(this->tooltip_name), &(this->tooltip_name_is_set));
     }
 }

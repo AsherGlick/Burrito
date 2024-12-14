@@ -1,0 +1,19 @@
+<OverlayData>
+<MarkerCategory  DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory">
+</MarkerCategory>
+
+<POIs>
+<Trail  AnimSpeed="0.000000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="1.000000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="3.140000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="123.456001" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="0.000000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="1.000000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="3.140000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="123.456001" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="-3.140000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="-123.456001" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="-3.140000" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+<Trail  AnimSpeed="-123.456001" Type="mycategory" MapID="50" TrailData="037aa160e392f1c8.trl"/>
+</POIs>
+</OverlayData>

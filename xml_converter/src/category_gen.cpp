@@ -111,15 +111,16 @@ vector<string> Category::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
+// The following attributes are not yet supported in Burrito
+// and are not written to or read from the protobuf file:
+//      is_hidden
+//      tooltip_description
+
 guildpoint::Category Category::as_protobuf(ProtoWriterState* state) const {
     guildpoint::Category proto_category;
     if (this->display_name_is_set) {
         std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_name(val); };
         display_name_and_name_to_proto_display_name(this->display_name, state, setter, &(this->name), &(this->name_is_set));
-    }
-    if (this->is_hidden_is_set) {
-        std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_is_hidden(val); };
-        bool_to_proto(this->is_hidden, state, setter);
     }
     if (this->is_separator_is_set) {
         std::function<void(bool)> setter = [&proto_category](bool val) { proto_category.set_is_separator(val); };
@@ -129,10 +130,6 @@ guildpoint::Category Category::as_protobuf(ProtoWriterState* state) const {
         std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_id(val); };
         unique_id_to_proto(this->menu_id, state, setter);
     }
-    if (this->tooltip_description_is_set) {
-        std::function<void(std::string)> setter = [&proto_category](std::string val) { proto_category.set_tip_description(val); };
-        string_to_proto(this->tooltip_description, state, setter);
-    }
     return proto_category;
 }
 
@@ -140,16 +137,10 @@ void Category::parse_protobuf(guildpoint::Category proto_category, ProtoReaderSt
     if (proto_category.name() != "") {
         proto_display_name_to_display_name_and_name(proto_category.name(), state, &(this->display_name), &(this->display_name_is_set), &(this->name), &(this->name_is_set));
     }
-    if (proto_category.is_hidden() != 0) {
-        proto_to_bool(proto_category.is_hidden(), state, &(this->is_hidden), &(this->is_hidden_is_set));
-    }
     if (proto_category.is_separator() != 0) {
         proto_to_bool(proto_category.is_separator(), state, &(this->is_separator), &(this->is_separator_is_set));
     }
     if (proto_category.id() != "") {
         proto_to_unique_id(proto_category.id(), state, &(this->menu_id), &(this->menu_id_is_set));
-    }
-    if (proto_category.tip_description() != "") {
-        proto_to_string(proto_category.tip_description(), state, &(this->tooltip_description), &(this->tooltip_description_is_set));
     }
 }

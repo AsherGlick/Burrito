@@ -3,6 +3,7 @@ name: Achievement Bit Index
 type: Int32
 applies_to: [Icon, Trail]
 xml_fields: ["AchievementBit", "AchievementBitIndex"]
+exclude_from_protobuf: True
 protobuf_field: achievement_bit_index
 examples: ["0", "1", "2", "14"]
 ---

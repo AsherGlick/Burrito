@@ -104,12 +104,25 @@ def load_testcase(path: str) -> Optional[Testcase]:
         print(f"Invalid Test, expecting string value for 'expected_returncode' in {path}")
         return None
 
+    expected_output_xml_path: str = os.path.join(path, "output_xml")
+    expected_output_proto_path: str = os.path.join(path, "output_proto")
+
+    if "exclude_output" in data:
+        for pack_type in data["exclude_output"]:
+            if pack_type == "xml":
+                expected_output_xml_path = ""
+            if pack_type == "proto":
+                expected_output_proto_path = ""
+            else:
+                print(f"Invalid pack type {pack_type} found in exclude_output in {test_info_path}")
+                return None
+
     return Testcase(
         name=os.path.basename(path),
         xml_input_paths=xml_input_paths,
         proto_input_paths=proto_input_paths,
-        expected_output_xml_path=os.path.join(path, "output_xml"),
-        expected_output_proto_path=os.path.join(path, "output_proto"),
+        expected_output_xml_path=expected_output_xml_path,
+        expected_output_proto_path=expected_output_proto_path,
         expected_stdout=to_lines(data["expected_stdout"]),
         expected_stderr=to_lines(data["expected_stderr"]),
         expected_returncode=data["expected_returncode"]

@@ -60,6 +60,7 @@ string {{attribute_name}}_to_xml_attribute(
         return " " + attribute_name + "=\"" + "{{class_name}}::{{attribute_components[0].xml_fields[0]}}" + "\"";
     }
 }
+{% if exclude_from_protobuf == false %}
 
 void proto_to_{{attribute_name}}(
     {{proto_field_cpp_type}} input,
@@ -95,3 +96,4 @@ void {{attribute_name}}_to_proto(
             break;
     }
 }
+{% endif %}

@@ -51,6 +51,7 @@ void xml_attribute_to_{{attribute_name}}(
         return " " + attribute_name + "=\"" + output + "\"";
     }
 {% endif %}
+{% if exclude_from_protobuf == false %}
 
 void proto_to_{{attribute_name}}(
     {{proto_field_cpp_type}} input,
@@ -79,3 +80,4 @@ void {{attribute_name}}_to_proto(
     {% endfor %}
     setter(proto_{{attribute_name}});
 }
+{% endif %}
