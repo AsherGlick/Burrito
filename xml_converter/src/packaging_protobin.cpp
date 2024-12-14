@@ -23,7 +23,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void parse_guildpoint_categories(
+string parse_guildpoint_categories(
     string full_category_name,
     ::guildpoint::Category proto_category,
     map<string, Category>* marker_categories,
@@ -57,16 +57,18 @@ void parse_guildpoint_categories(
     for (int i = 0; i < proto_category.children_size(); i++) {
         parse_guildpoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois, state);
     }
+    return category_name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+set<string> read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     fstream infile;
     guildpoint::Guildpoint proto_message;
     ProtoReaderState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
+    set<string> category_names;
 
     infile.open(proto_filepath, ios::in | ios::binary);
     proto_message.ParseFromIstream(&infile);
@@ -74,8 +76,9 @@ void read_protobuf_file(string proto_filepath, const string marker_pack_root_dir
     state.textures = proto_message.textures();
 
     for (int i = 0; i < proto_message.category_size(); i++) {
-        parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
+        category_names.insert(parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state));
     }
+    return category_names;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +236,7 @@ void write_protobuf_file(
     }
 
     _write_protobuf_file(
-        join_file_paths(state.marker_pack_root_directory, "markers.bin"),
+        join_file_paths(state.marker_pack_root_directory, "markers.guildpoint"),
         category_filter,
         marker_categories,
         category_to_pois,
@@ -266,7 +269,7 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-        string output_filepath = join_file_paths(state.marker_pack_root_directory, to_string(iterator->first) + ".bin");
+        string output_filepath = join_file_paths(state.marker_pack_root_directory, to_string(iterator->first) + ".guildpoint");
 
         _write_protobuf_file(
             output_filepath,

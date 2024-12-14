@@ -40,6 +40,6 @@ mkdir -p test_cases/$1/input/pack
 
 # Output folders and blank output files
 mkdir -p test_cases/$1/output_proto
-touch test_cases/$1/output_proto/markers.bin
+touch test_cases/$1/output_proto/markers.guildpoint
 mkdir -p test_cases/$1/output_xml
 touch test_cases/$1/output_xml/xml_file.xml

@@ -1,5 +1,6 @@
 #include "packaging_xml.hpp"
 
+#include <set>
 #include <utility>
 
 #include "hash_helpers.hpp"
@@ -16,33 +17,44 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
-void parse_marker_categories(
+OptionalString parse_marker_categories(
     rapidxml::xml_node<>* node,
     map<string, Category>* marker_categories,
     Category* parent,
     vector<XMLError*>* errors,
     XMLReaderState* state,
     int depth = 0) {
+    OptionalString name = {
+        "",  // value
+        false,  // is_null
+    };
     if (get_node_name(node) == "MarkerCategory") {
-        string name;
-
         rapidxml::xml_attribute<>* name_attribute = find_attribute(node, "name");
         if (name_attribute == 0) {
             // TODO: This error should really be for the entire node not just the name
             errors->push_back(new XMLNodeNameError("Category attribute 'name' is missing so it cannot be properly referenced", node));
 
             // TODO: Maybe fall back on display name slugification.
-            name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            name = {
+                "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER),
+                false,
+            };
             UNKNOWN_CATEGORY_COUNTER++;
         }
         else {
-            name = lowercase(get_attribute_value(name_attribute));
+            name = {
+                lowercase(get_attribute_value(name_attribute)),
+                false,
+            };
         }
 
-        if (name == "") {
+        if (name.value == "") {
             errors->push_back(new XMLNodeNameError("Category attribute 'name' is an empty string so it cannot be properly referenced", node));
             // TODO: Maybe fall back on display name slugification.
-            name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
+            name = {
+                "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER),
+                false,
+            };
             UNKNOWN_CATEGORY_COUNTER++;
         }
 
@@ -50,9 +62,9 @@ void parse_marker_categories(
         Category* category;
 
         // Create and initialize a new category if this one does not exist
-        auto existing_category_search = marker_categories->find(name);
+        auto existing_category_search = marker_categories->find(name.value);
         if (existing_category_search == marker_categories->end()) {
-            category = &(*marker_categories)[name];
+            category = &(*marker_categories)[name.value];
             category->parent = parent;
         }
         else {
@@ -68,7 +80,7 @@ void parse_marker_categories(
         // based on the hashes of its name and its parents names.
         if (!category->menu_id_is_set) {
             Hash128 new_id;
-            new_id.update(name);
+            new_id.update(name.value);
 
             Category* next_node = parent;
             while (next_node != nullptr) {
@@ -82,9 +94,15 @@ void parse_marker_categories(
         for (rapidxml::xml_node<>* child_node = node->first_node(); child_node; child_node = child_node->next_sibling()) {
             parse_marker_categories(child_node, &(category->children), category, errors, state, depth + 1);
         }
+        return name;
     }
     else {
         errors->push_back(new XMLNodeNameError("Unknown MarkerCategory Tag", node));
+        name = {
+            "",
+            true,
+        };
+        return name;
     }
 }
 
@@ -189,12 +207,13 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
 //
 // A function which parses a single XML file into their corrisponding classes.
 ////////////////////////////////////////////////////////////////////////////////
-void parse_xml_file(string xml_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+set<string> parse_xml_file(string xml_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     vector<XMLError*> errors;
     rapidxml::xml_document<> doc;
     rapidxml::xml_node<>* root_node;
     XMLReaderState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
+    set<string> category_names;
 
     rapidxml::file<> xml_file(xml_filepath.c_str());
     doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), xml_filepath.c_str());
@@ -210,7 +229,10 @@ void parse_xml_file(string xml_filepath, const string marker_pack_root_directory
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
-            parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
+            OptionalString name = parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
+            if (name.is_null == false) {
+                category_names.insert(name.value);
+            }
         }
         else if (get_node_name(node) == "POIs") {
             vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors, &state);
@@ -224,6 +246,7 @@ void parse_xml_file(string xml_filepath, const string marker_pack_root_directory
     for (auto error : errors) {
         error->print_error();
     }
+    return category_names;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
