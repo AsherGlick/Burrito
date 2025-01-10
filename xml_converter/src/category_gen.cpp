@@ -113,8 +113,8 @@ vector<string> Category::as_xml(XMLWriterState* state) const {
 
 // The following attributes are not yet supported in Burrito
 // and are not written to or read from the protobuf file:
-//      is_hidden
-//      tooltip_description
+//  is_hidden
+//  tooltip_description
 
 guildpoint::Category Category::as_protobuf(ProtoWriterState* state) const {
     guildpoint::Category proto_category;

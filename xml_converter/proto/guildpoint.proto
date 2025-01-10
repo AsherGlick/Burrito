@@ -32,7 +32,7 @@ message Icon {
     int32 map_id = 4;
     // float distance_fade_end = 5;
     // float distance_fade_start = 6;
-    // float height_offset= 7; Double check how this is used
+    // float height_offset= 7;
     Position position = 8;
     // Trigger trigger = 9;
     EulerRotation euler_rotation = 10;

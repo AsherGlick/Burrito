@@ -411,36 +411,36 @@ vector<string> Icon::as_xml(XMLWriterState* state) const {
 
 // The following attributes are not yet supported in Burrito
 // and are not written to or read from the protobuf file:
-//      achievement_bit_index
-//      achievement_id
-//      auto_trigger
-//      bounce_delay
-//      bounce_duration
-//      bounce_height
-//      constant_size_on_map
-//      copy_clipboard
-//      copy_message
-//      disable_player_cutout
-//      distance_fade_end
-//      distance_fade_start
-//      has_countdown
-//      height_offset
-//      hide_category
-//      icon_size
-//      info_message
-//      invert_visibility
-//      map_display_size
-//      maximum_size_on_screen
-//      minimum_size_on_screen
-//      reset_behavior
-//      reset_length
-//      schedule
-//      schedule_duration
-//      show_category
-//      toggle_category
-//      tooltip_description
-//      tooltip_name
-//      trigger_range
+//  achievement_bit_index
+//  achievement_id
+//  auto_trigger
+//  bounce_delay
+//  bounce_duration
+//  bounce_height
+//  constant_size_on_map
+//  copy_clipboard
+//  copy_message
+//  disable_player_cutout
+//  distance_fade_end
+//  distance_fade_start
+//  has_countdown
+//  height_offset
+//  hide_category
+//  icon_size
+//  info_message
+//  invert_visibility
+//  map_display_size
+//  maximum_size_on_screen
+//  minimum_size_on_screen
+//  reset_behavior
+//  reset_length
+//  schedule
+//  schedule_duration
+//  show_category
+//  toggle_category
+//  tooltip_description
+//  tooltip_name
+//  trigger_range
 
 guildpoint::Icon Icon::as_protobuf(ProtoWriterState* state) const {
     guildpoint::Icon proto_icon;

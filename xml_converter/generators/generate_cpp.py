@@ -516,16 +516,17 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
         proto_field_type: str = ""
         proto_field_prototype: Optional[str] = None
         for marker_type in attribute_data.applies_to_as_str():
-            if attribute_data.exclude_from_protobuf is False:
-                new_type = get_proto_field_cpp_type(marker_type, attribute_data.protobuf_field)
-                if proto_field_type != "" and proto_field_type != new_type:
-                    print("Proto Field type differes between different marker types for ", attribute_data.protobuf_field)
-                proto_field_type = new_type
+            if attribute_data.exclude_from_protobuf:
+                continue
+            new_type = get_proto_field_cpp_type(marker_type, attribute_data.protobuf_field)
+            if proto_field_type != "" and proto_field_type != new_type:
+                print("Proto Field type differes between different marker types for ", attribute_data.protobuf_field)
+            proto_field_type = new_type
 
-                new_prototype = get_proto_field_cpp_prototype(marker_type, attribute_data.protobuf_field)
-                if proto_field_prototype is not None and proto_field_prototype != new_prototype:
-                    print("Proto Field prototype differes between different marker types for ", attribute_data.protobuf_field)
-                proto_field_prototype = new_prototype
+            new_prototype = get_proto_field_cpp_prototype(marker_type, attribute_data.protobuf_field)
+            if proto_field_prototype is not None and proto_field_prototype != new_prototype:
+                print("Proto Field prototype differes between different marker types for ", attribute_data.protobuf_field)
+            proto_field_prototype = new_prototype
 
         protobuf_field: str
         _, _, protobuf_field = split_field_into_drilldown(attribute_data.protobuf_field)

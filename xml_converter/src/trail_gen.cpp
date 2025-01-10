@@ -249,16 +249,16 @@ vector<string> Trail::as_xml(XMLWriterState* state) const {
 
 // The following attributes are not yet supported in Burrito
 // and are not written to or read from the protobuf file:
-//      achievement_bit_index
-//      achievement_id
-//      animation_speed
-//      disable_player_cutout
-//      distance_fade_end
-//      distance_fade_start
-//      map_display_size
-//      schedule
-//      schedule_duration
-//      trail_scale
+//  achievement_bit_index
+//  achievement_id
+//  animation_speed
+//  disable_player_cutout
+//  distance_fade_end
+//  distance_fade_start
+//  map_display_size
+//  schedule
+//  schedule_duration
+//  trail_scale
 
 guildpoint::Trail Trail::as_protobuf(ProtoWriterState* state) const {
     guildpoint::Trail proto_trail;
