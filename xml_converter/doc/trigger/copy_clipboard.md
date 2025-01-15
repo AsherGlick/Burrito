@@ -3,6 +3,7 @@ name: Copy Clipboard
 type: String
 applies_to: [Icon]
 xml_fields: [Copy, CopyClipboard]
+exclude_from_protobuf: True
 protobuf_field: trigger.action_copy_clipboard
 ---
 A value that is copied to the clipboard when triggered.

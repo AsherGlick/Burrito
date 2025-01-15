@@ -3,6 +3,7 @@ name: Disable Player Cutout
 type: Boolean
 applies_to: [Icon, Trail]
 xml_fields: [CanFade]
+exclude_from_protobuf: True
 protobuf_field: disable_player_cutout
 custom_functions:
   read.xml:

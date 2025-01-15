@@ -3,6 +3,7 @@ name: Reset Length
 type: Float32
 applies_to: [Icon]
 xml_fields: [ResetLength]
+exclude_from_protobuf: True
 protobuf_field: trigger.reset_length
 ---
 When using behavior 4 (reappear after timer) this value defines, in seconds, the duration until the marker is reset after being activated.
