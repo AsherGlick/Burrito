@@ -53,31 +53,31 @@ void xml_attribute_to_{{attribute_name}}(
 {% endif %}
 {% if exclude_from_protobuf == false %}
 
-void proto_to_{{attribute_name}}(
-    {{proto_field_cpp_type}} input,
-    ProtoReaderState*,
-    {{class_name}}* value,
-    bool* is_set) {
-    {{class_name}} {{attribute_name}};
-    {% for attribute_component in attribute_components %}
-        {% if attribute_component.protobuf_field != None %}
-            {{attribute_name}}.{{attribute_component.attribute_name}} = input.{{attribute_component.protobuf_field}}();
-        {% endif %}
-    {% endfor %}
-    *value = {{attribute_name}};
-    *is_set = true;
-}
+    void proto_to_{{attribute_name}}(
+        {{proto_field_cpp_type}} input,
+        ProtoReaderState*,
+        {{class_name}}* value,
+        bool* is_set) {
+        {{class_name}} {{attribute_name}};
+        {% for attribute_component in attribute_components %}
+            {% if attribute_component.protobuf_field != None %}
+                {{attribute_name}}.{{attribute_component.attribute_name}} = input.{{attribute_component.protobuf_field}}();
+            {% endif %}
+        {% endfor %}
+        *value = {{attribute_name}};
+        *is_set = true;
+    }
 
-void {{attribute_name}}_to_proto(
-    {{class_name}} value,
-    ProtoWriterState*,
-    std::function<void({{proto_field_cpp_type}}*)> setter) {
-    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
-    {% for attribute_component in attribute_components %}
-        {% if attribute_component.protobuf_field != None %}
-            proto_{{attribute_name}}->set_{{attribute_component.protobuf_field}}(value.{{attribute_component.attribute_name}});
-        {% endif %}
-    {% endfor %}
-    setter(proto_{{attribute_name}});
-}
+    void {{attribute_name}}_to_proto(
+        {{class_name}} value,
+        ProtoWriterState*,
+        std::function<void({{proto_field_cpp_type}}*)> setter) {
+        {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
+        {% for attribute_component in attribute_components %}
+            {% if attribute_component.protobuf_field != None %}
+                proto_{{attribute_name}}->set_{{attribute_component.protobuf_field}}(value.{{attribute_component.attribute_name}});
+            {% endif %}
+        {% endfor %}
+        setter(proto_{{attribute_name}});
+    }
 {% endif %}
