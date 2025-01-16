@@ -19,10 +19,10 @@ void xml_attribute_to_string(
     std::string* value,
     bool* is_set);
 
-std::string string_to_xml_attribute(
-    const std::string& attribute_name,
+void string_to_xml_attribute(
     XMLWriterState* state,
-    const std::string* value);
+    const std::string* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_string(
     std::string input,

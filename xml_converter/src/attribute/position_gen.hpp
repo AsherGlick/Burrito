@@ -32,10 +32,10 @@ void xml_attribute_to_position(
     Position* value,
     bool* is_set);
 
-std::string position_to_xml_attribute(
-    const std::string& attribute_name,
+void position_to_xml_attribute(
     XMLWriterState* state,
-    const Position* value);
+    const Position* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_position(
     guildpoint::Position input,

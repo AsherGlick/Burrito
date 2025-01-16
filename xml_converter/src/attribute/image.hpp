@@ -25,10 +25,10 @@ void xml_attribute_to_image(
     Image* value,
     bool* is_set);
 
-std::string image_to_xml_attribute(
-    const std::string& attribute_name,
+void image_to_xml_attribute(
     XMLWriterState* state,
-    const Image* value);
+    const Image* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_image(
     unsigned int input,

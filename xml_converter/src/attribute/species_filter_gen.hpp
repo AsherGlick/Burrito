@@ -34,10 +34,10 @@ void xml_attribute_to_species_filter(
     SpeciesFilter* value,
     bool* is_set);
 
-std::string species_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void species_filter_to_xml_attribute(
     XMLWriterState* state,
-    const SpeciesFilter* value);
+    const SpeciesFilter* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_species_filter(
     guildpoint::SpeciesFilter input,

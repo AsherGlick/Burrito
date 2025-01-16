@@ -79,7 +79,7 @@ class Trail : public Parseable {
     bool texture_is_set = false;
     bool trail_data_is_set = false;
     bool trail_scale_is_set = false;
-    virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
+    virtual rapidxml::xml_node<char>* as_xml(XMLWriterState* state) const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
     guildpoint::Trail as_protobuf(ProtoWriterState* state) const;

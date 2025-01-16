@@ -40,15 +40,15 @@ void xml_attribute_to_bool(
 //
 // Converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string bool_to_xml_attribute(
-    const string& attribute_name,
+void bool_to_xml_attribute(
     XMLWriterState*,
-    const bool* value) {
+    const bool* value,
+    std::function<void(std::string)> setter) {
     if (*value) {
-        return " " + attribute_name + "=\"true\"";
+        setter("true");
     }
     else {
-        return " " + attribute_name + "=\"false\"";
+        setter("false");
     }
 }
 
@@ -83,15 +83,15 @@ void inverted_xml_attribute_to_bool(
 //
 // Inverts and converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string bool_to_inverted_xml_attribute(
-    const string& attribute_name,
+void bool_to_inverted_xml_attribute(
     XMLWriterState*,
-    const bool* value) {
+    const bool* value,
+    std::function<void(std::string)> setter) {
     if (*value) {
-        return " " + attribute_name + "=\"false\"";
+        setter("false");
     }
     else {
-        return " " + attribute_name + "=\"true\"";
+        setter("true");
     }
 }
 

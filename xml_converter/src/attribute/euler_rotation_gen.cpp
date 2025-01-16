@@ -33,15 +33,15 @@ void xml_attribute_to_euler_rotation(
     *value = euler_rotation;
     *is_set = true;
 }
-string euler_rotation_to_xml_attribute(
-    const std::string& attribute_name,
+void euler_rotation_to_xml_attribute(
     XMLWriterState*,
-    const EulerRotation* value) {
+    const EulerRotation* value,
+    std::function<void(std::string)> setter) {
     string output;
     output = to_string(value->x_rotation);
     output = output + "," + to_string(value->y_rotation);
     output = output + "," + to_string(value->z_rotation);
-    return " " + attribute_name + "=\"" + output + "\"";
+    setter(output);
 }
 
 void proto_to_euler_rotation(

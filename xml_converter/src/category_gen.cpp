@@ -75,40 +75,38 @@ bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<X
     return true;
 }
 
-vector<string> Category::as_xml(XMLWriterState* state) const {
-    vector<string> xml_node_contents;
-    xml_node_contents.push_back("<MarkerCategory ");
+rapidxml::xml_node<char>* Category::as_xml(XMLWriterState* state) const {
+    rapidxml::xml_node<char>* xml_node = state->doc->allocate_node(rapidxml::node_element, "MarkerCategory");
+
     if (this->display_name_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("DisplayName", state, &this->display_name));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("DisplayName", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->display_name, setter);
     }
     if (this->is_hidden_is_set) {
-        xml_node_contents.push_back(bool_to_inverted_xml_attribute("DefaultToggle", state, &this->is_hidden));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("DefaultToggle", state->doc->allocate_string(val.c_str()))); };
+        bool_to_inverted_xml_attribute(state, &this->is_hidden, setter);
     }
     if (this->is_separator_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("IsSeparator", state, &this->is_separator));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("IsSeparator", state->doc->allocate_string(val.c_str()))); };
+        bool_to_xml_attribute(state, &this->is_separator, setter);
     }
     if (this->menu_id_is_set) {
-        xml_node_contents.push_back(unique_id_to_xml_attribute("ID", state, &this->menu_id));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("ID", state->doc->allocate_string(val.c_str()))); };
+        unique_id_to_xml_attribute(state, &this->menu_id, setter);
     }
     if (this->name_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("Name", state, &this->name));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Name", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->name, setter);
     }
     if (this->tooltip_description_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("TipDescription", state, &this->tooltip_description));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("TipDescription", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->tooltip_description, setter);
     }
-    xml_node_contents.push_back(">\n");
 
     for (const auto& [key, val] : this->children) {
-        string text;
-        for (const auto& s : val.as_xml(state)) {
-            text += s;
-        }
-
-        xml_node_contents.push_back("\t" + text);
+        xml_node->append_node(val.as_xml(state));
     }
-
-    xml_node_contents.push_back("</MarkerCategory>\n");
-    return xml_node_contents;
+    return xml_node;
 }
 
 // The following attributes are not yet supported in Burrito

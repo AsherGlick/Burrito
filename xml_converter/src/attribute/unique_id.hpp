@@ -29,10 +29,10 @@ void xml_attribute_to_unique_id(
     UniqueId* value,
     bool* is_set);
 
-std::string unique_id_to_xml_attribute(
-    const std::string& attribute_name,
+void unique_id_to_xml_attribute(
     XMLWriterState* state,
-    const UniqueId* value);
+    const UniqueId* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_unique_id(
     std::string input,

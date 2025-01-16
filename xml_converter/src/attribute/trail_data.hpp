@@ -32,12 +32,12 @@ void xml_attribute_to_trail_data(
     int* map_id_value,
     bool* is_map_id_set);
 
-std::string trail_data_to_xml_attribute(
-    const std::string& attribute_name,
+void trail_data_to_xml_attribute(
     XMLWriterState* state,
     const TrailData* value,
     const int* map_id_value,
-    const bool* is_map_id_set);
+    const bool* is_map_id_set,
+    std::function<void(std::string)> setter);
 
 void proto_to_trail_data(
     guildpoint::TrailData input,

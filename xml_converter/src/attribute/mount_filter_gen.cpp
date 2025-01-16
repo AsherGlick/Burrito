@@ -73,10 +73,10 @@ void xml_attribute_to_mount_filter(
     *is_set = true;
 }
 
-string mount_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void mount_filter_to_xml_attribute(
     XMLWriterState*,
-    const MountFilter* value) {
+    const MountFilter* value,
+    std::function<void(std::string)> setter) {
     vector<string> flag_values;
     if (value->raptor == true) {
         flag_values.push_back("raptor");
@@ -109,7 +109,7 @@ string mount_filter_to_xml_attribute(
         flag_values.push_back("seigeturtle");
     }
     string output = join(flag_values, ",");
-    return " " + attribute_name + "=\"" + output + "\"";
+    setter(output);
 }
 
 void proto_to_mount_filter(

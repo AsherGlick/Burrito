@@ -49,10 +49,10 @@ void xml_attribute_to_{{attribute_name}}(
     *is_set = true;
 }
 
-string {{attribute_name}}_to_xml_attribute(
-    const std::string& attribute_name,
+void {{attribute_name}}_to_xml_attribute(
     XMLWriterState*,
-    const {{class_name}}* value) {
+    const {{class_name}}* value,
+    std::function<void(std::string)> setter) {
     vector<string> flag_values;
     {% for n, attribute_component in enumerate(attribute_components) %}
         if (value->{{attribute_component.attribute_name}} == true) {
@@ -60,7 +60,7 @@ string {{attribute_name}}_to_xml_attribute(
         }
     {% endfor %}
     string output = join(flag_values, ",");
-    return " " + attribute_name + "=\"" + output + "\"";
+    setter(output);
 }
 {% if exclude_from_protobuf == false %}
 

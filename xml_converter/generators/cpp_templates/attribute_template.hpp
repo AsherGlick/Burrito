@@ -42,10 +42,10 @@ void xml_attribute_to_{{attribute_name}}(
     {{class_name}}* value,
     bool* is_set);
 
-std::string {{attribute_name}}_to_xml_attribute(
-    const std::string& attribute_name,
+void {{attribute_name}}_to_xml_attribute(
     XMLWriterState* state,
-    const {{class_name}}* value);
+    const {{class_name}}* value,
+    std::function<void(std::string)> setter);
 {% if exclude_from_protobuf == false %}
 
     void proto_to_{{attribute_name}}(
