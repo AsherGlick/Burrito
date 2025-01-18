@@ -82,13 +82,6 @@ map<string, vector<string>> read_taco_directory(
             }
         }
     }
-    else if (filesystem::is_regular_file(input_path)) {
-        set<string> top_level_category_names = parse_xml_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
-        string filename = filesystem::path(input_path).filename();
-        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-            top_level_category_file_locations[*it].push_back(filename);
-        }
-    }
     return top_level_category_file_locations;
 }
 
@@ -109,13 +102,6 @@ map<string, vector<string>> read_burrito_directory(
             for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
                 top_level_category_file_locations[*it].push_back(relative_path);
             }
-        }
-    }
-    else if (filesystem::is_regular_file(input_path)) {
-        set<string> top_level_category_names = read_protobuf_file(input_path, get_base_dir(input_path), marker_categories, parsed_pois);
-        string filename = filesystem::path(input_path).filename();
-        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-            top_level_category_file_locations[*it].push_back(filename);
         }
     }
     return top_level_category_file_locations;
