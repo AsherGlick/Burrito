@@ -179,8 +179,8 @@ def main() -> bool:
         rawstdout, rawstderr, returncode = run_xml_converter(
             input_xml=testcase.xml_input_paths,
             input_proto=testcase.proto_input_paths,
-            output_xml=[xml_output_dir_path],
-            output_proto=[proto_output_dir_path],
+            output_xml=output_xml_paths,
+            output_proto=output_proto_paths,
             allow_duplicates=testcase.allow_duplicates,
             split_by_map_id=testcase.split_by_map_id
         )
