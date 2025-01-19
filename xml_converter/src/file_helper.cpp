@@ -1,7 +1,6 @@
 #include "file_helper.hpp"
 
 #include <dirent.h>
-#include <zip.h>
 
 #include <algorithm>
 #include <filesystem>
