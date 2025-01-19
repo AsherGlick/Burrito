@@ -46,21 +46,23 @@ std::string {{attribute_name}}_to_xml_attribute(
     const std::string& attribute_name,
     XMLWriterState* state,
     const {{class_name}}* value);
+{% if exclude_from_protobuf == false %}
 
-void proto_to_{{attribute_name}}(
-    {{proto_field_cpp_type}} input,
-    ProtoReaderState* state,
-    {{class_name}}* value,
-    bool* is_set);
+    void proto_to_{{attribute_name}}(
+        {{proto_field_cpp_type}} input,
+        ProtoReaderState* state,
+        {{class_name}}* value,
+        bool* is_set);
 
-{% if type == "Enum" %}
-    void {{attribute_name}}_to_proto(
-        {{class_name}} value,
-        ProtoWriterState* state,
-        std::function<void({{proto_field_cpp_type}})> setter);
-{% else %}
-    void {{attribute_name}}_to_proto(
-        {{class_name}} value,
-        ProtoWriterState* state,
-        std::function<void({{proto_field_cpp_type}}*)> setter);
+    {% if type == "Enum" %}
+        void {{attribute_name}}_to_proto(
+            {{class_name}} value,
+            ProtoWriterState* state,
+            std::function<void({{proto_field_cpp_type}})> setter);
+    {% else %}
+        void {{attribute_name}}_to_proto(
+            {{class_name}} value,
+            ProtoWriterState* state,
+            std::function<void({{proto_field_cpp_type}}*)> setter);
+    {% endif %}
 {% endif %}

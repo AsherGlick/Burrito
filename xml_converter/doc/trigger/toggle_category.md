@@ -4,6 +4,7 @@ type: Custom
 class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Toggle, ToggleCategory]
+exclude_from_protobuf: True
 protobuf_field: trigger.action_toggle_category
 ---
 Show if hidden or Hide if shown the specified category when triggered.

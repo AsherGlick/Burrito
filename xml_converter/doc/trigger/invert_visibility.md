@@ -3,6 +3,7 @@ name: Invert Visibility
 type: Boolean
 applies_to: [Icon]
 xml_fields: [InvertBehavior]
+exclude_from_protobuf: True
 protobuf_field: trigger.invert_display
 ---
 Inverts the hide show behavior so that it is shown when it is supposed to be hidden and hidden when it is supposed to be shown.

@@ -163,11 +163,18 @@ def main() -> bool:
             if not re.match(args.filter, testcase.name):
                 continue
 
-        xml_output_dir_path = os.path.join(output_parent_dirpath, "xml", testcase.name)
-        proto_output_dir_path = os.path.join(output_parent_dirpath, "proto", testcase.name)
+        output_xml_paths: Optional[List[str]] = None
+        output_proto_paths: Optional[List[str]] = None
 
-        os.makedirs(xml_output_dir_path, exist_ok=True)
-        os.makedirs(proto_output_dir_path, exist_ok=True)
+        if testcase.expected_output_xml_path is not None:
+            xml_output_dir_path = os.path.join(output_parent_dirpath, "xml", testcase.name)
+            os.makedirs(xml_output_dir_path, exist_ok=True)
+            output_xml_paths = [xml_output_dir_path]
+
+        if testcase.expected_output_proto_path is not None:
+            proto_output_dir_path = os.path.join(output_parent_dirpath, "proto", testcase.name)
+            os.makedirs(proto_output_dir_path, exist_ok=True)
+            output_proto_paths = [proto_output_dir_path]
 
         rawstdout, rawstderr, returncode = run_xml_converter(
             input_xml=testcase.xml_input_paths,
@@ -208,9 +215,9 @@ def main() -> bool:
         if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
             print(f"Expected a return code of {testcase.expected_returncode} for {testcase.name} but got {returncode}")
 
-        if os.path.exists(testcase.expected_output_xml_path):
+        if testcase.expected_output_xml_path is not None and os.path.exists(testcase.expected_output_xml_path):
             testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
-        if os.path.exists(testcase.expected_output_proto_path):
+        if testcase.expected_output_proto_path is not None and os.path.exists(testcase.expected_output_proto_path):
             testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
 
         if testcase_passed:

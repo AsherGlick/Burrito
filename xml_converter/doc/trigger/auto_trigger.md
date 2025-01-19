@@ -3,6 +3,7 @@ name: Auto Trigger
 type: Boolean
 applies_to: [Icon]
 xml_fields: [AutoTrigger]
+exclude_from_protobuf: True
 protobuf_field: trigger.auto_trigger
 ---
 Any triggers will be triggered automatially when the player enters within range instead of being triggered.

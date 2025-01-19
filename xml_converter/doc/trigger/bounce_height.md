@@ -3,6 +3,7 @@ name: Bounce Height
 type: Float32
 applies_to: [Icon]
 xml_fields: [BounceHeight]
+exclude_from_protobuf: True
 protobuf_field: trigger.bounce_height
 ---
 How high should the icon bounce when triggered.

@@ -60,38 +60,40 @@ string {{attribute_name}}_to_xml_attribute(
         return " " + attribute_name + "=\"" + "{{class_name}}::{{attribute_components[0].xml_fields[0]}}" + "\"";
     }
 }
+{% if exclude_from_protobuf == false %}
 
-void proto_to_{{attribute_name}}(
-    {{proto_field_cpp_type}} input,
-    ProtoReaderState*,
-    {{class_name}}* value,
-    bool* is_set) {
-    switch (input) {
-        {% for attribute_component in attribute_components %}
-            case {{proto_field_cpp_type}}::{{attribute_component.attribute_name}}:
-                *value = {{class_name}}::{{attribute_component.attribute_name}};
+    void proto_to_{{attribute_name}}(
+        {{proto_field_cpp_type}} input,
+        ProtoReaderState*,
+        {{class_name}}* value,
+        bool* is_set) {
+        switch (input) {
+            {% for attribute_component in attribute_components %}
+                case {{proto_field_cpp_type}}::{{attribute_component.attribute_name}}:
+                    *value = {{class_name}}::{{attribute_component.attribute_name}};
+                    *is_set = true;
+                    break;
+            {% endfor %}
+            default:
+                *value = {{class_name}}::{{attribute_components[0].attribute_name}};
                 *is_set = true;
                 break;
-        {% endfor %}
-        default:
-            *value = {{class_name}}::{{attribute_components[0].attribute_name}};
-            *is_set = true;
-            break;
+        }
     }
-}
 
-void {{attribute_name}}_to_proto(
-    {{class_name}} value,
-    ProtoWriterState*,
-    std::function<void({{proto_field_cpp_type}})> setter) {
-    switch (value) {
-        {% for attribute_component in attribute_components %}
-            case {{class_name}}::{{attribute_component.attribute_name}}:
-                setter({{proto_field_cpp_type}}::{{attribute_component.attribute_name}});
+    void {{attribute_name}}_to_proto(
+        {{class_name}} value,
+        ProtoWriterState*,
+        std::function<void({{proto_field_cpp_type}})> setter) {
+        switch (value) {
+            {% for attribute_component in attribute_components %}
+                case {{class_name}}::{{attribute_component.attribute_name}}:
+                    setter({{proto_field_cpp_type}}::{{attribute_component.attribute_name}});
+                    break;
+            {% endfor %}
+            default:
+                setter({{proto_field_cpp_type}}::{{attribute_components[0].attribute_name}});
                 break;
-        {% endfor %}
-        default:
-            setter({{proto_field_cpp_type}}::{{attribute_components[0].attribute_name}});
-            break;
+        }
     }
-}
+{% endif %}

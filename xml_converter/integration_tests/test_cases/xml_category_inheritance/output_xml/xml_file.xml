@@ -21,6 +21,6 @@
 <POI  Type="nestedlevel1" MapID="50" XPos="111.000000" YPos="0.000000" ZPos="0.000000"/>
 <POI  Type="nestedlevel1.nestedlevel2" MapID="50" XPos="111.000000" YPos="222.000000" ZPos="0.000000"/>
 <POI  Type="nestedlevel1.nestedlevel2.nestedlevel3" MapID="50" XPos="111.000000" YPos="222.000000" ZPos="333.000000"/>
-<Trail  AnimSpeed="1.000000" Type="trailnestedlevel1.trailnestedlevel2" MapID="50" Texture="texture_one.png" TrailData="037aa160e392f1c8.trl"/>
+<Trail  Type="trailnestedlevel1.trailnestedlevel2" MapID="50" Texture="texture_one.png" TrailData="037aa160e392f1c8.trl"/>
 </POIs>
 </OverlayData>

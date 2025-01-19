@@ -4,6 +4,7 @@ type: Custom
 class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Hide]
+exclude_from_protobuf: True
 protobuf_field: trigger.action_hide_category
 ---
 Hide the specified category when triggered.

@@ -62,31 +62,33 @@ string {{attribute_name}}_to_xml_attribute(
     string output = join(flag_values, ",");
     return " " + attribute_name + "=\"" + output + "\"";
 }
+{% if exclude_from_protobuf == false %}
 
-void proto_to_{{attribute_name}}(
-    {{proto_field_cpp_type}} input,
-    ProtoReaderState*,
-    {{class_name}}* value,
-    bool* is_set) {
-    {{class_name}} {{attribute_name}};
-    {% for n, attribute_component in enumerate(attribute_components) %}
-        {{attribute_name}}.{{attribute_component.attribute_name}} = input.{{attribute_component.attribute_name}}();
-    {% endfor %}
-    *value = {{attribute_name}};
-    *is_set = true;
-}
-
-void {{attribute_name}}_to_proto(
-    {{class_name}} value,
-    ProtoWriterState*,
-    std::function<void({{proto_field_cpp_type}}*)> setter) {
-    {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
-    bool should_write = false;
-    {% for n, attribute_component in enumerate(attribute_components) %}
-        proto_{{attribute_name}}->set_{{attribute_component.attribute_name}}(value.{{attribute_component.attribute_name}});
-        should_write |= value.{{attribute_component.attribute_name}};
-    {% endfor %}
-    if (should_write) {
-        setter(proto_{{attribute_name}});
+    void proto_to_{{attribute_name}}(
+        {{proto_field_cpp_type}} input,
+        ProtoReaderState*,
+        {{class_name}}* value,
+        bool* is_set) {
+        {{class_name}} {{attribute_name}};
+        {% for n, attribute_component in enumerate(attribute_components) %}
+            {{attribute_name}}.{{attribute_component.attribute_name}} = input.{{attribute_component.attribute_name}}();
+        {% endfor %}
+        *value = {{attribute_name}};
+        *is_set = true;
     }
-}
+
+    void {{attribute_name}}_to_proto(
+        {{class_name}} value,
+        ProtoWriterState*,
+        std::function<void({{proto_field_cpp_type}}*)> setter) {
+        {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
+        bool should_write = false;
+        {% for n, attribute_component in enumerate(attribute_components) %}
+            proto_{{attribute_name}}->set_{{attribute_component.attribute_name}}(value.{{attribute_component.attribute_name}});
+            should_write |= value.{{attribute_component.attribute_name}};
+        {% endfor %}
+        if (should_write) {
+            setter(proto_{{attribute_name}});
+        }
+    }
+{% endif %}

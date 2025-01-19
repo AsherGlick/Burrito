@@ -100,6 +100,14 @@ vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
     return xml_node_contents;
 }
 
+// The following attributes are not yet supported in Burrito
+// and are not written to or read from the protobuf file:
+{% for attribute_variable in attribute_variables %}
+    {% if attribute_variable.exclude_from_protobuf == true %}
+        //  {{attribute_variable.attribute_name}}
+    {% endif %}
+{% endfor %}
+
 guildpoint::{{cpp_class}} {{cpp_class}}::as_protobuf(ProtoWriterState* state) const {
     guildpoint::{{cpp_class}} proto_{{cpp_class_header}};
     {% for attribute_variable in attribute_variables %}

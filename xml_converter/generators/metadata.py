@@ -61,6 +61,7 @@ class BaseMetadata:
 class OptionalBaseMetadata:
     custom_functions: CustomFunctions = CustomFunctions()
     examples: List[str] = field(default_factory=list)
+    exclude_from_protobuf: bool = field(default=False)
 
 
 ################################################################################

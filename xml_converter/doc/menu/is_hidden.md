@@ -3,6 +3,7 @@ name: Is Hidden
 type: Boolean
 applies_to: [Category]
 xml_fields: [DefaultToggle]
+exclude_from_protobuf: True
 protobuf_field: is_hidden
 custom_functions:
   read.xml:

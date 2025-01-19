@@ -35,14 +35,3 @@ std::string reset_behavior_to_xml_attribute(
     const std::string& attribute_name,
     XMLWriterState* state,
     const ResetBehavior* value);
-
-void proto_to_reset_behavior(
-    guildpoint::ResetBehavior input,
-    ProtoReaderState* state,
-    ResetBehavior* value,
-    bool* is_set);
-
-void reset_behavior_to_proto(
-    ResetBehavior value,
-    ProtoWriterState* state,
-    std::function<void(guildpoint::ResetBehavior)> setter);

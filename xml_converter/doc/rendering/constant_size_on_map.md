@@ -3,6 +3,7 @@ name: Constant Size On Map
 type: Boolean
 applies_to: [Icon]
 xml_fields: [ScaleOnMapWithZoom]
+exclude_from_protobuf: True
 protobuf_field: constant_size_on_map
 custom_functions:
   read.xml:

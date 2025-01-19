@@ -4,6 +4,7 @@ type: Custom
 class: MarkerCategory
 applies_to: [Icon]
 xml_fields: [Show]
+exclude_from_protobuf: True
 protobuf_field: trigger.action_show_category
 ---
 Show the specified category when triggered.

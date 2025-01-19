@@ -3,6 +3,7 @@ name: Copy Message
 type: String
 applies_to: [Icon]
 xml_fields: [CopyMessage]
+exclude_from_protobuf: True
 protobuf_field: trigger.action_copy_message
 ---
  A message that is displayed to the user when an item is copied to the clipboard.

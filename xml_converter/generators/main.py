@@ -241,7 +241,7 @@ class Generator:
 
             proto_field_type: str
             proto_field_name: str
-            if fieldval.protobuf_field is not None:
+            if fieldval.protobuf_field is not None and fieldval.exclude_from_protobuf is False:
                 proto_field_name = fieldval.protobuf_field
                 proto_field_type = ""
                 for marker_type in fieldval.applies_to_as_str():
