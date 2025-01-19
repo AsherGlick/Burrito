@@ -53,10 +53,10 @@ void xml_attribute_to_map_type_filter(
     MapTypeFilter* value,
     bool* is_set);
 
-std::string map_type_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void map_type_filter_to_xml_attribute(
     XMLWriterState* state,
-    const MapTypeFilter* value);
+    const MapTypeFilter* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_map_type_filter(
     guildpoint::MapTypeFilter input,

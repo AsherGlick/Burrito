@@ -402,10 +402,10 @@ void xml_attribute_to_specialization_filter(
     *is_set = true;
 }
 
-string specialization_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void specialization_filter_to_xml_attribute(
     XMLWriterState*,
-    const SpecializationFilter* value) {
+    const SpecializationFilter* value,
+    std::function<void(std::string)> setter) {
     vector<string> flag_values;
     if (value->elementalist_tempest == true) {
         flag_values.push_back("48");
@@ -624,7 +624,7 @@ string specialization_filter_to_xml_attribute(
         flag_values.push_back("11");
     }
     string output = join(flag_values, ",");
-    return " " + attribute_name + "=\"" + output + "\"";
+    setter(output);
 }
 
 void proto_to_specialization_filter(

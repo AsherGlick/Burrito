@@ -27,11 +27,11 @@ void xml_attribute_to_float(
 //
 // Converts a float into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string float_to_xml_attribute(
-    const string& attribute_name,
+void float_to_xml_attribute(
     XMLWriterState*,
-    const float* value) {
-    return " " + attribute_name + "=\"" + to_string(*value) + "\"";
+    const float* value,
+    std::function<void(std::string)> setter) {
+    setter(to_string(*value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

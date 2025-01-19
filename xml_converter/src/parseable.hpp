@@ -20,5 +20,5 @@ class Parseable {
     // A default parser function to parse a single XML attribute into the class.
     virtual bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState*);
 
-    virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
+    virtual rapidxml::xml_node<char>* as_xml(XMLWriterState* state) const;
 };

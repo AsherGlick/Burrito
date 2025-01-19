@@ -42,11 +42,11 @@ void xml_attribute_to_int(
 //
 // Converts an int a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string int_to_xml_attribute(
-    const string& attribute_name,
+void int_to_xml_attribute(
     XMLWriterState*,
-    const int* value) {
-    return " " + attribute_name + "=\"" + to_string(*value) + "\"";
+    const int* value,
+    std::function<void(std::string)> setter) {
+    setter(to_string(*value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

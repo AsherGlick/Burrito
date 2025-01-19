@@ -36,10 +36,10 @@ void xml_attribute_to_festival_filter(
     FestivalFilter* value,
     bool* is_set);
 
-std::string festival_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void festival_filter_to_xml_attribute(
     XMLWriterState* state,
-    const FestivalFilter* value);
+    const FestivalFilter* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_festival_filter(
     guildpoint::FestivalFilter input,

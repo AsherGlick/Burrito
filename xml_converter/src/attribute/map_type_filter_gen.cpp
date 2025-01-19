@@ -129,10 +129,10 @@ void xml_attribute_to_map_type_filter(
     *is_set = true;
 }
 
-string map_type_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void map_type_filter_to_xml_attribute(
     XMLWriterState*,
-    const MapTypeFilter* value) {
+    const MapTypeFilter* value,
+    std::function<void(std::string)> setter) {
     vector<string> flag_values;
     if (value->unknown_map == true) {
         flag_values.push_back("unknown");
@@ -207,7 +207,7 @@ string map_type_filter_to_xml_attribute(
         flag_values.push_back("wvwlounge");
     }
     string output = join(flag_values, ",");
-    return " " + attribute_name + "=\"" + output + "\"";
+    setter(output);
 }
 
 void proto_to_map_type_filter(

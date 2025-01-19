@@ -31,10 +31,10 @@ void xml_attribute_to_color(
     Color* value,
     bool* is_set);
 
-std::string color_to_xml_attribute(
-    const std::string& attribute_name,
+void color_to_xml_attribute(
     XMLWriterState* state,
-    const Color* value);
+    const Color* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_color(
     uint32_t input,

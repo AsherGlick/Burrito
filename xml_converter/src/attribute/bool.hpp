@@ -19,10 +19,10 @@ void xml_attribute_to_bool(
     bool* value,
     bool* is_set);
 
-std::string bool_to_xml_attribute(
-    const std::string& attribute_name,
+void bool_to_xml_attribute(
     XMLWriterState* state,
-    const bool* value);
+    const bool* value,
+    std::function<void(std::string)> setter);
 
 void inverted_xml_attribute_to_bool(
     rapidxml::xml_attribute<>* input,
@@ -31,10 +31,10 @@ void inverted_xml_attribute_to_bool(
     bool* value,
     bool* is_set);
 
-std::string bool_to_inverted_xml_attribute(
-    const std::string& attribute_name,
+void bool_to_inverted_xml_attribute(
     XMLWriterState* state,
-    const bool* value);
+    const bool* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_bool(
     bool input,

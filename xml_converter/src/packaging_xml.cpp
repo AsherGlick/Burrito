@@ -1,11 +1,14 @@
 #include "packaging_xml.hpp"
 
+#include <fstream>
+#include <iostream>
 #include <set>
 #include <utility>
 
 #include "hash_helpers.hpp"
 #include "rapid_helpers.hpp"
 #include "rapidxml-1.13/rapidxml.hpp"
+#include "rapidxml-1.13/rapidxml_print.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "state_structs/xml_reader_state.hpp"
 #include "string_helper.hpp"
@@ -258,27 +261,30 @@ void write_xml_file(const string marker_pack_root_directory, map<string, Categor
     XMLWriterState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
 
+    rapidxml::xml_document<char> doc;
+    state.doc = &doc;
+
+    // TODO: Decide if we should require, reject, or optionally have the standard xml header on output
+    // auto* declaration = doc.allocate_node(rapidxml::node_declaration);
+    // declaration->append_attribute(doc.allocate_attribute("version", "1.0"));
+    // declaration->append_attribute(doc.allocate_attribute("encoding", "UTF-8"));
+    // doc.append_node(declaration);
+
+    rapidxml::xml_node<char>* root = doc.allocate_node(rapidxml::node_element, "OverlayData");
+    doc.append_node(root);
+
+    for (const auto& category : *marker_categories) {
+        root->append_node(category.second.as_xml(&state));
+    }
+
+    rapidxml::xml_node<char>* pois = doc.allocate_node(rapidxml::node_element, "POIs");
+    root->append_node(pois);
+    for (const auto& parsed_poi : *parsed_pois) {
+        pois->append_node(parsed_poi->as_xml(&state));
+    }
+
     string xml_filepath = join_file_paths(marker_pack_root_directory, "xml_file.xml");
     outfile.open(xml_filepath, ios::out);
-
-    outfile << "<OverlayData>\n";
-    for (const auto& category : *marker_categories) {
-        string text;
-        for (const auto& s : category.second.as_xml(&state)) {
-            text += s;
-        }
-        outfile << text + "\n";
-    }
-
-    outfile << "<POIs>\n";
-    for (const auto& parsed_poi : *parsed_pois) {
-        string text;
-        for (const auto& s : parsed_poi->as_xml(&state)) {
-            text += s;
-        }
-        outfile << text + "\n";
-    }
-    outfile << "</POIs>\n</OverlayData>\n";
-
+    rapidxml::print(std::ostream_iterator<char>(outfile), doc);
     outfile.close();
 }

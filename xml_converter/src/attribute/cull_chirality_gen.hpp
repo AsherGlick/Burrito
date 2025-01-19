@@ -25,10 +25,10 @@ void xml_attribute_to_cull_chirality(
     CullChirality* value,
     bool* is_set);
 
-std::string cull_chirality_to_xml_attribute(
-    const std::string& attribute_name,
+void cull_chirality_to_xml_attribute(
     XMLWriterState* state,
-    const CullChirality* value);
+    const CullChirality* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_cull_chirality(
     guildpoint::CullChirality input,

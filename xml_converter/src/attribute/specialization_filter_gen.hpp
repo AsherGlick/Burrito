@@ -101,10 +101,10 @@ void xml_attribute_to_specialization_filter(
     SpecializationFilter* value,
     bool* is_set);
 
-std::string specialization_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void specialization_filter_to_xml_attribute(
     XMLWriterState* state,
-    const SpecializationFilter* value);
+    const SpecializationFilter* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_specialization_filter(
     guildpoint::SpecializationFilter input,

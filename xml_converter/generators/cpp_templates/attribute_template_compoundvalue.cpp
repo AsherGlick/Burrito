@@ -34,10 +34,10 @@ void xml_attribute_to_{{attribute_name}}(
     *is_set = true;
 }
 {% if xml_bundled_components != [] %}
-    string {{attribute_name}}_to_xml_attribute(
-        const std::string& attribute_name,
+    void {{attribute_name}}_to_xml_attribute(
         XMLWriterState*,
-        const {{class_name}}* value) {
+        const {{class_name}}* value,
+        std::function<void(std::string)> setter) {
         string output;
         {% for n, attribute_component in enumerate(attribute_components) %}
             {% if attribute_component.attribute_name in xml_bundled_components %}
@@ -48,7 +48,7 @@ void xml_attribute_to_{{attribute_name}}(
                 {% endif %}
             {% endif %}
         {% endfor %}
-        return " " + attribute_name + "=\"" + output + "\"";
+        setter(output);
     }
 {% endif %}
 {% if exclude_from_protobuf == false %}

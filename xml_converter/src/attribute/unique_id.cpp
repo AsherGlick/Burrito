@@ -30,11 +30,11 @@ void xml_attribute_to_unique_id(
 //
 // Converts a unique id into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string unique_id_to_xml_attribute(
-    const string& attribute_name,
+void unique_id_to_xml_attribute(
     XMLWriterState*,
-    const UniqueId* value) {
-    return " " + attribute_name + "=\"" + base64_encode(&(value->guid[0]), value->guid.size()) + "\"";
+    const UniqueId* value,
+    std::function<void(std::string)> setter) {
+    setter(base64_encode(&(value->guid[0]), value->guid.size()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

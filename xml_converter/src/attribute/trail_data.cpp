@@ -100,12 +100,12 @@ uint64_t djb2_hash(const unsigned char* str, size_t length) {
 // TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t trail_version_number = 0;
-string trail_data_to_xml_attribute(
-    const string& attribute_name,
+void trail_data_to_xml_attribute(
     XMLWriterState* state,
     const TrailData* value,
     const int* map_id_value,
-    const bool* is_map_id_set) {
+    const bool* is_map_id_set,
+    std::function<void(std::string)> setter) {
     size_t byte_array_size = sizeof(int) + sizeof(uint32_t) + value->points_x.size() * 3 * sizeof(float);
     unsigned char* byte_array = new unsigned char[byte_array_size];
 
@@ -143,7 +143,7 @@ string trail_data_to_xml_attribute(
     trail_data_file.close();
 
     delete[] byte_array;
-    return " " + attribute_name + "=\"" + trail_file_name + "\"";
+    setter(trail_file_name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

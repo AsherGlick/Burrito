@@ -121,7 +121,7 @@ class Icon : public Parseable {
     bool tooltip_description_is_set = false;
     bool tooltip_name_is_set = false;
     bool trigger_range_is_set = false;
-    virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
+    virtual rapidxml::xml_node<char>* as_xml(XMLWriterState* state) const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
     guildpoint::Icon as_protobuf(ProtoWriterState* state) const;

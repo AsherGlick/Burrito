@@ -41,10 +41,10 @@ void xml_attribute_to_{{attribute_name}}(
     *is_set = true;
 }
 
-string {{attribute_name}}_to_xml_attribute(
-    const std::string& attribute_name,
+void {{attribute_name}}_to_xml_attribute(
     XMLWriterState*,
-    const {{class_name}}* value) {
+    const {{class_name}}* value,
+    std::function<void(std::string)> setter) {
     {% for n, attribute_component in enumerate(attribute_components) %}
         {% for i, value in enumerate(attribute_component.xml_fields) %}
             {%-if i == 0 and n == 0:%}
@@ -52,12 +52,13 @@ string {{attribute_name}}_to_xml_attribute(
             {% else %}
                 else if (*value == {{class_name}}::{{attribute_component.attribute_name}}) {
             {%  endif %}
-                return " " + attribute_name + "=\"" + "{{value}}" + "\"";
+                setter("{{value}}");
+                return;
             }
         {%  endfor %}
     {%  endfor %}
     else {
-        return " " + attribute_name + "=\"" + "{{class_name}}::{{attribute_components[0].xml_fields[0]}}" + "\"";
+        setter("{{class_name}}::{{attribute_components[0].xml_fields[0]}}");
     }
 }
 {% if exclude_from_protobuf == false %}

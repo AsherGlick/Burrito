@@ -32,10 +32,10 @@ void xml_attribute_to_euler_rotation(
     EulerRotation* value,
     bool* is_set);
 
-std::string euler_rotation_to_xml_attribute(
-    const std::string& attribute_name,
+void euler_rotation_to_xml_attribute(
     XMLWriterState* state,
-    const EulerRotation* value);
+    const EulerRotation* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_euler_rotation(
     guildpoint::EulerRotation input,

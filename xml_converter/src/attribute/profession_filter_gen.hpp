@@ -38,10 +38,10 @@ void xml_attribute_to_profession_filter(
     ProfessionFilter* value,
     bool* is_set);
 
-std::string profession_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void profession_filter_to_xml_attribute(
     XMLWriterState* state,
-    const ProfessionFilter* value);
+    const ProfessionFilter* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_profession_filter(
     guildpoint::ProfessionFilter input,
