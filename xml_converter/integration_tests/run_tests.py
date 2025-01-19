@@ -175,7 +175,7 @@ def main() -> bool:
             output_xml=[xml_output_dir_path],
             output_proto=[proto_output_dir_path],
             allow_duplicates=testcase.allow_duplicates,
-            split_by_map_id = testcase.split_by_map_id
+            split_by_map_id=testcase.split_by_map_id
         )
 
         # Sanitize and denoise the lines
