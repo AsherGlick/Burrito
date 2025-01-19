@@ -122,10 +122,7 @@ def rebuild_xml_converter_binary() -> None:
 line_patterns_to_ignore = [
     r"^Loading taco pack .*$",
     r"^Loading guildpoint pack .*$",
-    r"^The taco parse function took [0-9]+ milliseconds to run$",
-    r"^The xml write function took [0-9]+ milliseconds to run$",
-    r"^The protobuf read function took [0-9]+ milliseconds to run$",
-    r"^The protobuf write function took [0-9]+ milliseconds to run$",
+    r"^The .+? function took [0-9]+ milliseconds to run$",
     r"^$"
 ]
 
