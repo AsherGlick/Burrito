@@ -37,21 +37,24 @@ void xml_attribute_to_cull_chirality(
     *is_set = true;
 }
 
-string cull_chirality_to_xml_attribute(
-    const std::string& attribute_name,
+void cull_chirality_to_xml_attribute(
     XMLWriterState*,
-    const CullChirality* value) {
+    const CullChirality* value,
+    std::function<void(std::string)> setter) {
     if (*value == CullChirality::none) {
-        return " " + attribute_name + "=\"" + "none" + "\"";
+        setter("none");
+        return;
     }
     else if (*value == CullChirality::clockwise) {
-        return " " + attribute_name + "=\"" + "clockwise" + "\"";
+        setter("clockwise");
+        return;
     }
     else if (*value == CullChirality::counter_clockwise) {
-        return " " + attribute_name + "=\"" + "counterclockwise" + "\"";
+        setter("counterclockwise");
+        return;
     }
     else {
-        return " " + attribute_name + "=\"" + "CullChirality::none" + "\"";
+        setter("CullChirality::none");
     }
 }
 

@@ -19,10 +19,10 @@ void xml_attribute_to_float(
     float* value,
     bool* is_set);
 
-std::string float_to_xml_attribute(
-    const std::string& attribute_name,
+void float_to_xml_attribute(
     XMLWriterState* state,
-    const float* value);
+    const float* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_float(
     float input,

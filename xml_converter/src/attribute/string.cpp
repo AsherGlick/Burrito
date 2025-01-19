@@ -30,11 +30,11 @@ void xml_attribute_to_string(
 //
 // Converts a string into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string string_to_xml_attribute(
-    const string& attribute_name,
+void string_to_xml_attribute(
     XMLWriterState*,
-    const string* value) {
-    return " " + attribute_name + "=\"" + *value + "\"";
+    const string* value,
+    std::function<void(std::string)> setter) {
+    setter(*value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

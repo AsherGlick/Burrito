@@ -53,10 +53,10 @@ void xml_attribute_to_species_filter(
     *is_set = true;
 }
 
-string species_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void species_filter_to_xml_attribute(
     XMLWriterState*,
-    const SpeciesFilter* value) {
+    const SpeciesFilter* value,
+    std::function<void(std::string)> setter) {
     vector<string> flag_values;
     if (value->asura == true) {
         flag_values.push_back("asura");
@@ -74,7 +74,7 @@ string species_filter_to_xml_attribute(
         flag_values.push_back("sylvari");
     }
     string output = join(flag_values, ",");
-    return " " + attribute_name + "=\"" + output + "\"";
+    setter(output);
 }
 
 void proto_to_species_filter(

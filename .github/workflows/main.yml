@@ -50,6 +50,9 @@ jobs:
       - name: Install gtest
         run: sudo apt-get install libgtest-dev
 
+      - name: Install libzip
+        run: sudo apt-get install libzip-dev
+
       - name: Install cpplint
         run: |
           pip3 install cpplint==1.6.1

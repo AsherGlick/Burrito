@@ -255,158 +255,206 @@ bool Icon::validate_attributes_of_type_marker_category() {
     return true;
 }
 
-vector<string> Icon::as_xml(XMLWriterState* state) const {
-    vector<string> xml_node_contents;
-    xml_node_contents.push_back("<POI ");
+rapidxml::xml_node<char>* Icon::as_xml(XMLWriterState* state) const {
+    rapidxml::xml_node<char>* xml_node = state->doc->allocate_node(rapidxml::node_element, "POI");
+
     if (this->achievement_bit_index_is_set) {
-        xml_node_contents.push_back(int_to_xml_attribute("AchievementBit", state, &this->achievement_bit_index));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("AchievementBit", state->doc->allocate_string(val.c_str()))); };
+        int_to_xml_attribute(state, &this->achievement_bit_index, setter);
     }
     if (this->achievement_id_is_set) {
-        xml_node_contents.push_back(int_to_xml_attribute("AchievementId", state, &this->achievement_id));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("AchievementId", state->doc->allocate_string(val.c_str()))); };
+        int_to_xml_attribute(state, &this->achievement_id, setter);
     }
     if (this->auto_trigger_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("AutoTrigger", state, &this->auto_trigger));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("AutoTrigger", state->doc->allocate_string(val.c_str()))); };
+        bool_to_xml_attribute(state, &this->auto_trigger, setter);
     }
     if (this->bounce_delay_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("BounceDelay", state, &this->bounce_delay));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("BounceDelay", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->bounce_delay, setter);
     }
     if (this->bounce_duration_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("BounceDuration", state, &this->bounce_duration));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("BounceDuration", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->bounce_duration, setter);
     }
     if (this->bounce_height_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("BounceHeight", state, &this->bounce_height));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("BounceHeight", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->bounce_height, setter);
     }
     if (this->category_is_set) {
-        xml_node_contents.push_back(marker_category_to_xml_attribute("Type", state, &this->category));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Type", state->doc->allocate_string(val.c_str()))); };
+        marker_category_to_xml_attribute(state, &this->category, setter);
     }
     if (this->color_is_set) {
-        xml_node_contents.push_back(color_to_xml_attribute("Color", state, &this->color));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Color", state->doc->allocate_string(val.c_str()))); };
+        color_to_xml_attribute(state, &this->color, setter);
     }
     if (this->color_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("Alpha", state, &this->color.alpha));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Alpha", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->color.alpha, setter);
     }
     if (this->constant_size_on_map_is_set) {
-        xml_node_contents.push_back(bool_to_inverted_xml_attribute("ScaleOnMapWithZoom", state, &this->constant_size_on_map));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("ScaleOnMapWithZoom", state->doc->allocate_string(val.c_str()))); };
+        bool_to_inverted_xml_attribute(state, &this->constant_size_on_map, setter);
     }
     if (this->copy_clipboard_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("Copy", state, &this->copy_clipboard));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Copy", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->copy_clipboard, setter);
     }
     if (this->copy_message_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("CopyMessage", state, &this->copy_message));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("CopyMessage", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->copy_message, setter);
     }
     if (this->cull_chirality_is_set) {
-        xml_node_contents.push_back(cull_chirality_to_xml_attribute("Cull", state, &this->cull_chirality));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Cull", state->doc->allocate_string(val.c_str()))); };
+        cull_chirality_to_xml_attribute(state, &this->cull_chirality, setter);
     }
     if (this->disable_player_cutout_is_set) {
-        xml_node_contents.push_back(bool_to_inverted_xml_attribute("CanFade", state, &this->disable_player_cutout));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("CanFade", state->doc->allocate_string(val.c_str()))); };
+        bool_to_inverted_xml_attribute(state, &this->disable_player_cutout, setter);
     }
     if (this->distance_fade_end_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("FadeFar", state, &this->distance_fade_end));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("FadeFar", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->distance_fade_end, setter);
     }
     if (this->distance_fade_start_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("FadeNear", state, &this->distance_fade_start));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("FadeNear", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->distance_fade_start, setter);
     }
     if (this->festival_filter_is_set) {
-        xml_node_contents.push_back(festival_filter_to_xml_attribute("Festival", state, &this->festival_filter));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Festival", state->doc->allocate_string(val.c_str()))); };
+        festival_filter_to_xml_attribute(state, &this->festival_filter, setter);
     }
     if (this->guid_is_set) {
-        xml_node_contents.push_back(unique_id_to_xml_attribute("GUID", state, &this->guid));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("GUID", state->doc->allocate_string(val.c_str()))); };
+        unique_id_to_xml_attribute(state, &this->guid, setter);
     }
     if (this->has_countdown_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("HasCountdown", state, &this->has_countdown));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("HasCountdown", state->doc->allocate_string(val.c_str()))); };
+        bool_to_xml_attribute(state, &this->has_countdown, setter);
     }
     if (this->height_offset_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("HeightOffset", state, &this->height_offset));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("HeightOffset", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->height_offset, setter);
     }
     if (this->hide_category_is_set) {
-        xml_node_contents.push_back(marker_category_to_xml_attribute("Hide", state, &this->hide_category));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Hide", state->doc->allocate_string(val.c_str()))); };
+        marker_category_to_xml_attribute(state, &this->hide_category, setter);
     }
     if (this->icon_is_set) {
-        xml_node_contents.push_back(image_to_xml_attribute("IconFile", state, &this->icon));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("IconFile", state->doc->allocate_string(val.c_str()))); };
+        image_to_xml_attribute(state, &this->icon, setter);
     }
     if (this->icon_size_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("IconSize", state, &this->icon_size));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("IconSize", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->icon_size, setter);
     }
     if (this->info_message_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("Info", state, &this->info_message));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Info", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->info_message, setter);
     }
     if (this->invert_visibility_is_set) {
-        xml_node_contents.push_back(bool_to_xml_attribute("InvertBehavior", state, &this->invert_visibility));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("InvertBehavior", state->doc->allocate_string(val.c_str()))); };
+        bool_to_xml_attribute(state, &this->invert_visibility, setter);
     }
     if (this->map_display_size_is_set) {
-        xml_node_contents.push_back(int_to_xml_attribute("MapDisplaySize", state, &this->map_display_size));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("MapDisplaySize", state->doc->allocate_string(val.c_str()))); };
+        int_to_xml_attribute(state, &this->map_display_size, setter);
     }
     if (this->map_id_is_set) {
-        xml_node_contents.push_back(int_to_xml_attribute("MapID", state, &this->map_id));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("MapID", state->doc->allocate_string(val.c_str()))); };
+        int_to_xml_attribute(state, &this->map_id, setter);
     }
     if (this->map_type_filter_is_set) {
-        xml_node_contents.push_back(map_type_filter_to_xml_attribute("MapType", state, &this->map_type_filter));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("MapType", state->doc->allocate_string(val.c_str()))); };
+        map_type_filter_to_xml_attribute(state, &this->map_type_filter, setter);
     }
     if (this->maximum_size_on_screen_is_set) {
-        xml_node_contents.push_back(int_to_xml_attribute("MaxSize", state, &this->maximum_size_on_screen));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("MaxSize", state->doc->allocate_string(val.c_str()))); };
+        int_to_xml_attribute(state, &this->maximum_size_on_screen, setter);
     }
     if (this->minimum_size_on_screen_is_set) {
-        xml_node_contents.push_back(int_to_xml_attribute("MinSize", state, &this->minimum_size_on_screen));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("MinSize", state->doc->allocate_string(val.c_str()))); };
+        int_to_xml_attribute(state, &this->minimum_size_on_screen, setter);
     }
     if (this->mount_filter_is_set) {
-        xml_node_contents.push_back(mount_filter_to_xml_attribute("Mount", state, &this->mount_filter));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Mount", state->doc->allocate_string(val.c_str()))); };
+        mount_filter_to_xml_attribute(state, &this->mount_filter, setter);
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("XPos", state, &this->position.x_position));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("XPos", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->position.x_position, setter);
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("YPos", state, &this->position.y_position));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("YPos", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->position.y_position, setter);
     }
     if (this->position_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("ZPos", state, &this->position.z_position));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("ZPos", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->position.z_position, setter);
     }
     if (this->profession_filter_is_set) {
-        xml_node_contents.push_back(profession_filter_to_xml_attribute("Profession", state, &this->profession_filter));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Profession", state->doc->allocate_string(val.c_str()))); };
+        profession_filter_to_xml_attribute(state, &this->profession_filter, setter);
     }
     if (this->render_ingame_is_set) {
-        xml_node_contents.push_back(bool_to_inverted_xml_attribute("IngameVisibility", state, &this->render_ingame));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("IngameVisibility", state->doc->allocate_string(val.c_str()))); };
+        bool_to_inverted_xml_attribute(state, &this->render_ingame, setter);
     }
     if (this->render_on_map_is_set) {
-        xml_node_contents.push_back(bool_to_inverted_xml_attribute("MapVisibility", state, &this->render_on_map));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("MapVisibility", state->doc->allocate_string(val.c_str()))); };
+        bool_to_inverted_xml_attribute(state, &this->render_on_map, setter);
     }
     if (this->render_on_minimap_is_set) {
-        xml_node_contents.push_back(bool_to_inverted_xml_attribute("MinimapVisibility", state, &this->render_on_minimap));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("MinimapVisibility", state->doc->allocate_string(val.c_str()))); };
+        bool_to_inverted_xml_attribute(state, &this->render_on_minimap, setter);
     }
     if (this->reset_behavior_is_set) {
-        xml_node_contents.push_back(reset_behavior_to_xml_attribute("Behavior", state, &this->reset_behavior));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Behavior", state->doc->allocate_string(val.c_str()))); };
+        reset_behavior_to_xml_attribute(state, &this->reset_behavior, setter);
     }
     if (this->reset_length_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("ResetLength", state, &this->reset_length));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("ResetLength", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->reset_length, setter);
     }
     if (this->schedule_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("Schedule", state, &this->schedule));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Schedule", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->schedule, setter);
     }
     if (this->schedule_duration_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("ScheduleDuration", state, &this->schedule_duration));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("ScheduleDuration", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->schedule_duration, setter);
     }
     if (this->show_category_is_set) {
-        xml_node_contents.push_back(marker_category_to_xml_attribute("Show", state, &this->show_category));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Show", state->doc->allocate_string(val.c_str()))); };
+        marker_category_to_xml_attribute(state, &this->show_category, setter);
     }
     if (this->specialization_filter_is_set) {
-        xml_node_contents.push_back(specialization_filter_to_xml_attribute("Specialization", state, &this->specialization_filter));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Specialization", state->doc->allocate_string(val.c_str()))); };
+        specialization_filter_to_xml_attribute(state, &this->specialization_filter, setter);
     }
     if (this->species_filter_is_set) {
-        xml_node_contents.push_back(species_filter_to_xml_attribute("Race", state, &this->species_filter));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Race", state->doc->allocate_string(val.c_str()))); };
+        species_filter_to_xml_attribute(state, &this->species_filter, setter);
     }
     if (this->toggle_category_is_set) {
-        xml_node_contents.push_back(marker_category_to_xml_attribute("Toggle", state, &this->toggle_category));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Toggle", state->doc->allocate_string(val.c_str()))); };
+        marker_category_to_xml_attribute(state, &this->toggle_category, setter);
     }
     if (this->tooltip_description_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("TipDescription", state, &this->tooltip_description));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("TipDescription", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->tooltip_description, setter);
     }
     if (this->tooltip_name_is_set) {
-        xml_node_contents.push_back(string_to_xml_attribute("TipName", state, &this->tooltip_name));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("TipName", state->doc->allocate_string(val.c_str()))); };
+        string_to_xml_attribute(state, &this->tooltip_name, setter);
     }
     if (this->trigger_range_is_set) {
-        xml_node_contents.push_back(float_to_xml_attribute("TriggerRange", state, &this->trigger_range));
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("TriggerRange", state->doc->allocate_string(val.c_str()))); };
+        float_to_xml_attribute(state, &this->trigger_range, setter);
     }
-    xml_node_contents.push_back("/>");
-    return xml_node_contents;
+    return xml_node;
 }
 
 // The following attributes are not yet supported in Burrito

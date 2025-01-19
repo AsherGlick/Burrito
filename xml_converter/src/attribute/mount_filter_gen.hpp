@@ -39,10 +39,10 @@ void xml_attribute_to_mount_filter(
     MountFilter* value,
     bool* is_set);
 
-std::string mount_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void mount_filter_to_xml_attribute(
     XMLWriterState* state,
-    const MountFilter* value);
+    const MountFilter* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_mount_filter(
     guildpoint::MountFilter input,

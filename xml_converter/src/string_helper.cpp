@@ -292,6 +292,13 @@ bool has_suffix(std::string const& fullString, std::string const& ending) {
 }
 
 string join_file_paths(const string& path_a, const string& path_b) {
+    if (path_a.empty()) {
+        return path_b;
+    }
+    if (path_b.empty()) {
+        return path_a;
+    }
+
     string output = path_a;
     if (!has_suffix(path_a, "/")) {
         output += "/";

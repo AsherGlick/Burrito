@@ -64,10 +64,10 @@ void xml_attribute_to_festival_filter(
     *is_set = true;
 }
 
-string festival_filter_to_xml_attribute(
-    const std::string& attribute_name,
+void festival_filter_to_xml_attribute(
     XMLWriterState*,
-    const FestivalFilter* value) {
+    const FestivalFilter* value,
+    std::function<void(std::string)> setter) {
     vector<string> flag_values;
     if (value->dragonbash == true) {
         flag_values.push_back("dragonbash");
@@ -91,7 +91,7 @@ string festival_filter_to_xml_attribute(
         flag_values.push_back("none");
     }
     string output = join(flag_values, ",");
-    return " " + attribute_name + "=\"" + output + "\"";
+    setter(output);
 }
 
 void proto_to_festival_filter(

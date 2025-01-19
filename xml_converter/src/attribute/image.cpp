@@ -33,10 +33,10 @@ void xml_attribute_to_image(
 //
 // Converts an image into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string image_to_xml_attribute(
-    const string& attribute_name,
+void image_to_xml_attribute(
     XMLWriterState* state,
-    const Image* value) {
+    const Image* value,
+    std::function<void(std::string)> setter) {
     if (filesystem::exists(filesystem::path(value->original_filepath))) {
         filesystem::path output_path = filesystem::path(state->marker_pack_root_directory) / value->filename;
         if (value->original_filepath != output_path) {
@@ -47,7 +47,8 @@ string image_to_xml_attribute(
     else {
         cout << "Warning: File path " << value->original_filepath << " not found." << endl;
     }
-    return " " + attribute_name + "=\"" + value->filename + "\"";
+
+    setter(value->filename);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

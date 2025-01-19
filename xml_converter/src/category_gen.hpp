@@ -35,7 +35,7 @@ class Category : public Parseable {
     Category* parent;
 
     void init_from_xml(rapidxml::xml_node<>* node, std::vector<XMLError*>* errors, XMLReaderState* state);
-    virtual std::vector<std::string> as_xml(XMLWriterState* state) const;
+    virtual rapidxml::xml_node<char>* as_xml(XMLWriterState* state) const;
     virtual std::string classname();
     bool init_xml_attribute(rapidxml::xml_attribute<>* attribute, std::vector<XMLError*>* errors, XMLReaderState* state);
     guildpoint::Category as_protobuf(ProtoWriterState* state) const;

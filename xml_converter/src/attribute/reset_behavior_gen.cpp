@@ -82,65 +82,83 @@ void xml_attribute_to_reset_behavior(
     *is_set = true;
 }
 
-string reset_behavior_to_xml_attribute(
-    const std::string& attribute_name,
+void reset_behavior_to_xml_attribute(
     XMLWriterState*,
-    const ResetBehavior* value) {
+    const ResetBehavior* value,
+    std::function<void(std::string)> setter) {
     if (*value == ResetBehavior::always_visible) {
-        return " " + attribute_name + "=\"" + "0" + "\"";
+        setter("0");
+        return;
     }
     else if (*value == ResetBehavior::always_visible) {
-        return " " + attribute_name + "=\"" + "always_visible" + "\"";
+        setter("always_visible");
+        return;
     }
     else if (*value == ResetBehavior::map_change) {
-        return " " + attribute_name + "=\"" + "1" + "\"";
+        setter("1");
+        return;
     }
     else if (*value == ResetBehavior::map_change) {
-        return " " + attribute_name + "=\"" + "map_change" + "\"";
+        setter("map_change");
+        return;
     }
     else if (*value == ResetBehavior::daily_reset) {
-        return " " + attribute_name + "=\"" + "2" + "\"";
+        setter("2");
+        return;
     }
     else if (*value == ResetBehavior::daily_reset) {
-        return " " + attribute_name + "=\"" + "daily_reset" + "\"";
+        setter("daily_reset");
+        return;
     }
     else if (*value == ResetBehavior::never) {
-        return " " + attribute_name + "=\"" + "3" + "\"";
+        setter("3");
+        return;
     }
     else if (*value == ResetBehavior::never) {
-        return " " + attribute_name + "=\"" + "never" + "\"";
+        setter("never");
+        return;
     }
     else if (*value == ResetBehavior::timer) {
-        return " " + attribute_name + "=\"" + "4" + "\"";
+        setter("4");
+        return;
     }
     else if (*value == ResetBehavior::timer) {
-        return " " + attribute_name + "=\"" + "timer" + "\"";
+        setter("timer");
+        return;
     }
     else if (*value == ResetBehavior::map_reset) {
-        return " " + attribute_name + "=\"" + "5" + "\"";
+        setter("5");
+        return;
     }
     else if (*value == ResetBehavior::map_reset) {
-        return " " + attribute_name + "=\"" + "map_reset" + "\"";
+        setter("map_reset");
+        return;
     }
     else if (*value == ResetBehavior::instance_change) {
-        return " " + attribute_name + "=\"" + "6" + "\"";
+        setter("6");
+        return;
     }
     else if (*value == ResetBehavior::instance_change) {
-        return " " + attribute_name + "=\"" + "instance_change" + "\"";
+        setter("instance_change");
+        return;
     }
     else if (*value == ResetBehavior::daily_reset_per_character) {
-        return " " + attribute_name + "=\"" + "7" + "\"";
+        setter("7");
+        return;
     }
     else if (*value == ResetBehavior::daily_reset_per_character) {
-        return " " + attribute_name + "=\"" + "daily_reset_per_character" + "\"";
+        setter("daily_reset_per_character");
+        return;
     }
     else if (*value == ResetBehavior::weekly_reset) {
-        return " " + attribute_name + "=\"" + "101" + "\"";
+        setter("101");
+        return;
     }
     else if (*value == ResetBehavior::weekly_reset) {
-        return " " + attribute_name + "=\"" + "weekly_reset" + "\"";
+        setter("weekly_reset");
+        return;
     }
     else {
-        return " " + attribute_name + "=\"" + "ResetBehavior::0" + "\"";
+        setter("ResetBehavior::0");
     }
 }

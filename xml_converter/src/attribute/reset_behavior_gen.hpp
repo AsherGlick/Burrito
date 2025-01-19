@@ -31,7 +31,7 @@ void xml_attribute_to_reset_behavior(
     ResetBehavior* value,
     bool* is_set);
 
-std::string reset_behavior_to_xml_attribute(
-    const std::string& attribute_name,
+void reset_behavior_to_xml_attribute(
     XMLWriterState* state,
-    const ResetBehavior* value);
+    const ResetBehavior* value,
+    std::function<void(std::string)> setter);

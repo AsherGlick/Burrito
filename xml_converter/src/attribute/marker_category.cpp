@@ -27,11 +27,11 @@ void xml_attribute_to_marker_category(
 //
 // Converts a marker category a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-std::string marker_category_to_xml_attribute(
-    const std::string& attribute_name,
+void marker_category_to_xml_attribute(
     XMLWriterState*,
-    const MarkerCategory* value) {
-    return " " + attribute_name + "=\"" + value->category + "\"";
+    const MarkerCategory* value,
+    std::function<void(std::string)> setter) {
+    setter(value->category);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

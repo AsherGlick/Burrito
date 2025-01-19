@@ -71,33 +71,24 @@ bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vec
     }
 {% endif %}
 
-vector<string> {{cpp_class}}::as_xml(XMLWriterState* state) const {
-    vector<string> xml_node_contents;
-    xml_node_contents.push_back("<{{xml_class_name}} ");
+rapidxml::xml_node<char>* {{cpp_class}}::as_xml(XMLWriterState* state) const {
+    rapidxml::xml_node<char>* xml_node = state->doc->allocate_node(rapidxml::node_element, "{{xml_class_name}}");
+
     {% for attribute_variable in attribute_variables %}
         {% if attribute_variable.xml_info.write_to_xml == true %}
             if (this->{{attribute_variable.attribute_flag_name}}) {
-                xml_node_contents.push_back({{attribute_variable.xml_info.serialize_xml_function}}("{{attribute_variable.xml_info.default_xml_field}}", state, &this->{{attribute_variable.attribute_name}}{% for side_effect in attribute_variable.xml_info.serialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %}));
+                std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("{{attribute_variable.xml_info.default_xml_field}}", state->doc->allocate_string(val.c_str()))); };
+                {{attribute_variable.xml_info.serialize_xml_function}}(state, &this->{{attribute_variable.attribute_name}}{% for side_effect in attribute_variable.xml_info.serialize_xml_side_effects %}, &(this->{{side_effect}}){% endfor %}, setter);
             }
         {% endif %}
     {% endfor %}
     {% if cpp_class == "Category" %}
-        xml_node_contents.push_back(">\n");
 
         for (const auto& [key, val] : this->children) {
-            string text;
-            for (const auto& s : val.as_xml(state)) {
-                text += s;
-            }
-
-            xml_node_contents.push_back("\t" + text);
+            xml_node->append_node(val.as_xml(state));
         }
-
-        xml_node_contents.push_back("</MarkerCategory>\n");
-    {% else %}
-        xml_node_contents.push_back("/>");
     {% endif %}
-    return xml_node_contents;
+    return xml_node;
 }
 
 // The following attributes are not yet supported in Burrito

@@ -28,10 +28,10 @@ void xml_attribute_to_marker_category(
     MarkerCategory* value,
     bool* is_set);
 
-std::string marker_category_to_xml_attribute(
-    const std::string& attribute_name,
+void marker_category_to_xml_attribute(
     XMLWriterState* state,
-    const MarkerCategory* value);
+    const MarkerCategory* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_marker_category(
     guildpoint::Category input,

@@ -19,10 +19,10 @@ void xml_attribute_to_int(
     int* value,
     bool* is_set);
 
-std::string int_to_xml_attribute(
-    const std::string& attribute_name,
+void int_to_xml_attribute(
     XMLWriterState* state,
-    const int* value);
+    const int* value,
+    std::function<void(std::string)> setter);
 
 void proto_to_int(
     int input,

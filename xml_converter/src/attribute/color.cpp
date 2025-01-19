@@ -96,10 +96,10 @@ void xml_attribute_to_color(
 //
 // Converts a color into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-string color_to_xml_attribute(
-    const string& attribute_name,
+void color_to_xml_attribute(
     XMLWriterState*,
-    const Color* value) {
+    const Color* value,
+    std::function<void(std::string)> setter) {
     std::stringstream stream;
     std::string hex_string = "#";
 
@@ -114,7 +114,7 @@ string color_to_xml_attribute(
 
     std::string rgb = hex_string;
 
-    return " " + attribute_name + "=\"" + rgb + "\"";
+    setter(rgb);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
