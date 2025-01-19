@@ -32,37 +32,6 @@
 
 using namespace std;
 
-bool filename_comp(string a, string b) {
-    return lowercase(a) < lowercase(b);
-}
-
-// Searchs for files within a directory with a suffix and returns their relative paths.
-vector<string> get_files_by_suffix(string directory, string suffix) {
-    vector<string> files;
-    DIR* dir = opendir(directory.c_str());
-    struct dirent* entry;
-    while ((entry = readdir(dir)) != NULL) {
-        string filename = entry->d_name;
-        if (filename != "." && filename != "..") {
-            string path = join_file_paths(directory, filename);
-            if (entry->d_type == DT_DIR) {
-                vector<string> subfiles = get_files_by_suffix(path, suffix);
-                // Default: markerpacks have all xml files in the first directory
-                for (string subfile : subfiles) {
-                    cout << subfile << " found in subfolder" << endl;
-                    files.push_back(join_file_paths(filename, subfile));
-                }
-            }
-            else if (has_suffix(filename, suffix)) {
-                files.push_back(filename);
-            }
-        }
-    }
-    closedir(dir);
-    std::sort(files.begin(), files.end(), filename_comp);
-    return files;
-}
-
 map<string, vector<string>> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
@@ -73,10 +42,10 @@ map<string, vector<string>> read_taco_directory(
     }
     else if (filesystem::is_directory(input_path)) {
         string directory_name = filesystem::path(input_path).filename();
-        vector<string> xml_files = get_files_by_suffix(input_path, ".xml");
-        for (const string& path : xml_files) {
-            set<string> top_level_category_names = parse_xml_file(join_file_paths(input_path, path), input_path, marker_categories, parsed_pois);
-            string relative_path = join_file_paths(directory_name, path);
+        vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
+        for (const MarkerPackFile& path : xml_files) {
+            set<string> top_level_category_names = parse_xml_file(path.tmp_get_path(), input_path, marker_categories, parsed_pois);
+            string relative_path = join_file_paths(directory_name, path.relative_filepath);
             for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
                 top_level_category_file_locations[*it].push_back(relative_path);
             }
@@ -95,10 +64,10 @@ map<string, vector<string>> read_burrito_directory(
     }
     else if (filesystem::is_directory(input_path)) {
         string directory_name = filesystem::path(input_path).filename();
-        vector<string> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
-        for (const string& path : burrito_files) {
-            set<string> top_level_category_names = read_protobuf_file(join_file_paths(input_path, path), input_path, marker_categories, parsed_pois);
-            string relative_path = join_file_paths(directory_name, path);
+        vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
+        for (const MarkerPackFile& path : burrito_files) {
+            set<string> top_level_category_names = read_protobuf_file(path.tmp_get_path(), input_path, marker_categories, parsed_pois);
+            string relative_path = join_file_paths(directory_name, path.relative_filepath);
             for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
                 top_level_category_file_locations[*it].push_back(relative_path);
             }
