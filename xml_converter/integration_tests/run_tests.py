@@ -147,6 +147,7 @@ def main() -> bool:
     parser = argparse.ArgumentParser(description="A test harness for evaluating the output of the xmlconverter program.")
     parser.add_argument("-v", "--verbose", help="Prints the results from xmlconverter in JSON format.", action="store_true")
     parser.add_argument("--filter", help="Filter which tests to run by a regex pattern.", type=str)
+    parser.add_argument("--no-build", help="Do not automatically build xml_converter before running the integration tests.", action="store_true")
     args = parser.parse_args()
 
     output_parent_dirpath = "./outputs"
@@ -157,7 +158,8 @@ def main() -> bool:
 
     all_tests_passed = True
 
-    rebuild_xml_converter_binary()
+    if not args.no_build:
+        rebuild_xml_converter_binary()
 
     test_run_count = 0
 
