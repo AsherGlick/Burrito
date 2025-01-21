@@ -67,4 +67,4 @@ def get_guildpoint_textproto(protobin_path: str) -> str:
 
         # TODO: sanity check return code, stdout, and stderr
 
-        return result.stdout.decode("utf-8")
+        return result.stdout.decode("utf-8", errors="backslashreplace")
