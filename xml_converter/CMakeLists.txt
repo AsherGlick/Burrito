@@ -27,6 +27,12 @@ add_library(${CORE_LIB} STATIC ${SOURCES} ${PROTO_SRC})
 # Include protobuf libraies.
 target_link_libraries(${CORE_LIB} PUBLIC ${Protobuf_LIBRARIES})
 
+# Include LibZip libraries.
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBZIP REQUIRED libzip)
+target_include_directories(${CORE_LIB} PRIVATE ${LIBZIP_INCLUDE_DIRS})
+target_link_libraries(${CORE_LIB} PRIVATE ${LIBZIP_LIBRARIES})
+
 if(MSVC)
   target_compile_options(${CORE_LIB} PUBLIC /W4 /WX)
 else()
