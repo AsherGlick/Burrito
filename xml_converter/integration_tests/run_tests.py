@@ -40,9 +40,13 @@ def run_xml_converter(
         cmd += ["--allow-duplicates"]
 
     # Run the C++ program and capture its output
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    return (result.stdout, result.stderr, result.returncode)
+    return (
+        result.stdout.decode(encoding="utf-8", errors="backslashreplace"),
+        result.stderr.decode(encoding="utf-8", errors="backslashreplace"),
+        result.returncode,
+    )
 
 
 def compare_text_files(file_path1: str, file_path2: str) -> List[str]:
