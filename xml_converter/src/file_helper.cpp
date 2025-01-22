@@ -143,9 +143,10 @@ unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     zip_stat_init(&st);
     zip_stat(zip_archive, name, 0, &st);
 
-    char* contents = new char[st.size];
+    char* contents = new char[st.size + 1];
     zip_file_t* f = zip_fopen(zip_archive, name, 0);
     zip_fread(f, contents, st.size);
+    contents[st.size] = 0x00;
     zip_fclose(f);
     zip_close(zip_archive);
 
