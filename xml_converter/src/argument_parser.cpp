@@ -83,6 +83,11 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             path_configs.emplace_back(type, format, path, split_by_map_id);
         }
     }
+    else if (type != BehaviorType::NONE) {
+        cerr << "Error: Expected a path to a directory after " << current_argument << endl;
+        return {};
+    }
+
     parsed_arguments.path_configs = path_configs;
     return parsed_arguments;
 }

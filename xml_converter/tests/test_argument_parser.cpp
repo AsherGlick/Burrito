@@ -171,9 +171,9 @@ TEST_F(ParseArgumentsTest, InvalidSplitMapIDAfterInput){
         (char*)"./xml_converter",
         (char*)"--input-taco-path",
         (char*)"--split-by-map-id",
-        (char*)"input1",
         (char*)"--output-taco-path",
         (char*)"output1",
+        nullptr
     };
     int argc = sizeof(argv) / sizeof(char*);
 
@@ -190,7 +190,7 @@ TEST_F(ParseArgumentsTest, InvalidNoPath){
         (char*)"./xml_converter",
         (char*)"--input-taco-path",
         (char*)"--output-taco-path",
-        (char*)"output1",
+        (char*)"output1"
     };
     int argc = sizeof(argv) / sizeof(char*);
 
@@ -199,6 +199,22 @@ TEST_F(ParseArgumentsTest, InvalidNoPath){
     std::string std_err = testing::internal::GetCapturedStderr();
 
     EXPECT_TRUE(parsed_arguments.path_configs.empty());
-    EXPECT_NE(std_err.find("Error: "), std::string::npos);
+    EXPECT_NE(std_err.find("Error: Expected a path to a directory after --input-taco-path"), std::string::npos);
 }
 
+TEST_F(ParseArgumentsTest, InvalidNoPath2){
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--input-taco-path",
+        (char*)"input1",
+        (char*)"--output-taco-path"
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    testing::internal::CaptureStdout();
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    std::string std_err = testing::internal::GetCapturedStderr();
+
+    EXPECT_TRUE(parsed_arguments.path_configs.empty());
+    EXPECT_NE(std_err.find("Error: Expected a path to a directory after --output-taco-path"), std::string::npos);
+}
