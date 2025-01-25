@@ -1,26 +1,26 @@
 #include "argument_parser.hpp"
+
 #include <cstring>
 #include <iostream>
 #include <map>
 
 using namespace std;
 
-// Default constructor for the class using 
+// Default constructor for the class
 PathConfig::PathConfig()
-        : type(BehaviorType::NONE), 
-        format(MarkerFormat::NONE), 
-        path("DEFAULT"), 
-        split_by_map_id(false) {
-    }
+    : type(BehaviorType::NONE),
+      format(MarkerFormat::NONE),
+      path("DEFAULT"),
+      split_by_map_id(false) {
+}
 
 PathConfig::PathConfig(BehaviorType type, MarkerFormat format, std::string path, bool split_by_map_id)
-        : type(type), format(format), path(path), split_by_map_id(split_by_map_id) {
-    }
+    : type(type), format(format), path(path), split_by_map_id(split_by_map_id) {
+}
 
 ArgumentConfig::ArgumentConfig(BehaviorType type, MarkerFormat format)
-        : type(type), format(format){
-    }
-
+    : type(type), format(format) {
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // parse_arguments
@@ -34,8 +34,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         {"--input-taco-path", ArgumentConfig(BehaviorType::IMPORT, MarkerFormat::XML)},
         {"--output-taco-path", ArgumentConfig(BehaviorType::EXPORT, MarkerFormat::XML)},
         {"--input-guildpoint-path", ArgumentConfig(BehaviorType::IMPORT, MarkerFormat::GUILDPOINT)},
-        {"--output-guildpoint-path", ArgumentConfig(BehaviorType::EXPORT, MarkerFormat::GUILDPOINT)}
-    };
+        {"--output-guildpoint-path", ArgumentConfig(BehaviorType::EXPORT, MarkerFormat::GUILDPOINT)}};
     ParsedArguments parsed_arguments;
     BehaviorType type = BehaviorType::NONE;
     MarkerFormat format = MarkerFormat::NONE;
@@ -68,7 +67,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         }
         else if (!strcmp(argv[i], "--split-by-map-id")) {
             current_argument = argv[i];
-            if (type == BehaviorType::IMPORT){
+            if (type == BehaviorType::IMPORT) {
                 cerr << "Error: --split-by-map-id cannot be used after an input argument" << endl;
                 return {};
             }

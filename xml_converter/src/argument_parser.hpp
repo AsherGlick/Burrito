@@ -1,22 +1,24 @@
+#pragma once
+
 #include <string>
 #include <vector>
 
 // Defines what behavior is expected i.e. (Read/Import or Write/Export)
 enum class BehaviorType {
-        IMPORT,
-        EXPORT,
-        NONE,
-    };
+    IMPORT,
+    EXPORT,
+    NONE,
+};
 
 // Defines what format the data is expected to be in
 enum class MarkerFormat {
-        XML,
-        GUILDPOINT,
-        NONE,
-    };
+    XML,
+    GUILDPOINT,
+    NONE,
+};
 
 class PathConfig {
-public:
+ public:
     BehaviorType type;
     MarkerFormat format;
     std::string path;
@@ -28,7 +30,7 @@ public:
 };
 
 class ArgumentConfig {
-public:
+ public:
     BehaviorType type;
     MarkerFormat format;
 
@@ -36,7 +38,7 @@ public:
 };
 
 class ParsedArguments {
-public:
+ public:
     std::vector<PathConfig> path_configs;
     bool allow_duplicates = false;
 };

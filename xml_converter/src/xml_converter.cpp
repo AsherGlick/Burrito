@@ -16,9 +16,9 @@
 #include <utility>
 #include <vector>
 
+#include "argument_parser.hpp"
 #include "attribute/marker_category.hpp"
 #include "category_gen.hpp"
-#include "argument_parser.hpp"
 #include "file_helper.hpp"
 #include "guildpoint.pb.h"
 #include "icon_gen.hpp"
@@ -177,7 +177,6 @@ void process_data(ParsedArguments parsed_arguments) {
         }
     }
 
-
     if (duplicate_categories.size() > 0 && parsed_arguments.allow_duplicates == false) {
         cout << "Did not write due to duplicates in categories." << endl;
         cout << "This commonly occurs when attempting to read the same pack multiple times or when separate packs coincidentally have the same name." << endl;
@@ -214,14 +213,13 @@ void process_data(ParsedArguments parsed_arguments) {
         if (path_configs[i].type != BehaviorType::EXPORT || path_configs[i].format != MarkerFormat::GUILDPOINT) {
             continue;
         }
-        write_burrito_directory(path_configs[i],&marker_categories, &parsed_pois);
+        write_burrito_directory(path_configs[i], &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The protobuf write function took " << ms << " milliseconds to run" << endl;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // main
