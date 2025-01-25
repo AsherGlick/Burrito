@@ -15,17 +15,19 @@ xml_converter_binary_path: str = "../build/xml_converter"
 
 
 def run_xml_converter(
+    allow_duplicates: Optional[bool] = None,
     input_xml: Optional[List[str]] = None,
     output_xml: Optional[List[str]] = None,
     input_proto: Optional[List[str]] = None,
     output_proto: Optional[List[str]] = None,
-    allow_duplicates: Optional[bool] = None,
     split_by_map_id: Optional[bool] = None
 ) -> Tuple[str, str, int]:
 
     # Build the command to execute the C++ program with the desired function and arguments
     cmd: List[str] = [xml_converter_binary_path]
 
+    if allow_duplicates:
+        cmd += ["--allow-duplicates"]
     if input_xml:
         cmd += ["--input-taco-path"] + input_xml
     if output_xml:
@@ -34,8 +36,6 @@ def run_xml_converter(
         cmd += ["--input-guildpoint-path"] + input_proto
     if output_proto:
         cmd += ["--output-guildpoint-path"] + output_proto
-    if allow_duplicates:
-        cmd += ["--allow-duplicates"]
     if split_by_map_id:
         cmd += ["--split-by-map-id"]
 
@@ -177,11 +177,11 @@ def main() -> bool:
             output_proto_paths = [proto_output_dir_path]
 
         rawstdout, rawstderr, returncode = run_xml_converter(
+            allow_duplicates=testcase.allow_duplicates,
             input_xml=testcase.xml_input_paths,
             input_proto=testcase.proto_input_paths,
             output_xml=output_xml_paths,
             output_proto=output_proto_paths,
-            allow_duplicates=testcase.allow_duplicates,
             split_by_map_id=testcase.split_by_map_id
         )
 
