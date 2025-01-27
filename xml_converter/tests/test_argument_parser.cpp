@@ -182,7 +182,7 @@ TEST_F(ParseArgumentsTest, InvalidSplitMapIDAfterInput){
     std::string std_err = testing::internal::GetCapturedStderr();
 
     EXPECT_TRUE(parsed_arguments.path_configs.empty());
-    EXPECT_NE(std_err.find("Error: "), std::string::npos);
+    EXPECT_NE(std_err.find("Error: --split-by-map-id cannot be used after an input argument"), std::string::npos);
 }
 
 TEST_F(ParseArgumentsTest, InvalidNoPath){
