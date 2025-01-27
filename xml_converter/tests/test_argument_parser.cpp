@@ -170,14 +170,14 @@ TEST_F(ParseArgumentsTest, InvalidSplitMapIDAfterInput){
     char* argv[] = {
         (char*)"./xml_converter",
         (char*)"--input-taco-path",
+        (char*)"input1",
         (char*)"--split-by-map-id",
         (char*)"--output-taco-path",
-        (char*)"output1",
-        nullptr
+        (char*)"output1"
     };
     int argc = sizeof(argv) / sizeof(char*);
 
-    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
     ParsedArguments parsed_arguments = parse_arguments(argc, argv);
     std::string std_err = testing::internal::GetCapturedStderr();
 
@@ -194,7 +194,7 @@ TEST_F(ParseArgumentsTest, InvalidNoPath){
     };
     int argc = sizeof(argv) / sizeof(char*);
 
-    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
     ParsedArguments parsed_arguments = parse_arguments(argc, argv);
     std::string std_err = testing::internal::GetCapturedStderr();
 
@@ -211,7 +211,7 @@ TEST_F(ParseArgumentsTest, InvalidNoPath2){
     };
     int argc = sizeof(argv) / sizeof(char*);
 
-    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
     ParsedArguments parsed_arguments = parse_arguments(argc, argv);
     std::string std_err = testing::internal::GetCapturedStderr();
 

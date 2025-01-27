@@ -41,6 +41,7 @@ class ParsedArguments {
  public:
     std::vector<PathConfig> path_configs;
     bool allow_duplicates = false;
+    bool is_valid = false;
 };
 
 ParsedArguments parse_arguments(int argc, char* argv[]);

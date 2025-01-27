@@ -12,7 +12,6 @@ from src.proto_utils import compare_protos, compare_binary_file
 
 # Path to compiled C++ executable
 xml_converter_binary_path: str = "../build/xml_converter"
-test_xml_converter_binary_path: str = "../build/test_xml_converter"
 
 
 def run_xml_converter(
@@ -41,12 +40,6 @@ def run_xml_converter(
         cmd += ["--split-by-map-id"]
 
     # Run the C++ program and capture its output
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-    return (result.stdout, result.stderr, result.returncode)
-
-def run_gtest() -> Tuple[str, str, int]:
-    cmd: List[str] = [test_xml_converter_binary_path]
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     return (result.stdout, result.stderr, result.returncode)
@@ -232,12 +225,6 @@ def main() -> bool:
 
         all_tests_passed &= testcase_passed
         test_run_count += 1
-
-    rawstdout, rawstderr, returncode = run_gtest()
-    if "[  FAILED  ]" in rawstdout or args.verbose:
-        print(rawstdout)
-    else:
-        print(f"All GTEST passed")
 
     if test_run_count == 0:
         print("No Tests Were Run")

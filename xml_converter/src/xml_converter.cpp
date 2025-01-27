@@ -228,7 +228,7 @@ void process_data(ParsedArguments parsed_arguments) {
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[]) {
     ParsedArguments parsed_arguments = parse_arguments(argc, argv);
-    if (parsed_arguments.path_configs.empty()) {
+    if (!parsed_arguments.is_valid) {
         return -1;
     }
     process_data(parsed_arguments);

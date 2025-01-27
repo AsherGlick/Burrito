@@ -62,11 +62,9 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             split_by_map_id = false;
         }
         else if (!strcmp(argv[i], "--allow-duplicates")) {
-            current_argument = argv[i];
             parsed_arguments.allow_duplicates = true;
         }
         else if (!strcmp(argv[i], "--split-by-map-id")) {
-            current_argument = argv[i];
             if (type == BehaviorType::IMPORT) {
                 cerr << "Error: --split-by-map-id cannot be used after an input argument" << endl;
                 return {};
@@ -89,5 +87,6 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
     }
 
     parsed_arguments.path_configs = path_configs;
+    parsed_arguments.is_valid = true;
     return parsed_arguments;
 }
