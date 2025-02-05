@@ -5,6 +5,7 @@ on:
     paths:
       - '**/*.bin'
       - '**/*.guildpoint'
+    types: [opened, synchronize, ready_for_review]
 jobs:
   custom-diff:
     runs-on: ubuntu-latest
