@@ -100,7 +100,7 @@ jobs:
             const timestamp_regex = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+ \+\d{4}/g;
 
             // Check if a similar comment already exists
-            if (most_recent_comment && most_recent_comment.replace(timestamp_regex, '') === comment_body.replace(timestamp_regex, '')) {
+            if (most_recent_comment && most_recent_comment.body.replace(timestamp_regex, '') === comment_body.replace(timestamp_regex, '')) {
               console.log(`Skipping file ${file}, identical comment already exists.`);
               continue;
             }
