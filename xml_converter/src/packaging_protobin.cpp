@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -69,11 +70,10 @@ set<string> read_protobuf_file(
     const MarkerPackFile& proto_filepath,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
-    ifstream infile;
-    infile.open(proto_filepath.tmp_get_path(), ios::in | ios::binary);
+    unique_ptr<basic_istream<char>> infile = open_file_for_read(proto_filepath);
 
     guildpoint::Guildpoint proto_message;
-    proto_message.ParseFromIstream(&infile);
+    proto_message.ParseFromIstream(&*infile);
 
     ProtoReaderState state;
     state.marker_pack_root_directory = proto_filepath.base;

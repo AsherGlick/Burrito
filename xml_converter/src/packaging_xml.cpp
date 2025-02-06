@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <set>
 #include <utility>
 
@@ -217,10 +218,9 @@ set<string> parse_xml_file(
     vector<Parseable*>* parsed_pois) {
     vector<XMLError*> errors;
 
-    ifstream input_filestream;
-    input_filestream.open(xml_filepath.tmp_get_path(), ios::in | ios::binary);
+    unique_ptr<basic_istream<char>> infile = open_file_for_read(xml_filepath);
 
-    rapidxml::file<> xml_file(input_filestream);
+    rapidxml::file<> xml_file(*infile);
 
     string tmp_get_path = xml_filepath.tmp_get_path();
 
