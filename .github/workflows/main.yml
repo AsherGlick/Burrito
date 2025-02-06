@@ -84,7 +84,7 @@ jobs:
           ./run_tests.py --no-build
 
       - name: Upload created file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: xml_converter
           path: xml_converter/build/xml_converter
@@ -107,14 +107,14 @@ jobs:
           make
 
       - name: Upload Standalone Executable Burrito Link
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: burrito_link_exe
           path: burrito_link/build/burrito_link.exe
           if-no-files-found: error
 
       - name: Upload Shared Library Burrito Link
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: burrito_link_dll
           path: burrito_link/build/d3d11.dll
@@ -132,7 +132,7 @@ jobs:
             cargo build --release
 
       - name: Upload created file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: BurritoFG
           path: burrito-fg/target/release/libburrito_fg.so
@@ -150,7 +150,7 @@ jobs:
             cargo build --release
 
       - name: Upload created file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: TacoParser
           path: taco_parser/target/release/libgw2_taco_parser.so
@@ -210,7 +210,7 @@ jobs:
           ./Godot_v${GODOT_VERSION}-stable_linux_headless.64 --export "Linux/X11"
           chmod +x build/burrito.x86_64
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Burrito_UI
           path: build/burrito.x86_64
@@ -226,32 +226,32 @@ jobs:
       - Build-TacoParser-Linux
     steps:
       - name: Download Burrito UI
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Burrito_UI
 
       - name: Download Burrito FG
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: BurritoFG
 
       - name: Download TacoParser
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: TacoParser
 
       - name: Download XML Converter
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: xml_converter
 
       - name: Download Burrito Link Exe
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: burrito_link_exe
 
       - name: Download Burrito Link DLL
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: burrito_link_dll
 
@@ -262,7 +262,7 @@ jobs:
           mv burrito_link.exe burrito_link/
           mv d3d11.dll burrito_link/
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: "Burrito_Linux" # optional, default is artifact
