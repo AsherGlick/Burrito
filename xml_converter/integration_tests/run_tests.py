@@ -40,9 +40,13 @@ def run_xml_converter(
         cmd += ["--split-by-map-id"]
 
     # Run the C++ program and capture its output
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    return (result.stdout, result.stderr, result.returncode)
+    return (
+        result.stdout.decode(encoding="utf-8", errors="backslashreplace"),
+        result.stderr.decode(encoding="utf-8", errors="backslashreplace"),
+        result.returncode,
+    )
 
 
 def compare_text_files(file_path1: str, file_path2: str) -> List[str]:
@@ -144,6 +148,7 @@ def main() -> bool:
     parser = argparse.ArgumentParser(description="A test harness for evaluating the output of the xmlconverter program.")
     parser.add_argument("-v", "--verbose", help="Prints the results from xmlconverter in JSON format.", action="store_true")
     parser.add_argument("--filter", help="Filter which tests to run by a regex pattern.", type=str)
+    parser.add_argument("--no-build", help="Do not automatically build xml_converter before running the integration tests.", action="store_true")
     args = parser.parse_args()
 
     output_parent_dirpath = "./outputs"
@@ -154,7 +159,8 @@ def main() -> bool:
 
     all_tests_passed = True
 
-    rebuild_xml_converter_binary()
+    if not args.no_build:
+        rebuild_xml_converter_binary()
 
     test_run_count = 0
 

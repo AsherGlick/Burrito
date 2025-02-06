@@ -10,7 +10,7 @@ expected_stdout: |
     The following top level categories were found in more than one pack:
         "mycategory" in files:
             pack/xml_file.xml
-            pack2/markers.bin
+            pack2/markers.guildpoint
             pack3/xml_file.xml
 expected_stderr: |
 expected_returncode: 0

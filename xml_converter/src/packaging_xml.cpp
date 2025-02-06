@@ -1,7 +1,9 @@
 #include "packaging_xml.hpp"
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <set>
 #include <utility>
 
@@ -210,26 +212,34 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
 //
 // A function which parses a single XML file into their corrisponding classes.
 ////////////////////////////////////////////////////////////////////////////////
-set<string> parse_xml_file(string xml_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
+set<string> parse_xml_file(
+    const MarkerPackFile& xml_filepath,
+    map<string, Category>* marker_categories,
+    vector<Parseable*>* parsed_pois) {
     vector<XMLError*> errors;
+
+    unique_ptr<basic_istream<char>> infile = open_file_for_read(xml_filepath);
+
+    rapidxml::file<> xml_file(*infile);
+
+    string tmp_get_path = xml_filepath.tmp_get_path();
+
     rapidxml::xml_document<> doc;
-    rapidxml::xml_node<>* root_node;
-    XMLReaderState state;
-    state.marker_pack_root_directory = marker_pack_root_directory;
-    set<string> category_names;
+    doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), tmp_get_path.c_str());
 
-    rapidxml::file<> xml_file(xml_filepath.c_str());
-    doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), xml_filepath.c_str());
-
-    root_node = doc.first_node();
+    rapidxml::xml_node<>* root_node = doc.first_node();
     // Validate the Root Node
     if (get_node_name(root_node) != "OverlayData") {
         errors.push_back(new XMLNodeNameError("Root node should be of type OverlayData", root_node));
     }
     if (root_node->first_attribute() != nullptr) {
-        cout << "Root Node has attributes when it should have none in " << xml_filepath << endl;
+        cout << "Root Node has attributes when it should have none in " << xml_filepath.tmp_get_path() << endl;
     }
 
+    XMLReaderState state;
+    state.marker_pack_root_directory = xml_filepath.base;
+
+    set<string> category_names;
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
             OptionalString name = parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
@@ -246,7 +256,7 @@ set<string> parse_xml_file(string xml_filepath, const string marker_pack_root_di
         }
     }
 
-    for (auto error : errors) {
+    for (XMLError* error : errors) {
         error->print_error();
     }
     return category_names;
