@@ -61,20 +61,25 @@ string parse_guildpoint_categories(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// read_protobuf_file
 //
+// Reads a protobuf file into memory.
 ////////////////////////////////////////////////////////////////////////////////
-set<string> read_protobuf_file(string proto_filepath, const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    fstream infile;
-    guildpoint::Guildpoint proto_message;
-    ProtoReaderState state;
-    state.marker_pack_root_directory = marker_pack_root_directory;
-    set<string> category_names;
+set<string> read_protobuf_file(
+    const MarkerPackFile& proto_filepath,
+    map<string, Category>* marker_categories,
+    vector<Parseable*>* parsed_pois) {
+    ifstream infile;
+    infile.open(proto_filepath.tmp_get_path(), ios::in | ios::binary);
 
-    infile.open(proto_filepath, ios::in | ios::binary);
+    guildpoint::Guildpoint proto_message;
     proto_message.ParseFromIstream(&infile);
 
+    ProtoReaderState state;
+    state.marker_pack_root_directory = proto_filepath.base;
     state.textures = proto_message.textures();
 
+    set<string> category_names;
     for (int i = 0; i < proto_message.category_size(); i++) {
         category_names.insert(parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state));
     }
