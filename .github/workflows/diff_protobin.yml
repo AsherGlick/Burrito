@@ -1,10 +1,16 @@
 name: Diff Protobin
 
 on:
+  # This event occurs when there is activity on a pull request
   pull_request_target:
+    # This filter looks for files that have been changed with the suffix bin or guildpoint
     paths:
       - '**/*.bin'
       - '**/*.guildpoint'
+    # To reduce noise, this filter restricts to the default activity plus when a draft is changed to open
+    # Default activity types as listed in the documentation are "opened, synchronize, and reopened"
+    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request_target
+    types: [opened, ready_for_review, reopened, synchronize]
 jobs:
   custom-diff:
     runs-on: ubuntu-latest
