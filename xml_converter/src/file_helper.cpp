@@ -155,24 +155,36 @@ unique_ptr<basic_istream<char>> _open_directory_file_for_read(
 unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     const string& zipfile,
     const string& filename) {
-    int err = 0;
-    struct zip* zip_archive = zip_open(zipfile.c_str(), 0, &err);
+    int error = 0;
+    struct zip* zip_archive = zip_open(zipfile.c_str(), ZIP_RDONLY, &error);
+
+    if (zip_archive == nullptr) {
+        cerr << "Error: could not open the zip archive " << zipfile << ". Got Error code " << error << endl;
+        return nullptr;
+    }
 
     // Search for the filenname
     const char* name = filename.c_str();
     struct zip_stat st;
     zip_stat_init(&st);
-    zip_stat(zip_archive, name, 0, &st);
+    zip_stat(zip_archive, name, 0x00, &st);
 
-    char* contents = new char[st.size + 1];
-    zip_file_t* f = zip_fopen(zip_archive, name, 0);
+    char* contents = new char[st.size];
+    zip_file_t* f = zip_fopen(zip_archive, name, 0x00);
+
+    // Early exit if the file cannot be opened
+    if (f == nullptr) {
+        return nullptr;
+    }
+
     zip_fread(f, contents, st.size);
-    contents[st.size] = 0x00;
     zip_fclose(f);
     zip_close(zip_archive);
 
+    string sized_contents(contents, st.size);
+
     // Copy the file string into the stringstring and move it into a basic_istream
-    unique_ptr<istringstream> string_stream = make_unique<istringstream>(contents);
+    unique_ptr<istringstream> string_stream = make_unique<istringstream>(sized_contents, ios_base::in | ios_base::binary);
     unique_ptr<basic_istream<char>> basic_istream_stream(move(string_stream));
     delete[] contents;
 
