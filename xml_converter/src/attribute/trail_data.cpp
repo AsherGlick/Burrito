@@ -40,39 +40,39 @@ void xml_attribute_to_trail_data(
         return;
     }
 
-    ifstream trail_data_file;
-    string trail_path = join_file_paths(state->marker_pack_root_directory, trail_data_relative_path);
-    trail_data_file.open(trail_path, ios::in | ios::binary);
-    if (!trail_data_file.good()) {
-        errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_path, input));
+    MarkerPackFile trail_file(state->marker_pack_root_directory, trail_data_relative_path);
+    auto trail_data_file = open_file_for_read(trail_file);
+
+    if (trail_data_file == nullptr) {
+        errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_file.tmp_get_path(), input));
         return;
     }
 
-    char version[4];
-    trail_data_file.read(version, 4);
+    char version_buffer[4];
+    trail_data_file->read(version_buffer, 4);
+
     // Validate the version number. Currently supports versions [0]
-    if (!(*reinterpret_cast<uint32_t*>(version) == 0)) {
-        errors->push_back(new XMLAttributeValueError("Unsupported version for trail data at " + trail_path, input));
+    uint32_t version = *reinterpret_cast<uint32_t*>(version_buffer);
+    if (!(version == 0)) {
+        errors->push_back(new XMLAttributeValueError("Unsupported version (" + to_string(version) + ") for trail data at " + trail_file.tmp_get_path(), input));
         return;
     }
 
     char map_id_char[4];
-    trail_data_file.read(map_id_char, 4);
+    trail_data_file->read(map_id_char, 4);
     *map_id_value = *reinterpret_cast<uint32_t*>(map_id_char);
     *is_map_id_set = true;
 
     char points[12];
-    while (trail_data_file.read(points, 12)) {
+    while (trail_data_file->read(points, 12)) {
         trail_data.points_x.push_back(*reinterpret_cast<float*>(points));
         trail_data.points_y.push_back(*reinterpret_cast<float*>(points + 4));
         trail_data.points_z.push_back(*reinterpret_cast<float*>(points + 8));
     }
 
-    if (trail_data_file.gcount() != 0) {
-        errors->push_back(new XMLAttributeValueError("Unexpected number of bytes in trail file." + trail_path, input));
+    if (trail_data_file->gcount() != 0) {
+        errors->push_back(new XMLAttributeValueError("Unexpected number of bytes in trail file." + trail_file.tmp_get_path(), input));
     }
-
-    trail_data_file.close();
 
     *value = trail_data;
     *is_set = true;
