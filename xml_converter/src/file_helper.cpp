@@ -71,7 +71,7 @@ vector<MarkerPackFile> get_files_by_suffix(
         cout << "Error: " << base << " does not exist" << endl;
         return vector<MarkerPackFile>();
     }
-    // If it is a directory, call open_directory_file_to_read
+    // If it is a directory and parse the directory contents.
     else if (filesystem::is_directory(base)) {
         DIR* dir = opendir(join_file_paths(base, subpath).c_str());
         struct dirent* entry;
@@ -97,8 +97,29 @@ vector<MarkerPackFile> get_files_by_suffix(
         }
         closedir(dir);
     }
-    // else if (filesystem::is_regular_file(file.base)) {
-    // }
+    // If it is a file, assume it is a zip file and read the zip contents.
+    else if (filesystem::is_regular_file(base)) {
+        int error = 0;
+        zip* zip_archive = zip_open(base.c_str(), ZIP_RDONLY, &error);
+
+        if (zip_archive == nullptr) {
+            cerr << "Error: could not open the zip archive " << base << ". Got Error code " << error << endl;
+            return files;
+        }
+
+        int64_t num_entries = zip_get_num_entries(zip_archive, 0x00);
+        for (int64_t i = 0; i < num_entries; i++) {
+            const char* filename = zip_get_name(zip_archive, i, 0x00);
+
+            if (has_suffix(filename, suffix)) {
+                MarkerPackFile new_file(base, filename);
+                files.push_back(new_file);
+            }
+        }
+    }
+    else {
+        cerr << "Error: " << base << " is not a file or directory" << endl;
+    }
 
     sort(files.begin(), files.end(), marker_pack_file_comp);
     return files;
