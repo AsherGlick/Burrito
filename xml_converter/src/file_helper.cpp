@@ -18,7 +18,6 @@
 
 using namespace std;
 
-
 void copy_file(MarkerPackFile original_path, MarkerPackFile new_path) {
     if (original_path.tmp_get_path() == new_path.tmp_get_path()) {
         cerr << "File is being copied to itself" << original_path.tmp_get_path() << endl;
@@ -36,8 +35,7 @@ void copy_file(MarkerPackFile original_path, MarkerPackFile new_path) {
         filesystem::copy_file(
             filesystem::path(original_path.tmp_get_path()),
             output_path,
-            filesystem::copy_options::overwrite_existing
-        );
+            filesystem::copy_options::overwrite_existing);
     }
     // ZipFile to Directory
     else if (filesystem::is_regular_file(original_path.base) && filesystem::is_directory(new_path.base)) {
@@ -52,7 +50,6 @@ void copy_file(MarkerPackFile original_path, MarkerPackFile new_path) {
         filesystem::create_directories(output_path.parent_path());
         ofstream outfile(new_path.tmp_get_path(), ios::binary);
         outfile << original_file->rdbuf();
-
     }
     // Directory to ZipFile (Unsupported until writing to ZipFiles is implemnted)
     else if (filesystem::is_directory(original_path.base) && filesystem::is_regular_file(new_path.base)) {

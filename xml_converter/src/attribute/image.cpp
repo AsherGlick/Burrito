@@ -10,9 +10,13 @@
 
 using namespace std;
 
-Image::Image() :filepath("", "") {}
+Image::Image()
+    : filepath("", "") {
+}
 
-Image::Image(std::string base, std::string relative_filepath) : filepath(base, relative_filepath) {}
+Image::Image(std::string base, std::string relative_filepath)
+    : filepath(base, relative_filepath) {
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // parse_image
@@ -39,7 +43,6 @@ void image_to_xml_attribute(
     XMLWriterState* state,
     const Image* value,
     std::function<void(std::string)> setter) {
-
     MarkerPackFile output_path = MarkerPackFile(state->marker_pack_root_directory, value->filepath.relative_filepath);
     copy_file(value->filepath, output_path);
     setter(value->filepath.relative_filepath);

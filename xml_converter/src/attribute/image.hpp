@@ -4,13 +4,12 @@
 #include <string>
 #include <vector>
 
+#include "../file_helper.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../state_structs/proto_reader_state.hpp"
 #include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
 #include "../state_structs/xml_writer_state.hpp"
-#include "../file_helper.hpp"
-
 
 class XMLError;
 
