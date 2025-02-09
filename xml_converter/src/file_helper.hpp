@@ -13,7 +13,7 @@ class MarkerPackFile {
     std::string relative_filepath;
 };
 
-void copy_file(std::string path, std::string new_path);
+void copy_file(MarkerPackFile original_path, MarkerPackFile new_path);
 
 std::vector<MarkerPackFile> get_files_by_suffix(const std::string& base, const std::string& suffix);
 

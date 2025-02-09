@@ -9,13 +9,16 @@
 #include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
 #include "../state_structs/xml_writer_state.hpp"
+#include "../file_helper.hpp"
+
 
 class XMLError;
 
 class Image {
  public:
-    std::string filename;
-    std::string original_filepath;
+    Image();
+    Image(std::string base, std::string relative_filepath);
+    MarkerPackFile filepath;
 };
 
 void xml_attribute_to_image(
