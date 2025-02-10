@@ -1,6 +1,7 @@
 #include "file_helper.hpp"
 
 #include <dirent.h>
+#include <zip.h>
 
 #include <algorithm>
 #include <filesystem>
@@ -105,4 +106,79 @@ vector<MarkerPackFile> get_files_by_suffix(
 
 vector<MarkerPackFile> get_files_by_suffix(const string& base, const string& suffix) {
     return get_files_by_suffix(base, suffix, "");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// _open_directory_file_for_read
+//
+// Helper function for `open_file_for_read()` to open a file that is inside of
+// a directory.
+////////////////////////////////////////////////////////////////////////////////
+unique_ptr<basic_istream<char>> _open_directory_file_for_read(
+    const string& base,
+    const string& filename) {
+    unique_ptr<ifstream> input_filestream = make_unique<ifstream>();
+    input_filestream->open(join_file_paths(base, filename), ios::in | ios::binary);
+
+    unique_ptr<basic_istream<char>> basic_istream_stream(move(input_filestream));
+
+    return basic_istream_stream;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// _open_zip_file_for_read
+//
+// Helper function for `open_file_for_read()` to open a file that is inside of
+// a zipfile.
+////////////////////////////////////////////////////////////////////////////////
+unique_ptr<basic_istream<char>> _open_zip_file_for_read(
+    const string& zipfile,
+    const string& filename) {
+    int err = 0;
+    struct zip* zip_archive = zip_open(zipfile.c_str(), 0, &err);
+
+    // Search for the filenname
+    const char* name = filename.c_str();
+    struct zip_stat st;
+    zip_stat_init(&st);
+    zip_stat(zip_archive, name, 0, &st);
+
+    char* contents = new char[st.size];
+    zip_file_t* f = zip_fopen(zip_archive, name, 0);
+    zip_fread(f, contents, st.size);
+    zip_fclose(f);
+    zip_close(zip_archive);
+
+    // Copy the file string into the stringstring and move it into a basic_istream
+    unique_ptr<istringstream> string_stream = make_unique<istringstream>(contents);
+    unique_ptr<basic_istream<char>> basic_istream_stream(move(string_stream));
+    delete[] contents;
+
+    return basic_istream_stream;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// open_file_for_read
+//
+// Opens a file to read from that is either inside of a directory or inside of
+// a zip file. If `base` is a file then it will be assumed to be a zip file and
+// `filename` will be opened inside of it. If `base` is a directory then
+// `filename` inside of that directory will be opened instead.
+////////////////////////////////////////////////////////////////////////////////
+unique_ptr<basic_istream<char>> open_file_for_read(const MarkerPackFile& file) {
+    if (!filesystem::exists(file.base)) {
+        cout << "Error: " << file.base << " does not exist" << endl;
+        return nullptr;
+    }
+    // If it is a directory, call open_directory_file_to_read
+    else if (filesystem::is_directory(file.base)) {
+        return _open_directory_file_for_read(file.base, file.relative_filepath);
+    }
+    // If it is a file call open_zip_file_to_read
+    else if (filesystem::is_regular_file(file.base)) {
+        return _open_zip_file_for_read(file.base, file.relative_filepath);
+    }
+
+    cout << "Error: " << file.base << " is not a directory or a file" << endl;
+    return nullptr;
 }

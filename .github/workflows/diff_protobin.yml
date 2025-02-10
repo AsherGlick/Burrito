@@ -1,10 +1,16 @@
 name: Diff Protobin
 
 on:
+  # This event occurs when there is activity on a pull request
   pull_request_target:
+    # This filter looks for files that have been changed with the suffix bin or guildpoint
     paths:
       - '**/*.bin'
       - '**/*.guildpoint'
+    # To reduce noise, this filter restricts to the default activity plus when a draft is changed to open
+    # Default activity types as listed in the documentation are "opened, synchronize, and reopened"
+    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request_target
+    types: [opened, ready_for_review, reopened, synchronize]
 jobs:
   custom-diff:
     runs-on: ubuntu-latest
@@ -40,7 +46,7 @@ jobs:
             touch $file.textproto._new
           fi
 
-          diff -u $file.textproto._old $file.textproto._new > $file._diff || true
+          diff -u $file.textproto._old --label old $file.textproto._new --label new > $file._diff || true
           echo $file >> file_list.txt
         done
 
@@ -62,12 +68,29 @@ jobs:
           const issue_number = context.issue.number;
           const githubToken = process.env.GITHUB_TOKEN;
 
+          // Get the existing comments.
+          const {data: comments} = await github.rest.pulls.listReviewComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: issue_number,
+          });
+
           const files = fs.readFileSync('file_list.txt', 'utf8').split("\n");
 
           for (let file of files) {
             if (file == "") {
               continue;
             }
+
+            // Filter comments related to the current file
+            const file_comments = comments.filter(comment => comment.path === file);
+
+            // Sort comments by creation date in descending order
+            file_comments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            // Get the most recent comment
+            const most_recent_comment = file_comments.length > 0 ? file_comments[0] : null;
+
             const diff_contents = fs.readFileSync(file + "._diff", 'utf8')
             let comment_body = [
               "<details>",
@@ -79,6 +102,12 @@ jobs:
               "</details>",
             ].join("\n");
             
+            // Check if a similar comment already exists
+            if (most_recent_comment && most_recent_comment.body === comment_body) {
+              console.log(`Skipping file ${file}, identical comment already exists.`);
+              continue;
+            }
+
             console.log(file)
 
             await github.rest.pulls.createReviewComment({
