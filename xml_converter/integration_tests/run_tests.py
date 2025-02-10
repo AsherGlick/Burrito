@@ -254,7 +254,7 @@ def run_testcase(
         zipped_input_dir = os.path.join(temp_directory_path, "zipped_inputs", testcase.name)
         os.makedirs(zipped_input_dir, exist_ok=True)
 
-        new_xml_input_paths = []
+        new_xml_input_paths: List[str] = []
         for xml_input_path in xml_input_paths:
             zip_path = os.path.join(zipped_input_dir, os.path.basename(xml_input_path) + ".taco")
             zip_directory(xml_input_path, zip_path)
@@ -262,9 +262,9 @@ def run_testcase(
             find_and_replace_tokens[xml_input_path] = zip_path
         xml_input_paths = new_xml_input_paths
 
-        new_proto_input_paths = []
+        new_proto_input_paths: List[str] = []
         for proto_input_path in proto_input_paths:
-            zip_path = os.path.join(zipped_input_dir, os.path.basename(proto_input_path) + ".taco")
+            zip_path = os.path.join(zipped_input_dir, os.path.basename(proto_input_path) + ".burrito")
             zip_directory(proto_input_path, zip_path)
             new_proto_input_paths.append(zip_path)
             find_and_replace_tokens[proto_input_path] = zip_path
