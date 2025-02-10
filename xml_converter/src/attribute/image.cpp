@@ -10,6 +10,14 @@
 
 using namespace std;
 
+Image::Image()
+    : filepath("", "") {
+}
+
+Image::Image(std::string base, std::string relative_filepath)
+    : filepath(base, relative_filepath) {
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // parse_image
 //
@@ -21,9 +29,7 @@ void xml_attribute_to_image(
     XMLReaderState* state,
     Image* value,
     bool* is_set) {
-    Image image;
-    image.filename = get_attribute_value(input);
-    image.original_filepath = join_file_paths(state->marker_pack_root_directory, image.filename);
+    Image image(state->marker_pack_root_directory, get_attribute_value(input));
     *value = image;
     *is_set = true;
 }
@@ -37,18 +43,9 @@ void image_to_xml_attribute(
     XMLWriterState* state,
     const Image* value,
     std::function<void(std::string)> setter) {
-    if (filesystem::exists(filesystem::path(value->original_filepath))) {
-        filesystem::path output_path = filesystem::path(state->marker_pack_root_directory) / value->filename;
-        if (value->original_filepath != output_path) {
-            filesystem::create_directories(output_path.parent_path());
-            filesystem::copy_file(filesystem::path(value->original_filepath), output_path, filesystem::copy_options::overwrite_existing);
-        }
-    }
-    else {
-        cout << "Warning: File path " << value->original_filepath << " not found." << endl;
-    }
-
-    setter(value->filename);
+    MarkerPackFile output_path = MarkerPackFile(state->marker_pack_root_directory, value->filepath.relative_filepath);
+    copy_file(value->filepath, output_path);
+    setter(value->filepath.relative_filepath);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,9 +58,7 @@ void proto_to_image(
     ProtoReaderState* state,
     Image* value,
     bool* is_set) {
-    Image image;
-    image.filename = state->textures[input].filepath();
-    image.original_filepath = join_file_paths(state->marker_pack_root_directory, image.filename);
+    Image image(state->marker_pack_root_directory, state->textures[input].filepath());
     *value = image;
     *is_set = true;
 }
@@ -80,25 +75,17 @@ void image_to_proto(
     std::function<void(unsigned int)> setter) {
     // Get the texture index or create a new one
     uint32_t texture_index = 0;
-    auto file_map_lookup = state->texture_path_to_textures_index.find(value.original_filepath);
+    auto file_map_lookup = state->texture_path_to_textures_index.find(value.filepath.tmp_get_path());
     if (file_map_lookup != state->texture_path_to_textures_index.end()) {
         texture_index = file_map_lookup->second;
     }
     else {
         texture_index = state->textures.size();
-        state->texture_path_to_textures_index[value.original_filepath] = texture_index;
+        state->texture_path_to_textures_index[value.filepath.tmp_get_path()] = texture_index;
         state->textures.push_back(&value);
-        if (filesystem::exists(filesystem::path(value.original_filepath))) {
-            filesystem::path output_path = filesystem::path(state->marker_pack_root_directory) / value.filename;
-            if (value.original_filepath != output_path) {
-                filesystem::create_directories(output_path.parent_path());
-                filesystem::copy_file(filesystem::path(value.original_filepath), output_path, filesystem::copy_options::overwrite_existing);
-            }
-        }
-        else {
-            cout << "Warning: File path " << value.original_filepath << " not found." << endl;
-        }
-    }
 
+        MarkerPackFile output_path = MarkerPackFile(state->marker_pack_root_directory, value.filepath.relative_filepath);
+        copy_file(value.filepath, output_path);
+    }
     setter(texture_index);
 }

@@ -1,7 +1,7 @@
 input_paths: 
     "pack": "xml"
 expected_stdout: |
-    Warning: File path test_cases/xml_texture_invalid/input/pack/texture_01.png not found.
-    Warning: File path test_cases/xml_texture_invalid/input/pack/texture_01.png not found.
 expected_stderr: |
+    File does not exist to copy from test_cases/xml_texture_invalid/input/pack/texture_01.png
+    File does not exist to copy from test_cases/xml_texture_invalid/input/pack/texture_01.png
 expected_returncode: 0

@@ -171,7 +171,7 @@ void proto_post_processing(ProtoWriterState* state, guildpoint::Guildpoint* prot
 
         for (size_t i = 1; i < state->textures.size(); i++) {
             guildpoint::TextureData* texture_data = proto->add_textures();
-            texture_data->set_filepath(state->textures[i]->filename);
+            texture_data->set_filepath(state->textures[i]->filepath.relative_filepath);
         }
     }
 }

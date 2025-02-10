@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "../file_helper.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../state_structs/proto_reader_state.hpp"
 #include "../state_structs/proto_writer_state.hpp"
@@ -14,8 +15,9 @@ class XMLError;
 
 class Image {
  public:
-    std::string filename;
-    std::string original_filepath;
+    Image();
+    Image(std::string base, std::string relative_filepath);
+    MarkerPackFile filepath;
 };
 
 void xml_attribute_to_image(

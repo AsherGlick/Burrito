@@ -18,12 +18,49 @@
 
 using namespace std;
 
-// This function is a workaround that simulates the copy
-// function in filesystem in C++17. Can be changed in future.
-void copy_file(string path, string new_path) {
-    ifstream infile(path, ios::binary);
-    ofstream outfile(new_path, ios::binary);
-    outfile << infile.rdbuf();
+void copy_file(MarkerPackFile original_path, MarkerPackFile new_path) {
+    if (original_path.tmp_get_path() == new_path.tmp_get_path()) {
+        cerr << "File is being copied to itself" << original_path.tmp_get_path() << endl;
+        return;
+    }
+
+    // Directory to Directory
+    if (filesystem::is_directory(original_path.base) && filesystem::is_directory(new_path.base)) {
+        if (!filesystem::exists(filesystem::path(original_path.tmp_get_path()))) {
+            cerr << "File does not exist to copy from " << original_path.tmp_get_path() << endl;
+            return;
+        }
+        filesystem::path output_path = filesystem::path(new_path.tmp_get_path());
+        filesystem::create_directories(output_path.parent_path());
+        filesystem::copy_file(
+            filesystem::path(original_path.tmp_get_path()),
+            output_path,
+            filesystem::copy_options::overwrite_existing);
+    }
+    // ZipFile to Directory
+    else if (filesystem::is_regular_file(original_path.base) && filesystem::is_directory(new_path.base)) {
+        auto original_file = open_file_for_read(original_path);
+
+        if (original_file == nullptr) {
+            cerr << "File does not exist to copy from " << original_path.tmp_get_path() << endl;
+            return;
+        }
+
+        filesystem::path output_path = filesystem::path(new_path.tmp_get_path());
+        filesystem::create_directories(output_path.parent_path());
+        ofstream outfile(new_path.tmp_get_path(), ios::binary);
+        outfile << original_file->rdbuf();
+    }
+    // Directory to ZipFile (Unsupported until writing to ZipFiles is implemnted)
+    else if (filesystem::is_directory(original_path.base) && filesystem::is_regular_file(new_path.base)) {
+        cerr << "Unsupported copy. Witing to zip files is not yet supported " << new_path.tmp_get_path() << endl;
+        return;
+    }
+    // ZipFile to ZipFile (Unsupported until writing to ZipFile is implemented)
+    else if (filesystem::is_regular_file(original_path.base) && filesystem::is_regular_file(new_path.base)) {
+        cerr << "Unsupported copy. Witing to zip files is not yet supported " << new_path.tmp_get_path() << endl;
+        return;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
