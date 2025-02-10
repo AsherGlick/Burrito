@@ -41,17 +41,17 @@ map<string, vector<string>> read_taco_directory(
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-    else if (filesystem::is_directory(input_path)) {
-        string directory_name = filesystem::path(input_path).filename();
-        vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
-        for (const MarkerPackFile& path : xml_files) {
-            set<string> top_level_category_names = parse_xml_file(path, marker_categories, parsed_pois);
-            string relative_path = join_file_paths(directory_name, path.relative_filepath);
-            for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-                top_level_category_file_locations[*it].push_back(relative_path);
-            }
+
+    string directory_name = filesystem::path(input_path).filename();
+    vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
+    for (const MarkerPackFile& path : xml_files) {
+        set<string> top_level_category_names = parse_xml_file(path, marker_categories, parsed_pois);
+        string relative_path = join_file_paths(directory_name, path.relative_filepath);
+        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
+            top_level_category_file_locations[*it].push_back(relative_path);
         }
     }
+
     return top_level_category_file_locations;
 }
 
@@ -63,17 +63,17 @@ map<string, vector<string>> read_burrito_directory(
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-    else if (filesystem::is_directory(input_path)) {
-        string directory_name = filesystem::path(input_path).filename();
-        vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
-        for (const MarkerPackFile& path : burrito_files) {
-            set<string> top_level_category_names = read_protobuf_file(path, marker_categories, parsed_pois);
-            string relative_path = join_file_paths(directory_name, path.relative_filepath);
-            for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-                top_level_category_file_locations[*it].push_back(relative_path);
-            }
+
+    string directory_name = filesystem::path(input_path).filename();
+    vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
+    for (const MarkerPackFile& path : burrito_files) {
+        set<string> top_level_category_names = read_protobuf_file(path, marker_categories, parsed_pois);
+        string relative_path = join_file_paths(directory_name, path.relative_filepath);
+        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
+            top_level_category_file_locations[*it].push_back(relative_path);
         }
     }
+
     return top_level_category_file_locations;
 }
 
