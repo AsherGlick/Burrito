@@ -92,7 +92,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         return {};
     }
 
-    parsed_arguments.path_configs = marker_pack_configs;
+    parsed_arguments.marker_pack_configs = marker_pack_configs;
     parsed_arguments.is_valid = true;
     return parsed_arguments;
 }

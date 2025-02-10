@@ -124,7 +124,7 @@ void process_data(ParsedArguments parsed_arguments) {
     map<string, Category> marker_categories;
     map<string, vector<vector<string>>> top_level_category_file_locations_by_pack;
     map<string, set<string>> duplicate_categories;
-    vector<MarkerPackConfig> marker_pack_config = parsed_arguments.marker_pack_config;
+    vector<MarkerPackConfig> marker_pack_config = parsed_arguments.marker_pack_configs;
 
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();

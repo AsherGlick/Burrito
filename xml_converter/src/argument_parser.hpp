@@ -31,7 +31,7 @@ class MarkerPackConfig {
 
 class ParsedArguments {
  public:
-    std::vector<MarkerPackConfig> marker_pack_config;
+    std::vector<MarkerPackConfig> marker_pack_configs;
     bool allow_duplicates = false;
     bool is_valid = false;
 };
