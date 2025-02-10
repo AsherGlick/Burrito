@@ -17,29 +17,21 @@ enum class MarkerFormat {
     NONE,
 };
 
-class PathConfig {
+class MarkerPackConfig {
  public:
     BehaviorType type;
     MarkerFormat format;
     std::string path;
     bool split_by_map_id = false;
 
-    PathConfig();
+    MarkerPackConfig();
 
-    PathConfig(BehaviorType type, MarkerFormat format, std::string path, bool split_by_map_id = false);
-};
-
-class ArgumentConfig {
- public:
-    BehaviorType type;
-    MarkerFormat format;
-
-    ArgumentConfig(BehaviorType type, MarkerFormat format);
+    MarkerPackConfig(BehaviorType type, MarkerFormat format, std::string path, bool split_by_map_id = false);
 };
 
 class ParsedArguments {
  public:
-    std::vector<PathConfig> path_configs;
+    std::vector<MarkerPackConfig> marker_pack_config;
     bool allow_duplicates = false;
     bool is_valid = false;
 };

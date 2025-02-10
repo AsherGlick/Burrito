@@ -20,7 +20,7 @@ def run_xml_converter(
     output_xml: Optional[List[str]] = None,
     input_proto: Optional[List[str]] = None,
     output_proto: Optional[List[str]] = None,
-    split_by_map_id: Optional[bool] = None
+    split_by_map_id: Optional[bool] = None,
 ) -> Tuple[str, str, int]:
 
     # Build the command to execute the C++ program with the desired function and arguments
@@ -36,6 +36,7 @@ def run_xml_converter(
         cmd += ["--input-guildpoint-path"] + input_proto
     if output_proto:
         cmd += ["--output-guildpoint-path"] + output_proto
+    # TODO #388 adjust testcase files to allow different configurations
     if split_by_map_id:
         cmd += ["--split-by-map-id"]
 

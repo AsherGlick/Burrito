@@ -34,18 +34,18 @@
 using namespace std;
 
 map<string, vector<string>> read_taco_directory(
-    PathConfig path_config,
+    string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
     map<string, vector<string>> top_level_category_file_locations;
-    if (!filesystem::exists(path_config.path)) {
-        cout << "Error: " << path_config.path << " is not an existing directory or file" << endl;
+    if (!filesystem::exists(input_path)) {
+        cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-    else if (filesystem::is_directory(path_config.path)) {
-        string directory_name = filesystem::path(path_config.path).filename();
-        vector<MarkerPackFile> xml_files = get_files_by_suffix(path_config.path, ".xml");
+    else if (filesystem::is_directory(input_path)) {
+        string directory_name = filesystem::path(input_path).filename();
+        vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
         for (const MarkerPackFile& path : xml_files) {
-            set<string> top_level_category_names = parse_xml_file(path.tmp_get_path(), path_config.path, marker_categories, parsed_pois);
+            set<string> top_level_category_names = parse_xml_file(path.tmp_get_path(), input_path, marker_categories, parsed_pois);
             string relative_path = join_file_paths(directory_name, path.relative_filepath);
             for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
                 top_level_category_file_locations[*it].push_back(relative_path);
@@ -56,18 +56,18 @@ map<string, vector<string>> read_taco_directory(
 }
 
 map<string, vector<string>> read_burrito_directory(
-    PathConfig path_config,
+    string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
     map<string, vector<string>> top_level_category_file_locations;
-    if (!filesystem::exists(path_config.path)) {
-        cout << "Error: " << path_config.path << " is not an existing directory or file" << endl;
+    if (!filesystem::exists(input_path)) {
+        cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-    else if (filesystem::is_directory(path_config.path)) {
-        string directory_name = filesystem::path(path_config.path).filename();
-        vector<MarkerPackFile> burrito_files = get_files_by_suffix(path_config.path, ".guildpoint");
+    else if (filesystem::is_directory(input_path)) {
+        string directory_name = filesystem::path(input_path).filename();
+        vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
         for (const MarkerPackFile& path : burrito_files) {
-            set<string> top_level_category_names = read_protobuf_file(path.tmp_get_path(), path_config.path, marker_categories, parsed_pois);
+            set<string> top_level_category_names = read_protobuf_file(path.tmp_get_path(), input_path, marker_categories, parsed_pois);
             string relative_path = join_file_paths(directory_name, path.relative_filepath);
             for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
                 top_level_category_file_locations[*it].push_back(relative_path);
@@ -78,36 +78,37 @@ map<string, vector<string>> read_burrito_directory(
 }
 
 void write_taco_directory(
-    PathConfig path_config,
+    string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
-    if (!filesystem::is_directory(path_config.path)) {
-        if (!filesystem::create_directory(path_config.path)) {
-            cout << "Error: " << path_config.path << "is not a valid directory path" << endl;
+    if (!filesystem::is_directory(input_path)) {
+        if (!filesystem::create_directory(input_path)) {
+            cout << "Error: " << input_path << "is not a valid directory path" << endl;
             return;
         }
     }
-    write_xml_file(path_config.path, marker_categories, parsed_pois);
+    write_xml_file(input_path, marker_categories, parsed_pois);
 }
 
 void write_burrito_directory(
-    PathConfig path_config,
+    string input_path,
+    bool split_by_map_id,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
-    if (!filesystem::is_directory(path_config.path)) {
-        if (!filesystem::create_directory(path_config.path)) {
-            cout << "Error: " << path_config.path << "is not a valid directory path" << endl;
+    if (!filesystem::is_directory(input_path)) {
+        if (!filesystem::create_directory(input_path)) {
+            cout << "Error: " << input_path << "is not a valid directory path" << endl;
             return;
         }
     }
     StringHierarchy category_filter;
     category_filter.add_path({}, true);
-    if (path_config.split_by_map_id) {
-        write_protobuf_file_per_map_id(path_config.path, category_filter, marker_categories, parsed_pois);
+    if (split_by_map_id) {
+        write_protobuf_file_per_map_id(input_path, category_filter, marker_categories, parsed_pois);
     }
     else {
-        write_protobuf_file(path_config.path, category_filter, marker_categories, parsed_pois);
+        write_protobuf_file(input_path, category_filter, marker_categories, parsed_pois);
     }
 }
 
@@ -123,18 +124,18 @@ void process_data(ParsedArguments parsed_arguments) {
     map<string, Category> marker_categories;
     map<string, vector<vector<string>>> top_level_category_file_locations_by_pack;
     map<string, set<string>> duplicate_categories;
-    vector<PathConfig> path_configs = parsed_arguments.path_configs;
+    vector<MarkerPackConfig> marker_pack_config = parsed_arguments.marker_pack_config;
 
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < path_configs.size(); i++) {
-        if (path_configs[i].type != BehaviorType::IMPORT || path_configs[i].format != MarkerFormat::XML) {
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::IMPORT || marker_pack_config[i].format != MarkerFormat::XML) {
             continue;
         }
-        cout << "Loading taco pack " << path_configs[i].path << endl;
+        cout << "Loading taco pack " << marker_pack_config[i].path << endl;
 
         map<string, vector<string>> top_level_category_file_locations = read_taco_directory(
-            path_configs[i],
+            marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois);
         for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
@@ -148,14 +149,14 @@ void process_data(ParsedArguments parsed_arguments) {
 
     // Read in all the protobin guildpoint markerpacks
     begin = chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < path_configs.size(); i++) {
-        if (path_configs[i].type != BehaviorType::IMPORT || path_configs[i].format != MarkerFormat::GUILDPOINT) {
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::IMPORT || marker_pack_config[i].format != MarkerFormat::GUILDPOINT) {
             continue;
         }
-        cout << "Loading guildpoint pack " << path_configs[i].path << endl;
+        cout << "Loading guildpoint pack " << marker_pack_config[i].path << endl;
 
         map<string, vector<string>> top_level_category_file_locations = read_burrito_directory(
-            path_configs[i],
+            marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois);
         for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
@@ -196,11 +197,11 @@ void process_data(ParsedArguments parsed_arguments) {
 
     // Write all of the xml taco paths
     begin = chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < path_configs.size(); i++) {
-        if (path_configs[i].type != BehaviorType::EXPORT || path_configs[i].format != MarkerFormat::XML) {
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::EXPORT || marker_pack_config[i].format != MarkerFormat::XML) {
             continue;
         }
-        write_taco_directory(path_configs[i], &marker_categories, &parsed_pois);
+        write_taco_directory(marker_pack_config[i].path, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
@@ -209,11 +210,11 @@ void process_data(ParsedArguments parsed_arguments) {
 
     // Write all of the protobin guildpoint paths
     begin = chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < path_configs.size(); i++) {
-        if (path_configs[i].type != BehaviorType::EXPORT || path_configs[i].format != MarkerFormat::GUILDPOINT) {
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::EXPORT || marker_pack_config[i].format != MarkerFormat::GUILDPOINT) {
             continue;
         }
-        write_burrito_directory(path_configs[i], &marker_categories, &parsed_pois);
+        write_burrito_directory(marker_pack_config[i].path, marker_pack_config[i].split_by_map_id, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
