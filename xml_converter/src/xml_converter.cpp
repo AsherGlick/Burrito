@@ -16,6 +16,7 @@
 #include <utility>
 #include <vector>
 
+#include "argument_parser.hpp"
 #include "attribute/marker_category.hpp"
 #include "category_gen.hpp"
 #include "file_helper.hpp"
@@ -77,32 +78,38 @@ map<string, vector<string>> read_burrito_directory(
 }
 
 void write_taco_directory(
-    string output_path,
+    string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
     // TODO: Exportion of XML Marker Packs File Structure #111
-    if (!filesystem::is_directory(output_path)) {
-        if (!filesystem::create_directory(output_path)) {
-            cout << "Error: " << output_path << "is not a valid directory path" << endl;
+    if (!filesystem::is_directory(input_path)) {
+        if (!filesystem::create_directory(input_path)) {
+            cout << "Error: " << input_path << "is not a valid directory path" << endl;
             return;
         }
     }
-    write_xml_file(output_path, marker_categories, parsed_pois);
+    write_xml_file(input_path, marker_categories, parsed_pois);
 }
 
 void write_burrito_directory(
-    string output_path,
+    string input_path,
+    bool split_by_map_id,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
-    if (!filesystem::is_directory(output_path)) {
-        if (!filesystem::create_directory(output_path)) {
-            cout << "Error: " << output_path << "is not a valid directory path" << endl;
+    if (!filesystem::is_directory(input_path)) {
+        if (!filesystem::create_directory(input_path)) {
+            cout << "Error: " << input_path << "is not a valid directory path" << endl;
             return;
         }
     }
     StringHierarchy category_filter;
     category_filter.add_path({}, true);
-    write_protobuf_file(output_path, category_filter, marker_categories, parsed_pois);
+    if (split_by_map_id) {
+        write_protobuf_file_per_map_id(input_path, category_filter, marker_categories, parsed_pois);
+    }
+    else {
+        write_protobuf_file(input_path, category_filter, marker_categories, parsed_pois);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -111,33 +118,24 @@ void write_burrito_directory(
 // The universal entrypoint into the xml converter functionality. Both the CLI
 // and the library entrypoints direct here to do their actual processing.
 ////////////////////////////////////////////////////////////////////////////////
-void process_data(
-    vector<string> input_taco_paths,
-    vector<string> input_guildpoint_paths,
-    // If multiple inputs are found to have the same top level categories,
-    // The program will skip writing to output unless the below is true
-    bool allow_duplicates,
-    // These will eventually have additional arguments for each output path to
-    // allow for splitting out a single markerpack
-    vector<string> output_taco_paths,
-    vector<string> output_guildpoint_paths,
-
-    // This is a special output path used for burrito internal use that splits
-    // the guildpoint protobins by map id.
-    string output_split_guildpoint_dir) {
+void process_data(ParsedArguments parsed_arguments) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
     map<string, vector<vector<string>>> top_level_category_file_locations_by_pack;
     map<string, set<string>> duplicate_categories;
+    vector<MarkerPackConfig> marker_pack_config = parsed_arguments.marker_pack_configs;
 
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < input_taco_paths.size(); i++) {
-        cout << "Loading taco pack " << input_taco_paths[i] << endl;
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::IMPORT || marker_pack_config[i].format != MarkerFormat::XML) {
+            continue;
+        }
+        cout << "Loading taco pack " << marker_pack_config[i].path << endl;
 
         map<string, vector<string>> top_level_category_file_locations = read_taco_directory(
-            input_taco_paths[i],
+            marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois);
         for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
@@ -150,17 +148,25 @@ void process_data(
     cout << "The taco parse function took " << ms << " milliseconds to run" << endl;
 
     // Read in all the protobin guildpoint markerpacks
-    for (size_t i = 0; i < input_guildpoint_paths.size(); i++) {
-        cout << "Loading guildpoint pack " << input_guildpoint_paths[i] << endl;
+    begin = chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::IMPORT || marker_pack_config[i].format != MarkerFormat::GUILDPOINT) {
+            continue;
+        }
+        cout << "Loading guildpoint pack " << marker_pack_config[i].path << endl;
 
         map<string, vector<string>> top_level_category_file_locations = read_burrito_directory(
-            input_guildpoint_paths[i],
+            marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois);
         for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
             top_level_category_file_locations_by_pack[it->first].push_back(it->second);
         }
     }
+    end = chrono::high_resolution_clock::now();
+    dur = end - begin;
+    ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    cout << "The guildpoint parse function took " << ms << " milliseconds to run" << endl;
 
     for (map<string, vector<vector<string>>>::iterator it = top_level_category_file_locations_by_pack.begin(); it != top_level_category_file_locations_by_pack.end(); it++) {
         if (it->second.size() != 1) {
@@ -171,7 +177,8 @@ void process_data(
             }
         }
     }
-    if (duplicate_categories.size() > 0 && allow_duplicates == false) {
+
+    if (duplicate_categories.size() > 0 && parsed_arguments.allow_duplicates == false) {
         cout << "Did not write due to duplicates in categories." << endl;
         cout << "This commonly occurs when attempting to read the same pack multiple times or when separate packs coincidentally have the same name." << endl;
         // TODO: This is the current advice. Further updates could allow other
@@ -190,8 +197,11 @@ void process_data(
 
     // Write all of the xml taco paths
     begin = chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < output_taco_paths.size(); i++) {
-        write_taco_directory(output_taco_paths[i], &marker_categories, &parsed_pois);
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::EXPORT || marker_pack_config[i].format != MarkerFormat::XML) {
+            continue;
+        }
+        write_taco_directory(marker_pack_config[i].path, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
@@ -199,16 +209,12 @@ void process_data(
     cout << "The xml write function took " << ms << " milliseconds to run" << endl;
 
     // Write all of the protobin guildpoint paths
-    for (size_t i = 0; i < output_guildpoint_paths.size(); i++) {
-        write_burrito_directory(output_guildpoint_paths[i], &marker_categories, &parsed_pois);
-    }
-
-    // Write the special map-split protbin guildpoint file
     begin = chrono::high_resolution_clock::now();
-    if (output_split_guildpoint_dir != "") {
-        StringHierarchy category_filter;
-        category_filter.add_path({}, true);
-        write_protobuf_file_per_map_id(output_split_guildpoint_dir, category_filter, &marker_categories, &parsed_pois);
+    for (size_t i = 0; i < marker_pack_config.size(); i++) {
+        if (marker_pack_config[i].type != BehaviorType::EXPORT || marker_pack_config[i].format != MarkerFormat::GUILDPOINT) {
+            continue;
+        }
+        write_burrito_directory(marker_pack_config[i].path, marker_pack_config[i].split_by_map_id, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;
@@ -219,78 +225,14 @@ void process_data(
 ////////////////////////////////////////////////////////////////////////////////
 // main
 //
-// Main is the CLI entrypoint to the xml converter. It handles processing all
-// of the command line data into a format the internal functions want to
-// receive.
-//
-// Example usage
-//   ./xml_converter --input-taco-paths ../packs/marker_pack --output-split-guildpoint-path ../output_packs
-//   ./xml_converter --input-taco-paths ../packs/* --output-split-guildpoint-path ../output_packs
+// Main is the CLI entrypoint to the xml converter.
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[]) {
-    vector<string> input_taco_paths;
-    vector<string> output_taco_paths;
-    vector<string> input_guildpoint_paths;
-    vector<string> output_guildpoint_paths;
-    bool allow_duplicates = false;
-
-    // Typically "~/.local/share/godot/app_userdata/Burrito/protobins" for
-    // converting from xml markerpacks to internal protobuf files.
-    vector<string> output_split_guildpoint_paths;
-
-    vector<string>* arg_target = nullptr;
-
-    for (int i = 1; i < argc; i++) {
-        if (!strcmp(argv[i], "--input-taco-path")) {
-            arg_target = &input_taco_paths;
-        }
-        else if (!strcmp(argv[i], "--output-taco-path")) {
-            arg_target = &output_taco_paths;
-        }
-        else if (!strcmp(argv[i], "--input-guildpoint-path")) {
-            arg_target = &input_guildpoint_paths;
-        }
-        else if (!strcmp(argv[i], "--output-guildpoint-path")) {
-            arg_target = &output_guildpoint_paths;
-        }
-        else if (!strcmp(argv[i], "--output-split-guildpoint-path")) {
-            // We dont actually support multiple values for this argument but
-            // I am leaving this as-is because it is simpler. We can adjust the
-            // CLI arg parsing later to properly capture this.
-            arg_target = &output_split_guildpoint_paths;
-        }
-        else if (!strcmp(argv[i], "--allow-duplicates")) {
-            allow_duplicates = true;
-            arg_target = nullptr;
-        }
-        else {
-            if (arg_target != nullptr) {
-                arg_target->push_back(argv[i]);
-            }
-            else {
-                cout << "Unknown argument " << argv[i] << endl;
-                return -1;
-            }
-        }
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    if (!parsed_arguments.is_valid) {
+        return -1;
     }
-
-    // Strip all but the first output split guildpoint argument, because we dont
-    // actually support multiple arguments.
-    string output_split_guildpoint_dir = "";
-    if (output_split_guildpoint_paths.size() > 0) {
-        output_split_guildpoint_dir = output_split_guildpoint_paths[0];
-    }
-    else if (output_split_guildpoint_paths.size() > 1) {
-        cout << "Only one --output-split-guildpoint-path is accepted" << endl;
-    }
-
-    process_data(
-        input_taco_paths,
-        input_guildpoint_paths,
-        allow_duplicates,
-        output_taco_paths,
-        output_guildpoint_paths,
-        output_split_guildpoint_dir);
+    process_data(parsed_arguments);
 
     return 0;
 }
