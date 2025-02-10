@@ -5,10 +5,11 @@ import difflib
 import subprocess
 import re
 import os
-from typing import List, Optional, Tuple
-from src.testcase_loader import load_testcases
+from typing import List, Optional, Tuple, Dict
+from src.testcase_loader import load_testcases, Testcase
 import shutil
 from src.proto_utils import compare_protos, compare_binary_file
+import zipfile
 
 # Path to compiled C++ executable
 xml_converter_binary_path: str = "../build/xml_converter"
@@ -21,6 +22,7 @@ def run_xml_converter(
     input_proto: Optional[List[str]] = None,
     output_proto: Optional[List[str]] = None,
     split_by_map_id: Optional[bool] = None,
+    verbose: bool = False,
 ) -> Tuple[str, str, int]:
 
     # Build the command to execute the C++ program with the desired function and arguments
@@ -39,6 +41,9 @@ def run_xml_converter(
     # TODO #388 adjust testcase files to allow different configurations
     if split_by_map_id:
         cmd += ["--split-by-map-id"]
+
+    if verbose:
+        print("Converter Command: ", cmd)
 
     # Run the C++ program and capture its output
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -72,15 +77,15 @@ def len_diff(lines: List[str]) -> int:
 
 
 ################################################################################
-# remove_ansii_color_escapecodes
+# remove_ansi_color_escapecodes
 #
-# Remove the ANSII color code escape characters from a string to make it easier
+# Remove the ANSI color code escape characters from a string to make it easier
 # to read what is actually contained in the string.
 ################################################################################
 pattern_for_color_escape_codes = r"\u001b\[[0-9;]+m"
 
 
-def remove_ansii_color_escapecodes(lines: List[str]) -> List[str]:
+def remove_ansi_color_escapecodes(lines: List[str]) -> List[str]:
     return [re.sub(pattern_for_color_escape_codes, '', line) for line in lines]
 
 
@@ -145,6 +150,198 @@ def remove_ignored_lines(lines: List[str]) -> List[str]:
     return filtered_array
 
 
+################################################################################
+# zip_directory
+#
+# Zips and entire directory into a zip file.
+################################################################################
+def zip_directory(directory_path: str, zip_path: str) -> None:
+    with zipfile.ZipFile(zip_path, 'w') as f:
+        for root, _, files in os.walk(directory_path):
+            for file in files:
+                path = os.path.join(root, file)
+                relative_filepath = os.path.relpath(path, directory_path)
+                f.write(path, relative_filepath)
+
+
+################################################################################
+# find_and_replace
+#
+# Iterates through each line and replaces anything anything that is a key of
+# `find_and_replace_tokens` with the value associated to the key. The longest
+# keys are replaced first.
+################################################################################
+def find_and_replace(lines: List[str], find_and_replace_tokens: Dict[str, str]) -> List[str]:
+    new_lines: List[str] = []
+    for line in lines:
+        for key, value in sorted(find_and_replace_tokens.items(), key=lambda x: -len(x[0])):
+            line = line.replace(key, value)
+        new_lines.append(line)
+
+    return new_lines
+
+
+################################################################################
+# indent
+#
+# Adds a 4 space indent to the beginning of each line in the list of lines.
+################################################################################
+def indent(lines: List[str]) -> List[str]:
+    return ["    " + x for x in lines]
+
+
+################################################################################
+# color_unified_diff
+#
+# Colors a diff using ANSI escape color codes. The diff must be in the
+# "unified diff" format."
+################################################################################
+def color_unified_diff(lines: List[str]) -> List[str]:
+    header = True
+    colored_lines: List[str] = []
+    for line in lines:
+        if line[0] == '@':
+            colored_lines.append("\033[36m" + line + "\033[0m")
+            header = False
+        elif header:
+            colored_lines.append("\033[39;1m" + line + "\033[0m")
+        elif line[0] == '-':
+            colored_lines.append("\033[31m" + line + "\033[0m")
+        elif line[0] == '+':
+            colored_lines.append("\033[32m" + line + "\033[0m")
+        else:
+            colored_lines.append(line)
+    return colored_lines
+
+
+################################################################################
+# run_testcase
+#
+# Runs a testcase, prints out the output of the testcase and returns if the
+# testcase passed.
+################################################################################
+def run_testcase(
+    testcase: Testcase,
+    temp_directory_path: str,
+    zip_input: bool,
+    verbose: bool,
+) -> bool:
+    output_xml_paths: Optional[List[str]] = None
+    output_proto_paths: Optional[List[str]] = None
+
+    testcase_display_name = testcase.name
+
+    output_subdirectory = "outputs"
+    if zip_input:
+        output_subdirectory = "unzipped_outputs"
+
+    if testcase.expected_output_xml_path is not None:
+        xml_output_dir_path = os.path.join(temp_directory_path, output_subdirectory, "xml", testcase.name)
+        os.makedirs(xml_output_dir_path, exist_ok=True)
+        output_xml_paths = [xml_output_dir_path]
+
+    if testcase.expected_output_proto_path is not None:
+        proto_output_dir_path = os.path.join(temp_directory_path, output_subdirectory, "proto", testcase.name)
+        os.makedirs(proto_output_dir_path, exist_ok=True)
+        output_proto_paths = [proto_output_dir_path]
+
+    xml_input_paths = testcase.xml_input_paths
+    proto_input_paths = testcase.proto_input_paths
+
+    find_and_replace_tokens: Dict[str, str] = {}
+
+    if zip_input:
+        zipped_input_dir = os.path.join(temp_directory_path, "zipped_inputs", testcase.name)
+        os.makedirs(zipped_input_dir, exist_ok=True)
+
+        new_xml_input_paths: List[str] = []
+        for xml_input_path in xml_input_paths:
+            zip_path = os.path.join(zipped_input_dir, os.path.basename(xml_input_path) + ".taco")
+            zip_directory(xml_input_path, zip_path)
+            new_xml_input_paths.append(zip_path)
+            find_and_replace_tokens[xml_input_path] = zip_path
+        xml_input_paths = new_xml_input_paths
+
+        new_proto_input_paths: List[str] = []
+        for proto_input_path in proto_input_paths:
+            zip_path = os.path.join(zipped_input_dir, os.path.basename(proto_input_path) + ".burrito")
+            zip_directory(proto_input_path, zip_path)
+            new_proto_input_paths.append(zip_path)
+            find_and_replace_tokens[proto_input_path] = zip_path
+        proto_input_paths = new_proto_input_paths
+
+        testcase_display_name = testcase_display_name + " (zipped)"
+
+    rawstdout, rawstderr, returncode = run_xml_converter(
+        input_xml=xml_input_paths,
+        input_proto=proto_input_paths,
+        output_xml=output_xml_paths,
+        output_proto=output_proto_paths,
+        allow_duplicates=testcase.allow_duplicates,
+        split_by_map_id=testcase.split_by_map_id,
+        verbose=verbose,
+    )
+
+    # Sanitize and denoise the lines
+    stdout: List[str] = remove_ansi_color_escapecodes(remove_ignored_lines(rawstdout.split("\n")))
+    stderr: List[str] = remove_ansi_color_escapecodes(remove_ignored_lines(rawstderr.split("\n")))
+
+    # Prints the results of xml_converter
+    if verbose:
+        print(f"Test {testcase_display_name}")
+        print("    stdout :  {}".format("\n".join(stdout)))
+        print("    stderr : {}".format("\n".join(stderr)))
+        print("    return_code : {}".format(returncode))
+
+    testcase_passed: bool = True
+
+    # Process standard out
+    expected_stdout = find_and_replace(
+        testcase.expected_stdout,
+        find_and_replace_tokens,
+    )
+    stdout_diff: List[str] = list(difflib.unified_diff(expected_stdout, stdout, fromfile="Expected stdout", tofile="Actual stdout", lineterm=""))
+    stdout_diff = color_unified_diff(stdout_diff)
+    if len_diff(stdout_diff) != 0:
+        print(f"  Standard output did not match for test {testcase_display_name}")
+        for line in stdout_diff:
+            print("  |" + line)
+        testcase_passed = False
+
+    # Process standard error
+    expected_stderr = find_and_replace(
+        testcase.expected_stderr,
+        find_and_replace_tokens,
+    )
+    stderr_diff: List[str] = list(difflib.unified_diff(expected_stderr, stderr, fromfile="Expected stderr", tofile="Actual stderr", lineterm=""))
+    if len_diff(stderr_diff) != 0:
+        print(f"  Standard error did not match for test {testcase_display_name}")
+        for line in stderr_diff:
+            print("   ", line)
+        testcase_passed = False
+
+    if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
+        print(f"  Expected a return code of {testcase.expected_returncode} for {testcase_display_name} but got {returncode}")
+
+    if testcase.expected_output_xml_path is not None and os.path.exists(testcase.expected_output_xml_path):
+        testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
+    if testcase.expected_output_proto_path is not None and os.path.exists(testcase.expected_output_proto_path):
+        testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
+
+    if testcase_passed:
+        print(f"Success: test {testcase_display_name}")
+    else:
+        print(f"Failure: test {testcase_display_name}")
+
+    return testcase_passed
+
+
+################################################################################
+# main
+#
+# Parses the command line arguments, cleans up the test directory, and runs all
+# of the tests specified in test_cases.
+################################################################################
 def main() -> bool:
     parser = argparse.ArgumentParser(description="A test harness for evaluating the output of the xmlconverter program.")
     parser.add_argument("-v", "--verbose", help="Prints the results from xmlconverter in JSON format.", action="store_true")
@@ -152,11 +349,11 @@ def main() -> bool:
     parser.add_argument("--no-build", help="Do not automatically build xml_converter before running the integration tests.", action="store_true")
     args = parser.parse_args()
 
-    output_parent_dirpath = "./outputs"
+    temp_directory_path = ".test_temp"
 
     # Ensure that the test output directory is empty
-    if os.path.exists(output_parent_dirpath):
-        shutil.rmtree(output_parent_dirpath)
+    if os.path.exists(temp_directory_path):
+        shutil.rmtree(temp_directory_path)
 
     all_tests_passed = True
 
@@ -170,65 +367,20 @@ def main() -> bool:
             if not re.match(args.filter, testcase.name):
                 continue
 
-        output_xml_paths: Optional[List[str]] = None
-        output_proto_paths: Optional[List[str]] = None
-
-        if testcase.expected_output_xml_path is not None:
-            xml_output_dir_path = os.path.join(output_parent_dirpath, "xml", testcase.name)
-            os.makedirs(xml_output_dir_path, exist_ok=True)
-            output_xml_paths = [xml_output_dir_path]
-
-        if testcase.expected_output_proto_path is not None:
-            proto_output_dir_path = os.path.join(output_parent_dirpath, "proto", testcase.name)
-            os.makedirs(proto_output_dir_path, exist_ok=True)
-            output_proto_paths = [proto_output_dir_path]
-
-        rawstdout, rawstderr, returncode = run_xml_converter(
-            allow_duplicates=testcase.allow_duplicates,
-            input_xml=testcase.xml_input_paths,
-            input_proto=testcase.proto_input_paths,
-            output_xml=output_xml_paths,
-            output_proto=output_proto_paths,
-            split_by_map_id=testcase.split_by_map_id
+        testcase_passed: bool = True
+        testcase_passed &= run_testcase(
+            testcase=testcase,
+            temp_directory_path=temp_directory_path,
+            zip_input=False,
+            verbose=args.verbose
         )
 
-        # Sanitize and denoise the lines
-        stdout: List[str] = remove_ansii_color_escapecodes(remove_ignored_lines(rawstdout.split("\n")))
-        stderr: List[str] = remove_ansii_color_escapecodes(remove_ignored_lines(rawstderr.split("\n")))
-
-        # Prints the results of xml_converter
-        if args.verbose:
-            print(f"Test {testcase.name}")
-            print("    stdout :  {}".format("\n".join(stdout)))
-            print("    stderr : {}".format("\n".join(stderr)))
-            print("    return_code : {}".format(returncode))
-
-        testcase_passed: bool = True
-
-        stdout_diff: List[str] = list(difflib.unified_diff(testcase.expected_stdout, stdout, fromfile="Expected stdout", tofile="Actual stdout", lineterm=""))
-        if len_diff(stdout_diff) != 0:
-            print(f"Standard output did not match for test {testcase.name}")
-            for line in stdout_diff:
-                print(line)
-            testcase_passed = False
-
-        stderr_diff: List[str] = list(difflib.unified_diff(testcase.expected_stderr, stderr, fromfile="Expected stderr", tofile="Actual stderr", lineterm=""))
-        if len_diff(stderr_diff) != 0:
-            print(f"Standard error did not match for test {testcase.name}")
-            for line in stderr_diff:
-                print(line)
-            testcase_passed = False
-
-        if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
-            print(f"Expected a return code of {testcase.expected_returncode} for {testcase.name} but got {returncode}")
-
-        if testcase.expected_output_xml_path is not None and os.path.exists(testcase.expected_output_xml_path):
-            testcase_passed &= diff_dirs(xml_output_dir_path, testcase.expected_output_xml_path)
-        if testcase.expected_output_proto_path is not None and os.path.exists(testcase.expected_output_proto_path):
-            testcase_passed &= diff_dirs(proto_output_dir_path, testcase.expected_output_proto_path)
-
-        if testcase_passed:
-            print(f"Success: test {testcase.name}")
+        testcase_passed &= run_testcase(
+            testcase=testcase,
+            temp_directory_path=temp_directory_path,
+            zip_input=True,
+            verbose=args.verbose
+        )
 
         all_tests_passed &= testcase_passed
         test_run_count += 1
@@ -292,9 +444,9 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
 
         if len_diff(diff) != 0:
             diff_found = True
-            print("Output was incorrect for test")
-            for line in diff:
-                print(line)
+            print("  Output was incorrect for test")
+            for line in color_unified_diff(diff):
+                print("   ", line)
 
     return not diff_found
 
