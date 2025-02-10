@@ -9,8 +9,8 @@ expected_stdout: |
     If you want to bypass this stop, use '--allow-duplicates'.
     The following top level categories were found in more than one pack:
         "mycategory" in files:
-            pack/xml_file.xml
-            pack2/markers.guildpoint
-            pack3/xml_file.xml
+            test_cases/proto_and_xml_input_no_duplicates/input/pack/xml_file.xml
+            test_cases/proto_and_xml_input_no_duplicates/input/pack2/markers.guildpoint
+            test_cases/proto_and_xml_input_no_duplicates/input/pack3/xml_file.xml
 expected_stderr: |
 expected_returncode: 0
