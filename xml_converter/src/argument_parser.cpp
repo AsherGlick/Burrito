@@ -57,10 +57,6 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
                 }
                 current_paths.clear();
             }
-            else if (type != BehaviorType::NONE) {
-                cerr << "Error: Expected a path to a directory after " << current_argument << endl;
-                return {};
-            }
             current_argument = argv[i];
             type = it->second.type;
             format = it->second.format;
@@ -95,10 +91,6 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         for (const auto& path : current_paths) {
             marker_pack_configs.emplace_back(type, format, path, split_by_map_id);
         }
-    }
-    else if (type != BehaviorType::NONE) {
-        cerr << "Error: Expected a path to a directory after " << current_argument << endl;
-        return {};
     }
 
     parsed_arguments.marker_pack_configs = marker_pack_configs;
