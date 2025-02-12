@@ -57,15 +57,19 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
                 }
                 current_paths.clear();
             }
-            else if (type != BehaviorType::NONE) {
-                cerr << "Error: Expected a path to a directory after " << current_argument << endl;
-                return {};
-            }
             current_argument = argv[i];
             type = it->second.type;
             format = it->second.format;
             // All flags must be set to default value
             split_by_map_id = false;
+
+            while (i + 1 < argc && string(argv[i + 1]).find("--") != 0) {
+                current_paths.push_back(argv[++i]);
+            }
+            if (current_paths.empty()) {
+                cerr << "Error: Expected a path to a directory after " << current_argument << endl;
+                return {};
+            }
         }
         else if (string(argv[i]) == "--allow-duplicates") {
             parsed_arguments.allow_duplicates = true;
@@ -78,7 +82,8 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             split_by_map_id = true;
         }
         else {
-            current_paths.push_back(argv[i]);
+            cerr << "Error: Unknown argument " << argv[i] << endl;
+            return {};
         }
     }
 
@@ -86,10 +91,6 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         for (const auto& path : current_paths) {
             marker_pack_configs.emplace_back(type, format, path, split_by_map_id);
         }
-    }
-    else if (type != BehaviorType::NONE) {
-        cerr << "Error: Expected a path to a directory after " << current_argument << endl;
-        return {};
     }
 
     parsed_arguments.marker_pack_configs = marker_pack_configs;
