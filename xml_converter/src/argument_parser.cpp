@@ -66,6 +66,14 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             format = it->second.format;
             // All flags must be set to default value
             split_by_map_id = false;
+
+            while (i + 1 < argc && string(argv[i + 1]).find("--") != 0) {
+                current_paths.push_back(argv[++i]);
+            }
+            if (current_paths.empty()) {
+                cerr << "Error: Expected a path to a directory after " << current_argument << endl;
+                return {};
+            }
         }
         else if (string(argv[i]) == "--allow-duplicates") {
             parsed_arguments.allow_duplicates = true;
@@ -78,7 +86,8 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             split_by_map_id = true;
         }
         else {
-            current_paths.push_back(argv[i]);
+            cerr << "Error: Unknown argument " << argv[i] << endl;
+            return {};
         }
     }
 

@@ -151,3 +151,42 @@ TEST_F(ParseArgumentsTest, InvalidNoPathAfterOutput){
     EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
     EXPECT_NE(std_err.find("Error: Expected a path to a directory after --output-taco-path"), std::string::npos);
 }
+
+TEST_F(ParseArgumentsTest, InvalidFileAfterWrongArgument){
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--input-taco-path",
+        (char*)"input1",
+        (char*)"--output-taco-path",
+        (char*)"output1",        
+        (char*)"--split-by-map-id",
+        (char*)"output2"
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    testing::internal::CaptureStderr();
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    std::string std_err = testing::internal::GetCapturedStderr();
+
+    EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
+    EXPECT_NE(std_err.find("Error: Unknown argument output2"), std::string::npos);
+}
+
+TEST_F(ParseArgumentsTest, InvalidArgument){
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--input-taco-path",
+        (char*)"input1",
+        (char*)"--output-taco-path",
+        (char*)"output1",
+        (char*)"--ERROR"
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    testing::internal::CaptureStderr();
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    std::string std_err = testing::internal::GetCapturedStderr();
+
+    EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
+    EXPECT_NE(std_err.find("Error: Unknown argument --ERROR"), std::string::npos);
+}
