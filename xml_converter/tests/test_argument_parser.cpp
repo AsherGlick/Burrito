@@ -293,3 +293,19 @@ TEST_F(ParseArgumentsTest, InvalidMultipleIntsAfterSplitCategory){
     EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
     EXPECT_NE(std_err.find("Error: Unknown argument 2"), std::string::npos);
 }
+
+TEST_F(ParseArgumentsTest, HelpFlag) {
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--help"
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    testing::internal::CaptureStdout();
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    std::string std_output = testing::internal::GetCapturedStdout();
+
+    EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
+    EXPECT_NE(std_output.find("usage: ./xml_converter"), std::string::npos);
+}
+
