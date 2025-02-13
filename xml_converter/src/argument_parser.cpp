@@ -14,8 +14,8 @@ MarkerPackConfig::MarkerPackConfig()
       split_by_map_id(false) {
 }
 
-MarkerPackConfig::MarkerPackConfig(BehaviorType type, MarkerFormat format, std::string path, bool split_by_map_id)
-    : type(type), format(format), path(path), split_by_map_id(split_by_map_id) {
+MarkerPackConfig::MarkerPackConfig(BehaviorType type, MarkerFormat format, std::string path, OptionalInt split_by_category, bool split_by_map_id)
+    : type(type), format(format), path(path), split_by_category(split_by_category), split_by_map_id(split_by_map_id) {
 }
 
 class ArgumentConfig {
@@ -44,6 +44,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
     ParsedArguments parsed_arguments;
     BehaviorType type = BehaviorType::NONE;
     MarkerFormat format = MarkerFormat::NONE;
+    OptionalInt split_by_category_depth;
     bool split_by_map_id = false;
     string current_argument;
     vector<string> current_paths;
@@ -53,7 +54,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         if (it != arg_map.end()) {
             if (!current_paths.empty()) {
                 for (const string& path : current_paths) {
-                    marker_pack_configs.emplace_back(type, format, path, split_by_map_id);
+                    marker_pack_configs.emplace_back(type, format, path, split_by_category_depth, split_by_map_id);
                 }
                 current_paths.clear();
             }
@@ -61,6 +62,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             type = it->second.type;
             format = it->second.format;
             // All flags must be set to default value
+            split_by_category_depth.reset();
             split_by_map_id = false;
 
             while (i + 1 < argc && string(argv[i + 1]).find("--") != 0) {
@@ -73,6 +75,22 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         }
         else if (string(argv[i]) == "--allow-duplicates") {
             parsed_arguments.allow_duplicates = true;
+        }
+        else if (string(argv[i]) == "--split-by-category") {
+            if (type != BehaviorType::EXPORT) {
+                cerr << "Error: --split-by-category needs to follow an output argument" << endl;
+                return {};
+            }
+            split_by_category_depth.set_value(0);
+            while (i + 1 < argc && string(argv[i + 1]).find("--") != 0) {
+                if (is_string_valid_integer(argv[i + 1])) {
+                    split_by_category_depth.set_value(std::stoi(argv[++i]));
+                }
+                else {
+                    cerr << "Error: expected an integer after --split-by-category but received " << argv[i + 1] << endl;
+                    return {};
+                }
+            }
         }
         else if (string(argv[i]) == "--split-by-map-id") {
             if (type != BehaviorType::EXPORT) {
@@ -89,7 +107,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
 
     if (!current_paths.empty()) {
         for (const auto& path : current_paths) {
-            marker_pack_configs.emplace_back(type, format, path, split_by_map_id);
+            marker_pack_configs.emplace_back(type, format, path, split_by_category_depth, split_by_map_id);
         }
     }
 

@@ -58,6 +58,67 @@ TEST_F(ParseArgumentsTest, ValidSplitMapID){
     EXPECT_TRUE(parsed_arguments.marker_pack_configs[1].split_by_map_id);
 }
 
+TEST_F(ParseArgumentsTest, ValidSplitCategory){
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--input-guildpoint-path",
+        (char*)"input1",
+        (char*)"--output-guildpoint-path",
+        (char*)"output1",
+        (char*)"--split-by-category",
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    EXPECT_FALSE(parsed_arguments.allow_duplicates);
+
+    ASSERT_EQ(parsed_arguments.marker_pack_configs.size(), 2);
+
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[0].type, BehaviorType::IMPORT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[0].format, MarkerFormat::GUILDPOINT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[0].path, "input1");
+    EXPECT_FALSE(parsed_arguments.marker_pack_configs[0].split_by_map_id);
+    EXPECT_FALSE(parsed_arguments.marker_pack_configs[0].split_by_category.has_value());
+
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].type, BehaviorType::EXPORT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].format, MarkerFormat::GUILDPOINT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].path, "output1");
+    EXPECT_FALSE(parsed_arguments.marker_pack_configs[1].split_by_map_id);
+    EXPECT_TRUE(parsed_arguments.marker_pack_configs[1].split_by_category.has_value());
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].split_by_category.get_value(), 0);
+}
+
+TEST_F(ParseArgumentsTest, ValidSplitCategoryWithDepth){
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--input-guildpoint-path",
+        (char*)"input1",
+        (char*)"--output-guildpoint-path",
+        (char*)"output1",
+        (char*)"--split-by-category",
+        (char*)"2",
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    EXPECT_FALSE(parsed_arguments.allow_duplicates);
+
+    ASSERT_EQ(parsed_arguments.marker_pack_configs.size(), 2);
+
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[0].type, BehaviorType::IMPORT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[0].format, MarkerFormat::GUILDPOINT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[0].path, "input1");
+    EXPECT_FALSE(parsed_arguments.marker_pack_configs[0].split_by_map_id);
+    EXPECT_FALSE(parsed_arguments.marker_pack_configs[0].split_by_category.has_value());
+
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].type, BehaviorType::EXPORT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].format, MarkerFormat::GUILDPOINT);
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].path, "output1");
+    EXPECT_FALSE(parsed_arguments.marker_pack_configs[1].split_by_map_id);
+    EXPECT_TRUE(parsed_arguments.marker_pack_configs[1].split_by_category.has_value());
+    EXPECT_EQ(parsed_arguments.marker_pack_configs[1].split_by_category.get_value(), 2);
+}
+
 TEST_F(ParseArgumentsTest, ValidMultipleInputPaths){
     char* argv[] = {
         (char*)"./xml_converter",
@@ -189,4 +250,24 @@ TEST_F(ParseArgumentsTest, InvalidArgument){
 
     EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
     EXPECT_NE(std_err.find("Error: Unknown argument --ERROR"), std::string::npos);
+}
+
+TEST_F(ParseArgumentsTest, InvalidTypeAfterSplitCategory){
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--input-taco-path",
+        (char*)"input1",
+        (char*)"--output-guildpoint-path",
+        (char*)"output1",
+        (char*)"--split-by-category",
+        (char*)"output2"
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    testing::internal::CaptureStderr();
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    std::string std_err = testing::internal::GetCapturedStderr();
+
+    EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
+    EXPECT_NE(std_err.find("Error: expected an integer after --split-by-category but received output2"), std::string::npos);
 }

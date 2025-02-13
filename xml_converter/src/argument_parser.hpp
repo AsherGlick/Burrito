@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "int_helper.hpp"
+
 // Defines what behavior is expected i.e. (Read/Import or Write/Export)
 enum class BehaviorType {
     IMPORT,
@@ -22,11 +24,12 @@ class MarkerPackConfig {
     BehaviorType type;
     MarkerFormat format;
     std::string path;
+    OptionalInt split_by_category;
     bool split_by_map_id = false;
 
     MarkerPackConfig();
 
-    MarkerPackConfig(BehaviorType type, MarkerFormat format, std::string path, bool split_by_map_id = false);
+    MarkerPackConfig(BehaviorType type, MarkerFormat format, std::string path, OptionalInt split_by_category, bool split_by_map_id = false);
 };
 
 class ParsedArguments {
