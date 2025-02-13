@@ -62,7 +62,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             type = it->second.type;
             format = it->second.format;
             // All flags must be set to default value
-            split_by_category_depth.reset();
+            split_by_category_depth.set_null();
             split_by_map_id = false;
 
             while (i + 1 < argc && string(argv[i + 1]).find("--") != 0) {
@@ -82,7 +82,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
                 return {};
             }
             split_by_category_depth.set_value(0);
-            while (i + 1 < argc && string(argv[i + 1]).find("--") != 0) {
+            if (i + 1 < argc && string(argv[i + 1]).find("--") != 0) {
                 if (is_string_valid_integer(argv[i + 1])) {
                     split_by_category_depth.set_value(std::stoi(argv[++i]));
                 }

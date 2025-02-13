@@ -25,7 +25,7 @@ class OptionalInt {
         return !is_null;
     }
 
-    void reset() {
+    void set_null() {
         is_null = true;
         value = 0;
     }

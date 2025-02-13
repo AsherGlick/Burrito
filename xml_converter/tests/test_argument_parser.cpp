@@ -271,3 +271,25 @@ TEST_F(ParseArgumentsTest, InvalidTypeAfterSplitCategory){
     EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
     EXPECT_NE(std_err.find("Error: expected an integer after --split-by-category but received output2"), std::string::npos);
 }
+
+TEST_F(ParseArgumentsTest, InvalidMultipleIntsAfterSplitCategory){
+    char* argv[] = {
+        (char*)"./xml_converter",
+        (char*)"--input-taco-path",
+        (char*)"input1",
+        (char*)"--output-guildpoint-path",
+        (char*)"output1",
+        (char*)"--split-by-category",
+        (char*)"1",
+        (char*)"2",
+        (char*)"3"
+    };
+    int argc = sizeof(argv) / sizeof(char*);
+
+    testing::internal::CaptureStderr();
+    ParsedArguments parsed_arguments = parse_arguments(argc, argv);
+    std::string std_err = testing::internal::GetCapturedStderr();
+
+    EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
+    EXPECT_NE(std_err.find("Error: Unknown argument 2"), std::string::npos);
+}
