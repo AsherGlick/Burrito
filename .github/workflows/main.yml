@@ -83,6 +83,10 @@ jobs:
           cd xml_converter/integration_tests
           ./run_tests.py --no-build
 
+      - name: Run Unit Tests
+        run: |
+          xml_converter/build/test_xml_converter
+
       - name: Upload created file
         uses: actions/upload-artifact@v4
         with:
