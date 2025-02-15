@@ -17,11 +17,11 @@ class OptionalInt {
         value = val;
     }
 
-    int get_value() {
+    int get_value() const {
         return value;
     }
 
-    bool has_value() {
+    bool has_value() const {
         return !is_null;
     }
 

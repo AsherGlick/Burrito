@@ -23,6 +23,7 @@ class Testcase:
     expected_returncode: int
     allow_duplicates: bool
     split_by_map_id: bool
+    split_by_category: Optional[int]
 
 
 ################################################################################
@@ -62,6 +63,7 @@ def load_testcase(path: str) -> Optional[Testcase]:
     proto_input_paths: List[str] = []
     allow_duplicates: bool = False
     split_by_map_id: bool = False
+    split_by_category: Optional[int] = None
     for pack_name, pack_type in data["input_paths"].items():
         if not isinstance(pack_name, str):
             print(f"Invalid pack name, expecting a string but got {pack_name}")
@@ -135,6 +137,13 @@ def load_testcase(path: str) -> Optional[Testcase]:
         else:
             split_by_map_id = data["split_by_map_id"]
 
+    if "split_by_category" in data:
+        if not isinstance(data["split_by_category"], int):
+            print(f"Invalid Test, expecting int value for 'split_by_category' in {path}")
+            return None
+        else:
+            split_by_category = data["split_by_category"]
+
     return Testcase(
         name=os.path.basename(path),
         xml_input_paths=xml_input_paths,
@@ -145,7 +154,8 @@ def load_testcase(path: str) -> Optional[Testcase]:
         expected_stderr=to_lines(data["expected_stderr"]),
         expected_returncode=data["expected_returncode"],
         allow_duplicates=allow_duplicates,
-        split_by_map_id=split_by_map_id
+        split_by_map_id=split_by_map_id,
+        split_by_category=split_by_category,
     )
 
 

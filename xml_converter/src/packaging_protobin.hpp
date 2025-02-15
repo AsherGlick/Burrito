@@ -9,6 +9,7 @@
 #include "category_gen.hpp"
 #include "file_helper.hpp"
 #include "guildpoint.pb.h"
+#include "int_helper.hpp"
 #include "parseable.hpp"
 #include "string_hierarchy.hpp"
 
@@ -26,5 +27,11 @@ void write_protobuf_file(
 void write_protobuf_file_per_map_id(
     const std::string& marker_pack_root_directory,
     const StringHierarchy& category_filter,
+    const std::map<std::string, Category>* marker_categories,
+    const std::vector<Parseable*>* parsed_pois);
+
+void write_protobuf_file_per_category(
+    const std::string& marker_pack_root_directory,
+    const OptionalInt& split_by_category_depth,
     const std::map<std::string, Category>* marker_categories,
     const std::vector<Parseable*>* parsed_pois);

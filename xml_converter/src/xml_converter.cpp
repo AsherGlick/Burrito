@@ -94,6 +94,7 @@ void write_taco_directory(
 void write_burrito_directory(
     string input_path,
     bool split_by_map_id,
+    OptionalInt split_by_category_depth,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
     if (!filesystem::is_directory(input_path)) {
@@ -104,8 +105,15 @@ void write_burrito_directory(
     }
     StringHierarchy category_filter;
     category_filter.add_path({}, true);
+    if (split_by_map_id && split_by_category_depth.has_value()) {
+        cerr << "Error: --split-by-category and --split-by-map-id can not be called at the same time" << endl;
+        return;
+    }
     if (split_by_map_id) {
         write_protobuf_file_per_map_id(input_path, category_filter, marker_categories, parsed_pois);
+    }
+    else if (split_by_category_depth.has_value()) {
+        write_protobuf_file_per_category(input_path, split_by_category_depth, marker_categories, parsed_pois);
     }
     else {
         write_protobuf_file(input_path, category_filter, marker_categories, parsed_pois);
@@ -214,7 +222,7 @@ void process_data(ParsedArguments parsed_arguments) {
         if (marker_pack_config[i].type != BehaviorType::EXPORT || marker_pack_config[i].format != MarkerFormat::GUILDPOINT) {
             continue;
         }
-        write_burrito_directory(marker_pack_config[i].path, marker_pack_config[i].split_by_map_id, &marker_categories, &parsed_pois);
+        write_burrito_directory(marker_pack_config[i].path, marker_pack_config[i].split_by_map_id, marker_pack_config[i].split_by_category, &marker_categories, &parsed_pois);
     }
     end = chrono::high_resolution_clock::now();
     dur = end - begin;

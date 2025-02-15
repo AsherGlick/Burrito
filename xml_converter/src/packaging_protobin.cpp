@@ -214,14 +214,8 @@ void _write_protobuf_file(
     outfile.close();
 }
 
-void write_protobuf_file(
-    const string& marker_pack_root_directory,
-    const StringHierarchy& category_filter,
-    const map<string, Category>* marker_categories,
-    const vector<Parseable*>* parsed_pois) {
+std::map<string, std::vector<Parseable*>> _construct_category_to_pois_map(const vector<Parseable*>* parsed_pois) {
     std::map<string, std::vector<Parseable*>> category_to_pois;
-    ProtoWriterState state;
-    state.marker_pack_root_directory = marker_pack_root_directory;
 
     for (size_t i = 0; i < parsed_pois->size(); i++) {
         Parseable* parsed_poi = (*parsed_pois)[i];
@@ -239,6 +233,19 @@ void write_protobuf_file(
             std::cout << "Unknown type" << std::endl;
         }
     }
+    return category_to_pois;
+}
+
+void write_protobuf_file(
+    const string& marker_pack_root_directory,
+    const StringHierarchy& category_filter,
+    const map<string, Category>* marker_categories,
+    const vector<Parseable*>* parsed_pois) {
+    std::map<string, std::vector<Parseable*>> category_to_pois;
+    ProtoWriterState state;
+    state.marker_pack_root_directory = marker_pack_root_directory;
+
+    category_to_pois = _construct_category_to_pois_map(parsed_pois);
 
     _write_protobuf_file(
         join_file_paths(state.marker_pack_root_directory, "markers.guildpoint"),
@@ -281,6 +288,50 @@ void write_protobuf_file_per_map_id(
             category_filter,
             marker_categories,
             iterator->second,
+            &state);
+    }
+}
+void _category_filter_by_depth(
+    const map<string, Category>* marker_categories,
+    int target_depth,
+    map<string, StringHierarchy>* category_hierarchy,
+    vector<string> parent_name,
+    int current_depth = 0) {
+    for (auto it = marker_categories->begin(); it != marker_categories->end(); it++) {
+        vector<string> child_name = parent_name;
+        child_name.push_back(it->first);
+        if (target_depth == current_depth) {
+            StringHierarchy category_filter;
+            category_filter.add_path(child_name, true);
+            (*category_hierarchy)[join(child_name, "_")] = category_filter;
+        }
+
+        _category_filter_by_depth(&(it->second.children), target_depth, category_hierarchy, child_name, current_depth + 1);
+    }
+}
+
+// Write protobuf per category
+void write_protobuf_file_per_category(
+    const string& marker_pack_root_directory,
+    const OptionalInt& split_by_category_depth,
+    const map<string, Category>* marker_categories,
+    const vector<Parseable*>* parsed_pois) {
+    ProtoWriterState state;
+    state.marker_pack_root_directory = marker_pack_root_directory;
+
+    map<string, StringHierarchy> category_hierarchies;
+    _category_filter_by_depth(marker_categories, split_by_category_depth.get_value(), &category_hierarchies, {});
+
+    std::map<string, std::vector<Parseable*>> category_to_pois = _construct_category_to_pois_map(parsed_pois);
+
+    for (auto iterator = category_hierarchies.begin(); iterator != category_hierarchies.end(); iterator++) {
+        string output_filepath = join_file_paths(state.marker_pack_root_directory, iterator->first + ".guildpoint");
+
+        _write_protobuf_file(
+            output_filepath,
+            iterator->second,
+            marker_categories,
+            category_to_pois,
             &state);
     }
 }
