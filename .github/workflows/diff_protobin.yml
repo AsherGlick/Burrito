@@ -30,7 +30,6 @@ jobs:
 
     - name: Get Filenames
       run: |
-        touch file_list.txt
         for file in $(git diff --name-only origin/${{ github.base_ref }} refs/pull/${{ github.event.pull_request.number }}/head | grep -E '.bin$|.guildpoint$'); do
           mkdir -p $(dirname "$file")
           if [ -n "$(git ls-tree "origin/${{ github.base_ref }}" -- "$file")" ]; then
