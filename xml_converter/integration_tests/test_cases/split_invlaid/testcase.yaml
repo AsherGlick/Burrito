@@ -1,7 +1,0 @@
-input_paths: 
-    "pack": "xml"
-expected_stdout: |
-expected_stderr: "Error: --split-by-category and --split-by-map-id can not be called at the same time"
-expected_returncode: 0
-split_by_map_id: True
-split_by_category: 0

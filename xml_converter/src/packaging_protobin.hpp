@@ -32,6 +32,6 @@ void write_protobuf_file_per_map_id(
 
 void write_protobuf_file_per_category(
     const std::string& marker_pack_root_directory,
-    const OptionalInt& split_by_category_depth,
+    const int split_by_category_depth,
     const std::map<std::string, Category>* marker_categories,
     const std::vector<Parseable*>* parsed_pois);

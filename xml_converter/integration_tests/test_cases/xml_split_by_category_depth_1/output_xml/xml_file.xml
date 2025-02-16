@@ -1,5 +1,4 @@
 <OverlayData>
-	<MarkerCategory DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory"/>
 	<MarkerCategory ID="LUSqSdk1Qsc=" Name="parent1">
 		<MarkerCategory ID="sdeZoq6FWfQ=" Name="child1">
 			<MarkerCategory ID="sIvniM+Cv1c=" Name="grandchild1"/>
@@ -35,6 +34,14 @@
 		</MarkerCategory>
 	</MarkerCategory>
 	<POIs>
+		<POI Type="parent1" MapID="50" XPos="100.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2" MapID="50" XPos="200.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child1" MapID="50" XPos="110.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child2" MapID="50" XPos="120.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child3" MapID="50" XPos="130.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child1" MapID="50" XPos="210.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child2" MapID="50" XPos="220.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child3" MapID="50" XPos="230.000000" YPos="0.000000" ZPos="0.000000"/>
 		<POI Type="parent1.child1.grandchild1" MapID="50" XPos="111.000000" YPos="0.000000" ZPos="0.000000"/>
 		<POI Type="parent1.child1.grandchild2" MapID="50" XPos="112.000000" YPos="0.000000" ZPos="0.000000"/>
 		<POI Type="parent1.child1.grandchild3" MapID="50" XPos="113.000000" YPos="0.000000" ZPos="0.000000"/>

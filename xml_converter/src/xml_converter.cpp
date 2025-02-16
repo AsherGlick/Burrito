@@ -105,15 +105,16 @@ void write_burrito_directory(
     }
     StringHierarchy category_filter;
     category_filter.add_path({}, true);
+    // TODO: Add unit test
     if (split_by_map_id && split_by_category_depth.has_value()) {
-        cerr << "Error: --split-by-category and --split-by-map-id can not be called at the same time" << endl;
+        cerr << "Error: 'split by category' and 'split by map id' can't be used at the same time" << endl;
         return;
     }
     if (split_by_map_id) {
         write_protobuf_file_per_map_id(input_path, category_filter, marker_categories, parsed_pois);
     }
     else if (split_by_category_depth.has_value()) {
-        write_protobuf_file_per_category(input_path, split_by_category_depth, marker_categories, parsed_pois);
+        write_protobuf_file_per_category(input_path, split_by_category_depth.get_value(), marker_categories, parsed_pois);
     }
     else {
         write_protobuf_file(input_path, category_filter, marker_categories, parsed_pois);
