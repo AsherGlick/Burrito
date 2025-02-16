@@ -15,6 +15,8 @@ namespace guildpoint {
 class EulerRotation;
 }
 
+namespace Attribute::EulerRotation {
+
 class EulerRotation {
  public:
     float x_rotation;
@@ -25,25 +27,27 @@ class EulerRotation {
         return "EulerRotation";
     }
 };
-void xml_attribute_to_euler_rotation(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     EulerRotation* value,
     bool* is_set);
 
-void euler_rotation_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const EulerRotation* value,
     std::function<void(std::string)> setter);
 
-void proto_to_euler_rotation(
+void from_proto_field(
     guildpoint::EulerRotation input,
     ProtoReaderState* state,
     EulerRotation* value,
     bool* is_set);
 
-void euler_rotation_to_proto(
+void to_proto_field(
     EulerRotation value,
     ProtoWriterState* state,
     std::function<void(guildpoint::EulerRotation*)> setter);
+
+}  // namespace Attribute::EulerRotation

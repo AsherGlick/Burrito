@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void xml_attribute_to_position(
+void Attribute::Position::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState*,
@@ -34,7 +34,7 @@ void xml_attribute_to_position(
     *is_set = true;
 }
 
-void proto_to_position(
+void Attribute::Position::from_proto_field(
     guildpoint::Position input,
     ProtoReaderState*,
     Position* value,
@@ -47,7 +47,7 @@ void proto_to_position(
     *is_set = true;
 }
 
-void position_to_proto(
+void Attribute::Position::to_proto_field(
     Position value,
     ProtoWriterState*,
     std::function<void(guildpoint::Position*)> setter) {

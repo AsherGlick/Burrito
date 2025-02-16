@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_mount_filter(
+void Attribute::MountFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -73,7 +73,7 @@ void xml_attribute_to_mount_filter(
     *is_set = true;
 }
 
-void mount_filter_to_xml_attribute(
+void Attribute::MountFilter::to_xml_attribute(
     XMLWriterState*,
     const MountFilter* value,
     std::function<void(std::string)> setter) {
@@ -112,7 +112,7 @@ void mount_filter_to_xml_attribute(
     setter(output);
 }
 
-void proto_to_mount_filter(
+void Attribute::MountFilter::from_proto_field(
     guildpoint::MountFilter input,
     ProtoReaderState*,
     MountFilter* value,
@@ -132,7 +132,7 @@ void proto_to_mount_filter(
     *is_set = true;
 }
 
-void mount_filter_to_proto(
+void Attribute::MountFilter::to_proto_field(
     MountFilter value,
     ProtoWriterState*,
     std::function<void(guildpoint::MountFilter*)> setter) {

@@ -15,6 +15,8 @@ namespace guildpoint {
 class MapTypeFilter;
 }
 
+namespace Attribute::MapTypeFilter {
+
 class MapTypeFilter {
  public:
     bool blue_borderlands_map;
@@ -46,25 +48,27 @@ class MapTypeFilter {
         return "MapTypeFilter";
     }
 };
-void xml_attribute_to_map_type_filter(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     MapTypeFilter* value,
     bool* is_set);
 
-void map_type_filter_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const MapTypeFilter* value,
     std::function<void(std::string)> setter);
 
-void proto_to_map_type_filter(
+void from_proto_field(
     guildpoint::MapTypeFilter input,
     ProtoReaderState* state,
     MapTypeFilter* value,
     bool* is_set);
 
-void map_type_filter_to_proto(
+void to_proto_field(
     MapTypeFilter value,
     ProtoWriterState* state,
     std::function<void(guildpoint::MapTypeFilter*)> setter);
+
+}  // namespace Attribute::MapTypeFilter

@@ -17,30 +17,34 @@ namespace guildpoint {
 class GUID;
 }
 
+namespace Attribute::UniqueId {
+
 class UniqueId {
  public:
     std::vector<uint8_t> guid;
 };
 
-void xml_attribute_to_unique_id(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     UniqueId* value,
     bool* is_set);
 
-void unique_id_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const UniqueId* value,
     std::function<void(std::string)> setter);
 
-void proto_to_unique_id(
+void from_proto_field(
     std::string input,
     ProtoReaderState* state,
     UniqueId* value,
     bool* is_set);
 
-void unique_id_to_proto(
+void to_proto_field(
     UniqueId value,
     ProtoWriterState* state,
     std::function<void(std::string)> setter);
+
+}  // namespace Attribute::UniqueId

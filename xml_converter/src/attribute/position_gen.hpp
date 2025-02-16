@@ -15,6 +15,8 @@ namespace guildpoint {
 class Position;
 }
 
+namespace Attribute::Position {
+
 class Position {
  public:
     float x_position;
@@ -25,25 +27,27 @@ class Position {
         return "Position";
     }
 };
-void xml_attribute_to_position(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     Position* value,
     bool* is_set);
 
-void position_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const Position* value,
     std::function<void(std::string)> setter);
 
-void proto_to_position(
+void from_proto_field(
     guildpoint::Position input,
     ProtoReaderState* state,
     Position* value,
     bool* is_set);
 
-void position_to_proto(
+void to_proto_field(
     Position value,
     ProtoWriterState* state,
     std::function<void(guildpoint::Position*)> setter);
+
+}  // namespace Attribute::Position

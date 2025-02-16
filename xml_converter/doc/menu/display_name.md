@@ -9,10 +9,10 @@ examples:
   - "Tribulation Mode 203"
 custom_functions:
   read.proto:
-    function: proto_display_name_to_display_name_and_name
+    function: Attribute::NameAndDisplayname::from_proto_field
     side_effects: [Name]
   write.proto:
-    function: display_name_and_name_to_proto_display_name
+    function: Attribute::NameAndDisplayname::to_proto_field
     side_effects: [Name]
 
 ---

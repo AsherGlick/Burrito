@@ -7,10 +7,10 @@ exclude_from_protobuf: True
 protobuf_field: constant_size_on_map
 custom_functions:
   read.xml:
-    function: inverted_xml_attribute_to_bool
+    function: Attribute::InvertBool::from_xml_attribute
     side_effects: []
   write.xml:
-    function: bool_to_inverted_xml_attribute
+    function: Attribute::InvertBool::to_xml_attribute
     side_effects: []
 ---
 Scale the size of the object to be the same scale as the map.

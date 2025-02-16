@@ -16,6 +16,7 @@ namespace guildpoint {
 class RGBAColor;
 }
 
+namespace Attribute::Color {
 class Color {
  public:
     float red;
@@ -24,25 +25,26 @@ class Color {
     float alpha;
 };
 
-void xml_attribute_to_color(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     Color* value,
     bool* is_set);
 
-void color_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const Color* value,
     std::function<void(std::string)> setter);
 
-void proto_to_color(
+void from_proto_field(
     uint32_t input,
     ProtoReaderState* state,
     Color* value,
     bool* is_set);
 
-void color_to_proto(
+void to_proto_field(
     Color value,
     ProtoWriterState* state,
     std::function<void(uint32_t)> setter);
+}  // namespace Attribute::Color

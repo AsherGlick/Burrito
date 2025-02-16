@@ -4,7 +4,9 @@
 #include <string>
 #include <vector>
 
+namespace Attribute::Image {
 class Image;
+}
 
 class ProtoWriterState {
  public:
@@ -13,7 +15,7 @@ class ProtoWriterState {
     std::map<std::string, uint32_t> texture_path_to_textures_index;
 
     // A list of all of the textures with their paths.
-    std::vector<const Image*> textures;
+    std::vector<const Attribute::Image::Image*> textures;
 
     ProtoWriterState();
 };

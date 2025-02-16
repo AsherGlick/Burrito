@@ -8,11 +8,11 @@
 
 using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
-// parse_float
+// from_xml_attribute
 //
 // Parses a float from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_float(
+void Attribute::Float::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState*,
@@ -23,11 +23,11 @@ void xml_attribute_to_float(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// float_to_xml_attribute
+// to_xml_attribute
 //
 // Converts a float into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void float_to_xml_attribute(
+void Attribute::Float::to_xml_attribute(
     XMLWriterState*,
     const float* value,
     std::function<void(std::string)> setter) {
@@ -35,11 +35,11 @@ void float_to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_float
+// from_proto_field
 //
 // Parses a float from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_float(
+void Attribute::Float::from_proto_field(
     float input,
     ProtoReaderState*,
     float* value,
@@ -49,11 +49,11 @@ void proto_to_float(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// float_to_proto
+// to_proto_field
 //
 // Writes a float to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void float_to_proto(
+void Attribute::Float::to_proto_field(
     float value,
     ProtoWriterState*,
     std::function<void(float&)> setter) {

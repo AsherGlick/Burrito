@@ -13,17 +13,21 @@
     #include "guildpoint.pb.h"
 
     class XMLError;
+{% elif type in ["CompoundValue", "MultiflagValue"] %}
 
+    class XMLError;
+    {{proto_field_cpp_type_prototype}}
+{% endif %}
+
+namespace Attribute::{{namespace}} {
+
+{% if type == "Enum" %}
     enum {{class_name}} {
         {% for attribute_component in attribute_components %}
             {{attribute_component.attribute_name}},
         {% endfor %}
     };
 {% elif type in ["CompoundValue", "MultiflagValue"] %}
-
-    class XMLError;
-    {{proto_field_cpp_type_prototype}}
-
     class {{class_name}} {
      public:
         {% for attribute_component in attribute_components %}
@@ -35,34 +39,36 @@
         }
     };
 {% endif %}
-void xml_attribute_to_{{attribute_name}}(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     {{class_name}}* value,
     bool* is_set);
 
-void {{attribute_name}}_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const {{class_name}}* value,
     std::function<void(std::string)> setter);
 {% if exclude_from_protobuf == false %}
 
-    void proto_to_{{attribute_name}}(
+    void from_proto_field(
         {{proto_field_cpp_type}} input,
         ProtoReaderState* state,
         {{class_name}}* value,
         bool* is_set);
 
     {% if type == "Enum" %}
-        void {{attribute_name}}_to_proto(
+        void to_proto_field(
             {{class_name}} value,
             ProtoWriterState* state,
             std::function<void({{proto_field_cpp_type}})> setter);
     {% else %}
-        void {{attribute_name}}_to_proto(
+        void to_proto_field(
             {{class_name}} value,
             ProtoWriterState* state,
             std::function<void({{proto_field_cpp_type}}*)> setter);
     {% endif %}
 {% endif %}
+
+}  // namespace Attribute::{{namespace}}

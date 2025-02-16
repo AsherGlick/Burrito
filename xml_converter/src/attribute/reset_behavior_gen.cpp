@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_reset_behavior(
+void Attribute::ResetBehavior::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -82,7 +82,7 @@ void xml_attribute_to_reset_behavior(
     *is_set = true;
 }
 
-void reset_behavior_to_xml_attribute(
+void Attribute::ResetBehavior::to_xml_attribute(
     XMLWriterState*,
     const ResetBehavior* value,
     std::function<void(std::string)> setter) {

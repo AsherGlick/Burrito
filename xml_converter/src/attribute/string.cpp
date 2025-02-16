@@ -15,7 +15,7 @@ using namespace std;
 //
 // Parses a string from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_string(
+void Attribute::String::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState*,
@@ -30,7 +30,7 @@ void xml_attribute_to_string(
 //
 // Converts a string into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void string_to_xml_attribute(
+void Attribute::String::to_xml_attribute(
     XMLWriterState*,
     const string* value,
     std::function<void(std::string)> setter) {
@@ -42,7 +42,7 @@ void string_to_xml_attribute(
 //
 // Parses a string from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_string(
+void Attribute::String::from_proto_field(
     string input,
     ProtoReaderState*,
     string* value,
@@ -56,14 +56,14 @@ void proto_to_string(
 //
 // Writes a string to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void string_to_proto(
+void Attribute::String::to_proto_field(
     std::string value,
     ProtoWriterState*,
     std::function<void(std::string)> setter) {
     setter(value);
 }
 
-void proto_display_name_to_display_name_and_name(
+void Attribute::NameAndDisplayname::from_proto_field(
     std::string input,
     ProtoReaderState*,
     std::string* display_name,
@@ -76,7 +76,7 @@ void proto_display_name_to_display_name_and_name(
     *is_name_set = true;
 }
 
-void display_name_and_name_to_proto_display_name(
+void Attribute::NameAndDisplayname::to_proto_field(
     std::string value,
     ProtoWriterState*,
     std::function<void(std::string)> setter,

@@ -11,12 +11,12 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// xml_attribute_to_int
+// from_xml_attribute
 //
 // Parses an int from the value of a rapidxml::xml_attribute. Adds an error
 // if the value cannot be parsed properly.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_int(
+void Attribute::Int::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -38,11 +38,11 @@ void xml_attribute_to_int(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// int_to_xml_attribute
+// to_xml_attribute
 //
 // Converts an int a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void int_to_xml_attribute(
+void Attribute::Int::to_xml_attribute(
     XMLWriterState*,
     const int* value,
     std::function<void(std::string)> setter) {
@@ -50,11 +50,11 @@ void int_to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_int
+// from_proto_field
 //
 // Parses an int from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_int(
+void Attribute::Int::from_proto_field(
     int input,
     ProtoReaderState*,
     int* value,
@@ -64,11 +64,11 @@ void proto_to_int(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// int_to_proto
+// to_proto_field
 //
 // Writes a int to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void int_to_proto(
+void Attribute::Int::to_proto_field(
     int value,
     ProtoWriterState*,
     std::function<void(int&)> setter) {

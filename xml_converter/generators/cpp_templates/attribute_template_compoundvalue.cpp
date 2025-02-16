@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void xml_attribute_to_{{attribute_name}}(
+void Attribute::{{namespace}}::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState*,
@@ -34,7 +34,7 @@ void xml_attribute_to_{{attribute_name}}(
     *is_set = true;
 }
 {% if xml_bundled_components != [] %}
-    void {{attribute_name}}_to_xml_attribute(
+    void Attribute::{{namespace}}::to_xml_attribute(
         XMLWriterState*,
         const {{class_name}}* value,
         std::function<void(std::string)> setter) {
@@ -53,7 +53,7 @@ void xml_attribute_to_{{attribute_name}}(
 {% endif %}
 {% if exclude_from_protobuf == false %}
 
-    void proto_to_{{attribute_name}}(
+    void Attribute::{{namespace}}::from_proto_field(
         {{proto_field_cpp_type}} input,
         ProtoReaderState*,
         {{class_name}}* value,
@@ -68,7 +68,7 @@ void xml_attribute_to_{{attribute_name}}(
         *is_set = true;
     }
 
-    void {{attribute_name}}_to_proto(
+    void Attribute::{{namespace}}::to_proto_field(
         {{class_name}} value,
         ProtoWriterState*,
         std::function<void({{proto_field_cpp_type}}*)> setter) {

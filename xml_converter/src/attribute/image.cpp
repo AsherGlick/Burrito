@@ -10,20 +10,20 @@
 
 using namespace std;
 
-Image::Image()
+Attribute::Image::Image::Image()
     : filepath("", "") {
 }
 
-Image::Image(std::string base, std::string relative_filepath)
+Attribute::Image::Image::Image(std::string base, std::string relative_filepath)
     : filepath(base, relative_filepath) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_image
+// from_xml_attribute
 //
 // Parses the path to an image from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_image(
+void Attribute::Image::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState* state,
@@ -35,11 +35,11 @@ void xml_attribute_to_image(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// image_to_xml_attribute
+// to_xml_attribute
 //
 // Converts an image into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void image_to_xml_attribute(
+void Attribute::Image::to_xml_attribute(
     XMLWriterState* state,
     const Image* value,
     std::function<void(std::string)> setter) {
@@ -49,11 +49,11 @@ void image_to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_image
+// from_proto_field
 //
 // Parses an Image from proto
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_image(
+void Attribute::Image::from_proto_field(
     unsigned int input,
     ProtoReaderState* state,
     Image* value,
@@ -64,12 +64,12 @@ void proto_to_image(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// image_to_proto
+// to_proto_field
 //
 // Creates a new element of the proto writer state if the image has not been
 // used before. Then writes the new or existing index of the image to the proto.
 ////////////////////////////////////////////////////////////////////////////////
-void image_to_proto(
+void Attribute::Image::to_proto_field(
     const Image& value,
     ProtoWriterState* state,
     std::function<void(unsigned int)> setter) {

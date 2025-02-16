@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_profession_filter(
+void Attribute::ProfessionFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -69,7 +69,7 @@ void xml_attribute_to_profession_filter(
     *is_set = true;
 }
 
-void profession_filter_to_xml_attribute(
+void Attribute::ProfessionFilter::to_xml_attribute(
     XMLWriterState*,
     const ProfessionFilter* value,
     std::function<void(std::string)> setter) {
@@ -105,7 +105,7 @@ void profession_filter_to_xml_attribute(
     setter(output);
 }
 
-void proto_to_profession_filter(
+void Attribute::ProfessionFilter::from_proto_field(
     guildpoint::ProfessionFilter input,
     ProtoReaderState*,
     ProfessionFilter* value,
@@ -124,7 +124,7 @@ void proto_to_profession_filter(
     *is_set = true;
 }
 
-void profession_filter_to_proto(
+void Attribute::ProfessionFilter::to_proto_field(
     ProfessionFilter value,
     ProtoWriterState*,
     std::function<void(guildpoint::ProfessionFilter*)> setter) {

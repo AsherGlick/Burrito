@@ -16,30 +16,34 @@ namespace guildpoint {
 class Category;
 }
 
+namespace Attribute::MarkerCategory {
+
 class MarkerCategory {
  public:
     std::string category;
 };
 
-void xml_attribute_to_marker_category(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     MarkerCategory* value,
     bool* is_set);
 
-void marker_category_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const MarkerCategory* value,
     std::function<void(std::string)> setter);
 
-void proto_to_marker_category(
+void from_proto_field(
     guildpoint::Category input,
     ProtoReaderState* state,
     MarkerCategory* value,
     bool* is_set);
 
-void marker_category_to_proto(
+void to_proto_field(
     MarkerCategory value,
     ProtoWriterState* state,
     std::function<void(guildpoint::Category*)> setter);
+
+}  // namespace Attribute::MarkerCategory

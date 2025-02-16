@@ -16,7 +16,7 @@ using namespace std;
 // evaluated as `true`. 'false' or '0' are evaluated as `false`. Everything
 // else appends an error to the errors vector.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_bool(
+void Attribute::Bool::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -40,7 +40,7 @@ void xml_attribute_to_bool(
 //
 // Converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void bool_to_xml_attribute(
+void Attribute::Bool::to_xml_attribute(
     XMLWriterState*,
     const bool* value,
     std::function<void(std::string)> setter) {
@@ -59,7 +59,7 @@ void bool_to_xml_attribute(
 // or "1" are evaluated as `false`. 'false' or '0' are evaluated as `true`.
 // Everything else appends an error to the errors vector.
 ////////////////////////////////////////////////////////////////////////////////
-void inverted_xml_attribute_to_bool(
+void Attribute::InvertBool::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -83,7 +83,7 @@ void inverted_xml_attribute_to_bool(
 //
 // Inverts and converts a bool into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void bool_to_inverted_xml_attribute(
+void Attribute::InvertBool::to_xml_attribute(
     XMLWriterState*,
     const bool* value,
     std::function<void(std::string)> setter) {
@@ -100,7 +100,7 @@ void bool_to_inverted_xml_attribute(
 //
 // Parses a bool from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_bool(
+void Attribute::Bool::from_proto_field(
     bool input,
     ProtoReaderState*,
     bool* value,
@@ -114,7 +114,7 @@ void proto_to_bool(
 //
 // Writes a bool to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void bool_to_proto(
+void Attribute::Bool::to_proto_field(
     bool value,
     ProtoWriterState*,
     std::function<void(bool)> setter) {
