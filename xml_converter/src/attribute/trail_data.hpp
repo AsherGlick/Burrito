@@ -16,6 +16,7 @@ namespace guildpoint {
 class TrailData;
 }
 
+namespace Attribute::TrailData {
 class TrailData {
  public:
     std::vector<float> points_x;
@@ -23,7 +24,7 @@ class TrailData {
     std::vector<float> points_z;
 };
 
-void xml_attribute_to_trail_data(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
@@ -32,20 +33,21 @@ void xml_attribute_to_trail_data(
     int* map_id_value,
     bool* is_map_id_set);
 
-void trail_data_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const TrailData* value,
     const int* map_id_value,
     const bool* is_map_id_set,
     std::function<void(std::string)> setter);
 
-void proto_to_trail_data(
+void from_proto_field(
     guildpoint::TrailData input,
     ProtoReaderState* state,
     TrailData* value,
     bool* is_set);
 
-void trail_data_to_proto(
+void to_proto_field(
     TrailData value,
     ProtoWriterState* state,
     std::function<void(guildpoint::TrailData*)> setter);
+}  // namespace Attribute::TrailData

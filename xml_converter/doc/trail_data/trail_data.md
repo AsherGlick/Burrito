@@ -11,10 +11,10 @@ examples:
   - "jumping_puzzle_path.trl"
 custom_functions:
   read.xml:
-    function: xml_attribute_to_trail_data
+    function: Attribute::TrailData::from_xml_attribute
     side_effects: [Map ID]
   write.xml:
-    function: trail_data_to_xml_attribute
+    function: Attribute::TrailData::to_xml_attribute
     side_effects: [Map ID]
 ---
 

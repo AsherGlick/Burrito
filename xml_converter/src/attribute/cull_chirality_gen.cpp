@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_cull_chirality(
+void Attribute::CullChirality::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -37,7 +37,7 @@ void xml_attribute_to_cull_chirality(
     *is_set = true;
 }
 
-void cull_chirality_to_xml_attribute(
+void Attribute::CullChirality::to_xml_attribute(
     XMLWriterState*,
     const CullChirality* value,
     std::function<void(std::string)> setter) {
@@ -58,7 +58,7 @@ void cull_chirality_to_xml_attribute(
     }
 }
 
-void proto_to_cull_chirality(
+void Attribute::CullChirality::from_proto_field(
     guildpoint::CullChirality input,
     ProtoReaderState*,
     CullChirality* value,
@@ -83,7 +83,7 @@ void proto_to_cull_chirality(
     }
 }
 
-void cull_chirality_to_proto(
+void Attribute::CullChirality::to_proto_field(
     CullChirality value,
     ProtoWriterState*,
     std::function<void(guildpoint::CullChirality)> setter) {

@@ -15,6 +15,8 @@ namespace guildpoint {
 class ProfessionFilter;
 }
 
+namespace Attribute::ProfessionFilter {
+
 class ProfessionFilter {
  public:
     bool elementalist;
@@ -31,25 +33,27 @@ class ProfessionFilter {
         return "ProfessionFilter";
     }
 };
-void xml_attribute_to_profession_filter(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     ProfessionFilter* value,
     bool* is_set);
 
-void profession_filter_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const ProfessionFilter* value,
     std::function<void(std::string)> setter);
 
-void proto_to_profession_filter(
+void from_proto_field(
     guildpoint::ProfessionFilter input,
     ProtoReaderState* state,
     ProfessionFilter* value,
     bool* is_set);
 
-void profession_filter_to_proto(
+void to_proto_field(
     ProfessionFilter value,
     ProtoWriterState* state,
     std::function<void(guildpoint::ProfessionFilter*)> setter);
+
+}  // namespace Attribute::ProfessionFilter

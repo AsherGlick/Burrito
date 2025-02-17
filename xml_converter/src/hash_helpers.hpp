@@ -27,5 +27,5 @@ class Hash128 {
     void update(const unsigned char* str, size_t length);
     void update(const std::string& str);
     std::string hex() const;
-    UniqueId unique_id() const;
+    Attribute::UniqueId::UniqueId unique_id() const;
 };

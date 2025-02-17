@@ -6,10 +6,10 @@ xml_fields: [MapVisibility, BHMapVisibility]
 protobuf_field: is_hidden_on_map
 custom_functions:
   read.xml:
-    function: inverted_xml_attribute_to_bool
+    function: Attribute::InvertBool::from_xml_attribute
     side_effects: []
   write.xml:
-    function: bool_to_inverted_xml_attribute
+    function: Attribute::InvertBool::to_xml_attribute
     side_effects: []
 ---
 Allows or Prevents this object from being rendered on the world map.

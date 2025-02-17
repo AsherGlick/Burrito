@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_unique_id(
+void Attribute::UniqueId::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState*,
@@ -30,7 +30,7 @@ void xml_attribute_to_unique_id(
 //
 // Converts a unique id into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void unique_id_to_xml_attribute(
+void Attribute::UniqueId::to_xml_attribute(
     XMLWriterState*,
     const UniqueId* value,
     std::function<void(std::string)> setter) {
@@ -42,7 +42,7 @@ void unique_id_to_xml_attribute(
 //
 // Parses a UniqueId from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_unique_id(
+void Attribute::UniqueId::from_proto_field(
     std::string input,
     ProtoReaderState*,
     UniqueId* value,
@@ -59,7 +59,7 @@ void proto_to_unique_id(
 //
 // Writes a bool to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void unique_id_to_proto(
+void Attribute::UniqueId::to_proto_field(
     UniqueId value,
     ProtoWriterState*,
     std::function<void(std::string)> setter) {

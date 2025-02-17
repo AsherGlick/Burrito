@@ -13,6 +13,8 @@
 
 class XMLError;
 
+namespace Attribute::ResetBehavior {
+
 enum ResetBehavior {
     always_visible,
     daily_reset,
@@ -24,14 +26,16 @@ enum ResetBehavior {
     timer,
     weekly_reset,
 };
-void xml_attribute_to_reset_behavior(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     ResetBehavior* value,
     bool* is_set);
 
-void reset_behavior_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const ResetBehavior* value,
     std::function<void(std::string)> setter);
+
+}  // namespace Attribute::ResetBehavior

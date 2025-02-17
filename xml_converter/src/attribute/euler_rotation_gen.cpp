@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void xml_attribute_to_euler_rotation(
+void Attribute::EulerRotation::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState*,
@@ -33,7 +33,7 @@ void xml_attribute_to_euler_rotation(
     *value = euler_rotation;
     *is_set = true;
 }
-void euler_rotation_to_xml_attribute(
+void Attribute::EulerRotation::to_xml_attribute(
     XMLWriterState*,
     const EulerRotation* value,
     std::function<void(std::string)> setter) {
@@ -44,7 +44,7 @@ void euler_rotation_to_xml_attribute(
     setter(output);
 }
 
-void proto_to_euler_rotation(
+void Attribute::EulerRotation::from_proto_field(
     guildpoint::EulerRotation input,
     ProtoReaderState*,
     EulerRotation* value,
@@ -57,7 +57,7 @@ void proto_to_euler_rotation(
     *is_set = true;
 }
 
-void euler_rotation_to_proto(
+void Attribute::EulerRotation::to_proto_field(
     EulerRotation value,
     ProtoWriterState*,
     std::function<void(guildpoint::EulerRotation*)> setter) {

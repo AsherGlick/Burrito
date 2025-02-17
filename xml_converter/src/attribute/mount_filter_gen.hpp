@@ -15,6 +15,8 @@ namespace guildpoint {
 class MountFilter;
 }
 
+namespace Attribute::MountFilter {
+
 class MountFilter {
  public:
     bool griffon;
@@ -32,25 +34,27 @@ class MountFilter {
         return "MountFilter";
     }
 };
-void xml_attribute_to_mount_filter(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     MountFilter* value,
     bool* is_set);
 
-void mount_filter_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const MountFilter* value,
     std::function<void(std::string)> setter);
 
-void proto_to_mount_filter(
+void from_proto_field(
     guildpoint::MountFilter input,
     ProtoReaderState* state,
     MountFilter* value,
     bool* is_set);
 
-void mount_filter_to_proto(
+void to_proto_field(
     MountFilter value,
     ProtoWriterState* state,
     std::function<void(guildpoint::MountFilter*)> setter);
+
+}  // namespace Attribute::MountFilter

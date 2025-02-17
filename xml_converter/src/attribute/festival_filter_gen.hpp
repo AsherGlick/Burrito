@@ -15,6 +15,8 @@ namespace guildpoint {
 class FestivalFilter;
 }
 
+namespace Attribute::FestivalFilter {
+
 class FestivalFilter {
  public:
     bool dragonbash;
@@ -29,25 +31,27 @@ class FestivalFilter {
         return "FestivalFilter";
     }
 };
-void xml_attribute_to_festival_filter(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     FestivalFilter* value,
     bool* is_set);
 
-void festival_filter_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const FestivalFilter* value,
     std::function<void(std::string)> setter);
 
-void proto_to_festival_filter(
+void from_proto_field(
     guildpoint::FestivalFilter input,
     ProtoReaderState* state,
     FestivalFilter* value,
     bool* is_set);
 
-void festival_filter_to_proto(
+void to_proto_field(
     FestivalFilter value,
     ProtoWriterState* state,
     std::function<void(guildpoint::FestivalFilter*)> setter);
+
+}  // namespace Attribute::FestivalFilter

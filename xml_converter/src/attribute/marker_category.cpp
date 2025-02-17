@@ -8,11 +8,11 @@
 #include "guildpoint.pb.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_marker_category
+// from_xml_attribute
 //
 // Parses a MarkerCategory from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_marker_category(
+void Attribute::MarkerCategory::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
     XMLReaderState*,
@@ -23,11 +23,11 @@ void xml_attribute_to_marker_category(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// marker_category_to_xml_attribute
+// to_xml_attribute
 //
 // Converts a marker category a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void marker_category_to_xml_attribute(
+void Attribute::MarkerCategory::to_xml_attribute(
     XMLWriterState*,
     const MarkerCategory* value,
     std::function<void(std::string)> setter) {
@@ -35,11 +35,11 @@ void marker_category_to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_marker_category
+// from_proto_field
 //
 // Parses a marker category from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_marker_category(
+void Attribute::MarkerCategory::from_proto_field(
     guildpoint::Category input,
     ProtoReaderState*,
     MarkerCategory* value,
@@ -51,11 +51,11 @@ void proto_to_marker_category(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// to_proto_marker_category
+// to_proto_field
 //
 // Returns a guildpoint::Category so that it can be saved to proto.
 ////////////////////////////////////////////////////////////////////////////////
-void marker_category_to_proto(
+void Attribute::MarkerCategory::to_proto_field(
     MarkerCategory value,
     ProtoWriterState*,
     std::function<void(guildpoint::Category*)> setter) {

@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_festival_filter(
+void Attribute::FestivalFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -64,7 +64,7 @@ void xml_attribute_to_festival_filter(
     *is_set = true;
 }
 
-void festival_filter_to_xml_attribute(
+void Attribute::FestivalFilter::to_xml_attribute(
     XMLWriterState*,
     const FestivalFilter* value,
     std::function<void(std::string)> setter) {
@@ -94,7 +94,7 @@ void festival_filter_to_xml_attribute(
     setter(output);
 }
 
-void proto_to_festival_filter(
+void Attribute::FestivalFilter::from_proto_field(
     guildpoint::FestivalFilter input,
     ProtoReaderState*,
     FestivalFilter* value,
@@ -111,7 +111,7 @@ void proto_to_festival_filter(
     *is_set = true;
 }
 
-void festival_filter_to_proto(
+void Attribute::FestivalFilter::to_proto_field(
     FestivalFilter value,
     ProtoWriterState*,
     std::function<void(guildpoint::FestivalFilter*)> setter) {

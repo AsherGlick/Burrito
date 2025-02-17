@@ -82,8 +82,8 @@ std::string Hash128::hex() const {
     return hex_string;
 }
 
-UniqueId Hash128::unique_id() const {
-    UniqueId unique_id;
+Attribute::UniqueId::UniqueId Hash128::unique_id() const {
+    Attribute::UniqueId::UniqueId unique_id;
     unique_id.guid = {
         (unsigned char)((this->upper >> 0) & 0xFF),
         (unsigned char)((this->upper >> 8) & 0xFF),

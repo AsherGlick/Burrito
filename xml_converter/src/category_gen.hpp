@@ -20,7 +20,7 @@ class Category : public Parseable {
     std::string display_name;
     bool is_hidden;
     bool is_separator;
-    UniqueId menu_id;
+    Attribute::UniqueId::UniqueId menu_id;
     std::string name;
     std::string tooltip_description;
     bool display_name_is_set = false;

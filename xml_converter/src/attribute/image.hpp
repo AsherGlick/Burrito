@@ -13,6 +13,7 @@
 
 class XMLError;
 
+namespace Attribute::Image {
 class Image {
  public:
     Image();
@@ -20,25 +21,27 @@ class Image {
     MarkerPackFile filepath;
 };
 
-void xml_attribute_to_image(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     Image* value,
     bool* is_set);
 
-void image_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const Image* value,
     std::function<void(std::string)> setter);
 
-void proto_to_image(
+void from_proto_field(
     unsigned int input,
     ProtoReaderState* state,
     Image* value,
     bool* is_set);
 
-void image_to_proto(
+void to_proto_field(
     const Image& value,
     ProtoWriterState* state,
     std::function<void(unsigned int)> setter);
+
+}  // namespace Attribute::Image

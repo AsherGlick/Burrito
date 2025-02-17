@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_species_filter(
+void Attribute::SpeciesFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -53,7 +53,7 @@ void xml_attribute_to_species_filter(
     *is_set = true;
 }
 
-void species_filter_to_xml_attribute(
+void Attribute::SpeciesFilter::to_xml_attribute(
     XMLWriterState*,
     const SpeciesFilter* value,
     std::function<void(std::string)> setter) {
@@ -77,7 +77,7 @@ void species_filter_to_xml_attribute(
     setter(output);
 }
 
-void proto_to_species_filter(
+void Attribute::SpeciesFilter::from_proto_field(
     guildpoint::SpeciesFilter input,
     ProtoReaderState*,
     SpeciesFilter* value,
@@ -92,7 +92,7 @@ void proto_to_species_filter(
     *is_set = true;
 }
 
-void species_filter_to_proto(
+void Attribute::SpeciesFilter::to_proto_field(
     SpeciesFilter value,
     ProtoWriterState*,
     std::function<void(guildpoint::SpeciesFilter*)> setter) {

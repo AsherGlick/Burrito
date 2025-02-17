@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_specialization_filter(
+void Attribute::SpecializationFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -402,7 +402,7 @@ void xml_attribute_to_specialization_filter(
     *is_set = true;
 }
 
-void specialization_filter_to_xml_attribute(
+void Attribute::SpecializationFilter::to_xml_attribute(
     XMLWriterState*,
     const SpecializationFilter* value,
     std::function<void(std::string)> setter) {
@@ -627,7 +627,7 @@ void specialization_filter_to_xml_attribute(
     setter(output);
 }
 
-void proto_to_specialization_filter(
+void Attribute::SpecializationFilter::from_proto_field(
     guildpoint::SpecializationFilter input,
     ProtoReaderState*,
     SpecializationFilter* value,
@@ -709,7 +709,7 @@ void proto_to_specialization_filter(
     *is_set = true;
 }
 
-void specialization_filter_to_proto(
+void Attribute::SpecializationFilter::to_proto_field(
     SpecializationFilter value,
     ProtoWriterState*,
     std::function<void(guildpoint::SpecializationFilter*)> setter) {

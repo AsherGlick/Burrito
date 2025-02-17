@@ -13,30 +13,34 @@
 
 class XMLError;
 
+namespace Attribute::CullChirality {
+
 enum CullChirality {
     clockwise,
     counter_clockwise,
     none,
 };
-void xml_attribute_to_cull_chirality(
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     CullChirality* value,
     bool* is_set);
 
-void cull_chirality_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const CullChirality* value,
     std::function<void(std::string)> setter);
 
-void proto_to_cull_chirality(
+void from_proto_field(
     guildpoint::CullChirality input,
     ProtoReaderState* state,
     CullChirality* value,
     bool* is_set);
 
-void cull_chirality_to_proto(
+void to_proto_field(
     CullChirality value,
     ProtoWriterState* state,
     std::function<void(guildpoint::CullChirality)> setter);
+
+}  // namespace Attribute::CullChirality

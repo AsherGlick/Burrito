@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void xml_attribute_to_map_type_filter(
+void Attribute::MapTypeFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -129,7 +129,7 @@ void xml_attribute_to_map_type_filter(
     *is_set = true;
 }
 
-void map_type_filter_to_xml_attribute(
+void Attribute::MapTypeFilter::to_xml_attribute(
     XMLWriterState*,
     const MapTypeFilter* value,
     std::function<void(std::string)> setter) {
@@ -210,7 +210,7 @@ void map_type_filter_to_xml_attribute(
     setter(output);
 }
 
-void proto_to_map_type_filter(
+void Attribute::MapTypeFilter::from_proto_field(
     guildpoint::MapTypeFilter input,
     ProtoReaderState*,
     MapTypeFilter* value,
@@ -244,7 +244,7 @@ void proto_to_map_type_filter(
     *is_set = true;
 }
 
-void map_type_filter_to_proto(
+void Attribute::MapTypeFilter::to_proto_field(
     MapTypeFilter value,
     ProtoWriterState*,
     std::function<void(guildpoint::MapTypeFilter*)> setter) {

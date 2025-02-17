@@ -44,11 +44,11 @@ int convert_color_channel_float_to_int(float input) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_color
+// from_xml_attribute
 //
 // Parses a Color from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_color(
+void Attribute::Color::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState*,
@@ -92,11 +92,11 @@ void xml_attribute_to_color(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// color_to_xml_attribute
+// to_xml_attribute
 //
 // Converts a color into a fully qualified xml attribute string.
 ////////////////////////////////////////////////////////////////////////////////
-void color_to_xml_attribute(
+void Attribute::Color::to_xml_attribute(
     XMLWriterState*,
     const Color* value,
     std::function<void(std::string)> setter) {
@@ -118,11 +118,11 @@ void color_to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_color
+// from_proto_field
 //
 // Parses a Color from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_color(
+void Attribute::Color::from_proto_field(
     uint32_t input,
     ProtoReaderState*,
     Color* value,
@@ -140,11 +140,11 @@ void proto_to_color(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// color_to_proto
+// to_proto_field
 //
 // Writes a Color to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void color_to_proto(
+void Attribute::Color::to_proto_field(
     Color value,
     ProtoWriterState*,
     std::function<void(uint32_t)> setter) {

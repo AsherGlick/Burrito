@@ -22,7 +22,7 @@ using namespace std;
 //
 // Parses a TrailData from the value of a rapidxml::xml_attribute.
 ////////////////////////////////////////////////////////////////////////////////
-void xml_attribute_to_trail_data(
+void Attribute::TrailData::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     vector<XMLError*>* errors,
     XMLReaderState* state,
@@ -100,7 +100,7 @@ uint64_t djb2_hash(const unsigned char* str, size_t length) {
 // TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t trail_version_number = 0;
-void trail_data_to_xml_attribute(
+void Attribute::TrailData::to_xml_attribute(
     XMLWriterState* state,
     const TrailData* value,
     const int* map_id_value,
@@ -151,7 +151,7 @@ void trail_data_to_xml_attribute(
 //
 // Parses a TrailData from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
-void proto_to_trail_data(
+void Attribute::TrailData::from_proto_field(
     guildpoint::TrailData input,
     ProtoReaderState*,
     TrailData* value,
@@ -169,7 +169,7 @@ void proto_to_trail_data(
 //
 // Saves a TrailData object to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
-void trail_data_to_proto(
+void Attribute::TrailData::to_proto_field(
     TrailData value,
     ProtoWriterState*,
     std::function<void(guildpoint::TrailData*)> setter) {

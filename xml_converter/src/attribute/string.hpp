@@ -12,33 +12,37 @@
 
 class XMLError;
 
-void xml_attribute_to_string(
+namespace Attribute::String {
+
+void from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     std::string* value,
     bool* is_set);
 
-void string_to_xml_attribute(
+void to_xml_attribute(
     XMLWriterState* state,
     const std::string* value,
     std::function<void(std::string)> setter);
 
-void proto_to_string(
+void from_proto_field(
     std::string input,
     ProtoReaderState* state,
     std::string* value,
     bool* is_set);
 
-void string_to_proto(
+void to_proto_field(
     std::string value,
     ProtoWriterState* state,
     std::function<void(std::string)> setter);
+}  // namespace Attribute::String
 
+namespace Attribute::NameAndDisplayname {
 // These do not belong here, they should be split out into attribute specific
 // files. However we dont have a way to dynamically include attribute specific
 // source files yet so they are going to live here until we build that out.
-void proto_display_name_to_display_name_and_name(
+void from_proto_field(
     std::string input,
     ProtoReaderState* state,
     std::string* display_name,
@@ -46,9 +50,11 @@ void proto_display_name_to_display_name_and_name(
     std::string* name,
     bool* is_name_set);
 
-void display_name_and_name_to_proto_display_name(
+void to_proto_field(
     std::string input,
     ProtoWriterState* state,
     std::function<void(std::string)> setter,
     const std::string* name,
     const bool* is_name_set);
+
+}  // namespace Attribute::NameAndDisplayname

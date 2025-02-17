@@ -17,6 +17,7 @@ from protobuf_types import is_proto_field_scalar, get_proto_field_cpp_type, get_
 class DocumentationTypeData(TypedDict):
     class_name: str
     cpp_type: str
+    namespace: str
 
 
 # A map between the documentation types, and useful class name info related to
@@ -25,22 +26,27 @@ documentation_type_data: Dict[str, DocumentationTypeData] = {
     "Fixed32": {
         "class_name": "int",
         "cpp_type": "int",
+        "namespace": "Int",
     },
     "Int32": {
         "class_name": "int",
         "cpp_type": "int",
+        "namespace": "Int",
     },
     "Boolean": {
         "class_name": "bool",
         "cpp_type": "bool",
+        "namespace": "Bool",
     },
     "Float32": {
         "class_name": "float",
         "cpp_type": "float",
+        "namespace": "Float",
     },
     "String": {
         "class_name": "string",
-        "cpp_type": "std::string"
+        "cpp_type": "std::string",
+        "namespace": "String",
     }
 }
 
@@ -306,16 +312,19 @@ def generate_cpp_variable_data(
             if fieldval.variable_type in documentation_type_data:
                 cpp_type = documentation_type_data[fieldval.variable_type]["cpp_type"]
                 class_name = documentation_type_data[fieldval.variable_type]["class_name"]
+                namespace = documentation_type_data[fieldval.variable_type]["namespace"]
                 cpp_includes.cpp_relative_includes.add("attribute/{}.hpp".format(class_name))
 
             # elif fieldval.variable_type in ("Custom", "CompoundCustomClass"):
             elif fieldval.variable_type == "Custom" or fieldval.variable_type == "CompoundCustomClass":
-                cpp_type = fieldval.cpp_class
+                namespace = fieldval.cpp_class
+                cpp_type = f"Attribute::{namespace}::{fieldval.cpp_class}"
                 class_name = insert_delimiter(fieldval.cpp_class, delimiter="_")
                 cpp_includes.hpp_relative_includes.add("attribute/{}.hpp".format(class_name))
 
             elif fieldval.variable_type in ("Enum", "MultiflagValue", "CompoundValue"):
-                cpp_type = capitalize(attribute_name, delimiter="")
+                namespace = capitalize(attribute_name, delimiter="")
+                cpp_type = f"Attribute::{namespace}::" + capitalize(attribute_name, delimiter="")
                 class_name = attribute_name
 
                 cpp_includes.hpp_relative_includes.add("attribute/{}_gen.hpp".format(class_name))
@@ -346,6 +355,7 @@ def generate_cpp_variable_data(
                     if component.name in fieldval.xml_bundled_components:
                         component_default_xml_field = fieldval.xml_fields[0]
                         write_to_xml = False
+                    component_namespace = documentation_type_data[component.subcomponent_type.value]["namespace"]
                     component_attribute_variable = AttributeVariable(
                         attribute_name=attribute_name + "." + component_name,
                         cpp_type=documentation_type_data[component.subcomponent_type.value]["cpp_type"],
@@ -358,9 +368,9 @@ def generate_cpp_variable_data(
                             protobuf_field=component.protobuf_field,
                             protobuf_cpp_type=get_proto_field_cpp_type(doc_type, combine_fields(fieldval.protobuf_field, component.protobuf_field)),
                             is_proto_field_scalar=is_proto_field_scalar(doc_type, combine_fields(fieldval.protobuf_field, component.protobuf_field)),
-                            serialize_proto_function="to_proto_" + component_class_name,
+                            serialize_proto_function=f"Attribute::{component_namespace}::to_proto_field",
                             serialize_proto_side_effects=[],
-                            deserialize_proto_function="from_proto_" + component_class_name,
+                            deserialize_proto_function=f"Attribute::{component_namespace}::from_proto_field",
                             deserialize_proto_side_effects=[],
                         ) if fieldval.protobuf_field is not None and component.protobuf_field is not None and fieldval.exclude_from_protobuf is not True else None,
 
@@ -368,9 +378,9 @@ def generate_cpp_variable_data(
                             xml_fields=component_xml_fields,
                             default_xml_field=component_default_xml_field,
                             write_to_xml=write_to_xml,
-                            serialize_xml_function=component_class_name + "_to_xml_attribute",
+                            serialize_xml_function=f"Attribute::{component_namespace}::to_xml_attribute",
                             serialize_xml_side_effects=[],
-                            deserialize_xml_function="xml_attribute_to_" + component_class_name,
+                            deserialize_xml_function=f"Attribute::{component_namespace}::from_xml_attribute",
                             deserialize_xml_side_effects=[],
                         )
                     )
@@ -381,7 +391,7 @@ def generate_cpp_variable_data(
 
             # Identify the XML serialize function info
             serialize_xml_function: CustomFunction = CustomFunction(
-                function=class_name + "_to_xml_attribute",
+                function=f"Attribute::{namespace}::to_xml_attribute",
                 side_effects=[],
             )
             if fieldval.custom_functions.write_xml_trail is not None and doc_type == "Trail":
@@ -393,7 +403,7 @@ def generate_cpp_variable_data(
 
             # Identify the XML deserialize function info
             deserialize_xml_function: CustomFunction = CustomFunction(
-                function="xml_attribute_to_" + class_name,
+                function=f"Attribute::{namespace}::from_xml_attribute",
                 side_effects=[],
             )
             if fieldval.custom_functions.read_xml_trail is not None and doc_type == "Trail":
@@ -405,7 +415,7 @@ def generate_cpp_variable_data(
 
             # Identify the proto serialize function info
             serialize_proto_function: CustomFunction = CustomFunction(
-                function=class_name + "_to_proto",
+                function=f"Attribute::{namespace}::to_proto_field",
                 side_effects=[],
             )
             if fieldval.custom_functions.write_proto_trail is not None and doc_type == "Trail":
@@ -417,7 +427,7 @@ def generate_cpp_variable_data(
 
             # Identify the proto deserialize function info
             deserialize_proto_function: CustomFunction = CustomFunction(
-                function="proto_to_" + class_name,
+                function=f"Attribute::{namespace}::from_proto_field",
                 side_effects=[],
             )
             if fieldval.custom_functions.read_proto_trail is not None and doc_type == "Trail":
@@ -587,6 +597,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                 attribute_name=attribute_name,
                 attribute_components=sorted(attribute_components, key=get_attribute_component_key),
                 class_name=capitalize(attribute_name, delimiter=""),
+                namespace=capitalize(attribute_name, delimiter=""),
                 type=attribute_data.variable_type,
                 proto_field_cpp_type=proto_field_type,
                 proto_field_cpp_type_prototype=proto_field_prototype,
@@ -603,6 +614,7 @@ def write_attribute(output_directory: str, data: Dict[str, Document]) -> List[st
                 # TODO: Should this attribute_components list be sorted? The hpp one is.
                 attribute_components=attribute_components,
                 class_name=capitalize(attribute_name, delimiter=""),
+                namespace=capitalize(attribute_name, delimiter=""),
                 enumerate=enumerate,
                 xml_bundled_components=xml_bundled_components,
                 proto_field_cpp_type=proto_field_type,
