@@ -2,7 +2,7 @@ const identify_duplicate_categories = preload("res://identify_duplicate_categori
 
 const converter_executable_path = "./xml_converter/build/xml_converter"
 
-static func call_xml_converter(args: PoolStringArray):
+static func call_xml_converter(args: PoolStringArray) -> Dictionary:
 	var output: Array = []
 	print(args)
 	var result: int = OS.execute(converter_executable_path, args, true, output, true)
