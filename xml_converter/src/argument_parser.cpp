@@ -103,9 +103,9 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             cout << "usage: ./xml_converter [--help] [--allow-duplicates]" << endl;
             cout << "                       [--import_taco_path <PATH> ]" << endl;
             cout << "                       [--import_guildpoint_path <PATH>]" << endl;
-            cout << "                       [--export_taco_path <PATH>" << endl;
-            cout << "                       [--export_guildpoint_path <PATH> [--split_by_map_id]]" << endl;
-            cout << "Each PATH value should be a absolute or relative path to a marker pack directory or file" << endl;
+            cout << "                       [--export_taco_path <PATH>]" << endl;
+            cout << "                       [--export_guildpoint_path <PATH> [--split-by-map-id] [--split-by-category [DEPTH]]]" << endl;
+            cout << "Each PATH value should be an absolute or relative path to a marker pack directory or file" << endl;
             cout << "Supported file types include .burrito, .taco, and .zip" << endl;
             return {};
         }
