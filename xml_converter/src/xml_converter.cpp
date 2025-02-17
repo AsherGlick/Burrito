@@ -105,7 +105,6 @@ void write_burrito_directory(
     }
     StringHierarchy category_filter;
     category_filter.add_path({}, true);
-    // TODO: Add unit test
     if (split_by_map_id && split_by_category_depth.has_value()) {
         cerr << "Error: 'split by category' and 'split by map id' can't be used at the same time" << endl;
         return;

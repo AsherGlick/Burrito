@@ -34,8 +34,6 @@
 		</MarkerCategory>
 	</MarkerCategory>
 	<POIs>
-		<POI Type="parent1" MapID="50" XPos="100.000000" YPos="0.000000" ZPos="0.000000"/>
-		<POI Type="parent2" MapID="50" XPos="200.000000" YPos="0.000000" ZPos="0.000000"/>
 		<POI Type="parent1.child1" MapID="50" XPos="110.000000" YPos="0.000000" ZPos="0.000000"/>
 		<POI Type="parent1.child2" MapID="50" XPos="120.000000" YPos="0.000000" ZPos="0.000000"/>
 		<POI Type="parent1.child3" MapID="50" XPos="130.000000" YPos="0.000000" ZPos="0.000000"/>

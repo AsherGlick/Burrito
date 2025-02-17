@@ -9,7 +9,6 @@
 #include "category_gen.hpp"
 #include "file_helper.hpp"
 #include "guildpoint.pb.h"
-#include "int_helper.hpp"
 #include "parseable.hpp"
 #include "string_hierarchy.hpp"
 

@@ -35,8 +35,6 @@
     </MarkerCategory>
 
     <POIs>
-        <POI Type="parent1" />
-        <POI Type="parent2" />
         <POI Type="parent1.child1" />
         <POI Type="parent1.child2" />
         <POI Type="parent1.child3" />
