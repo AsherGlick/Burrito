@@ -1,6 +1,8 @@
+const identify_duplicate_categories = preload("res://identify_duplicate_categories.gd")
+
 const converter_executable_path = "./xml_converter/build/xml_converter"
 
-static func call_xml_converter(args: PoolStringArray):
+static func call_xml_converter(args: PoolStringArray) -> Dictionary:
 	var output: Array = []
 	print(args)
 	var result: int = OS.execute(converter_executable_path, args, true, output, true)
@@ -9,6 +11,7 @@ static func call_xml_converter(args: PoolStringArray):
 		print("Failed to execute the converter. Error code:", result)
 	else:
 		print("Command executed successfully.")
+	return identify_duplicate_categories.get_duplicate_categories(output[0])
 
 static func create_directory_if_missing(path: String):
 	var dir = Directory.new()
