@@ -15,7 +15,7 @@ static func starts_with(value: String, prefix: String):
 # Parses the stdout of the xml_converter and extracts any category colisions if
 # there are any that exist.
 ################################################################################
-static func get_duplicate_categories(stdin: String):
+static func get_duplicate_categories(stdin: String) -> Dictionary:
 	var lines: PoolStringArray = stdin.split("\n")
 	var capturing: bool = false
 	var colisions = {}
