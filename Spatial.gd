@@ -439,7 +439,7 @@ var saved_markers_dir = "user://protobin/"
 var marker_file_path = ""
 
 func load_guildpoint_markers(map_id_to_load: int):
-	self.marker_file_path = self.unsaved_markers_dir + String(map_id_to_load) + ".bin"
+	self.marker_file_path = self.unsaved_markers_dir + String(map_id_to_load) + ".guildpoint"
 	self.guildpoint_data = Guildpoint.Guildpoint.new()
 	clear_map_markers()
 	init_category_tree()
