@@ -22,6 +22,7 @@ def run_xml_converter(
     input_proto: Optional[List[str]] = None,
     output_proto: Optional[List[str]] = None,
     split_by_map_id: Optional[bool] = None,
+    split_by_category: Optional[int] = None,
     verbose: bool = False,
 ) -> Tuple[str, str, int]:
 
@@ -41,6 +42,8 @@ def run_xml_converter(
     # TODO #388 adjust testcase files to allow different configurations
     if split_by_map_id:
         cmd += ["--split-by-map-id"]
+    if split_by_category is not None:
+        cmd += ["--split-by-category"] + [str(split_by_category)]
 
     if verbose:
         print("Converter Command: ", cmd)
@@ -279,6 +282,7 @@ def run_testcase(
         output_proto=output_proto_paths,
         allow_duplicates=testcase.allow_duplicates,
         split_by_map_id=testcase.split_by_map_id,
+        split_by_category=testcase.split_by_category,
         verbose=verbose,
     )
 

@@ -1,0 +1,65 @@
+<OverlayData>
+	<MarkerCategory ID="LUSqSdk1Qsc=" Name="parent1">
+		<MarkerCategory ID="sdeZoq6FWfQ=" Name="child1">
+			<MarkerCategory ID="sIvniM+Cv1c=" Name="grandchild1"/>
+			<MarkerCategory ID="s4vniHC8/5I=" Name="grandchild2"/>
+			<MarkerCategory ID="tYvniBH2P84=" Name="grandchild3"/>
+		</MarkerCategory>
+		<MarkerCategory ID="sdeZoo9am+A=" Name="child2">
+			<MarkerCategory ID="sIvniLBXAUQ=" Name="grandchild1"/>
+			<MarkerCategory ID="s4vniFGRQX8=" Name="grandchild2"/>
+			<MarkerCategory ID="tYvniPLKgbo=" Name="grandchild3"/>
+		</MarkerCategory>
+		<MarkerCategory ID="sdeZonAv3cw=" Name="child3">
+			<MarkerCategory ID="sIvniJEsQzA=" Name="grandchild1"/>
+			<MarkerCategory ID="s4vniDJmg2s=" Name="grandchild2"/>
+			<MarkerCategory ID="tYvniNOfw6Y=" Name="grandchild3"/>
+		</MarkerCategory>
+	</MarkerCategory>
+	<MarkerCategory ID="LUSqSdo1Qsc=" Name="parent2">
+		<MarkerCategory ID="sdeZoq+FWfQ=" Name="child1">
+			<MarkerCategory ID="sIvniNCCv1c=" Name="grandchild1"/>
+			<MarkerCategory ID="s4vniHG8/5I=" Name="grandchild2"/>
+			<MarkerCategory ID="tYvniBL2P84=" Name="grandchild3"/>
+		</MarkerCategory>
+		<MarkerCategory ID="sdeZopBam+A=" Name="child2">
+			<MarkerCategory ID="sIvniLFXAUQ=" Name="grandchild1"/>
+			<MarkerCategory ID="s4vniFKRQX8=" Name="grandchild2"/>
+			<MarkerCategory ID="tYvniPPKgbo=" Name="grandchild3"/>
+		</MarkerCategory>
+		<MarkerCategory ID="sdeZonEv3cw=" Name="child3">
+			<MarkerCategory ID="sIvniJIsQzA=" Name="grandchild1"/>
+			<MarkerCategory ID="s4vniDNmg2s=" Name="grandchild2"/>
+			<MarkerCategory ID="tYvniNSfw6Y=" Name="grandchild3"/>
+		</MarkerCategory>
+	</MarkerCategory>
+	<POIs>
+		<POI Type="parent1" MapID="50" XPos="100.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2" MapID="50" XPos="200.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child1" MapID="50" XPos="110.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child2" MapID="50" XPos="120.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child3" MapID="50" XPos="130.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child1" MapID="50" XPos="210.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child2" MapID="50" XPos="220.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child3" MapID="50" XPos="230.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child1.grandchild1" MapID="50" XPos="111.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child1.grandchild2" MapID="50" XPos="112.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child1.grandchild3" MapID="50" XPos="113.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child2.grandchild1" MapID="50" XPos="121.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child2.grandchild2" MapID="50" XPos="122.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child2.grandchild3" MapID="50" XPos="123.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child3.grandchild1" MapID="50" XPos="131.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child3.grandchild2" MapID="50" XPos="132.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent1.child3.grandchild3" MapID="50" XPos="133.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child1.grandchild1" MapID="50" XPos="211.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child1.grandchild2" MapID="50" XPos="212.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child1.grandchild3" MapID="50" XPos="213.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child2.grandchild1" MapID="50" XPos="221.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child2.grandchild2" MapID="50" XPos="222.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child2.grandchild3" MapID="50" XPos="223.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child3.grandchild1" MapID="50" XPos="231.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child3.grandchild2" MapID="50" XPos="232.000000" YPos="0.000000" ZPos="0.000000"/>
+		<POI Type="parent2.child3.grandchild3" MapID="50" XPos="233.000000" YPos="0.000000" ZPos="0.000000"/>
+	</POIs>
+</OverlayData>
+

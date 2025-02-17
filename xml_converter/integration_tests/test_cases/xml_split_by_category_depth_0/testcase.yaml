@@ -1,0 +1,6 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+expected_stderr: |
+expected_returncode: 0
+split_by_category: 0
