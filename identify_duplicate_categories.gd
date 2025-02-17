@@ -18,7 +18,7 @@ static func starts_with(value: String, prefix: String):
 static func get_duplicate_categories(stdin: String) -> Dictionary:
 	var lines: PoolStringArray = stdin.split("\n")
 	var capturing: bool = false
-	var colisions = {}
+	var colisions: Dictionary = {}
 	var category = null
 	for line in lines:
 		if line == null:
