@@ -1142,22 +1142,57 @@ func _on_ImportPath_pressed():
 
 
 func _on_ImportPackDialog_dir_selected(dir):
-	var user_data_dir = str(OS.get_user_data_dir())
-	var args: PoolStringArray = [
-		"--input-taco-path", dir,
+	var input_types: Dictionary = FileHandler.check_for_extensions(dir, [".xml", ".guildpoint"])
+	var args: PoolStringArray
+	if input_types.empty():
+		print("Selected folder does not contain supported files")
+
+	for input_type in input_types.keys():
+		if input_type == ".xml":
+			args.push_back("--input-taco-path")
+		elif input_type == ".guildpoint":
+			args.push_back("--input-guildpoint-path")
+		args.push_back(dir)
+
+	args.append_array([
 		"--input-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
 		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
-		"--output-split-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir)
-	]
-	FileHandler.call_xml_converter(args)
-	save_hashes()
-	load_guildpoint_markers(self.map_id)
+		"--split-by-category",
+		"--output-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
+		"--split-by-map-id",
+	])
 
+	var duplicate_categories: Dictionary = FileHandler.call_xml_converter(args)
+	if duplicate_categories.empty():
+		save_hashes()
+		load_guildpoint_markers(self.map_id)
+		return
+
+	var overwrite_confirmation: ConfirmationDialog = $Control/Dialogs/ImportPackDialog/OverwriteConfirm
+	overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + PoolStringArray(duplicate_categories.keys()).join("\n")
+	overwrite_confirmation.popup_centered()
+
+	# Await result of pop up
+	var return_val = overwrite_confirmation.wait_for_confirmation()
+	if typeof(return_val) == TYPE_OBJECT and return_val.is_class("GDScriptFunctionState"):
+		return_val = yield(return_val, "completed")
+	if return_val == true:
+		for category in duplicate_categories.keys():
+			for file in duplicate_categories[category]:
+				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+					FileHandler.delete_file(file)
+		duplicate_categories = FileHandler.call_xml_converter(args)
+		if duplicate_categories.empty():
+			save_hashes()
+			load_guildpoint_markers(self.map_id)
+		else:
+			print("Duplicates could not be resolved.")
 
 func _on_SaveData_pressed():
 	var user_data_dir = str(OS.get_user_data_dir())
 	var args: PoolStringArray = [
 		"--input-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
 		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--split-by-category",
 	]
 	FileHandler.call_xml_converter(args)

@@ -58,7 +58,6 @@ static func find_image_duplicates(file_path: String, destintation_dir: String):
 	var relative_path = find_file_duplicate(destintation_dir, file_name, file_content, "")
 	return relative_path
 
-
 static func copy_file(file_path: String, destination_path: String):
 	var dir = Directory.new()
 	var result = dir.copy(file_path, destination_path)
@@ -66,3 +65,48 @@ static func copy_file(file_path: String, destination_path: String):
 		print("File imported successfully.")
 	else:
 		print("Failed to import file.")
+
+static func delete_file(file_path: String):
+	var dir = Directory.new()
+	var result = dir.remove(file_path)
+	if result != OK:
+		print("Failed to delete file", file_path)
+
+################################################################################
+# merge_dictionaries
+#
+# Helper funtion to merge two dictionaries
+# Duplicates merge() added in Godot 3.5
+################################################################################
+static func merge_dictionaries(dict_1: Dictionary, dict_2: Dictionary) -> Dictionary:
+	if dict_2.empty():
+		return dict_1
+	for key in dict_2.keys():
+		dict_1[key] = dict_2[key]
+	return dict_1
+
+################################################################################
+# check_for_extensions
+#
+# Checks if any files within a directory contain the given extensions
+# This returns a dictionary where the keys can be used like a "set" datatype
+################################################################################
+static func check_for_extensions(directory_path: String, extensions: Array) -> Dictionary:
+	var dir = Directory.new()
+	if dir.open(directory_path) != OK:
+		return {}
+	dir.list_dir_begin(true)
+	var file_name = dir.get_next()
+	var result: Dictionary = {}
+	while file_name != "":
+		if dir.current_is_dir():
+			result = merge_dictionaries(result, check_for_extensions(file_name, extensions))
+		else:
+			for ext in extensions:
+				if file_name.ends_with(ext):
+					if result.has(ext) and result[ext] is Array:
+						result[ext].append(file_name)
+					else:
+						result[ext] = [file_name]
+		file_name = dir.get_next()
+	return result

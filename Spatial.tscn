@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
+[ext_resource path="res://OverwriteConfirm.gd" type="Script" id=4]
 [ext_resource path="res://icon_close.png" type="Texture" id=5]
 [ext_resource path="res://RangeDialog.gd" type="Script" id=6]
 [ext_resource path="res://icon_new_icon.png" type="Texture" id=7]
@@ -192,6 +193,16 @@ mode = 2
 access = 2
 current_dir = ""
 current_path = ""
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="OverwriteConfirm" type="ConfirmationDialog" parent="Control/Dialogs/ImportPackDialog"]
+margin_left = 160.0
+margin_top = 185.0
+margin_right = 490.0
+margin_bottom = 327.0
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -886,6 +897,8 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/AdjustPoints" to="." method="_on_AdjustNodesButton_pressed"]
 [connection signal="dir_selected" from="Control/Dialogs/ImportPackDialog" to="." method="_on_ImportPackDialog_dir_selected"]
 [connection signal="hide" from="Control/Dialogs/ImportPackDialog" to="." method="_on_Dialog_hide"]
+[connection signal="about_to_show" from="Control/Dialogs/ImportPackDialog/OverwriteConfirm" to="Control/Dialogs/ImportPackDialog/OverwriteConfirm" method="_on_OverwriteConfirm_about_to_show"]
+[connection signal="popup_hide" from="Control/Dialogs/ImportPackDialog/OverwriteConfirm" to="Control/Dialogs/ImportPackDialog/OverwriteConfirm" method="_on_OverwriteConfirm_popup_hide"]
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportPath" to="." method="_on_ImportPath_pressed"]
