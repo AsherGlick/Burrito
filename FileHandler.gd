@@ -82,7 +82,10 @@ static func merge_dictionaries(dict_1: Dictionary, dict_2: Dictionary) -> Dictio
 	if dict_2.empty():
 		return dict_1
 	for key in dict_2.keys():
-		dict_1[key] = dict_2[key]
+		if dict_1.has(key) and dict_1[key] is Array:
+			dict_1[key].append(key)
+		else:
+			dict_1[key] = dict_2[key]
 	return dict_1
 
 ################################################################################
