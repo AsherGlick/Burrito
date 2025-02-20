@@ -1137,22 +1137,30 @@ func _on_MarkersUI_item_edited():
 	apply_category_visibility_to_nodes(category_item)
 
 
-func _on_ImportPath_pressed():
-	$Control/Dialogs/ImportPackDialog.show()
+func _on_ImportTaco_pressed():
+	$Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog.show()
 
+func _on_ImportBurrito_pressed():
+	$Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog.show()
 
-func _on_ImportPackDialog_dir_selected(dir):
-	var input_types: Dictionary = FileHandler.check_for_extensions(dir, [".xml", ".guildpoint"])
+enum MarkerPackType {
+	XML,
+	GUILDPOINT,
+}
+
+func _on_ImportBurritoPackDialog_dir_selected(dir: String):
+	test_name(dir, MarkerPackType.GUILDPOINT)
+
+func _on_ImportTacoPackDialog_dir_selected(dir: String):
+	test_name(dir, MarkerPackType.XML)
+
+func test_name(dir: String, type):
 	var args: PoolStringArray
-	if input_types.empty():
-		print("Selected folder does not contain supported files")
-
-	for input_type in input_types.keys():
-		if input_type == ".xml":
-			args.push_back("--input-taco-path")
-		elif input_type == ".guildpoint":
-			args.push_back("--input-guildpoint-path")
-		args.push_back(dir)
+	if type == MarkerPackType.XML:
+		args.push_back("--input-taco-path")
+	elif type == MarkerPackType.GUILDPOINT:
+		args.push_back("--input-guildpoint-path")
+	args.push_back(dir)
 
 	args.append_array([
 		"--input-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
@@ -1168,7 +1176,7 @@ func _on_ImportPackDialog_dir_selected(dir):
 		load_guildpoint_markers(self.map_id)
 		return
 
-	var overwrite_confirmation: ConfirmationDialog = $Control/Dialogs/ImportPackDialog/OverwriteConfirm
+	var overwrite_confirmation: ConfirmationDialog = $Control/Dialogs/ImportPackDialogs/OverwriteConfirm
 	overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + PoolStringArray(duplicate_categories.keys()).join("\n")
 	overwrite_confirmation.popup_centered()
 
