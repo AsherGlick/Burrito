@@ -1,36 +1,36 @@
 <OverlayData>
-    <MarkerCategory Name="parent1" XPos="100" YPos="000" ZPos="000" MapID="50">
-        <MarkerCategory Name="child1" XPos="110" >
-            <MarkerCategory Name="grandchild1" XPos="111" ></MarkerCategory>
-            <MarkerCategory Name="grandchild2" XPos="112" ></MarkerCategory>
-            <MarkerCategory Name="grandchild3" XPos="113" ></MarkerCategory>
+    <MarkerCategory DisplayName="Parent1" Name="parent1" XPos="100" YPos="000" ZPos="000" MapID="50">
+        <MarkerCategory DisplayName="Child1" Name="child1" XPos="110" >
+            <MarkerCategory DisplayName="Grandchild1" Name="grandchild1" XPos="111" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild2" Name="grandchild2" XPos="112" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild3" Name="grandchild3" XPos="113" ></MarkerCategory>
             </MarkerCategory>
-        <MarkerCategory Name="child2" XPos="120" >
-            <MarkerCategory Name="grandchild1" XPos="121" ></MarkerCategory>
-            <MarkerCategory Name="grandchild2" XPos="122" ></MarkerCategory>
-            <MarkerCategory Name="grandchild3" XPos="123" ></MarkerCategory>
+        <MarkerCategory DisplayName="Child2" Name="child2" XPos="120" >
+            <MarkerCategory DisplayName="Grandchild1" Name="grandchild1" XPos="121" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild2" Name="grandchild2" XPos="122" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild3" Name="grandchild3" XPos="123" ></MarkerCategory>
             </MarkerCategory>
-        <MarkerCategory Name="child3" XPos="130" >
-            <MarkerCategory Name="grandchild1" XPos="131" ></MarkerCategory>
-            <MarkerCategory Name="grandchild2" XPos="132" ></MarkerCategory>
-            <MarkerCategory Name="grandchild3" XPos="133" ></MarkerCategory>
+        <MarkerCategory DisplayName="Child3" Name="child3" XPos="130" >
+            <MarkerCategory DisplayName="Grandchild1" Name="grandchild1" XPos="131" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild2" Name="grandchild2" XPos="132" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild3" Name="grandchild3" XPos="133" ></MarkerCategory>
         </MarkerCategory>
     </MarkerCategory>
-    <MarkerCategory Name="parent2" XPos="200" YPos="000" ZPos="000" MapID="50">
-        <MarkerCategory Name="child1" XPos="210" >
-            <MarkerCategory Name="grandchild1" XPos="211" ></MarkerCategory>
-            <MarkerCategory Name="grandchild2" XPos="212" ></MarkerCategory>
-            <MarkerCategory Name="grandchild3" XPos="213" ></MarkerCategory>
+    <MarkerCategory DisplayName="Parent2" Name="parent2" XPos="200" YPos="000" ZPos="000" MapID="50">
+        <MarkerCategory DisplayName="Child1" Name="child1" XPos="210" >
+            <MarkerCategory DisplayName="Grandchild1" Name="grandchild1" XPos="211" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild2" Name="grandchild2" XPos="212" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild3" Name="grandchild3" XPos="213" ></MarkerCategory>
             </MarkerCategory>
-        <MarkerCategory Name="child2" XPos="220" >
-            <MarkerCategory Name="grandchild1" XPos="221" ></MarkerCategory>
-            <MarkerCategory Name="grandchild2" XPos="222" ></MarkerCategory>
-            <MarkerCategory Name="grandchild3" XPos="223" ></MarkerCategory>
+        <MarkerCategory DisplayName="Child2" Name="child2" XPos="220" >
+            <MarkerCategory DisplayName="Grandchild1" Name="grandchild1" XPos="221" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild2" Name="grandchild2" XPos="222" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild3" Name="grandchild3" XPos="223" ></MarkerCategory>
             </MarkerCategory>
-        <MarkerCategory Name="child3" XPos="230" >
-            <MarkerCategory Name="grandchild1" XPos="231" ></MarkerCategory>
-            <MarkerCategory Name="grandchild2" XPos="232" ></MarkerCategory>
-            <MarkerCategory Name="grandchild3" XPos="233" ></MarkerCategory>
+        <MarkerCategory DisplayName="Child3" Name="child3" XPos="230" >
+            <MarkerCategory DisplayName="Grandchild1" Name="grandchild1" XPos="231" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild2" Name="grandchild2" XPos="232" ></MarkerCategory>
+            <MarkerCategory DisplayName="Grandchild3" Name="grandchild3" XPos="233" ></MarkerCategory>
         </MarkerCategory>
     </MarkerCategory>
 

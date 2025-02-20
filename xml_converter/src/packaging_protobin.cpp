@@ -295,15 +295,18 @@ void _category_filter_by_depth(
     int target_depth,
     map<string, StringHierarchy>* category_hierarchy,
     vector<string> parent_name,
+    vector<string> parent_display_name,
     int current_depth) {
     for (auto it = marker_categories->begin(); it != marker_categories->end(); it++) {
         vector<string> child_name = parent_name;
-        child_name.push_back(it->first);
+        vector<string> child_display_name = parent_display_name;
+        child_name.push_back(it->second.name);
+        child_display_name.push_back(normalize(it->second.display_name));
         if (target_depth == current_depth) {
-            (*category_hierarchy)[join(child_name, ".")].add_path(child_name, true);
+            (*category_hierarchy)[join(child_display_name, ".")].add_path(child_name, true);
             continue;
         }
-        _category_filter_by_depth(&(it->second.children), target_depth, category_hierarchy, child_name, current_depth + 1);
+        _category_filter_by_depth(&(it->second.children), target_depth, category_hierarchy, child_name, child_display_name, current_depth + 1);
     }
 }
 
@@ -311,7 +314,7 @@ map<string, StringHierarchy> category_filter_by_depth(
     const map<string, Category>* marker_categories,
     const int split_by_category_depth) {
     map<string, StringHierarchy> category_hierarchy;
-    _category_filter_by_depth(marker_categories, split_by_category_depth, &category_hierarchy, {}, 0);
+    _category_filter_by_depth(marker_categories, split_by_category_depth, &category_hierarchy, {}, {}, 0);
     return category_hierarchy;
 }
 
