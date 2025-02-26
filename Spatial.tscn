@@ -184,8 +184,6 @@ __meta__ = {
 }
 
 [node name="ImportPackDialogs" type="Control" parent="Control/Dialogs"]
-margin_right = 40.0
-margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -196,7 +194,7 @@ margin_top = 36.0
 margin_right = 960.0
 margin_bottom = 534.0
 window_title = "Select a Burrito File or Directory"
-mode = 2
+mode = 3
 access = 2
 current_dir = ""
 current_path = ""
@@ -210,7 +208,7 @@ margin_top = 36.0
 margin_right = 960.0
 margin_bottom = 534.0
 window_title = "Select a Taco File or Directory"
-mode = 2
+mode = 3
 access = 2
 current_dir = ""
 current_path = ""

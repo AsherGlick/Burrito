@@ -65,6 +65,7 @@ const HASH_BY_MAP_ID_FILEPATH: String = "user://hash_by_map_id.json"
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
 onready var markers_2d := $Control/Markers2D as Node2D
+onready var overwrite_confirmation := $Control/Dialogs/ImportPackDialogs/OverwriteConfirm as ConfirmationDialog
 
 # Variables that store informations about ui scaling
 # The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
@@ -1149,12 +1150,12 @@ enum MarkerPackType {
 }
 
 func _on_ImportBurritoPackDialog_dir_selected(dir: String):
-	test_name(dir, MarkerPackType.GUILDPOINT)
+	import_marker_pack(dir, MarkerPackType.GUILDPOINT)
 
 func _on_ImportTacoPackDialog_dir_selected(dir: String):
-	test_name(dir, MarkerPackType.XML)
+	import_marker_pack(dir, MarkerPackType.XML)
 
-func test_name(dir: String, type):
+func import_marker_pack(dir: String, type):
 	var args: PoolStringArray
 	if type == MarkerPackType.XML:
 		args.push_back("--input-taco-path")
@@ -1176,14 +1177,11 @@ func test_name(dir: String, type):
 		load_guildpoint_markers(self.map_id)
 		return
 
-	var overwrite_confirmation: ConfirmationDialog = $Control/Dialogs/ImportPackDialogs/OverwriteConfirm
-	overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + PoolStringArray(duplicate_categories.keys()).join("\n")
-	overwrite_confirmation.popup_centered()
+	self.overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + PoolStringArray(duplicate_categories.keys()).join("\n")
+	self.overwrite_confirmation.popup_centered()
 
 	# Await result of pop up
-	var return_val = overwrite_confirmation.wait_for_confirmation()
-	if typeof(return_val) == TYPE_OBJECT and return_val.is_class("GDScriptFunctionState"):
-		return_val = yield(return_val, "completed")
+	var return_val = yield(self.overwrite_confirmation, "confirmation_result")
 	if return_val == true:
 		for category in duplicate_categories.keys():
 			for file in duplicate_categories[category]:
@@ -1194,7 +1192,7 @@ func test_name(dir: String, type):
 			save_hashes()
 			load_guildpoint_markers(self.map_id)
 		else:
-			print("Duplicates could not be resolved.")
+			push_error("Duplicates could not be resolved.")
 
 func _on_SaveData_pressed():
 	var user_data_dir = str(OS.get_user_data_dir())
