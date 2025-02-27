@@ -65,6 +65,7 @@ const HASH_BY_MAP_ID_FILEPATH: String = "user://hash_by_map_id.json"
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
 onready var markers_2d := $Control/Markers2D as Node2D
+onready var overwrite_confirmation := $Control/Dialogs/ImportPackDialogs/OverwriteConfirm as ConfirmationDialog
 
 # Variables that store informations about ui scaling
 # The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
@@ -1137,27 +1138,67 @@ func _on_MarkersUI_item_edited():
 	apply_category_visibility_to_nodes(category_item)
 
 
-func _on_ImportPath_pressed():
-	$Control/Dialogs/ImportPackDialog.show()
+func _on_ImportTaco_pressed():
+	$Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog.show()
 
+func _on_ImportBurrito_pressed():
+	$Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog.show()
 
-func _on_ImportPackDialog_dir_selected(dir):
-	var user_data_dir = str(OS.get_user_data_dir())
-	var args: PoolStringArray = [
-		"--input-taco-path", dir,
+enum MarkerPackType {
+	XML,
+	GUILDPOINT,
+}
+
+func _on_ImportBurritoPackDialog_dir_selected(dir: String):
+	import_marker_pack(dir, MarkerPackType.GUILDPOINT)
+
+func _on_ImportTacoPackDialog_dir_selected(dir: String):
+	import_marker_pack(dir, MarkerPackType.XML)
+
+func import_marker_pack(dir: String, type):
+	var args: PoolStringArray
+	if type == MarkerPackType.XML:
+		args.push_back("--input-taco-path")
+	elif type == MarkerPackType.GUILDPOINT:
+		args.push_back("--input-guildpoint-path")
+	args.push_back(dir)
+
+	args.append_array([
 		"--input-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
 		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
-		"--output-split-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir)
-	]
-	FileHandler.call_xml_converter(args)
-	save_hashes()
-	load_guildpoint_markers(self.map_id)
+		"--split-by-category",
+		"--output-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
+		"--split-by-map-id",
+	])
 
+	var duplicate_categories: Dictionary = FileHandler.call_xml_converter(args)
+	if duplicate_categories.empty():
+		save_hashes()
+		load_guildpoint_markers(self.map_id)
+		return
+
+	self.overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + PoolStringArray(duplicate_categories.keys()).join("\n")
+	self.overwrite_confirmation.popup_centered()
+
+	# Await result of pop up
+	var return_val = yield(self.overwrite_confirmation, "confirmation_result")
+	if return_val == true:
+		for category in duplicate_categories.keys():
+			for file in duplicate_categories[category]:
+				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+					FileHandler.delete_file(file)
+		duplicate_categories = FileHandler.call_xml_converter(args)
+		if duplicate_categories.empty():
+			save_hashes()
+			load_guildpoint_markers(self.map_id)
+		else:
+			push_error("Duplicates could not be resolved.")
 
 func _on_SaveData_pressed():
 	var user_data_dir = str(OS.get_user_data_dir())
 	var args: PoolStringArray = [
 		"--input-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
 		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--split-by-category",
 	]
 	FileHandler.call_xml_converter(args)

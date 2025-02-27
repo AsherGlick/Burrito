@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
 [ext_resource path="res://burrito.png" type="Texture" id=3]
+[ext_resource path="res://OverwriteConfirm.gd" type="Script" id=4]
 [ext_resource path="res://icon_close.png" type="Texture" id=5]
 [ext_resource path="res://RangeDialog.gd" type="Script" id=6]
 [ext_resource path="res://icon_new_icon.png" type="Texture" id=7]
@@ -182,16 +183,42 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ImportPackDialog" type="FileDialog" parent="Control/Dialogs"]
+[node name="ImportPackDialogs" type="Control" parent="Control/Dialogs"]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImportBurritoPackDialog" type="FileDialog" parent="Control/Dialogs/ImportPackDialogs"]
 margin_left = 289.0
 margin_top = 36.0
 margin_right = 960.0
 margin_bottom = 534.0
-window_title = "Open a Directory"
-mode = 2
+window_title = "Select a Burrito File or Directory"
+mode = 3
 access = 2
 current_dir = ""
 current_path = ""
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImportTacoPackDialog" type="FileDialog" parent="Control/Dialogs/ImportPackDialogs"]
+margin_left = 289.0
+margin_top = 36.0
+margin_right = 960.0
+margin_bottom = 534.0
+window_title = "Select a Taco File or Directory"
+mode = 3
+access = 2
+current_dir = ""
+current_path = ""
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="OverwriteConfirm" type="ConfirmationDialog" parent="Control/Dialogs/ImportPackDialogs"]
+grow_horizontal = 2
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -217,7 +244,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Dialogs/MainMenu/ScrollContainer"]
 margin_right = 220.0
-margin_bottom = 336.0
+margin_bottom = 380.0
 size_flags_horizontal = 3
 
 [node name="LoadTrail" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
@@ -234,12 +261,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ImportPath" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+[node name="ImportTaco" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 52.0
 margin_right = 220.0
 margin_bottom = 92.0
 rect_min_size = Vector2( 0, 40 )
-text = "Import Marker Pack"
+text = "Import Taco Marker Pack"
+
+[node name="ImportBurrito" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
+margin_top = 52.0
+margin_right = 220.0
+margin_bottom = 92.0
+rect_min_size = Vector2( 0, 40 )
+text = "Import Burrito Marker Pack"
 
 [node name="SaveData" type="Button" parent="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer"]
 margin_top = 96.0
@@ -884,11 +918,16 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewTrailPoint" to="." method="_on_NewTrailPoint_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewIcon" to="." method="_on_NewIcon_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/AdjustPoints" to="." method="_on_AdjustNodesButton_pressed"]
-[connection signal="dir_selected" from="Control/Dialogs/ImportPackDialog" to="." method="_on_ImportPackDialog_dir_selected"]
-[connection signal="hide" from="Control/Dialogs/ImportPackDialog" to="." method="_on_Dialog_hide"]
+[connection signal="dir_selected" from="Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog" to="." method="_on_ImportBurritoPackDialog_dir_selected"]
+[connection signal="hide" from="Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog" to="." method="_on_Dialog_hide"]
+[connection signal="dir_selected" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_ImportTacoPackDialog_dir_selected"]
+[connection signal="hide" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_Dialog_hide"]
+[connection signal="about_to_show" from="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" to="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" method="_on_OverwriteConfirm_about_to_show"]
+[connection signal="popup_hide" from="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" to="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" method="_on_OverwriteConfirm_popup_hide"]
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
-[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportPath" to="." method="_on_ImportPath_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportTaco" to="." method="_on_ImportTaco_pressed"]
+[connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportBurrito" to="." method="_on_ImportBurrito_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/SaveData" to="." method="_on_SaveData_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/OpenEditorQuickPanel" to="." method="_on_OpenEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]

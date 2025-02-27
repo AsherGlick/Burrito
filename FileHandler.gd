@@ -58,7 +58,6 @@ static func find_image_duplicates(file_path: String, destintation_dir: String):
 	var relative_path = find_file_duplicate(destintation_dir, file_name, file_content, "")
 	return relative_path
 
-
 static func copy_file(file_path: String, destination_path: String):
 	var dir = Directory.new()
 	var result = dir.copy(file_path, destination_path)
@@ -66,3 +65,9 @@ static func copy_file(file_path: String, destination_path: String):
 		print("File imported successfully.")
 	else:
 		print("Failed to import file.")
+
+static func delete_file(file_path: String):
+	var dir = Directory.new()
+	var result = dir.remove(file_path)
+	if result != OK:
+		print("Failed to delete file", file_path)
