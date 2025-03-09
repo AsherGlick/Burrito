@@ -1,6 +1,6 @@
 const identify_duplicate_categories = preload("res://identify_duplicate_categories.gd")
 
-const converter_executable_path = "./xml_converter/build/xml_converter"
+const converter_executable_path = "./xml_converter"
 
 static func call_xml_converter(args: PoolStringArray) -> Dictionary:
 	var output: Array = []
