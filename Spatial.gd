@@ -941,12 +941,14 @@ func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
 	set_maximal_mouse_block()
 
-func is_any_dialog_visible():
-	for dialog in $Control/Dialogs.get_children():
-		if dialog.visible:
+func is_any_dialog_visible(node = $Control/Dialogs):
+	for dialog in node.get_children():
+		if dialog.get_class() == "Control":
+			if is_any_dialog_visible(dialog):
+				return true
+		elif dialog.visible:
 			return true
 	return false
-
 
 func _on_Dialog_hide():
 	if !is_any_dialog_visible():
