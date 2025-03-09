@@ -1,11 +1,14 @@
 const identify_duplicate_categories = preload("res://identify_duplicate_categories.gd")
 
-const converter_executable_path = "./xml_converter/build/xml_converter"
+const converter_executable_path = "./xml_converter"
 
 static func call_xml_converter(args: PoolStringArray) -> Dictionary:
 	var output: Array = []
+	var path_to_executable: String = converter_executable_path
 	print(args)
-	var result: int = OS.execute(converter_executable_path, args, true, output, true)
+	if OS.has_feature("editor"):
+		path_to_executable += "/build/xml_converter"
+	var result: int = OS.execute(path_to_executable, args, true, output, true)
 	print(output)
 	if result != OK:
 		print("Failed to execute the converter. Error code:", result)

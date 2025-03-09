@@ -1154,8 +1154,14 @@ enum MarkerPackType {
 func _on_ImportBurritoPackDialog_dir_selected(dir: String):
 	import_marker_pack(dir, MarkerPackType.GUILDPOINT)
 
+func _on_ImportBurritoPackDialog_file_selected(path: String):
+	import_marker_pack(path, MarkerPackType.GUILDPOINT)
+
 func _on_ImportTacoPackDialog_dir_selected(dir: String):
 	import_marker_pack(dir, MarkerPackType.XML)
+
+func _on_ImportTacoPackDialog_file_selected(path: String):
+	import_marker_pack(path, MarkerPackType.XML)
 
 func import_marker_pack(dir: String, type):
 	var args: PoolStringArray
