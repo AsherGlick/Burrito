@@ -12,6 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CORE_LIB core_lib)
 
 # Generate Protobuf
+set(Protobuf_USE_STATIC_LIBS ON)
 FIND_PACKAGE(Protobuf REQUIRED)
 INCLUDE_DIRECTORIES(${PROTOBUF_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -27,11 +28,6 @@ add_library(${CORE_LIB} STATIC ${SOURCES} ${PROTO_SRC})
 # Include protobuf libraies.
 target_link_libraries(${CORE_LIB} PUBLIC ${Protobuf_LIBRARIES})
 
-# Include LibZip libraries.
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBZIP REQUIRED libzip)
-target_include_directories(${CORE_LIB} PRIVATE ${LIBZIP_INCLUDE_DIRS})
-target_link_libraries(${CORE_LIB} PRIVATE ${LIBZIP_LIBRARIES})
 
 if(MSVC)
   target_compile_options(${CORE_LIB} PUBLIC /W4 /WX)
@@ -48,6 +44,7 @@ set(TARGET_NAME xml_converter)
 add_executable(${TARGET_NAME} src/xml_converter.cpp)
 target_link_libraries(${TARGET_NAME} ${CORE_LIB})
 
+target_link_options(${TARGET_NAME} PRIVATE -static)
 
 ### TESTS ######################################################################
 set(TEST_TARGET_NAME test_xml_converter)

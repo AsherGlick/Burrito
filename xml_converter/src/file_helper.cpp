@@ -1,9 +1,9 @@
 #include "file_helper.hpp"
 
 #include <dirent.h>
-#include <zip.h>
 
 #include <algorithm>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -14,6 +14,7 @@
 #include <utility>
 #include <vector>
 
+#include "miniz-3.0.2/miniz.hpp"
 #include "string_helper.hpp"
 
 using namespace std;
@@ -136,23 +137,30 @@ vector<MarkerPackFile> get_files_by_suffix(
     }
     // If it is a file, assume it is a zip file and read the zip contents.
     else if (filesystem::is_regular_file(base)) {
-        int error = 0;
-        zip* zip_archive = zip_open(base.c_str(), ZIP_RDONLY, &error);
+        mz_zip_archive zip_archive;
+        memset(&zip_archive, 0, sizeof(zip_archive));
 
-        if (zip_archive == nullptr) {
-            cerr << "Error: could not open the zip archive " << base << ". Got Error code " << error << endl;
+        int status = mz_zip_reader_init_file(&zip_archive, base.c_str(), 0);
+        if (!status) {
+            cerr << "Error: could not open the zip archive " << base << ". Got Error code " << status << endl;
             return files;
         }
 
-        int64_t num_entries = zip_get_num_entries(zip_archive, 0x00);
-        for (int64_t i = 0; i < num_entries; i++) {
-            const char* filename = zip_get_name(zip_archive, i, 0x00);
+        for (unsigned int i = 0; i < mz_zip_reader_get_num_files(&zip_archive); i++) {
+            mz_zip_archive_file_stat file_stat;
 
-            if (has_suffix(filename, suffix)) {
-                MarkerPackFile new_file(base, filename);
+            if (!mz_zip_reader_file_stat(&zip_archive, i, &file_stat)) {
+                cerr << "Error: could not get file stat info in " << base << " for the file at index " << i << endl;
+                continue;
+            }
+
+            if (has_suffix(file_stat.m_filename, suffix)) {
+                MarkerPackFile new_file(base, file_stat.m_filename);
                 files.push_back(new_file);
             }
         }
+
+        mz_zip_reader_end(&zip_archive);
     }
     else {
         cerr << "Error: " << base << " is not a file or directory" << endl;
@@ -192,38 +200,32 @@ unique_ptr<basic_istream<char>> _open_directory_file_for_read(
 unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     const string& zipfile,
     const string& filename) {
-    int error = 0;
-    struct zip* zip_archive = zip_open(zipfile.c_str(), ZIP_RDONLY, &error);
+    mz_zip_archive zip_archive;
+    memset(&zip_archive, 0, sizeof(zip_archive));
 
-    if (zip_archive == nullptr) {
-        cerr << "Error: could not open the zip archive " << zipfile << ". Got Error code " << error << endl;
+    int status = mz_zip_reader_init_file(&zip_archive, zipfile.c_str(), 0);
+
+    if (!status) {
+        cerr << "Error: could not open the zip archive " << zipfile << ". Got Error code " << status << endl;
         return nullptr;
     }
 
-    // Search for the filenname
-    const char* name = filename.c_str();
-    struct zip_stat st;
-    zip_stat_init(&st);
-    zip_stat(zip_archive, name, 0x00, &st);
+    size_t uncomp_size;
+    void* uncomp_data = mz_zip_reader_extract_file_to_heap(&zip_archive, filename.c_str(), &uncomp_size, 0);
 
-    char* contents = new char[st.size];
-    zip_file_t* f = zip_fopen(zip_archive, name, 0x00);
-
-    // Early exit if the file cannot be opened
-    if (f == nullptr) {
+    if (!uncomp_data) {
+        // cerr << "Error: could not open the file " << filename << " inside " << zipfile << endl;
+        mz_zip_reader_end(&zip_archive);
         return nullptr;
     }
-
-    zip_fread(f, contents, st.size);
-    zip_fclose(f);
-    zip_close(zip_archive);
-
-    string sized_contents(contents, st.size);
 
     // Copy the file string into the stringstring and move it into a basic_istream
+    string sized_contents((char*)uncomp_data, uncomp_size);
     unique_ptr<istringstream> string_stream = make_unique<istringstream>(sized_contents, ios_base::in | ios_base::binary);
     unique_ptr<basic_istream<char>> basic_istream_stream(move(string_stream));
-    delete[] contents;
+
+    mz_free(uncomp_data);
+    mz_zip_reader_end(&zip_archive);
 
     return basic_istream_stream;
 }
