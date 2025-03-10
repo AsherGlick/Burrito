@@ -220,7 +220,7 @@ unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     }
 
     // Copy the file string into the stringstring and move it into a basic_istream
-    string sized_contents((char*)uncomp_data, uncomp_size);
+    string sized_contents(reinterpret_cast<char*>(uncomp_data), uncomp_size);
     unique_ptr<istringstream> string_stream = make_unique<istringstream>(sized_contents, ios_base::in | ios_base::binary);
     unique_ptr<basic_istream<char>> basic_istream_stream(move(string_stream));
 
