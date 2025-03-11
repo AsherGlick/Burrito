@@ -140,7 +140,7 @@ vector<MarkerPackFile> get_files_by_suffix(
         mz_zip_archive zip_archive;
         memset(&zip_archive, 0, sizeof(zip_archive));
 
-        int status = mz_zip_reader_init_file(&zip_archive, base.c_str(), 0);
+        mz_bool status = mz_zip_reader_init_file(&zip_archive, base.c_str(), 0);
         if (!status) {
             cerr << "Error: could not open the zip archive " << base << ". Got Error code " << status << endl;
             return files;
@@ -203,7 +203,7 @@ unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     mz_zip_archive zip_archive;
     memset(&zip_archive, 0, sizeof(zip_archive));
 
-    int status = mz_zip_reader_init_file(&zip_archive, zipfile.c_str(), 0);
+    mz_bool status = mz_zip_reader_init_file(&zip_archive, zipfile.c_str(), 0);
 
     if (!status) {
         cerr << "Error: could not open the zip archive " << zipfile << ". Got Error code " << status << endl;
@@ -213,8 +213,7 @@ unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     size_t uncomp_size;
     void* uncomp_data = mz_zip_reader_extract_file_to_heap(&zip_archive, filename.c_str(), &uncomp_size, 0);
 
-    if (!uncomp_data) {
-        // cerr << "Error: could not open the file " << filename << " inside " << zipfile << endl;
+    if (uncomp_data == nullptr) {
         mz_zip_reader_end(&zip_archive);
         return nullptr;
     }
