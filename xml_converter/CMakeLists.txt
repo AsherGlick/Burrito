@@ -44,8 +44,6 @@ set(TARGET_NAME xml_converter)
 add_executable(${TARGET_NAME} src/xml_converter.cpp)
 target_link_libraries(${TARGET_NAME} ${CORE_LIB})
 
-target_link_options(${TARGET_NAME} PRIVATE -static)
-
 ### TESTS ######################################################################
 set(TEST_TARGET_NAME test_xml_converter)
 
