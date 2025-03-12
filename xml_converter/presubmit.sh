@@ -29,7 +29,7 @@ filters=""
 
 echo "cpplint"
 echo "-------"
-cpplint --quiet --recursive --exclude="src/rapidxml-1.13" --filter=${filters} src/
+cpplint --quiet --recursive --exclude="src/rapidxml-1.13" --exclude="src/miniz-3.0.2" --filter=${filters} src/
 if (( $? > 0 )); then
     error_count=`expr $error_count + 1`
 fi
@@ -54,7 +54,7 @@ fi
 # Validate that clang-format would make no changes
 echo "Clang Format"
 echo "------------"
-readarray -d '' FILES < <(find src/ -type f \( -name "*.cpp" -o -name "*.hpp" \) -not -path "*/rapidxml-1.13/*" -print0)
+readarray -d '' FILES < <(find src/ -type f \( -name "*.cpp" -o -name "*.hpp" \) -not -path "*/rapidxml-1.13/*" -not -path "*/miniz-3.0.2/*" -print0)
 clang-format -Werror --dry-run -i "${FILES[@]}"
 if (( $? > 0 )); then
     error_count=`expr $error_count + 1`
