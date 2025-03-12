@@ -414,8 +414,6 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
     expected_only_dirs = set(expected_directories) - set(actual_directories)
     actual_only_dirs = set(actual_directories) - set(expected_directories)
 
-    filetree_diff: List[str] = []
-
     for file in expected_only_files:
         diff_found = True
         print("  |\033[31m-Expected `{}` but did not find the file in the actual output.\033[0m".format(os.path.join(expected_output_dir, file)))
