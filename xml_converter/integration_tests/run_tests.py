@@ -318,10 +318,11 @@ def run_testcase(
         find_and_replace_tokens,
     )
     stderr_diff: List[str] = list(difflib.unified_diff(expected_stderr, stderr, fromfile="Expected stderr", tofile="Actual stderr", lineterm=""))
+    stderr_diff = color_unified_diff(stderr_diff)
     if len_diff(stderr_diff) != 0:
         print(f"  Standard error did not match for test {testcase_display_name}")
         for line in stderr_diff:
-            print("   ", line)
+            print("  |" + line)
         testcase_passed = False
 
     if testcase.expected_returncode is not None and testcase.expected_returncode != returncode:
@@ -335,7 +336,7 @@ def run_testcase(
     if testcase_passed:
         print(f"Success: test {testcase_display_name}")
     else:
-        print(f"Failure: test {testcase_display_name}")
+        print(f"\033[41mFailure\033[0m: test {testcase_display_name}")
 
     return testcase_passed
 
@@ -413,18 +414,20 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
     expected_only_dirs = set(expected_directories) - set(actual_directories)
     actual_only_dirs = set(actual_directories) - set(expected_directories)
 
+    filetree_diff: List[str] = []
+
     for file in expected_only_files:
         diff_found = True
-        print("-Expected `{}` but did not find the file in the actual output.".format(os.path.join(expected_output_dir, file)))
+        print("  |\033[31m-Expected `{}` but did not find the file in the actual output.\033[0m".format(os.path.join(expected_output_dir, file)))
     for file in actual_only_files:
         diff_found = True
-        print("+Unexpected file `{}` found in the actual output.".format(os.path.join(actual_output_dir, file)))
+        print("  |\033[32m+Unexpected file `{}` found in the actual output.\033[0m".format(os.path.join(actual_output_dir, file)))
     for directory in expected_only_dirs:
         diff_found = True
-        print("-Expected `{}` but did not find the dir in the actual output.".format(os.path.join(expected_output_dir, directory)))
+        print("  |\033[31m-Expected `{}` but did not find the dir in the actual output.\033[0m".format(os.path.join(expected_output_dir, directory)))
     for directory in actual_only_dirs:
         diff_found = True
-        print("+Unexpected dir `{}` found in the actual output.".format(os.path.join(actual_output_dir, directory)))
+        print("  |\033[32m+Unexpected dir `{}` found in the actual output.\033[0m".format(os.path.join(actual_output_dir, directory)))
 
     files_to_diff = set.intersection(set(expected_files), set(actual_files))
 
@@ -435,7 +438,7 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
         diff: List[str]
         if file_to_diff.endswith(".xml"):
             diff = compare_text_files(expected_file, actual_file)
-        elif file_to_diff.endswith(".data") or file_to_diff.endswith(".bin") or file_to_diff.endswith(".guildp"):
+        elif file_to_diff.endswith(".guildpoint"):
             diff = compare_protos(actual_file, expected_file)
         elif file_to_diff.endswith(".trl"):
             diff = []
@@ -450,7 +453,7 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
             diff_found = True
             print("  Output was incorrect for test")
             for line in color_unified_diff(diff):
-                print("   ", line)
+                print("  |" + line)
 
     return not diff_found
 
