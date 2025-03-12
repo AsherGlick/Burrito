@@ -10,6 +10,7 @@ from src.testcase_loader import load_testcases, Testcase
 import shutil
 from src.proto_utils import compare_protos, compare_binary_file
 import zipfile
+from src.trail_utils import compare_trails
 
 # Path to compiled C++ executable
 xml_converter_binary_path: str = "../build/xml_converter"
@@ -439,9 +440,7 @@ def diff_dirs(actual_output_dir: str, expected_output_dir: str) -> bool:
         elif file_to_diff.endswith(".guildpoint"):
             diff = compare_protos(actual_file, expected_file)
         elif file_to_diff.endswith(".trl"):
-            diff = []
-            if not compare_binary_file(actual_file, expected_file):
-                diff = ['{} and {} Files Differ'.format(actual_file, expected_file)]
+            diff = compare_trails(actual_file, expected_file)
         else:
             diff = []
             if not compare_binary_file(actual_file, expected_file):
