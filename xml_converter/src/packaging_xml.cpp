@@ -202,7 +202,6 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
 
             trail->init_from_xml(node, errors, state);
 
-
             vector<Attribute::TrailData::XYZ> trail_data = trail->trail_data.points;
 
             auto sequence_start = trail_data.begin();
@@ -228,7 +227,6 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
             else {
                 markers.push_back(trail);
             }
-
         }
         else {
             errors->push_back(new XMLNodeNameError("Unknown POIs node name", node));
