@@ -107,6 +107,10 @@ jobs:
           cmake ..
           make
 
+      - name: Build ArcDPS Addon
+        run: |
+          cp burrito_link/build/d3d11.dll burrito_link/build/arcdps_burrito_link.dll
+
       - name: Upload Standalone Executable Burrito Link
         uses: actions/upload-artifact@v4
         with:
@@ -119,7 +123,16 @@ jobs:
         with:
           name: burrito_link_dll
           path: burrito_link/build/d3d11.dll
-          if-no-files-found: error 
+          if-no-files-found: error
+
+      - name: ArcDPS Addon Burrito Link
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcdps_burrito_link_dll
+          path: burrito_link/build/arcdps_burrito_link.dll
+          if-no-files-found: error
+
+
 
   Build-BurritoFG-Linux:
     runs-on: ubuntu-20.04
@@ -256,12 +269,17 @@ jobs:
         with:
           name: burrito_link_dll
 
+      - name: Download ArcDPS Addon Burrito Link
+        uses: actions/download-artifact@v4
+        with:
+          name: arcdps_burrito_link_dll
 
       - name: Move Burrito Link
         run: |
           mkdir burrito_link/
           mv burrito_link.exe burrito_link/
           mv d3d11.dll burrito_link/
+          mv arcdps_burrito_link.dll burrito_link/
 
       - uses: actions/upload-artifact@v4
         with:
