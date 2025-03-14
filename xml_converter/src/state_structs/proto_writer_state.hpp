@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 namespace Attribute::Image {
 class Image;
