@@ -1,0 +1,8 @@
+<OverlayData>
+    <MarkerCategory DisplayName="My Category" Name="mycategory">
+    </MarkerCategory>
+
+    <POIs>
+        <Trail TrailData="trail.trl" Type="mycategory" />
+    </POIs>
+</OverlayData>
