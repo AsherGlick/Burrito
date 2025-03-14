@@ -17,11 +17,16 @@ class TrailData;
 }
 
 namespace Attribute::TrailData {
+
+struct XYZ {
+    float x;
+    float y;
+    float z;
+};
+
 class TrailData {
  public:
-    std::vector<float> points_x;
-    std::vector<float> points_y;
-    std::vector<float> points_z;
+    std::vector<XYZ> points;
 };
 
 void from_xml_attribute(
