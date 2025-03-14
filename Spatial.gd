@@ -565,11 +565,7 @@ func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: 
 		category_name = "No Name"
 	category_item.set_text(0, category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
-	# TODO 214: The format for the category name stored here is a/b/c. 
-	# This could be changed to some UUID.
-	godot_category3d.name = category_name
-	var relative_path: String = self.markers_3d.get_path_to(godot_category3d)
-	category_item.set_checked(1, Settings.local_category_data.get(relative_path, {}).get("checked", false))
+	category_item.set_checked(1, Settings.local_category_data.get(Marshalls.raw_to_base64(category_data.guildpoint_category.get_id()), {}).get("checked", false))
 	category_item.set_tooltip(1, "Show/Hide")
 	category_item.set_editable(1, true)
 	category_item.set_collapsed(collapsed)
@@ -593,9 +589,7 @@ func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
 	var category_data = category_item.get_metadata(0)
 	var relative_path: String = self.markers_3d.get_path_to(category_data.category3d)
-	# TODO 214: The format for the category name stored here is a/b/c.
-	# This could be changed to some UUID.
-	Settings.local_category_data[relative_path] = {
+	Settings.local_category_data[Marshalls.raw_to_base64(category_data.guildpoint_category.get_id())] = {
 		"checked" : category_item.is_checked(1),
 	}
 	Settings.save()
