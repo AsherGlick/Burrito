@@ -30,21 +30,25 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     Color* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const Color* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     uint32_t input,
     ProtoReaderState* state,
     Color* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     Color value,
     ProtoWriterState* state,
-    std::function<void(uint32_t)> setter);
+    std::function<void(uint32_t)> setter
+);
 }  // namespace Attribute::Color

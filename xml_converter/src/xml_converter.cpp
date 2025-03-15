@@ -36,7 +36,8 @@ using namespace std;
 map<string, vector<string>> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     map<string, vector<string>> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
@@ -58,7 +59,8 @@ map<string, vector<string>> read_taco_directory(
 map<string, vector<string>> read_burrito_directory(
     string input_path,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     map<string, vector<string>> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
@@ -80,7 +82,8 @@ map<string, vector<string>> read_burrito_directory(
 void write_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     if (!filesystem::is_directory(input_path)) {
         if (!filesystem::create_directory(input_path)) {
@@ -96,7 +99,8 @@ void write_burrito_directory(
     bool split_by_map_id,
     OptionalInt split_by_category_depth,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     if (!filesystem::is_directory(input_path)) {
         if (!filesystem::create_directory(input_path)) {
             cout << "Error: " << input_path << "is not a valid directory path" << endl;
@@ -145,7 +149,8 @@ void process_data(ParsedArguments parsed_arguments) {
         map<string, vector<string>> top_level_category_file_locations = read_taco_directory(
             marker_pack_config[i].path,
             &marker_categories,
-            &parsed_pois);
+            &parsed_pois
+        );
         for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
             top_level_category_file_locations_by_pack[it->first].push_back(it->second);
         }
@@ -166,7 +171,8 @@ void process_data(ParsedArguments parsed_arguments) {
         map<string, vector<string>> top_level_category_file_locations = read_burrito_directory(
             marker_pack_config[i].path,
             &marker_categories,
-            &parsed_pois);
+            &parsed_pois
+        );
         for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
             top_level_category_file_locations_by_pack[it->first].push_back(it->second);
         }

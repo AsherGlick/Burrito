@@ -39,22 +39,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     MountFilter* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const MountFilter* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::MountFilter input,
     ProtoReaderState* state,
     MountFilter* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     MountFilter value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::MountFilter*)> setter);
+    std::function<void(guildpoint::MountFilter*)> setter
+);
 
 }  // namespace Attribute::MountFilter

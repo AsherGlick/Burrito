@@ -28,7 +28,8 @@ void Attribute::TrailData::from_xml_attribute(
     TrailData* value,
     bool* is_set,
     int* map_id_value,
-    bool* is_map_id_set) {
+    bool* is_map_id_set
+) {
     TrailData trail_data;
     string trail_data_relative_path = get_attribute_value(input);
     if (state->marker_pack_root_directory == "") {
@@ -104,7 +105,8 @@ void Attribute::TrailData::to_xml_attribute(
     const TrailData* value,
     const int* map_id_value,
     const bool* is_map_id_set,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     size_t byte_array_size = sizeof(int) + sizeof(uint32_t) + value->points.size() * 3 * sizeof(float);
     unsigned char* byte_array = new unsigned char[byte_array_size];
 
@@ -154,7 +156,8 @@ void Attribute::TrailData::from_proto_field(
     guildpoint::TrailData input,
     ProtoReaderState*,
     TrailData* value,
-    bool* is_set) {
+    bool* is_set
+) {
     TrailData trail_data;
 
     // TODO: Validate the size
@@ -181,7 +184,8 @@ void Attribute::TrailData::from_proto_field(
 void Attribute::TrailData::to_proto_field(
     TrailData value,
     ProtoWriterState*,
-    std::function<void(guildpoint::TrailData*)> setter) {
+    std::function<void(guildpoint::TrailData*)> setter
+) {
     guildpoint::TrailData* trail_data = new guildpoint::TrailData();
 
     size_t size = value.points.size();

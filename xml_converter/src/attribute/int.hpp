@@ -19,22 +19,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     int* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const int* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     int input,
     ProtoReaderState* state,
     int* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     int value,
     ProtoWriterState* state,
-    std::function<void(int&)> setter);
+    std::function<void(int&)> setter
+);
 
 }  // namespace Attribute::Int

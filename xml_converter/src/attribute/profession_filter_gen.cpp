@@ -17,7 +17,8 @@ void Attribute::ProfessionFilter::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     ProfessionFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     ProfessionFilter profession_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -72,7 +73,8 @@ void Attribute::ProfessionFilter::from_xml_attribute(
 void Attribute::ProfessionFilter::to_xml_attribute(
     XMLWriterState*,
     const ProfessionFilter* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     vector<string> flag_values;
     if (value->guardian == true) {
         flag_values.push_back("guardian");
@@ -109,7 +111,8 @@ void Attribute::ProfessionFilter::from_proto_field(
     guildpoint::ProfessionFilter input,
     ProtoReaderState*,
     ProfessionFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     ProfessionFilter profession_filter;
     profession_filter.guardian = input.guardian();
     profession_filter.warrior = input.warrior();
@@ -127,7 +130,8 @@ void Attribute::ProfessionFilter::from_proto_field(
 void Attribute::ProfessionFilter::to_proto_field(
     ProfessionFilter value,
     ProtoWriterState*,
-    std::function<void(guildpoint::ProfessionFilter*)> setter) {
+    std::function<void(guildpoint::ProfessionFilter*)> setter
+) {
     guildpoint::ProfessionFilter* proto_profession_filter = new guildpoint::ProfessionFilter();
     bool should_write = false;
     proto_profession_filter->set_guardian(value.guardian);

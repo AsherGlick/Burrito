@@ -17,7 +17,8 @@ void Attribute::UniqueId::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState*,
     UniqueId* value,
-    bool* is_set) {
+    bool* is_set
+) {
     string base64;
     base64 = get_attribute_value(input);
     std::vector<uint8_t> guid = base64_decode(base64);
@@ -33,7 +34,8 @@ void Attribute::UniqueId::from_xml_attribute(
 void Attribute::UniqueId::to_xml_attribute(
     XMLWriterState*,
     const UniqueId* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     setter(base64_encode(&(value->guid[0]), value->guid.size()));
 }
 
@@ -46,7 +48,8 @@ void Attribute::UniqueId::from_proto_field(
     std::string input,
     ProtoReaderState*,
     UniqueId* value,
-    bool* is_set) {
+    bool* is_set
+) {
     UniqueId unique_id;
     std::vector<uint8_t> guid(input.begin(), input.end());
     unique_id.guid = guid;
@@ -62,6 +65,7 @@ void Attribute::UniqueId::from_proto_field(
 void Attribute::UniqueId::to_proto_field(
     UniqueId value,
     ProtoWriterState*,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     setter(std::string(value.guid.begin(), value.guid.end()));
 }

@@ -38,22 +38,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     ProfessionFilter* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const ProfessionFilter* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::ProfessionFilter input,
     ProtoReaderState* state,
     ProfessionFilter* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     ProfessionFilter value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::ProfessionFilter*)> setter);
+    std::function<void(guildpoint::ProfessionFilter*)> setter
+);
 
 }  // namespace Attribute::ProfessionFilter

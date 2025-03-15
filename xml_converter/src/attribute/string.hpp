@@ -19,23 +19,27 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     std::string* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const std::string* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     std::string input,
     ProtoReaderState* state,
     std::string* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     std::string value,
     ProtoWriterState* state,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 }  // namespace Attribute::String
 
 namespace Attribute::NameAndDisplayname {
@@ -48,13 +52,15 @@ void from_proto_field(
     std::string* display_name,
     bool* is_display_name_set,
     std::string* name,
-    bool* is_name_set);
+    bool* is_name_set
+);
 
 void to_proto_field(
     std::string input,
     ProtoWriterState* state,
     std::function<void(std::string)> setter,
     const std::string* name,
-    const bool* is_name_set);
+    const bool* is_name_set
+);
 
 }  // namespace Attribute::NameAndDisplayname

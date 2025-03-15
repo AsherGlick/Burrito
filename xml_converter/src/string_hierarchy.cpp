@@ -8,7 +8,8 @@
 // Returns if a particular node exists at the top level of the hirearchy.
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::in_hierarchy(
-    const std::string &node) const {
+    const std::string &node
+) const {
     if (this->all_children_included) {
         return true;
     }
@@ -26,7 +27,8 @@ bool StringHierarchy::in_hierarchy(
 // Returns if the given path is in the hierarchy or not
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::in_hierarchy(
-    const std::vector<std::string> &path) const {
+    const std::vector<std::string> &path
+) const {
     return this->_in_hierarchy(path, 0);
 }
 
@@ -37,7 +39,8 @@ bool StringHierarchy::in_hierarchy(
 // ambiguity between the vector and string overloads of the function.
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::in_hierarchy(
-    const std::initializer_list<std::string> &input) const {
+    const std::initializer_list<std::string> &input
+) const {
     std::vector<std::string> vec;
     vec.insert(vec.end(), input.begin(), input.end());
     return this->in_hierarchy(vec);
@@ -51,7 +54,8 @@ bool StringHierarchy::in_hierarchy(
 ////////////////////////////////////////////////////////////////////////////////
 bool StringHierarchy::_in_hierarchy(
     const std::vector<std::string> &path,
-    const size_t continue_index) const {
+    const size_t continue_index
+) const {
     // If all children of this hierarchy node are included then this path exists.
     if (this->all_children_included) {
         return true;
@@ -76,7 +80,8 @@ bool StringHierarchy::_in_hierarchy(
 // A helper function to grab a sub hierarchy one level down from the top.
 ////////////////////////////////////////////////////////////////////////////////
 const StringHierarchy *StringHierarchy::sub_hierarchy(
-    const std::string &node) const {
+    const std::string &node
+) const {
     if (this->all_children_included) {
         return this;
     }
@@ -95,7 +100,8 @@ const StringHierarchy *StringHierarchy::sub_hierarchy(
 // prevent ambiguity between the vector and string overloads of the function.
 ////////////////////////////////////////////////////////////////////////////////
 const StringHierarchy *StringHierarchy::sub_hierarchy(
-    const std::initializer_list<std::string> &input) const {
+    const std::initializer_list<std::string> &input
+) const {
     std::vector<std::string> vec;
     vec.insert(vec.end(), input.begin(), input.end());
     return this->sub_hierarchy(vec);
@@ -109,7 +115,8 @@ const StringHierarchy *StringHierarchy::sub_hierarchy(
 // anyways and does not want to keep track of the parent's values.
 ////////////////////////////////////////////////////////////////////////////////
 const StringHierarchy *StringHierarchy::sub_hierarchy(
-    const std::vector<std::string> &path) const {
+    const std::vector<std::string> &path
+) const {
     const StringHierarchy *sub_hierarchy = this;
     for (size_t i = 0; i < path.size(); i++) {
         sub_hierarchy = sub_hierarchy->sub_hierarchy(path[i]);
@@ -128,11 +135,13 @@ const StringHierarchy *StringHierarchy::sub_hierarchy(
 ////////////////////////////////////////////////////////////////////////////////
 void StringHierarchy::add_path(
     const std::vector<std::string> &path,
-    const bool include_all_chidren) {
+    const bool include_all_chidren
+) {
     return this->_add_path(
         path,
         include_all_chidren,
-        0);
+        0
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +152,8 @@ void StringHierarchy::add_path(
 void StringHierarchy::_add_path(
     const std::vector<std::string> &path,
     const bool include_all_chidren,
-    const size_t continue_index) {
+    const size_t continue_index
+) {
     // If all children are already included no need to specify any more children.
     if (this->all_children_included) {
         return;
@@ -161,5 +171,6 @@ void StringHierarchy::_add_path(
     this->children[path[continue_index]]._add_path(
         path,
         include_all_chidren,
-        continue_index + 1);
+        continue_index + 1
+    );
 }

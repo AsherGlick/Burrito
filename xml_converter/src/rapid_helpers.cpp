@@ -157,7 +157,8 @@ XMLAttributeNameError::XMLAttributeNameError(string message, rapidxml::xml_attri
         attribute->document()->source,
         attribute->document()->source_name,
         attribute->name(),
-        attribute->name_size());
+        attribute->name_size()
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +170,8 @@ XMLAttributeValueError::XMLAttributeValueError(string message, rapidxml::xml_att
         attribute->document()->source,
         attribute->document()->source_name,
         attribute->value(),
-        attribute->value_size());
+        attribute->value_size()
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,5 +183,6 @@ XMLNodeNameError::XMLNodeNameError(string message, rapidxml::xml_node<>* node) {
         node->document()->source,
         node->document()->source_name,
         node->name(),
-        node->name_size());
+        node->name_size()
+    );
 }

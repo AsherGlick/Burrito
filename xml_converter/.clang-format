@@ -2,7 +2,7 @@
 Language: Cpp  # Validate C++
 # BasedOnStyle:  Google
 AccessModifierOffset: -3  # With a tab indent of 4 spaces this equals a 1 space access modifier indent
-AlignAfterOpenBracket: AlwaysBreak  # Should be `BlockIndent` when it begins to work
+AlignAfterOpenBracket: BlockIndent
 AlignConsecutiveMacros: false
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
