@@ -168,6 +168,7 @@ void process_data(ParsedArguments parsed_arguments) {
         for (map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
             top_level_category_file_locations_by_pack[it->first].push_back(it->second.second);
             id_to_display_name[it->first] = it->second.first;
+        }
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
