@@ -1,6 +1,5 @@
 #include "packaging_xml.hpp"
 
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -19,19 +18,19 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////// SERIALIZE ///////////////////////////////////
+///////////////////////////////// DESERIALIZE //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
-Category* parse_marker_categories(
+static unsigned int UNKNOWN_CATEGORY_COUNTER = 0;
+static Category* parse_marker_categories(
     rapidxml::xml_node<>* node,
     map<string, Category>* marker_categories,
     Category* parent,
     vector<XMLError*>* errors,
     XMLReaderState* state,
-    int depth = 0) {
+    int depth = 0
+) {
     string name;
-
     if (get_node_name(node) == "MarkerCategory") {
         rapidxml::xml_attribute<>* name_attribute = find_attribute(node, "name");
         if (name_attribute == 0) {
@@ -106,10 +105,11 @@ Category* parse_marker_categories(
 // Gets the hirearchy of categories that this node references as its "type" so
 // that the defaults of those categories can be used when creating the new node.
 ////////////////////////////////////////////////////////////////////////////////
-vector<Category*> get_categories(
+static vector<Category*> get_categories(
     rapidxml::xml_node<>* node,
     map<string, Category>* marker_categories,
-    vector<XMLError*>* errors) {
+    vector<XMLError*>* errors
+) {
     vector<Category*> categories;
 
     rapidxml::xml_attribute<>* attribute = find_attribute(node, "type");
@@ -142,12 +142,16 @@ vector<Category*> get_categories(
     return categories;
 }
 
+static bool is_zero(Attribute::TrailData::XYZ point) {
+    return point.x == 0 && point.y == 0 && point.z == 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // parse_pois
 //
 // Parse the <POIs> xml block into an in-memory array of Markers.
 ////////////////////////////////////////////////////////////////////////////////
-vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors, XMLReaderState* state) {
+static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Category>* marker_categories, vector<XMLError*>* errors, XMLReaderState* state) {
     vector<Parseable*> markers;
 
     // A new error array to ignore the parsing erorrs that would have already
@@ -165,7 +169,8 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
                     icon->init_xml_attribute(
                         categories[category_index]->icon_attributes[i],
                         &ignored_errors,
-                        state);
+                        state
+                    );
                 }
             }
 
@@ -182,12 +187,38 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
                     trail->init_xml_attribute(
                         categories[category_index]->trail_attributes[i],
                         &ignored_errors,
-                        state);
+                        state
+                    );
                 }
             }
 
             trail->init_from_xml(node, errors, state);
-            markers.push_back(trail);
+
+            vector<Attribute::TrailData::XYZ> trail_data = trail->trail_data.points;
+
+            auto sequence_start = trail_data.begin();
+            for (auto i = trail_data.begin(); i != trail_data.end(); i++) {
+                if (is_zero(*i)) {
+                    if (sequence_start != i) {
+                        Trail* partial_trail = new Trail(*trail);
+                        partial_trail->trail_data.points = vector<Attribute::TrailData::XYZ>(sequence_start, i);
+                        markers.push_back(partial_trail);
+                    }
+                    sequence_start = i + 1;
+                }
+            }
+
+            // If we had any early splits then we need to truncate the remaining data.
+            if (sequence_start != trail_data.begin()) {
+                // If there is no data remaining to trunkate, because we had trailing zeros, then dont add an empty trail.
+                if (sequence_start != trail_data.end()) {
+                    trail->trail_data.points = vector<Attribute::TrailData::XYZ>(sequence_start, trail_data.end());
+                    markers.push_back(trail);
+                }
+            }
+            else {
+                markers.push_back(trail);
+            }
         }
         else {
             errors->push_back(new XMLNodeNameError("Unknown POIs node name", node));
@@ -204,7 +235,8 @@ vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string, Categ
 set<Category*> parse_xml_file(
     const MarkerPackFile& xml_filepath,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     vector<XMLError*> errors;
 
     unique_ptr<basic_istream<char>> infile = open_file_for_read(xml_filepath);
@@ -252,7 +284,7 @@ set<Category*> parse_xml_file(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////// DESERIALIZE //////////////////////////////////
+////////////////////////////////// SERIALIZE ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 void write_xml_file(const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
     ofstream outfile;

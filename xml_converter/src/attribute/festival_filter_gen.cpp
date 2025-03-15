@@ -17,7 +17,8 @@ void Attribute::FestivalFilter::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     FestivalFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     FestivalFilter festival_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -67,7 +68,8 @@ void Attribute::FestivalFilter::from_xml_attribute(
 void Attribute::FestivalFilter::to_xml_attribute(
     XMLWriterState*,
     const FestivalFilter* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     vector<string> flag_values;
     if (value->dragonbash == true) {
         flag_values.push_back("dragonbash");
@@ -98,7 +100,8 @@ void Attribute::FestivalFilter::from_proto_field(
     guildpoint::FestivalFilter input,
     ProtoReaderState*,
     FestivalFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     FestivalFilter festival_filter;
     festival_filter.dragonbash = input.dragonbash();
     festival_filter.festival_of_the_four_winds = input.festival_of_the_four_winds();
@@ -114,7 +117,8 @@ void Attribute::FestivalFilter::from_proto_field(
 void Attribute::FestivalFilter::to_proto_field(
     FestivalFilter value,
     ProtoWriterState*,
-    std::function<void(guildpoint::FestivalFilter*)> setter) {
+    std::function<void(guildpoint::FestivalFilter*)> setter
+) {
     guildpoint::FestivalFilter* proto_festival_filter = new guildpoint::FestivalFilter();
     bool should_write = false;
     proto_festival_filter->set_dragonbash(value.dragonbash);

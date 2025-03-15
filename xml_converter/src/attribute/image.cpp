@@ -28,7 +28,8 @@ void Attribute::Image::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState* state,
     Image* value,
-    bool* is_set) {
+    bool* is_set
+) {
     Image image(state->marker_pack_root_directory, get_attribute_value(input));
     *value = image;
     *is_set = true;
@@ -42,7 +43,8 @@ void Attribute::Image::from_xml_attribute(
 void Attribute::Image::to_xml_attribute(
     XMLWriterState* state,
     const Image* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     MarkerPackFile output_path = MarkerPackFile(state->marker_pack_root_directory, value->filepath.relative_filepath);
     copy_file(value->filepath, output_path);
     setter(value->filepath.relative_filepath);
@@ -57,7 +59,8 @@ void Attribute::Image::from_proto_field(
     unsigned int input,
     ProtoReaderState* state,
     Image* value,
-    bool* is_set) {
+    bool* is_set
+) {
     Image image(state->marker_pack_root_directory, state->textures[input].filepath());
     *value = image;
     *is_set = true;
@@ -72,7 +75,8 @@ void Attribute::Image::from_proto_field(
 void Attribute::Image::to_proto_field(
     const Image& value,
     ProtoWriterState* state,
-    std::function<void(unsigned int)> setter) {
+    std::function<void(unsigned int)> setter
+) {
     // Get the texture index or create a new one
     uint32_t texture_index = 0;
     auto file_map_lookup = state->texture_path_to_textures_index.find(value.filepath.tmp_get_path());

@@ -16,7 +16,8 @@ void Attribute::Position::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState*,
     Position* value,
-    bool* is_set) {
+    bool* is_set
+) {
     Position position;
     vector<string> compound_values;
     string attributename;
@@ -38,7 +39,8 @@ void Attribute::Position::from_proto_field(
     guildpoint::Position input,
     ProtoReaderState*,
     Position* value,
-    bool* is_set) {
+    bool* is_set
+) {
     Position position;
     position.x_position = input.x();
     position.y_position = input.y();
@@ -50,7 +52,8 @@ void Attribute::Position::from_proto_field(
 void Attribute::Position::to_proto_field(
     Position value,
     ProtoWriterState*,
-    std::function<void(guildpoint::Position*)> setter) {
+    std::function<void(guildpoint::Position*)> setter
+) {
     guildpoint::Position* proto_position = new guildpoint::Position();
     proto_position->set_x(value.x_position);
     proto_position->set_y(value.y_position);

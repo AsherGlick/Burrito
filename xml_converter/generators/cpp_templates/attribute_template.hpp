@@ -44,30 +44,35 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     {{class_name}}* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const {{class_name}}* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 {% if exclude_from_protobuf == false %}
 
     void from_proto_field(
         {{proto_field_cpp_type}} input,
         ProtoReaderState* state,
         {{class_name}}* value,
-        bool* is_set);
+        bool* is_set
+    );
 
     {% if type == "Enum" %}
         void to_proto_field(
             {{class_name}} value,
             ProtoWriterState* state,
-            std::function<void({{proto_field_cpp_type}})> setter);
+            std::function<void({{proto_field_cpp_type}})> setter
+        );
     {% else %}
         void to_proto_field(
             {{class_name}} value,
             ProtoWriterState* state,
-            std::function<void({{proto_field_cpp_type}}*)> setter);
+            std::function<void({{proto_field_cpp_type}}*)> setter
+        );
     {% endif %}
 {% endif %}
 

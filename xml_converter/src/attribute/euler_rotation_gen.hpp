@@ -32,22 +32,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     EulerRotation* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const EulerRotation* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::EulerRotation input,
     ProtoReaderState* state,
     EulerRotation* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     EulerRotation value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::EulerRotation*)> setter);
+    std::function<void(guildpoint::EulerRotation*)> setter
+);
 
 }  // namespace Attribute::EulerRotation

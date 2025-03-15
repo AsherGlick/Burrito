@@ -31,11 +31,13 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     ResetBehavior* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const ResetBehavior* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 }  // namespace Attribute::ResetBehavior

@@ -28,7 +28,7 @@ jobs:
   # This workflow contains a single job called "build"
   Build-XMLConverter-Linux:
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -92,7 +92,7 @@ jobs:
           if-no-files-found: error 
 
   Build-BurritoLink-Linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -107,6 +107,10 @@ jobs:
           cmake ..
           make
 
+      - name: Build ArcDPS Addon
+        run: |
+          cp burrito_link/build/d3d11.dll burrito_link/build/arcdps_burrito_link.dll
+
       - name: Upload Standalone Executable Burrito Link
         uses: actions/upload-artifact@v4
         with:
@@ -119,10 +123,19 @@ jobs:
         with:
           name: burrito_link_dll
           path: burrito_link/build/d3d11.dll
-          if-no-files-found: error 
+          if-no-files-found: error
+
+      - name: ArcDPS Addon Burrito Link
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcdps_burrito_link_dll
+          path: burrito_link/build/arcdps_burrito_link.dll
+          if-no-files-found: error
+
+
 
   Build-BurritoFG-Linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -140,7 +153,7 @@ jobs:
           if-no-files-found: error 
 
   Build-TacoParser-Linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -158,7 +171,7 @@ jobs:
           if-no-files-found: error 
 
   Build-BurritoUI-Linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -218,7 +231,7 @@ jobs:
           if-no-files-found: error
 
   Package-Burrito-Linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - Build-XMLConverter-Linux
       - Build-BurritoLink-Linux
@@ -256,12 +269,17 @@ jobs:
         with:
           name: burrito_link_dll
 
+      - name: Download ArcDPS Addon Burrito Link
+        uses: actions/download-artifact@v4
+        with:
+          name: arcdps_burrito_link_dll
 
       - name: Move Burrito Link
         run: |
           mkdir burrito_link/
           mv burrito_link.exe burrito_link/
           mv d3d11.dll burrito_link/
+          mv arcdps_burrito_link.dll burrito_link/
 
       - uses: actions/upload-artifact@v4
         with:

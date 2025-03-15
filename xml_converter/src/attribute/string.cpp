@@ -20,7 +20,8 @@ void Attribute::String::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState*,
     string* value,
-    bool* is_set) {
+    bool* is_set
+) {
     *value = get_attribute_value(input);
     *is_set = true;
 }
@@ -33,7 +34,8 @@ void Attribute::String::from_xml_attribute(
 void Attribute::String::to_xml_attribute(
     XMLWriterState*,
     const string* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     setter(*value);
 }
 
@@ -46,7 +48,8 @@ void Attribute::String::from_proto_field(
     string input,
     ProtoReaderState*,
     string* value,
-    bool* is_set) {
+    bool* is_set
+) {
     *value = input;
     *is_set = true;
 }
@@ -59,7 +62,8 @@ void Attribute::String::from_proto_field(
 void Attribute::String::to_proto_field(
     std::string value,
     ProtoWriterState*,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     setter(value);
 }
 
@@ -69,7 +73,8 @@ void Attribute::NameAndDisplayname::from_proto_field(
     std::string* display_name,
     bool* is_display_name_set,
     std::string* name,
-    bool* is_name_set) {
+    bool* is_name_set
+) {
     *display_name = input;
     *is_display_name_set = true;
     *name = normalize(input);
@@ -81,6 +86,7 @@ void Attribute::NameAndDisplayname::to_proto_field(
     ProtoWriterState*,
     std::function<void(std::string)> setter,
     const std::string* name,
-    const bool* is_name_set) {
+    const bool* is_name_set
+) {
     setter(value);
 }

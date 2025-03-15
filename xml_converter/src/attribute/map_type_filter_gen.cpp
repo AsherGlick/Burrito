@@ -17,7 +17,8 @@ void Attribute::MapTypeFilter::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     MapTypeFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     MapTypeFilter map_type_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -132,7 +133,8 @@ void Attribute::MapTypeFilter::from_xml_attribute(
 void Attribute::MapTypeFilter::to_xml_attribute(
     XMLWriterState*,
     const MapTypeFilter* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     vector<string> flag_values;
     if (value->unknown_map == true) {
         flag_values.push_back("unknown");
@@ -214,7 +216,8 @@ void Attribute::MapTypeFilter::from_proto_field(
     guildpoint::MapTypeFilter input,
     ProtoReaderState*,
     MapTypeFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     MapTypeFilter map_type_filter;
     map_type_filter.unknown_map = input.unknown_map();
     map_type_filter.redirect_map = input.redirect_map();
@@ -247,7 +250,8 @@ void Attribute::MapTypeFilter::from_proto_field(
 void Attribute::MapTypeFilter::to_proto_field(
     MapTypeFilter value,
     ProtoWriterState*,
-    std::function<void(guildpoint::MapTypeFilter*)> setter) {
+    std::function<void(guildpoint::MapTypeFilter*)> setter
+) {
     guildpoint::MapTypeFilter* proto_map_type_filter = new guildpoint::MapTypeFilter();
     bool should_write = false;
     proto_map_type_filter->set_unknown_map(value.unknown_map);

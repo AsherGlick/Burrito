@@ -2,14 +2,13 @@
 
 #include <stdint.h>
 
-#include <algorithm>
 #include <cstddef>
 #include <cstring>
 #include <fstream>
 #include <string>
 #include <vector>
 
-#include "../packaging_xml.hpp"
+#include "../file_helper.hpp"
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
@@ -29,7 +28,8 @@ void Attribute::TrailData::from_xml_attribute(
     TrailData* value,
     bool* is_set,
     int* map_id_value,
-    bool* is_map_id_set) {
+    bool* is_map_id_set
+) {
     TrailData trail_data;
     string trail_data_relative_path = get_attribute_value(input);
     if (state->marker_pack_root_directory == "") {
@@ -65,9 +65,10 @@ void Attribute::TrailData::from_xml_attribute(
 
     char points[12];
     while (trail_data_file->read(points, 12)) {
-        trail_data.points_x.push_back(*reinterpret_cast<float*>(points));
-        trail_data.points_y.push_back(*reinterpret_cast<float*>(points + 4));
-        trail_data.points_z.push_back(*reinterpret_cast<float*>(points + 8));
+        float x = *reinterpret_cast<float*>(points);
+        float y = *reinterpret_cast<float*>(points + 4);
+        float z = *reinterpret_cast<float*>(points + 8);
+        trail_data.points.push_back({x, y, z});
     }
 
     if (trail_data_file->gcount() != 0) {
@@ -96,7 +97,6 @@ uint64_t djb2_hash(const unsigned char* str, size_t length) {
 // trail_data_to_xml_attribute
 //
 // Converts a traildata into a fully qualified xml attribute string.
-// TODO: Write ".trl" files from data
 // TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t trail_version_number = 0;
@@ -105,8 +105,9 @@ void Attribute::TrailData::to_xml_attribute(
     const TrailData* value,
     const int* map_id_value,
     const bool* is_map_id_set,
-    std::function<void(std::string)> setter) {
-    size_t byte_array_size = sizeof(int) + sizeof(uint32_t) + value->points_x.size() * 3 * sizeof(float);
+    std::function<void(std::string)> setter
+) {
+    size_t byte_array_size = sizeof(int) + sizeof(uint32_t) + value->points.size() * 3 * sizeof(float);
     unsigned char* byte_array = new unsigned char[byte_array_size];
 
     size_t offset = 0;
@@ -116,12 +117,12 @@ void Attribute::TrailData::to_xml_attribute(
     std::memcpy(byte_array + offset, map_id_value, sizeof(*map_id_value));
     offset += sizeof(*map_id_value);
 
-    for (size_t i = 0; i < value->points_x.size(); i++) {
-        std::memcpy(byte_array + offset, &value->points_x[i], sizeof(float));
+    for (size_t i = 0; i < value->points.size(); i++) {
+        std::memcpy(byte_array + offset, &value->points[i].x, sizeof(float));
         offset += sizeof(float);
-        std::memcpy(byte_array + offset, &value->points_y[i], sizeof(float));
+        std::memcpy(byte_array + offset, &value->points[i].y, sizeof(float));
         offset += sizeof(float);
-        std::memcpy(byte_array + offset, &value->points_z[i], sizeof(float));
+        std::memcpy(byte_array + offset, &value->points[i].z, sizeof(float));
         offset += sizeof(float);
     }
 
@@ -155,11 +156,22 @@ void Attribute::TrailData::from_proto_field(
     guildpoint::TrailData input,
     ProtoReaderState*,
     TrailData* value,
-    bool* is_set) {
+    bool* is_set
+) {
     TrailData trail_data;
-    trail_data.points_x = {input.points_x().begin(), input.points_x().end()};
-    trail_data.points_y = {input.points_y().begin(), input.points_y().end()};
-    trail_data.points_z = {input.points_z().begin(), input.points_z().end()};
+
+    // TODO: Validate the size
+    size_t size = input.points_x().size();
+    trail_data.points.resize(size);
+
+    for (size_t i = 0; i < size; i++) {
+        trail_data.points[i] = {
+            input.points_x()[i],
+            input.points_y()[i],
+            input.points_z()[i],
+        };
+    }
+
     *value = trail_data;
     *is_set = true;
 }
@@ -172,10 +184,21 @@ void Attribute::TrailData::from_proto_field(
 void Attribute::TrailData::to_proto_field(
     TrailData value,
     ProtoWriterState*,
-    std::function<void(guildpoint::TrailData*)> setter) {
+    std::function<void(guildpoint::TrailData*)> setter
+) {
     guildpoint::TrailData* trail_data = new guildpoint::TrailData();
-    *trail_data->mutable_points_x() = {value.points_x.begin(), value.points_x.end()};
-    *trail_data->mutable_points_y() = {value.points_y.begin(), value.points_y.end()};
-    *trail_data->mutable_points_z() = {value.points_z.begin(), value.points_z.end()};
+
+    size_t size = value.points.size();
+
+    trail_data->mutable_points_x()->Reserve(size);
+    trail_data->mutable_points_y()->Reserve(size);
+    trail_data->mutable_points_z()->Reserve(size);
+
+    for (size_t i = 0; i < size; i++) {
+        trail_data->mutable_points_x()->Add(value.points[i].x);
+        trail_data->mutable_points_y()->Add(value.points[i].y);
+        trail_data->mutable_points_z()->Add(value.points[i].z);
+    }
+
     setter(trail_data);
 }

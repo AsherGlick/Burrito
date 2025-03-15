@@ -37,7 +37,8 @@ using namespace std;
 map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+    ) {
     map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
@@ -65,7 +66,8 @@ map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_taco_direc
 map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_burrito_directory(
     string input_path,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+    ) {
     map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
@@ -93,7 +95,8 @@ map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_burrito_di
 void write_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     // TODO: Exportion of XML Marker Packs File Structure #111
     if (!filesystem::is_directory(input_path)) {
         if (!filesystem::create_directory(input_path)) {
@@ -109,7 +112,8 @@ void write_burrito_directory(
     bool split_by_map_id,
     OptionalInt split_by_category_depth,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     if (!filesystem::is_directory(input_path)) {
         if (!filesystem::create_directory(input_path)) {
             cout << "Error: " << input_path << "is not a valid directory path" << endl;
@@ -159,11 +163,11 @@ void process_data(ParsedArguments parsed_arguments) {
         map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations = read_taco_directory(
             marker_pack_config[i].path,
             &marker_categories,
-            &parsed_pois);
+            &parsed_pois
+        );
         for (map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
             top_level_category_file_locations_by_pack[it->first].push_back(it->second.second);
             id_to_display_name[it->first] = it->second.first;
-        }
     }
     auto end = chrono::high_resolution_clock::now();
     auto dur = end - begin;
@@ -181,7 +185,8 @@ void process_data(ParsedArguments parsed_arguments) {
         map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations = read_burrito_directory(
             marker_pack_config[i].path,
             &marker_categories,
-            &parsed_pois);
+            &parsed_pois
+        );
         for (map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
             top_level_category_file_locations_by_pack[it->first].push_back(it->second.second);
             id_to_display_name[it->first] = it->second.first;

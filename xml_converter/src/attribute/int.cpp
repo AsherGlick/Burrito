@@ -21,7 +21,8 @@ void Attribute::Int::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     int* value,
-    bool* is_set) {
+    bool* is_set
+) {
     try {
         *value = stoi(get_attribute_value(input));
         *is_set = true;
@@ -45,7 +46,8 @@ void Attribute::Int::from_xml_attribute(
 void Attribute::Int::to_xml_attribute(
     XMLWriterState*,
     const int* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     setter(to_string(*value));
 }
 
@@ -58,7 +60,8 @@ void Attribute::Int::from_proto_field(
     int input,
     ProtoReaderState*,
     int* value,
-    bool* is_set) {
+    bool* is_set
+) {
     *value = input;
     *is_set = true;
 }
@@ -71,6 +74,7 @@ void Attribute::Int::from_proto_field(
 void Attribute::Int::to_proto_field(
     int value,
     ProtoWriterState*,
-    std::function<void(int&)> setter) {
+    std::function<void(int&)> setter
+) {
     setter(value);
 }

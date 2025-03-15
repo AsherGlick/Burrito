@@ -17,11 +17,16 @@ class TrailData;
 }
 
 namespace Attribute::TrailData {
+
+struct XYZ {
+    float x;
+    float y;
+    float z;
+};
+
 class TrailData {
  public:
-    std::vector<float> points_x;
-    std::vector<float> points_y;
-    std::vector<float> points_z;
+    std::vector<XYZ> points;
 };
 
 void from_xml_attribute(
@@ -31,23 +36,27 @@ void from_xml_attribute(
     TrailData* value,
     bool* is_set,
     int* map_id_value,
-    bool* is_map_id_set);
+    bool* is_map_id_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const TrailData* value,
     const int* map_id_value,
     const bool* is_map_id_set,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::TrailData input,
     ProtoReaderState* state,
     TrailData* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     TrailData value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::TrailData*)> setter);
+    std::function<void(guildpoint::TrailData*)> setter
+);
 }  // namespace Attribute::TrailData

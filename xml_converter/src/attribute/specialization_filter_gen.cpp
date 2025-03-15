@@ -17,7 +17,8 @@ void Attribute::SpecializationFilter::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     SpecializationFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     SpecializationFilter specialization_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -405,7 +406,8 @@ void Attribute::SpecializationFilter::from_xml_attribute(
 void Attribute::SpecializationFilter::to_xml_attribute(
     XMLWriterState*,
     const SpecializationFilter* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     vector<string> flag_values;
     if (value->elementalist_tempest == true) {
         flag_values.push_back("48");
@@ -631,7 +633,8 @@ void Attribute::SpecializationFilter::from_proto_field(
     guildpoint::SpecializationFilter input,
     ProtoReaderState*,
     SpecializationFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     SpecializationFilter specialization_filter;
     specialization_filter.elementalist_tempest = input.elementalist_tempest();
     specialization_filter.engineer_scrapper = input.engineer_scrapper();
@@ -712,7 +715,8 @@ void Attribute::SpecializationFilter::from_proto_field(
 void Attribute::SpecializationFilter::to_proto_field(
     SpecializationFilter value,
     ProtoWriterState*,
-    std::function<void(guildpoint::SpecializationFilter*)> setter) {
+    std::function<void(guildpoint::SpecializationFilter*)> setter
+) {
     guildpoint::SpecializationFilter* proto_specialization_filter = new guildpoint::SpecializationFilter();
     bool should_write = false;
     proto_specialization_filter->set_elementalist_tempest(value.elementalist_tempest);

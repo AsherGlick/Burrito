@@ -53,7 +53,8 @@ void Attribute::Color::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     Color* value,
-    bool* is_set) {
+    bool* is_set
+) {
     Color color;
     std::string input_string = get_attribute_value(input);
     std::string hex_string;
@@ -99,7 +100,8 @@ void Attribute::Color::from_xml_attribute(
 void Attribute::Color::to_xml_attribute(
     XMLWriterState*,
     const Color* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     std::stringstream stream;
     std::string hex_string = "#";
 
@@ -126,7 +128,8 @@ void Attribute::Color::from_proto_field(
     uint32_t input,
     ProtoReaderState*,
     Color* value,
-    bool* is_set) {
+    bool* is_set
+) {
     Color color;
     std::stringstream stream;
 
@@ -147,7 +150,8 @@ void Attribute::Color::from_proto_field(
 void Attribute::Color::to_proto_field(
     Color value,
     ProtoWriterState*,
-    std::function<void(uint32_t)> setter) {
+    std::function<void(uint32_t)> setter
+) {
     // The default RGB in burrito will be 000000 (i.e. black)
     // Default value of alpha in Burrito is 1.0 (i.e. 255)
     int int_alpha = 255;

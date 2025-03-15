@@ -7,8 +7,9 @@ filters=""
   # Automated line length restrictions often cause more pain then they solve.
   # Lines should be kept in check via code review.
   filters+="-whitespace/line_length,"
-  # These two are just wrong brace styling, fight me.
+  # These three are just wrong brace styling, fight me.
   filters+="-readability/braces,"
+  filters+="-whitespace/parens,"
   filters+="-whitespace/newline,"
   # Copyright is handled on the repo level.
   # An argument could be made this should be uncommented.

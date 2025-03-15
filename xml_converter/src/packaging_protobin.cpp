@@ -29,7 +29,8 @@ Category* parse_guildpoint_categories(
     ::guildpoint::Category proto_category,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois,
-    ProtoReaderState* state) {
+    ProtoReaderState* state
+) {
     string category_name = normalize(proto_category.name());
     full_category_name += category_name;
     Category* this_category = &(*marker_categories)[category_name];
@@ -69,7 +70,8 @@ Category* parse_guildpoint_categories(
 set<Category*> read_protobuf_file(
     const MarkerPackFile& proto_filepath,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     unique_ptr<basic_istream<char>> infile = open_file_for_read(proto_filepath);
 
     guildpoint::Guildpoint proto_message;
@@ -105,7 +107,8 @@ MaybeCategory build_category_objects(
     const StringHierarchy& category_filter,
     const std::map<string, std::vector<Parseable*>>& category_to_pois,
     vector<string>* category_vector,
-    ProtoWriterState* state) {
+    ProtoWriterState* state
+) {
     guildpoint::Category category_proto = category->as_protobuf(state);
     bool has_valid_contents = false;
 
@@ -121,7 +124,8 @@ MaybeCategory build_category_objects(
                 category_filter,
                 category_to_pois,
                 category_vector,
-                state);
+                state
+            );
 
             if (child_category.is_category) {
                 has_valid_contents = true;
@@ -181,7 +185,8 @@ void _write_protobuf_file(
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const std::map<string, std::vector<Parseable*>>& category_to_pois,
-    ProtoWriterState* state) {
+    ProtoWriterState* state
+) {
     ofstream outfile;
     outfile.open(filepath, ios::out | ios::binary);
 
@@ -201,7 +206,8 @@ void _write_protobuf_file(
             category_filter,
             category_to_pois,
             &category_vector,
-            state);
+            state
+        );
 
         if (maybe_category.is_category) {
             output_message.add_category()->MergeFrom(maybe_category.category);
@@ -240,7 +246,8 @@ void write_protobuf_file(
     const string& marker_pack_root_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
-    const vector<Parseable*>* parsed_pois) {
+    const vector<Parseable*>* parsed_pois
+) {
     ProtoWriterState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
 
@@ -251,7 +258,8 @@ void write_protobuf_file(
         category_filter,
         marker_categories,
         category_to_pois,
-        &state);
+        &state
+    );
 }
 
 // Write protobuf per map id
@@ -259,7 +267,8 @@ void write_protobuf_file_per_map_id(
     const string& marker_pack_root_directory,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
-    const vector<Parseable*>* parsed_pois) {
+    const vector<Parseable*>* parsed_pois
+) {
     std::map<int, std::map<string, std::vector<Parseable*>>> mapid_to_category_to_pois;
     ProtoWriterState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
@@ -287,7 +296,8 @@ void write_protobuf_file_per_map_id(
             category_filter,
             marker_categories,
             iterator->second,
-            &state);
+            &state
+        );
     }
 }
 void _category_filter_by_depth(
@@ -296,7 +306,8 @@ void _category_filter_by_depth(
     map<string, StringHierarchy>* category_hierarchy,
     vector<string> parent_name,
     vector<string> parent_display_name,
-    int current_depth) {
+    int current_depth
+) {
     for (auto it = marker_categories->begin(); it != marker_categories->end(); it++) {
         vector<string> child_name = parent_name;
         vector<string> child_display_name = parent_display_name;
@@ -312,7 +323,8 @@ void _category_filter_by_depth(
 
 map<string, StringHierarchy> category_filter_by_depth(
     const map<string, Category>* marker_categories,
-    const int split_by_category_depth) {
+    const int split_by_category_depth
+) {
     map<string, StringHierarchy> category_hierarchy;
     _category_filter_by_depth(marker_categories, split_by_category_depth, &category_hierarchy, {}, {}, 0);
     return category_hierarchy;
@@ -323,7 +335,8 @@ void write_protobuf_file_per_category(
     const string& marker_pack_root_directory,
     const int split_by_category_depth,
     const map<string, Category>* marker_categories,
-    const vector<Parseable*>* parsed_pois) {
+    const vector<Parseable*>* parsed_pois
+) {
     ProtoWriterState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
 
@@ -339,6 +352,7 @@ void write_protobuf_file_per_category(
             iterator->second,
             marker_categories,
             category_to_pois,
-            &state);
+            &state
+        );
     }
 }

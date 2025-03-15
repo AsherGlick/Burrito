@@ -16,7 +16,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState*,
     {{class_name}}* value,
-    bool* is_set) {
+    bool* is_set
+) {
     {{class_name}} {{attribute_name}};
     vector<string> compound_values;
     string attributename;
@@ -37,7 +38,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
     void Attribute::{{namespace}}::to_xml_attribute(
         XMLWriterState*,
         const {{class_name}}* value,
-        std::function<void(std::string)> setter) {
+        std::function<void(std::string)> setter
+    ) {
         string output;
         {% for n, attribute_component in enumerate(attribute_components) %}
             {% if attribute_component.attribute_name in xml_bundled_components %}
@@ -57,7 +59,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
         {{proto_field_cpp_type}} input,
         ProtoReaderState*,
         {{class_name}}* value,
-        bool* is_set) {
+        bool* is_set
+    ) {
         {{class_name}} {{attribute_name}};
         {% for attribute_component in attribute_components %}
             {% if attribute_component.protobuf_field != None %}
@@ -71,7 +74,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
     void Attribute::{{namespace}}::to_proto_field(
         {{class_name}} value,
         ProtoWriterState*,
-        std::function<void({{proto_field_cpp_type}}*)> setter) {
+        std::function<void({{proto_field_cpp_type}}*)> setter
+    ) {
         {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
         {% for attribute_component in attribute_components %}
             {% if attribute_component.protobuf_field != None %}
