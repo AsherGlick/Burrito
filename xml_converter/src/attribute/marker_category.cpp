@@ -17,7 +17,8 @@ void Attribute::MarkerCategory::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState*,
     MarkerCategory* value,
-    bool* is_set) {
+    bool* is_set
+) {
     value->category = get_attribute_value(input);
     *is_set = true;
 }
@@ -30,7 +31,8 @@ void Attribute::MarkerCategory::from_xml_attribute(
 void Attribute::MarkerCategory::to_xml_attribute(
     XMLWriterState*,
     const MarkerCategory* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     setter(value->category);
 }
 
@@ -43,7 +45,8 @@ void Attribute::MarkerCategory::from_proto_field(
     guildpoint::Category input,
     ProtoReaderState*,
     MarkerCategory* value,
-    bool* is_set) {
+    bool* is_set
+) {
     MarkerCategory marker_category;
     marker_category.category = input.name();
     *value = marker_category;
@@ -58,7 +61,8 @@ void Attribute::MarkerCategory::from_proto_field(
 void Attribute::MarkerCategory::to_proto_field(
     MarkerCategory value,
     ProtoWriterState*,
-    std::function<void(guildpoint::Category*)> setter) {
+    std::function<void(guildpoint::Category*)> setter
+) {
     guildpoint::Category* category = new guildpoint::Category();
     category->set_name(value.category);
     setter(category);

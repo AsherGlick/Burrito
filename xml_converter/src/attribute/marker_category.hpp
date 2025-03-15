@@ -28,22 +28,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     MarkerCategory* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const MarkerCategory* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::Category input,
     ProtoReaderState* state,
     MarkerCategory* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     MarkerCategory value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::Category*)> setter);
+    std::function<void(guildpoint::Category*)> setter
+);
 
 }  // namespace Attribute::MarkerCategory

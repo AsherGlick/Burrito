@@ -17,7 +17,8 @@ void Attribute::ResetBehavior::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     ResetBehavior* value,
-    bool* is_set) {
+    bool* is_set
+) {
     ResetBehavior reset_behavior;
     string normalized_value = normalize(get_attribute_value(input));
     if (normalized_value == "0") {
@@ -85,7 +86,8 @@ void Attribute::ResetBehavior::from_xml_attribute(
 void Attribute::ResetBehavior::to_xml_attribute(
     XMLWriterState*,
     const ResetBehavior* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     if (*value == ResetBehavior::always_visible) {
         setter("0");
         return;

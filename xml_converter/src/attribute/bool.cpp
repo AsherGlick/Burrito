@@ -21,7 +21,8 @@ void Attribute::Bool::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     bool* value,
-    bool* is_set) {
+    bool* is_set
+) {
     if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
         *value = false;
         *is_set = true;
@@ -43,7 +44,8 @@ void Attribute::Bool::from_xml_attribute(
 void Attribute::Bool::to_xml_attribute(
     XMLWriterState*,
     const bool* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     if (*value) {
         setter("true");
     }
@@ -64,7 +66,8 @@ void Attribute::InvertBool::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     bool* value,
-    bool* is_set) {
+    bool* is_set
+) {
     if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
         *value = true;
         *is_set = true;
@@ -86,7 +89,8 @@ void Attribute::InvertBool::from_xml_attribute(
 void Attribute::InvertBool::to_xml_attribute(
     XMLWriterState*,
     const bool* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     if (*value) {
         setter("false");
     }
@@ -104,7 +108,8 @@ void Attribute::Bool::from_proto_field(
     bool input,
     ProtoReaderState*,
     bool* value,
-    bool* is_set) {
+    bool* is_set
+) {
     *value = input;
     *is_set = true;
 }
@@ -117,6 +122,7 @@ void Attribute::Bool::from_proto_field(
 void Attribute::Bool::to_proto_field(
     bool value,
     ProtoWriterState*,
-    std::function<void(bool)> setter) {
+    std::function<void(bool)> setter
+) {
     setter(value);
 }

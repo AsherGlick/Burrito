@@ -36,7 +36,8 @@ void copy_file(MarkerPackFile original_path, MarkerPackFile new_path) {
         filesystem::copy_file(
             filesystem::path(original_path.tmp_get_path()),
             output_path,
-            filesystem::copy_options::overwrite_existing);
+            filesystem::copy_options::overwrite_existing
+        );
     }
     // ZipFile to Directory
     else if (filesystem::is_regular_file(original_path.base) && filesystem::is_directory(new_path.base)) {
@@ -102,7 +103,8 @@ bool marker_pack_file_comp(const MarkerPackFile& a, const MarkerPackFile& b) {
 vector<MarkerPackFile> get_files_by_suffix(
     const string& base,
     const string& suffix,
-    const string& subpath) {
+    const string& subpath
+) {
     vector<MarkerPackFile> files;
 
     if (!filesystem::exists(base)) {
@@ -182,7 +184,8 @@ vector<MarkerPackFile> get_files_by_suffix(const string& base, const string& suf
 ////////////////////////////////////////////////////////////////////////////////
 unique_ptr<basic_istream<char>> _open_directory_file_for_read(
     const string& base,
-    const string& filename) {
+    const string& filename
+) {
     unique_ptr<ifstream> input_filestream = make_unique<ifstream>();
     input_filestream->open(join_file_paths(base, filename), ios::in | ios::binary);
 
@@ -199,7 +202,8 @@ unique_ptr<basic_istream<char>> _open_directory_file_for_read(
 ////////////////////////////////////////////////////////////////////////////////
 unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     const string& zipfile,
-    const string& filename) {
+    const string& filename
+) {
     mz_zip_archive zip_archive;
     memset(&zip_archive, 0, sizeof(zip_archive));
 

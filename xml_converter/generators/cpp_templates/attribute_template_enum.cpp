@@ -17,7 +17,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     {{class_name}}* value,
-    bool* is_set) {
+    bool* is_set
+) {
     {{class_name}} {{attribute_name}};
     string normalized_value = normalize(get_attribute_value(input));
     {% for n, attribute_component in enumerate(attribute_components) %}
@@ -44,7 +45,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
 void Attribute::{{namespace}}::to_xml_attribute(
     XMLWriterState*,
     const {{class_name}}* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     {% for n, attribute_component in enumerate(attribute_components) %}
         {% for i, value in enumerate(attribute_component.xml_fields) %}
             {%-if i == 0 and n == 0:%}
@@ -67,7 +69,8 @@ void Attribute::{{namespace}}::to_xml_attribute(
         {{proto_field_cpp_type}} input,
         ProtoReaderState*,
         {{class_name}}* value,
-        bool* is_set) {
+        bool* is_set
+    ) {
         switch (input) {
             {% for attribute_component in attribute_components %}
                 case {{proto_field_cpp_type}}::{{attribute_component.attribute_name}}:
@@ -85,7 +88,8 @@ void Attribute::{{namespace}}::to_xml_attribute(
     void Attribute::{{namespace}}::to_proto_field(
         {{class_name}} value,
         ProtoWriterState*,
-        std::function<void({{proto_field_cpp_type}})> setter) {
+        std::function<void({{proto_field_cpp_type}})> setter
+    ) {
         switch (value) {
             {% for attribute_component in attribute_components %}
                 case {{class_name}}::{{attribute_component.attribute_name}}:

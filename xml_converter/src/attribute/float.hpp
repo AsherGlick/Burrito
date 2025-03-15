@@ -19,22 +19,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     float* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const float* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     float input,
     ProtoReaderState* state,
     float* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     float value,
     ProtoWriterState* state,
-    std::function<void(float&)> setter);
+    std::function<void(float&)> setter
+);
 
 }  // namespace Attribute::Float

@@ -17,7 +17,8 @@ void Attribute::SpeciesFilter::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     SpeciesFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     SpeciesFilter species_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -56,7 +57,8 @@ void Attribute::SpeciesFilter::from_xml_attribute(
 void Attribute::SpeciesFilter::to_xml_attribute(
     XMLWriterState*,
     const SpeciesFilter* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     vector<string> flag_values;
     if (value->asura == true) {
         flag_values.push_back("asura");
@@ -81,7 +83,8 @@ void Attribute::SpeciesFilter::from_proto_field(
     guildpoint::SpeciesFilter input,
     ProtoReaderState*,
     SpeciesFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     SpeciesFilter species_filter;
     species_filter.asura = input.asura();
     species_filter.charr = input.charr();
@@ -95,7 +98,8 @@ void Attribute::SpeciesFilter::from_proto_field(
 void Attribute::SpeciesFilter::to_proto_field(
     SpeciesFilter value,
     ProtoWriterState*,
-    std::function<void(guildpoint::SpeciesFilter*)> setter) {
+    std::function<void(guildpoint::SpeciesFilter*)> setter
+) {
     guildpoint::SpeciesFilter* proto_species_filter = new guildpoint::SpeciesFilter();
     bool should_write = false;
     proto_species_filter->set_asura(value.asura);

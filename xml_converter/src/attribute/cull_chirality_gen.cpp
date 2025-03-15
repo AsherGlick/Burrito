@@ -17,7 +17,8 @@ void Attribute::CullChirality::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     CullChirality* value,
-    bool* is_set) {
+    bool* is_set
+) {
     CullChirality cull_chirality;
     string normalized_value = normalize(get_attribute_value(input));
     if (normalized_value == "none") {
@@ -40,7 +41,8 @@ void Attribute::CullChirality::from_xml_attribute(
 void Attribute::CullChirality::to_xml_attribute(
     XMLWriterState*,
     const CullChirality* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     if (*value == CullChirality::none) {
         setter("none");
         return;
@@ -62,7 +64,8 @@ void Attribute::CullChirality::from_proto_field(
     guildpoint::CullChirality input,
     ProtoReaderState*,
     CullChirality* value,
-    bool* is_set) {
+    bool* is_set
+) {
     switch (input) {
         case guildpoint::CullChirality::none:
             *value = CullChirality::none;
@@ -86,7 +89,8 @@ void Attribute::CullChirality::from_proto_field(
 void Attribute::CullChirality::to_proto_field(
     CullChirality value,
     ProtoWriterState*,
-    std::function<void(guildpoint::CullChirality)> setter) {
+    std::function<void(guildpoint::CullChirality)> setter
+) {
     switch (value) {
         case CullChirality::none:
             setter(guildpoint::CullChirality::none);

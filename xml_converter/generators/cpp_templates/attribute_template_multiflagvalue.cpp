@@ -17,7 +17,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     {{class_name}}* value,
-    bool* is_set) {
+    bool* is_set
+) {
     {{class_name}} {{attribute_name}};
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -52,7 +53,8 @@ void Attribute::{{namespace}}::from_xml_attribute(
 void Attribute::{{namespace}}::to_xml_attribute(
     XMLWriterState*,
     const {{class_name}}* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     vector<string> flag_values;
     {% for n, attribute_component in enumerate(attribute_components) %}
         if (value->{{attribute_component.attribute_name}} == true) {
@@ -68,7 +70,8 @@ void Attribute::{{namespace}}::to_xml_attribute(
         {{proto_field_cpp_type}} input,
         ProtoReaderState*,
         {{class_name}}* value,
-        bool* is_set) {
+        bool* is_set
+    ) {
         {{class_name}} {{attribute_name}};
         {% for n, attribute_component in enumerate(attribute_components) %}
             {{attribute_name}}.{{attribute_component.attribute_name}} = input.{{attribute_component.attribute_name}}();
@@ -80,7 +83,8 @@ void Attribute::{{namespace}}::to_xml_attribute(
     void Attribute::{{namespace}}::to_proto_field(
         {{class_name}} value,
         ProtoWriterState*,
-        std::function<void({{proto_field_cpp_type}}*)> setter) {
+        std::function<void({{proto_field_cpp_type}}*)> setter
+    ) {
         {{proto_field_cpp_type}}* proto_{{attribute_name}} = new {{proto_field_cpp_type}}();
         bool should_write = false;
         {% for n, attribute_component in enumerate(attribute_components) %}

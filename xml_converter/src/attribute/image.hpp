@@ -26,22 +26,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     Image* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const Image* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     unsigned int input,
     ProtoReaderState* state,
     Image* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     const Image& value,
     ProtoWriterState* state,
-    std::function<void(unsigned int)> setter);
+    std::function<void(unsigned int)> setter
+);
 
 }  // namespace Attribute::Image

@@ -25,22 +25,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     CullChirality* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const CullChirality* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::CullChirality input,
     ProtoReaderState* state,
     CullChirality* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     CullChirality value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::CullChirality)> setter);
+    std::function<void(guildpoint::CullChirality)> setter
+);
 
 }  // namespace Attribute::CullChirality

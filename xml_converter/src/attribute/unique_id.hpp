@@ -29,22 +29,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     UniqueId* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const UniqueId* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     std::string input,
     ProtoReaderState* state,
     UniqueId* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     UniqueId value,
     ProtoWriterState* state,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 }  // namespace Attribute::UniqueId

@@ -16,7 +16,8 @@ void Attribute::EulerRotation::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState*,
     EulerRotation* value,
-    bool* is_set) {
+    bool* is_set
+) {
     EulerRotation euler_rotation;
     vector<string> compound_values;
     string attributename;
@@ -36,7 +37,8 @@ void Attribute::EulerRotation::from_xml_attribute(
 void Attribute::EulerRotation::to_xml_attribute(
     XMLWriterState*,
     const EulerRotation* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     string output;
     output = to_string(value->x_rotation);
     output = output + "," + to_string(value->y_rotation);
@@ -48,7 +50,8 @@ void Attribute::EulerRotation::from_proto_field(
     guildpoint::EulerRotation input,
     ProtoReaderState*,
     EulerRotation* value,
-    bool* is_set) {
+    bool* is_set
+) {
     EulerRotation euler_rotation;
     euler_rotation.x_rotation = input.x();
     euler_rotation.y_rotation = input.y();
@@ -60,7 +63,8 @@ void Attribute::EulerRotation::from_proto_field(
 void Attribute::EulerRotation::to_proto_field(
     EulerRotation value,
     ProtoWriterState*,
-    std::function<void(guildpoint::EulerRotation*)> setter) {
+    std::function<void(guildpoint::EulerRotation*)> setter
+) {
     guildpoint::EulerRotation* proto_euler_rotation = new guildpoint::EulerRotation();
     proto_euler_rotation->set_x(value.x_rotation);
     proto_euler_rotation->set_y(value.y_rotation);

@@ -53,22 +53,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     MapTypeFilter* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const MapTypeFilter* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::MapTypeFilter input,
     ProtoReaderState* state,
     MapTypeFilter* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     MapTypeFilter value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::MapTypeFilter*)> setter);
+    std::function<void(guildpoint::MapTypeFilter*)> setter
+);
 
 }  // namespace Attribute::MapTypeFilter

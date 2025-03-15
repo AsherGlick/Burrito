@@ -32,22 +32,26 @@ void from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState* state,
     Position* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_xml_attribute(
     XMLWriterState* state,
     const Position* value,
-    std::function<void(std::string)> setter);
+    std::function<void(std::string)> setter
+);
 
 void from_proto_field(
     guildpoint::Position input,
     ProtoReaderState* state,
     Position* value,
-    bool* is_set);
+    bool* is_set
+);
 
 void to_proto_field(
     Position value,
     ProtoWriterState* state,
-    std::function<void(guildpoint::Position*)> setter);
+    std::function<void(guildpoint::Position*)> setter
+);
 
 }  // namespace Attribute::Position

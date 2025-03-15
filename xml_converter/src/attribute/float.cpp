@@ -17,7 +17,8 @@ void Attribute::Float::from_xml_attribute(
     std::vector<XMLError*>*,
     XMLReaderState*,
     float* value,
-    bool* is_set) {
+    bool* is_set
+) {
     *value = std::stof(get_attribute_value(input));
     *is_set = true;
 }
@@ -30,7 +31,8 @@ void Attribute::Float::from_xml_attribute(
 void Attribute::Float::to_xml_attribute(
     XMLWriterState*,
     const float* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     setter(to_string(*value));
 }
 
@@ -43,7 +45,8 @@ void Attribute::Float::from_proto_field(
     float input,
     ProtoReaderState*,
     float* value,
-    bool* is_set) {
+    bool* is_set
+) {
     *value = input;
     *is_set = true;
 }
@@ -56,6 +59,7 @@ void Attribute::Float::from_proto_field(
 void Attribute::Float::to_proto_field(
     float value,
     ProtoWriterState*,
-    std::function<void(float&)> setter) {
+    std::function<void(float&)> setter
+) {
     setter(value);
 }

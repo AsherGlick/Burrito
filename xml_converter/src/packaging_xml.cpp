@@ -27,7 +27,8 @@ static OptionalString parse_marker_categories(
     Category* parent,
     vector<XMLError*>* errors,
     XMLReaderState* state,
-    int depth = 0) {
+    int depth = 0
+) {
     OptionalString name = {
         "",  // value
         false,  // is_null
@@ -119,7 +120,8 @@ static OptionalString parse_marker_categories(
 static vector<Category*> get_categories(
     rapidxml::xml_node<>* node,
     map<string, Category>* marker_categories,
-    vector<XMLError*>* errors) {
+    vector<XMLError*>* errors
+) {
     vector<Category*> categories;
 
     rapidxml::xml_attribute<>* attribute = find_attribute(node, "type");
@@ -179,7 +181,8 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
                     icon->init_xml_attribute(
                         categories[category_index]->icon_attributes[i],
                         &ignored_errors,
-                        state);
+                        state
+                    );
                 }
             }
 
@@ -196,7 +199,8 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
                     trail->init_xml_attribute(
                         categories[category_index]->trail_attributes[i],
                         &ignored_errors,
-                        state);
+                        state
+                    );
                 }
             }
 
@@ -243,7 +247,8 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
 set<string> parse_xml_file(
     const MarkerPackFile& xml_filepath,
     map<string, Category>* marker_categories,
-    vector<Parseable*>* parsed_pois) {
+    vector<Parseable*>* parsed_pois
+) {
     vector<XMLError*> errors;
 
     unique_ptr<basic_istream<char>> infile = open_file_for_read(xml_filepath);

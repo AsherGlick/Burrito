@@ -17,7 +17,8 @@ void Attribute::MountFilter::from_xml_attribute(
     std::vector<XMLError*>* errors,
     XMLReaderState*,
     MountFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     MountFilter mount_filter;
     vector<string> flag_values;
     flag_values = split(get_attribute_value(input), ",");
@@ -76,7 +77,8 @@ void Attribute::MountFilter::from_xml_attribute(
 void Attribute::MountFilter::to_xml_attribute(
     XMLWriterState*,
     const MountFilter* value,
-    std::function<void(std::string)> setter) {
+    std::function<void(std::string)> setter
+) {
     vector<string> flag_values;
     if (value->raptor == true) {
         flag_values.push_back("raptor");
@@ -116,7 +118,8 @@ void Attribute::MountFilter::from_proto_field(
     guildpoint::MountFilter input,
     ProtoReaderState*,
     MountFilter* value,
-    bool* is_set) {
+    bool* is_set
+) {
     MountFilter mount_filter;
     mount_filter.raptor = input.raptor();
     mount_filter.springer = input.springer();
@@ -135,7 +138,8 @@ void Attribute::MountFilter::from_proto_field(
 void Attribute::MountFilter::to_proto_field(
     MountFilter value,
     ProtoWriterState*,
-    std::function<void(guildpoint::MountFilter*)> setter) {
+    std::function<void(guildpoint::MountFilter*)> setter
+) {
     guildpoint::MountFilter* proto_mount_filter = new guildpoint::MountFilter();
     bool should_write = false;
     proto_mount_filter->set_raptor(value.raptor);
