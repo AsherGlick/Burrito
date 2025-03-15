@@ -12,7 +12,7 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "state_structs/xml_reader_state.hpp"
 
-std::set<std::string> parse_xml_file(
+std::set<Category*> parse_xml_file(
     const MarkerPackFile& xml_filepath,
     std::map<std::string, Category>* marker_categories,
     std::vector<Parseable*>* parsed_pois);

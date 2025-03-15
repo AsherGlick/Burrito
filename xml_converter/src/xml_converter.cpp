@@ -18,6 +18,7 @@
 
 #include "argument_parser.hpp"
 #include "attribute/marker_category.hpp"
+#include "attribute/unique_id.hpp"
 #include "category_gen.hpp"
 #include "file_helper.hpp"
 #include "guildpoint.pb.h"
@@ -33,11 +34,11 @@
 
 using namespace std;
 
-map<string, vector<string>> read_taco_directory(
+map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
-    map<string, vector<string>> top_level_category_file_locations;
+    map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
@@ -45,21 +46,27 @@ map<string, vector<string>> read_taco_directory(
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
     for (const MarkerPackFile& path : xml_files) {
-        set<string> top_level_category_names = parse_xml_file(path, marker_categories, parsed_pois);
+        set<Category*> top_level_categories = parse_xml_file(path, marker_categories, parsed_pois);
         string file_path = join_file_paths(input_path, path.relative_filepath);
-        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-            top_level_category_file_locations[*it].push_back(file_path);
+        for (Category* category : top_level_categories) {
+            if (category->display_name_is_set) {
+                top_level_category_file_locations[category->menu_id].first = category->display_name;
+            }
+            else {
+                top_level_category_file_locations[category->menu_id].first = category->name;
+            }
+            top_level_category_file_locations[category->menu_id].second.push_back(file_path);
         }
     }
 
     return top_level_category_file_locations;
 }
 
-map<string, vector<string>> read_burrito_directory(
+map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_burrito_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois) {
-    map<string, vector<string>> top_level_category_file_locations;
+    map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>>  top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
@@ -67,10 +74,16 @@ map<string, vector<string>> read_burrito_directory(
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
     for (const MarkerPackFile& path : burrito_files) {
-        set<string> top_level_category_names = read_protobuf_file(path, marker_categories, parsed_pois);
+        set<Category*> top_level_categories = read_protobuf_file(path, marker_categories, parsed_pois);
         string file_path = join_file_paths(input_path, path.relative_filepath);
-        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-            top_level_category_file_locations[*it].push_back(file_path);
+        for (Category* category : top_level_categories) {
+            if (category->display_name_is_set) {
+                top_level_category_file_locations[category->menu_id].first = category->display_name;
+            }
+            else {
+                top_level_category_file_locations[category->menu_id].first = category->name;
+            }
+            top_level_category_file_locations[category->menu_id].second.push_back(file_path);
         }
     }
 
@@ -130,9 +143,10 @@ void process_data(ParsedArguments parsed_arguments) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
-    map<string, vector<vector<string>>> top_level_category_file_locations_by_pack;
+    map<Attribute::UniqueId::UniqueId, vector<vector<string>>> top_level_category_file_locations_by_pack;
     map<string, set<string>> duplicate_categories;
     vector<MarkerPackConfig> marker_pack_config = parsed_arguments.marker_pack_configs;
+    map<Attribute::UniqueId::UniqueId, string> id_to_display_name;
 
     // Read in all the xml taco markerpacks
     auto begin = chrono::high_resolution_clock::now();
@@ -142,12 +156,13 @@ void process_data(ParsedArguments parsed_arguments) {
         }
         cout << "Loading taco pack " << marker_pack_config[i].path << endl;
 
-        map<string, vector<string>> top_level_category_file_locations = read_taco_directory(
+        map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations = read_taco_directory(
             marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois);
-        for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
-            top_level_category_file_locations_by_pack[it->first].push_back(it->second);
+        for (map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
+            top_level_category_file_locations_by_pack[it->first].push_back(it->second.second);
+            id_to_display_name[it->first] = it->second.first;
         }
     }
     auto end = chrono::high_resolution_clock::now();
@@ -163,12 +178,13 @@ void process_data(ParsedArguments parsed_arguments) {
         }
         cout << "Loading guildpoint pack " << marker_pack_config[i].path << endl;
 
-        map<string, vector<string>> top_level_category_file_locations = read_burrito_directory(
+        map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations = read_burrito_directory(
             marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois);
-        for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
-            top_level_category_file_locations_by_pack[it->first].push_back(it->second);
+        for (map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
+            top_level_category_file_locations_by_pack[it->first].push_back(it->second.second);
+            id_to_display_name[it->first] = it->second.first;
         }
     }
     end = chrono::high_resolution_clock::now();
@@ -176,11 +192,11 @@ void process_data(ParsedArguments parsed_arguments) {
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The guildpoint parse function took " << ms << " milliseconds to run" << endl;
 
-    for (map<string, vector<vector<string>>>::iterator it = top_level_category_file_locations_by_pack.begin(); it != top_level_category_file_locations_by_pack.end(); it++) {
+    for (map<Attribute::UniqueId::UniqueId, vector<vector<string>>>::iterator it = top_level_category_file_locations_by_pack.begin(); it != top_level_category_file_locations_by_pack.end(); it++) {
         if (it->second.size() != 1) {
             for (size_t i = 0; i < it->second.size(); i++) {
                 for (size_t j = 0; j < it->second[i].size(); j++) {
-                    duplicate_categories[it->first].insert(it->second[i][j]);
+                    duplicate_categories[id_to_display_name[it->first]].insert(it->second[i][j]);
                 }
             }
         }

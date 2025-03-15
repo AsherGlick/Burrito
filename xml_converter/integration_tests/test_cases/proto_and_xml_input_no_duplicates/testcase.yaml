@@ -2,15 +2,17 @@ input_paths:
     "pack": "xml"
     "pack2": "proto"
     "pack3": "xml"
+    "pack4": "proto"
 expected_stdout: |
     Did not write due to duplicates in categories.
     This commonly occurs when attempting to read the same pack multiple times or when separate packs coincidentally have the same name.
     Please remove one of the packs or edit the name of the packs' top level category before running the program again.
     If you want to bypass this stop, use '--allow-duplicates'.
     The following top level categories were found in more than one pack:
-        "mycategory" in files:
+        "My Category" in files:
             test_cases/proto_and_xml_input_no_duplicates/input/pack/xml_file.xml
             test_cases/proto_and_xml_input_no_duplicates/input/pack2/markers.guildpoint
             test_cases/proto_and_xml_input_no_duplicates/input/pack3/xml_file.xml
+            test_cases/proto_and_xml_input_no_duplicates/input/pack4/markers.guildpoint
 expected_stderr: |
 expected_returncode: 0

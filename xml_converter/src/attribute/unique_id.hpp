@@ -22,6 +22,10 @@ namespace Attribute::UniqueId {
 class UniqueId {
  public:
     std::vector<uint8_t> guid;
+
+    bool operator<(const UniqueId& other) const {
+        return guid < other.guid;
+    }
 };
 
 void from_xml_attribute(
