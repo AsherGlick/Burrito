@@ -2,14 +2,13 @@
 
 #include <stdint.h>
 
-#include <algorithm>
 #include <cstddef>
 #include <cstring>
 #include <fstream>
 #include <string>
 #include <vector>
 
-#include "../packaging_xml.hpp"
+#include "../file_helper.hpp"
 #include "../rapid_helpers.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "../string_helper.hpp"
