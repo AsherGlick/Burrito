@@ -38,7 +38,7 @@ map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_taco_direc
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
-    ) {
+) {
     map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
@@ -67,7 +67,7 @@ map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> read_burrito_di
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
-    ) {
+) {
     map<Attribute::UniqueId::UniqueId, pair<string, vector<string>>> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
