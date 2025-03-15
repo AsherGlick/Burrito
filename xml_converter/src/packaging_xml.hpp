@@ -8,8 +8,6 @@
 #include "category_gen.hpp"
 #include "file_helper.hpp"
 #include "parseable.hpp"
-#include "rapidxml-1.13/rapidxml.hpp"
-#include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "state_structs/xml_reader_state.hpp"
 
 std::set<std::string> parse_xml_file(

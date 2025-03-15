@@ -1,0 +1,7 @@
+<OverlayData>
+	<MarkerCategory DisplayName="My Category" ID="KOjMBsKTXpY=" Name="mycategory"/>
+	<POIs>
+		<Trail Type="mycategory" MapID="50" TrailData="c4fe2bcbd9b9adb3.trl"/>
+	</POIs>
+</OverlayData>
+
