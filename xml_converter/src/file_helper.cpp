@@ -187,7 +187,13 @@ unique_ptr<basic_istream<char>> _open_directory_file_for_read(
     const string& filename
 ) {
     unique_ptr<ifstream> input_filestream = make_unique<ifstream>();
-    input_filestream->open(join_file_paths(base, filename), ios::in | ios::binary);
+
+    string filepath = join_file_paths(base, filename);
+    if (!filesystem::exists(filepath)) {
+        return nullptr;
+    }
+
+    input_filestream->open(filepath, ios::in | ios::binary);
 
     unique_ptr<basic_istream<char>> basic_istream_stream(move(input_filestream));
 
