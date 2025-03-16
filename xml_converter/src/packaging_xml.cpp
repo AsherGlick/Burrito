@@ -239,6 +239,23 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
     return markers;
 }
 
+class XMLFileData {
+ public:
+    unique_ptr<basic_istream<char>> raw_file;
+    rapidxml::file<char>* xml_file;
+    string display_path;
+    rapidxml::xml_document<char> xml_document;
+
+    XMLFileData(unique_ptr<basic_istream<char>> input, const MarkerPackFile& filepath) {
+        this->raw_file = std::move(input);
+        this->xml_file = new rapidxml::file<char>(*this->raw_file);
+        this->display_path = filepath.tmp_get_path();
+        this->xml_document.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(this->xml_file->data(), this->display_path.c_str());
+    }
+};
+
+vector<XMLFileData*> xml_files_to_cleanup;
+
 ////////////////////////////////////////////////////////////////////////////////
 // parse_xml_file
 //
@@ -251,16 +268,10 @@ set<string> parse_xml_file(
 ) {
     vector<XMLError*> errors;
 
-    unique_ptr<basic_istream<char>> infile = open_file_for_read(xml_filepath);
+    XMLFileData* xml_file_data = new XMLFileData(open_file_for_read(xml_filepath), xml_filepath);
+    xml_files_to_cleanup.push_back(xml_file_data);
 
-    rapidxml::file<> xml_file(*infile);
-
-    string tmp_get_path = xml_filepath.tmp_get_path();
-
-    rapidxml::xml_document<> doc;
-    doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_no_data_nodes>(xml_file.data(), tmp_get_path.c_str());
-
-    rapidxml::xml_node<>* root_node = doc.first_node();
+    rapidxml::xml_node<>* root_node = xml_file_data->xml_document.first_node();
     // Validate the Root Node
     if (get_node_name(root_node) != "OverlayData") {
         errors.push_back(new XMLNodeNameError("Root node should be of type OverlayData", root_node));
@@ -293,6 +304,14 @@ set<string> parse_xml_file(
         error->print_error();
     }
     return category_names;
+}
+
+void cleanup_xml_files() {
+    for (size_t i = 0; i < xml_files_to_cleanup.size(); i++) {
+        delete xml_files_to_cleanup[i]->xml_file;
+        delete xml_files_to_cleanup[i];
+    }
+    xml_files_to_cleanup.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

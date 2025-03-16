@@ -21,3 +21,5 @@ void write_xml_file(
     std::map<std::string, Category>* marker_categories,
     std::vector<Parseable*>* parsed_pois
 );
+
+void cleanup_xml_files();

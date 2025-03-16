@@ -53,6 +53,7 @@ map<string, vector<string>> read_taco_directory(
         }
     }
 
+    cleanup_xml_files();
     return top_level_category_file_locations;
 }
 
