@@ -268,7 +268,7 @@ set<string> parse_xml_file(
 ) {
     vector<XMLError*> errors;
 
-    XMLFileData* xml_file_data = new XMLFileData(open_file_for_read(xml_filepath), xml_filepath); // This is a memory leak
+    XMLFileData* xml_file_data = new XMLFileData(open_file_for_read(xml_filepath), xml_filepath);
     xml_files_to_cleanup.push_back(xml_file_data);
 
     rapidxml::xml_node<>* root_node = xml_file_data->xml_document.first_node();
