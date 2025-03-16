@@ -12,7 +12,7 @@
 #include "parseable.hpp"
 #include "string_hierarchy.hpp"
 
-std::set<Category*> read_protobuf_file(
+std::map<Attribute::UniqueId::UniqueId, Category*> read_protobuf_file(
     const MarkerPackFile& proto_filepath,
     std::map<std::string, Category>* marker_categories,
     std::vector<Parseable*>* parsed_pois

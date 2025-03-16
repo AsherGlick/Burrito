@@ -232,7 +232,7 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
 //
 // A function which parses a single XML file into their corrisponding classes.
 ////////////////////////////////////////////////////////////////////////////////
-set<Category*> parse_xml_file(
+map<Attribute::UniqueId::UniqueId, Category*> parse_xml_file(
     const MarkerPackFile& xml_filepath,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
@@ -260,12 +260,12 @@ set<Category*> parse_xml_file(
     XMLReaderState state;
     state.marker_pack_root_directory = xml_filepath.base;
 
-    set<Category*> top_level_categories;
+    map<Attribute::UniqueId::UniqueId, Category*> top_level_categories;
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
         if (get_node_name(node) == "MarkerCategory") {
             Category* category = parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
             if (category != nullptr) {
-                top_level_categories.insert(category);
+                top_level_categories[category->menu_id] = category;
             }
         }
         else if (get_node_name(node) == "POIs") {

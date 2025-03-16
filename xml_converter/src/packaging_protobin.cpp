@@ -67,7 +67,7 @@ Category* parse_guildpoint_categories(
 //
 // Reads a protobuf file into memory.
 ////////////////////////////////////////////////////////////////////////////////
-set<Category*> read_protobuf_file(
+map<Attribute::UniqueId::UniqueId, Category*> read_protobuf_file(
     const MarkerPackFile& proto_filepath,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
@@ -81,9 +81,10 @@ set<Category*> read_protobuf_file(
     state.marker_pack_root_directory = proto_filepath.base;
     state.textures = proto_message.textures();
 
-    set<Category*> top_level_categories;
+    map<Attribute::UniqueId::UniqueId, Category*> top_level_categories;
     for (int i = 0; i < proto_message.category_size(); i++) {
-        top_level_categories.insert(parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state));
+        Category* category = parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
+        top_level_categories[category->menu_id] = category;
     }
     return top_level_categories;
 }
