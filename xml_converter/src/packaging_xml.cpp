@@ -311,6 +311,7 @@ void cleanup_xml_files() {
         delete xml_files_to_cleanup[i]->xml_file;
         delete xml_files_to_cleanup[i];
     }
+    xml_files_to_cleanup.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
