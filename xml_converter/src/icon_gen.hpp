@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "attribute/bounce_gen.hpp"
 #include "attribute/color.hpp"
 #include "attribute/cull_chirality_gen.hpp"
 #include "attribute/euler_rotation_gen.hpp"
@@ -30,6 +31,7 @@ class Icon : public Parseable {
     int achievement_bit_index;
     int achievement_id;
     bool auto_trigger;
+    Attribute::Bounce::Bounce bounce;
     float bounce_delay;
     float bounce_duration;
     float bounce_height;
@@ -77,6 +79,7 @@ class Icon : public Parseable {
     bool achievement_bit_index_is_set = false;
     bool achievement_id_is_set = false;
     bool auto_trigger_is_set = false;
+    bool bounce_is_set = false;
     bool bounce_delay_is_set = false;
     bool bounce_duration_is_set = false;
     bool bounce_height_is_set = false;
