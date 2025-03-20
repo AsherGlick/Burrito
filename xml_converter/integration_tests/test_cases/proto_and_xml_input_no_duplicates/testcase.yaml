@@ -9,10 +9,13 @@ expected_stdout: |
     Please remove one of the packs or edit the name of the packs' top level category before running the program again.
     If you want to bypass this stop, use '--allow-duplicates'.
     The following top level categories were found in more than one pack:
-        "My Category" in files:
+        "My XML Category" in files:
             test_cases/proto_and_xml_input_no_duplicates/input/pack/xml_file.xml
-            test_cases/proto_and_xml_input_no_duplicates/input/pack2/markers.guildpoint
+        "My XML Category" in files:
             test_cases/proto_and_xml_input_no_duplicates/input/pack3/xml_file.xml
+        "My Category" in files:
+            test_cases/proto_and_xml_input_no_duplicates/input/pack2/markers.guildpoint
+        "My Category" in files:
             test_cases/proto_and_xml_input_no_duplicates/input/pack4/markers.guildpoint
 expected_stderr: |
 expected_returncode: 0
