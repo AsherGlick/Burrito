@@ -543,10 +543,10 @@ func init_category_tree():
 
 func guildpoint_categories_to_godot_nodes():
 	for guildpoint_category in self.guildpoint_data.get_category():
-		_guildpoint_categories_to_godot_nodes(null, guildpoint_category, self.markers_3d, self.markers_2d, false)
+		_guildpoint_categories_to_godot_nodes(null, guildpoint_category, self.markers_3d, self.markers_2d, 0)
 
 
-func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: Guildpoint.Category, parent_category3d: Spatial, parent_category2d: Node2D, collapsed: bool):
+func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: Guildpoint.Category, parent_category3d: Spatial, parent_category2d: Node2D, depth: int):
 	var godot_category3d = category3d_scene.instance()
 	var godot_category2d = category2d_scene.instance()
 	parent_category3d.add_subcategory(godot_category3d)
@@ -565,9 +565,15 @@ func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: 
 		category_name = "No Name"
 	category_item.set_text(0, category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
-	category_item.set_checked(1, Settings.local_category_data.get(Marshalls.raw_to_base64(category_data.guildpoint_category.get_id()), {}).get("checked", false))
+	var checked = true
+	var collapsed = true
+	if depth in [0, 1]:
+		checked = false
+	category_item.set_checked(1, Settings.local_category_data.get(Marshalls.raw_to_base64(category_data.guildpoint_category.get_id()), {}).get("checked", checked))
 	category_item.set_tooltip(1, "Show/Hide")
 	category_item.set_editable(1, true)
+	if depth == 0:
+		collapsed = false
 	category_item.set_collapsed(collapsed)
 	category_item.set_selectable(1, false)
 
@@ -583,7 +589,7 @@ func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: 
 
 
 	for category_child in guildpoint_category.get_children():
-		_guildpoint_categories_to_godot_nodes(category_item, category_child, godot_category3d, godot_category2d, true)
+		_guildpoint_categories_to_godot_nodes(category_item, category_child, godot_category3d, godot_category2d, depth + 1)
 
 
 func apply_category_visibility_to_nodes(category_item: TreeItem):
