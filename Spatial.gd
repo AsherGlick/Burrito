@@ -566,12 +566,12 @@ func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: 
 	category_item.set_text(0, category_name)
 	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 	var checked = true
-	var collapsed = true
 	if depth in [0, 1]:
 		checked = false
 	category_item.set_checked(1, Settings.local_category_data.get(Marshalls.raw_to_base64(category_data.guildpoint_category.get_id()), {}).get("checked", checked))
 	category_item.set_tooltip(1, "Show/Hide")
 	category_item.set_editable(1, true)
+	var collapsed = true
 	if depth == 0:
 		collapsed = false
 	category_item.set_collapsed(collapsed)
