@@ -5,7 +5,7 @@ CMakeCache.txt
 cmake_install.cmake
 compile_commands.json
 .clangd/
-xml_converter
+burrito_converter
 venv/
 web_docs
 __pycache__/

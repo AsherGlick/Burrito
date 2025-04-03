@@ -1173,7 +1173,7 @@ func import_marker_pack(dir: String, type):
 		"--split-by-map-id",
 	])
 
-	var duplicate_categories: Dictionary = FileHandler.call_xml_converter(args)
+	var duplicate_categories: Dictionary = FileHandler.call_burrito_converter(args)
 	if duplicate_categories.empty():
 		save_hashes()
 		load_guildpoint_markers(self.map_id)
@@ -1189,7 +1189,7 @@ func import_marker_pack(dir: String, type):
 			for file in duplicate_categories[category]:
 				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
 					FileHandler.delete_file(file)
-		duplicate_categories = FileHandler.call_xml_converter(args)
+		duplicate_categories = FileHandler.call_burrito_converter(args)
 		if duplicate_categories.empty():
 			save_hashes()
 			load_guildpoint_markers(self.map_id)
@@ -1203,4 +1203,4 @@ func _on_SaveData_pressed():
 		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
 		"--split-by-category",
 	]
-	FileHandler.call_xml_converter(args)
+	FileHandler.call_burrito_converter(args)
