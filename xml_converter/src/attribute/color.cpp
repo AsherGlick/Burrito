@@ -16,12 +16,12 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// int_to_float // float_to_int
+// convert_color_channel_int_to_float
 //
-// Helper functions to convert the value of colors from one type to another.
-// Also serves to make sure the values stay within the bounds.
+// Helper function to convert the value of a color from an 8bit integer to a
+// floating point number. Numbers outside of the valid range will be clamped.
 ////////////////////////////////////////////////////////////////////////////////
-float convert_color_channel_int_to_float(int input) {
+static float convert_color_channel_int_to_float(int input) {
     if (input > 255) {
         input = 255;
     }
@@ -32,7 +32,13 @@ float convert_color_channel_int_to_float(int input) {
     return output;
 }
 
-int convert_color_channel_float_to_int(float input) {
+////////////////////////////////////////////////////////////////////////////////
+// convert_color_channel_float_to_int
+//
+// Helper function to convert the value of a color from a floating point number
+// to an 8bit integer. Numbers outside of the valid range will be clamped.
+////////////////////////////////////////////////////////////////////////////////
+static int convert_color_channel_float_to_int(float input) {
     if (input > 1.0) {
         input = 1.0;
     }
@@ -46,7 +52,7 @@ int convert_color_channel_float_to_int(float input) {
 ////////////////////////////////////////////////////////////////////////////////
 // from_xml_attribute
 //
-// Parses a Color from the value of a rapidxml::xml_attribute.
+// Reads a Color from an xml attribute.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Color::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -95,7 +101,7 @@ void Attribute::Color::from_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // to_xml_attribute
 //
-// Converts a color into a fully qualified xml attribute string.
+// Writes a Color to an xml attribute using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Color::to_xml_attribute(
     XMLWriterState*,
@@ -122,7 +128,7 @@ void Attribute::Color::to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // from_proto_field
 //
-// Parses a Color from a proto field.
+// Reads a Color from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Color::from_proto_field(
     uint32_t input,

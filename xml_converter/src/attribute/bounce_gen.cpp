@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a Bounce from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::Bounce::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -35,6 +40,11 @@ void Attribute::Bounce::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a Bounce to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::Bounce::to_xml_attribute(
     XMLWriterState*,
     const Bounce* value,

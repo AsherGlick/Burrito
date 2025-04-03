@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // from_xml_attribute
 //
-// Parses a MarkerCategory from the value of a rapidxml::xml_attribute.
+// Reads a MarkerCategory from an xml attribute.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::MarkerCategory::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -26,7 +26,7 @@ void Attribute::MarkerCategory::from_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // to_xml_attribute
 //
-// Converts a marker category a fully qualified xml attribute string.
+// Writes a MarkerCategory to an xml attribute using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::MarkerCategory::to_xml_attribute(
     XMLWriterState*,
@@ -39,7 +39,7 @@ void Attribute::MarkerCategory::to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // from_proto_field
 //
-// Parses a marker category from a proto field.
+// Reads a MarkerCategory from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::MarkerCategory::from_proto_field(
     guildpoint::Category input,
@@ -56,7 +56,7 @@ void Attribute::MarkerCategory::from_proto_field(
 ////////////////////////////////////////////////////////////////////////////////
 // to_proto_field
 //
-// Returns a guildpoint::Category so that it can be saved to proto.
+// Writes a MarkerCategory to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::MarkerCategory::to_proto_field(
     MarkerCategory value,

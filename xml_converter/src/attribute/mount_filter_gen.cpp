@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a MountFilter from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MountFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -74,6 +79,11 @@ void Attribute::MountFilter::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a MountFilter to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MountFilter::to_xml_attribute(
     XMLWriterState*,
     const MountFilter* value,
@@ -114,6 +124,11 @@ void Attribute::MountFilter::to_xml_attribute(
     setter(output);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a MountFilter from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MountFilter::from_proto_field(
     guildpoint::MountFilter input,
     ProtoReaderState*,
@@ -135,6 +150,11 @@ void Attribute::MountFilter::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a MountFilter to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MountFilter::to_proto_field(
     MountFilter value,
     ProtoWriterState*,

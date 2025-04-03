@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a MapTypeFilter from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MapTypeFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -130,6 +135,11 @@ void Attribute::MapTypeFilter::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a MapTypeFilter to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MapTypeFilter::to_xml_attribute(
     XMLWriterState*,
     const MapTypeFilter* value,
@@ -212,6 +222,11 @@ void Attribute::MapTypeFilter::to_xml_attribute(
     setter(output);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a MapTypeFilter from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MapTypeFilter::from_proto_field(
     guildpoint::MapTypeFilter input,
     ProtoReaderState*,
@@ -247,6 +262,11 @@ void Attribute::MapTypeFilter::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a MapTypeFilter to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::MapTypeFilter::to_proto_field(
     MapTypeFilter value,
     ProtoWriterState*,

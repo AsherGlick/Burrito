@@ -11,9 +11,9 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// xml_attribute_to_string
+// from_xml_attribute
 //
-// Parses a string from the value of a rapidxml::xml_attribute.
+// Reads a string from an xml attribute.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::String::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -27,9 +27,9 @@ void Attribute::String::from_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// string_to_xml_attribute
+// to_xml_attribute
 //
-// Converts a string into a fully qualified xml attribute string.
+// Writes a string to an xml attribute using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::String::to_xml_attribute(
     XMLWriterState*,
@@ -40,9 +40,9 @@ void Attribute::String::to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_string
+// from_proto_field
 //
-// Parses a string from a proto field.
+// Reads a string from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::String::from_proto_field(
     string input,
@@ -55,7 +55,7 @@ void Attribute::String::from_proto_field(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// string_to_proto
+// to_proto_field
 //
 // Writes a string to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////

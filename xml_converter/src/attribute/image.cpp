@@ -21,7 +21,7 @@ Attribute::Image::Image::Image(std::string base, std::string relative_filepath)
 ////////////////////////////////////////////////////////////////////////////////
 // from_xml_attribute
 //
-// Parses the path to an image from the value of a rapidxml::xml_attribute.
+// Reads an Image from an xml attribute.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Image::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -38,7 +38,7 @@ void Attribute::Image::from_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // to_xml_attribute
 //
-// Converts an image into a fully qualified xml attribute string.
+// Writes an Image to an xml attribute using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Image::to_xml_attribute(
     XMLWriterState* state,
@@ -53,7 +53,7 @@ void Attribute::Image::to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // from_proto_field
 //
-// Parses an Image from proto
+// Reads an Image from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Image::from_proto_field(
     unsigned int input,
@@ -69,8 +69,9 @@ void Attribute::Image::from_proto_field(
 ////////////////////////////////////////////////////////////////////////////////
 // to_proto_field
 //
-// Creates a new element of the proto writer state if the image has not been
-// used before. Then writes the new or existing index of the image to the proto.
+// Writes an Image to a proto using the provided setter function. If the image
+// has not been used before the image is added to the writer state before it is
+// written to the proto setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Image::to_proto_field(
     const Image& value,

@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a SpeciesFilter from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpeciesFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -54,6 +59,11 @@ void Attribute::SpeciesFilter::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a SpeciesFilter to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpeciesFilter::to_xml_attribute(
     XMLWriterState*,
     const SpeciesFilter* value,
@@ -79,6 +89,11 @@ void Attribute::SpeciesFilter::to_xml_attribute(
     setter(output);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a SpeciesFilter from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpeciesFilter::from_proto_field(
     guildpoint::SpeciesFilter input,
     ProtoReaderState*,
@@ -95,6 +110,11 @@ void Attribute::SpeciesFilter::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a SpeciesFilter to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpeciesFilter::to_proto_field(
     SpeciesFilter value,
     ProtoWriterState*,

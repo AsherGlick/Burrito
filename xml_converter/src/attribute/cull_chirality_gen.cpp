@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a CullChirality from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::CullChirality::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -38,6 +43,11 @@ void Attribute::CullChirality::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a CullChirality to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::CullChirality::to_xml_attribute(
     XMLWriterState*,
     const CullChirality* value,
@@ -60,6 +70,11 @@ void Attribute::CullChirality::to_xml_attribute(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a CullChirality from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::CullChirality::from_proto_field(
     guildpoint::CullChirality input,
     ProtoReaderState*,
@@ -86,6 +101,11 @@ void Attribute::CullChirality::from_proto_field(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a CullChirality to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::CullChirality::to_proto_field(
     CullChirality value,
     ProtoWriterState*,

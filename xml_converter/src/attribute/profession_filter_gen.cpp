@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a ProfessionFilter from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::ProfessionFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -70,6 +75,11 @@ void Attribute::ProfessionFilter::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a ProfessionFilter to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::ProfessionFilter::to_xml_attribute(
     XMLWriterState*,
     const ProfessionFilter* value,
@@ -107,6 +117,11 @@ void Attribute::ProfessionFilter::to_xml_attribute(
     setter(output);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a ProfessionFilter from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::ProfessionFilter::from_proto_field(
     guildpoint::ProfessionFilter input,
     ProtoReaderState*,
@@ -127,6 +142,11 @@ void Attribute::ProfessionFilter::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a ProfessionFilter to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::ProfessionFilter::to_proto_field(
     ProfessionFilter value,
     ProtoWriterState*,
