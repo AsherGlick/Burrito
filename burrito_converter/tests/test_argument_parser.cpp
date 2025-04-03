@@ -7,7 +7,7 @@ class ParseArgumentsTest : public ::testing::Test {};
 
 TEST_F(ParseArgumentsTest, ValidInputPaths){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"input1",
         (char*)"--output-taco-path",
@@ -33,7 +33,7 @@ TEST_F(ParseArgumentsTest, ValidInputPaths){
 
 TEST_F(ParseArgumentsTest, ValidSplitMapID){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-guildpoint-path",
         (char*)"input1",
         (char*)"--output-guildpoint-path",
@@ -60,7 +60,7 @@ TEST_F(ParseArgumentsTest, ValidSplitMapID){
 
 TEST_F(ParseArgumentsTest, ValidSplitCategory){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-guildpoint-path",
         (char*)"input1",
         (char*)"--output-guildpoint-path",
@@ -90,7 +90,7 @@ TEST_F(ParseArgumentsTest, ValidSplitCategory){
 
 TEST_F(ParseArgumentsTest, ValidSplitCategoryWithDepth){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-guildpoint-path",
         (char*)"input1",
         (char*)"--output-guildpoint-path",
@@ -121,7 +121,7 @@ TEST_F(ParseArgumentsTest, ValidSplitCategoryWithDepth){
 
 TEST_F(ParseArgumentsTest, ValidMultipleInputPaths){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--allow-duplicates",
         (char*)"--input-taco-path",
         (char*)"input1",
@@ -162,7 +162,7 @@ TEST_F(ParseArgumentsTest, ValidMultipleInputPaths){
 
 TEST_F(ParseArgumentsTest, InvalidSplitMapIDAfterInput){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"input1",
         (char*)"--split-by-map-id",
@@ -181,7 +181,7 @@ TEST_F(ParseArgumentsTest, InvalidSplitMapIDAfterInput){
 
 TEST_F(ParseArgumentsTest, InvalidNoPathAfterInput){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"--output-taco-path",
         (char*)"output1"
@@ -198,7 +198,7 @@ TEST_F(ParseArgumentsTest, InvalidNoPathAfterInput){
 
 TEST_F(ParseArgumentsTest, InvalidNoPathAfterOutput){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"input1",
         (char*)"--output-taco-path"
@@ -215,7 +215,7 @@ TEST_F(ParseArgumentsTest, InvalidNoPathAfterOutput){
 
 TEST_F(ParseArgumentsTest, InvalidFileAfterWrongArgument){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"input1",
         (char*)"--output-taco-path",
@@ -235,7 +235,7 @@ TEST_F(ParseArgumentsTest, InvalidFileAfterWrongArgument){
 
 TEST_F(ParseArgumentsTest, InvalidArgument){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"input1",
         (char*)"--output-taco-path",
@@ -254,7 +254,7 @@ TEST_F(ParseArgumentsTest, InvalidArgument){
 
 TEST_F(ParseArgumentsTest, InvalidTypeAfterSplitCategory){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"input1",
         (char*)"--output-guildpoint-path",
@@ -274,7 +274,7 @@ TEST_F(ParseArgumentsTest, InvalidTypeAfterSplitCategory){
 
 TEST_F(ParseArgumentsTest, InvalidMultipleIntsAfterSplitCategory){
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--input-taco-path",
         (char*)"input1",
         (char*)"--output-guildpoint-path",
@@ -296,7 +296,7 @@ TEST_F(ParseArgumentsTest, InvalidMultipleIntsAfterSplitCategory){
 
 TEST_F(ParseArgumentsTest, HelpFlag) {
     char* argv[] = {
-        (char*)"./xml_converter",
+        (char*)"./burrito_converter",
         (char*)"--help"
     };
     int argc = sizeof(argv) / sizeof(char*);
@@ -306,6 +306,6 @@ TEST_F(ParseArgumentsTest, HelpFlag) {
     std::string std_output = testing::internal::GetCapturedStdout();
 
     EXPECT_TRUE(parsed_arguments.marker_pack_configs.empty());
-    EXPECT_NE(std_output.find("usage: ./xml_converter"), std::string::npos);
+    EXPECT_NE(std_output.find("usage: ./burrito_converter"), std::string::npos);
 }
 

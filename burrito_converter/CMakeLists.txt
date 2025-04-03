@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.16)
-project (XMLConverter)
+project (BurritoConverter)
 
 # Set CPP standard library to cpp17
 set(CMAKE_CXX_STANDARD 17)
@@ -20,7 +20,7 @@ PROTOBUF_GENERATE_CPP(PROTO_SRC PROTO_HEADER proto/guildpoint.proto)
 
 # Add Dependencies
 file(GLOB_RECURSE SOURCES "src/*.cpp")
-list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/xml_converter.cpp")
+list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/burrito_converter.cpp")
 
 # Create a static library for common sources
 add_library(${CORE_LIB} STATIC ${SOURCES} ${PROTO_SRC})
@@ -38,14 +38,14 @@ endif()
 
 ### CLI Executable #############################################################
 # Name Output File
-set(TARGET_NAME xml_converter)
+set(TARGET_NAME burrito_converter)
 
 # Set output as executable.
-add_executable(${TARGET_NAME} src/xml_converter.cpp)
+add_executable(${TARGET_NAME} src/burrito_converter.cpp)
 target_link_libraries(${TARGET_NAME} ${CORE_LIB})
 
 ### TESTS ######################################################################
-set(TEST_TARGET_NAME test_xml_converter)
+set(TEST_TARGET_NAME test_burrito_converter)
 
 # Enable testing using CMake's built-in functionality to be able to run `make test`
 enable_testing()

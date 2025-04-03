@@ -22,4 +22,4 @@ func _on_FileDialog_dir_selected(dir_path: String):
 		"--output-guildpoint-path", new_path,
 		"--output-split-guildpoint-path", self.unsaved_markers_dir
 	]
-	FileHandler.call_xml_converter(args)
+	FileHandler.call_burrito_converter(args)
