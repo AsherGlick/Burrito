@@ -34,6 +34,9 @@ bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLEr
     else if (attributename == "autotrigger") {
         Attribute::Bool::from_xml_attribute(attribute, errors, state, &(this->auto_trigger), &(this->auto_trigger_is_set));
     }
+    else if (attributename == "bounce") {
+        Attribute::Bounce::from_xml_attribute(attribute, errors, state, &(this->bounce), &(this->bounce_is_set));
+    }
     else if (attributename == "bouncedelay") {
         Attribute::Float::from_xml_attribute(attribute, errors, state, &(this->bounce_delay), &(this->bounce_delay_is_set));
     }
@@ -270,6 +273,10 @@ rapidxml::xml_node<char>* Icon::as_xml(XMLWriterState* state) const {
         std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("AutoTrigger", state->doc->allocate_string(val.c_str()))); };
         Attribute::Bool::to_xml_attribute(state, &this->auto_trigger, setter);
     }
+    if (this->bounce_is_set) {
+        std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("Bounce", state->doc->allocate_string(val.c_str()))); };
+        Attribute::Bounce::to_xml_attribute(state, &this->bounce, setter);
+    }
     if (this->bounce_delay_is_set) {
         std::function<void(std::string)> setter = [xml_node, state](std::string val) { xml_node->append_attribute(state->doc->allocate_attribute("BounceDelay", state->doc->allocate_string(val.c_str()))); };
         Attribute::Float::to_xml_attribute(state, &this->bounce_delay, setter);
@@ -462,6 +469,7 @@ rapidxml::xml_node<char>* Icon::as_xml(XMLWriterState* state) const {
 //  achievement_bit_index
 //  achievement_id
 //  auto_trigger
+//  bounce
 //  bounce_delay
 //  bounce_duration
 //  bounce_height
