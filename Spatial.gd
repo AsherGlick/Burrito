@@ -1179,16 +1179,24 @@ func import_marker_pack(dir: String, type):
 		load_guildpoint_markers(self.map_id)
 		return
 
-	self.overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + PoolStringArray(duplicate_categories.keys()).join("\n")
+	var category_names: PoolStringArray
+	for id in duplicate_categories.keys():
+		for cat_name in duplicate_categories[id].keys():
+			for file in duplicate_categories[id][cat_name]:
+				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+					if !(cat_name in category_names):
+						category_names.push_back(cat_name)
+	self.overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + category_names.join("\n")
 	self.overwrite_confirmation.popup_centered()
 
 	# Await result of pop up
 	var return_val = yield(self.overwrite_confirmation, "confirmation_result")
 	if return_val == true:
-		for category in duplicate_categories.keys():
-			for file in duplicate_categories[category]:
-				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
-					FileHandler.delete_file(file)
+		for id in duplicate_categories.keys():
+			for category in duplicate_categories[id]:
+				for file in duplicate_categories[id][category]:
+					if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+						FileHandler.delete_file(file)
 		duplicate_categories = FileHandler.call_xml_converter(args)
 		if duplicate_categories.empty():
 			save_hashes()

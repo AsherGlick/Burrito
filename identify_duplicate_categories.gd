@@ -21,13 +21,15 @@
 # Example Output
 # ==============
 #   {
-#       "mc": [
-#          "pack/xml_file.xml",
-#          "pack3/xml_file.xml",
-#        ]
-#       "mycategory": [
-#          "pack2/markers.guildpoint",
-#        ]
+#       "ID": {
+#         "mc": [
+#            "pack/xml_file.xml",
+#            "pack3/xml_file.xml",
+#          ],
+#         "mycategory": [
+#            "pack2/markers.guildpoint",
+#          ]
+#       }
 #   }
 ################################################################################
 static func get_duplicate_categories(stdin: String) -> Dictionary:
@@ -35,6 +37,7 @@ static func get_duplicate_categories(stdin: String) -> Dictionary:
 	var capturing: bool = false
 	var collisions: Dictionary = {}
 	var category = null
+	var id = null
 	for line in lines:
 		if line == null:
 			continue
@@ -42,16 +45,22 @@ static func get_duplicate_categories(stdin: String) -> Dictionary:
 			if line == "The following top level categories had a conflict in IDs. For XML, these IDs may be generated from the 'name' attribute.":
 				capturing = true
 		elif capturing:
-			if line.begins_with("            "):
+			if line.begins_with("    Categories"):
+				# Remove the first 44 characters from the message and the open quote
+				var line_without_prefix = line.substr(45)
+				var endquote_index = line_without_prefix.find("\"")
+				id = line_without_prefix.substr(0, endquote_index)
+				collisions[id] = {}
+			elif line.begins_with("            "):
 				# Remove the first 12 spaces
-				var file_name = line.substr(8)
-				collisions[category].append(file_name)
+				var file_name = line.substr(12)
+				collisions[id][category].append(file_name)
 			elif line.begins_with("        In these files the Category 'name' is "):
-				# Remove the first 38 characters and the open quote
-				var line_without_prefix = line.substr(39)
+				# Remove the first 46 characters and the open quote
+				var line_without_prefix = line.substr(47)
 				var endquote_index = line_without_prefix.find("\"")
 				category = line_without_prefix.substr(0, endquote_index)
-				collisions[category] = []
+				collisions[id][category] = []
 			else:
 				break
 	return collisions

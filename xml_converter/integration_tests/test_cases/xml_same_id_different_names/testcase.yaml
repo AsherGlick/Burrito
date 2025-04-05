@@ -1,0 +1,20 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+    Error: Category attribute 'name' is missing so it cannot be properly referenced
+    test_cases/xml_same_id_different_names/input/pack/xml_file4.xml
+    2 |    <MarkerCategory ID="92RAfU6hdh4=">
+      |     ^^^^^^^^^^^^^^
+
+expected_stderr: |
+    Error: Different MarkerCategory nodes were found with same ID (92RAfU6hdh4=)
+        In these files the Category 'name' is ""
+            test_cases/xml_same_id_different_names/input/pack/xml_file4.xml
+        In these files the Category 'name' is "mc"
+            test_cases/xml_same_id_different_names/input/pack/xml_file.xml
+            test_cases/xml_same_id_different_names/input/pack/xml_file3.xml
+        In these files the Category 'name' is "not_mc"
+            test_cases/xml_same_id_different_names/input/pack/xml_file2.xml
+
+
+expected_returncode: 0
