@@ -53,7 +53,7 @@ map<UniqueId, CategoryWithinSinglePack> read_taco_directory(
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-
+    map<UniqueId, map<string, vector<string>>> id_conflicts;
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
     for (const MarkerPackFile& path : xml_files) {
@@ -62,11 +62,8 @@ map<UniqueId, CategoryWithinSinglePack> read_taco_directory(
         for (map<UniqueId, Category*>::iterator it = top_level_categories.begin(); it != top_level_categories.end(); it++) {
             if (top_level_category_file_locations.find(it->first) != top_level_category_file_locations.end()) {
                 if (top_level_category_file_locations[it->first].category != it->second) {
-                    cerr << "Error: Different MarkerCategory objects were found with same ID" << endl;
-                    for (size_t i = 0; i < top_level_category_file_locations[it->first].file_paths.size(); i++) {
-                        cerr << "    \"" << top_level_category_file_locations[it->first].category->name << "\" in file " << top_level_category_file_locations[it->first].file_paths[i] << endl;
-                    }
-                    cerr << "    \"" << it->second->name << "\" in file " << file_path << endl;
+                    id_conflicts[it->first][top_level_category_file_locations[it->first].category->name] = top_level_category_file_locations[it->first].file_paths;
+                    id_conflicts[it->first][it->second->name].push_back(file_path);
                     continue;
                 }
             }
@@ -77,6 +74,28 @@ map<UniqueId, CategoryWithinSinglePack> read_taco_directory(
         }
     }
 
+    if (id_conflicts.size() > 0) {
+        for (map<UniqueId, map<string, vector<string>>>::iterator id_conflicts_it = id_conflicts.begin(); id_conflicts_it != id_conflicts.end(); id_conflicts_it++) {
+            cerr << "Error: Different MarkerCategory nodes were found with same ID (" << id_conflicts_it->first.get_value() << ")" << endl;
+            map<string, vector<string>> category_name_to_file_names;
+            for (map<string, vector<string>>::iterator category_it = id_conflicts_it->second.begin(); category_it != id_conflicts_it->second.end(); category_it++) {
+                for (size_t i = 0; i < category_it->second.size(); i++) {
+                    if (category_it->first == "") {
+                        category_name_to_file_names["not found"].push_back(category_it->second[i]);
+                    }
+                    else {
+                        category_name_to_file_names["\"" + category_it->first + "\""].push_back(category_it->second[i]);
+                    }
+                }
+            }
+            for (pair<string, vector<string>> category_to_file_names : category_name_to_file_names) {
+                cerr << "    In these files the Category 'name' is " << category_to_file_names.first << endl;
+                for (size_t i = 0; i < category_to_file_names.second.size(); i++) {
+                    cerr << "        " << category_to_file_names.second[i] << endl;
+                }
+            }
+        }
+    }
     return top_level_category_file_locations;
 }
 
@@ -89,7 +108,7 @@ map<UniqueId, CategoryWithinSinglePack> read_burrito_directory(
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-
+    map<UniqueId, map<string, vector<string>>> id_conflicts;
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
     for (const MarkerPackFile& path : burrito_files) {
@@ -98,11 +117,8 @@ map<UniqueId, CategoryWithinSinglePack> read_burrito_directory(
         for (map<UniqueId, Category*>::iterator it = top_level_categories.begin(); it != top_level_categories.end(); it++) {
             if (top_level_category_file_locations.find(it->first) != top_level_category_file_locations.end()) {
                 if (top_level_category_file_locations[it->first].category != it->second) {
-                    cerr << "Error: Different MarkerCategory objects were found with same ID" << endl;
-                    for (size_t i = 0; i < top_level_category_file_locations[it->first].file_paths.size(); i++) {
-                        cerr << "    \"" << top_level_category_file_locations[it->first].category->name << "\" in file: " << top_level_category_file_locations[it->first].file_paths[i] << endl;
-                    }
-                    cerr << "    \"" << it->second->name << "\" in file: " << file_path << endl;
+                    id_conflicts[it->first][top_level_category_file_locations[it->first].category->display_name] = top_level_category_file_locations[it->first].file_paths;
+                    id_conflicts[it->first][it->second->display_name].push_back(file_path);
                     continue;
                 }
             }
@@ -110,6 +126,28 @@ map<UniqueId, CategoryWithinSinglePack> read_burrito_directory(
                 top_level_category_file_locations[it->first].category = it->second;
             }
             top_level_category_file_locations[it->first].file_paths.push_back(file_path);
+        }
+    }
+    if (id_conflicts.size() > 0) {
+        for (map<UniqueId, map<string, vector<string>>>::iterator id_conflicts_it = id_conflicts.begin(); id_conflicts_it != id_conflicts.end(); id_conflicts_it++) {
+            cerr << "Error: Different Category messages were found with same ID (" << id_conflicts_it->first.get_value() << ")" << endl;
+            map<string, vector<string>> category_name_to_file_names;
+            for (map<string, vector<string>>::iterator category_it = id_conflicts_it->second.begin(); category_it != id_conflicts_it->second.end(); category_it++) {
+                for (size_t i = 0; i < category_it->second.size(); i++) {
+                    if (category_it->first == "") {
+                        category_name_to_file_names["not found"].push_back(category_it->second[i]);
+                    }
+                    else {
+                        category_name_to_file_names["\"" + category_it->first + "\""].push_back(category_it->second[i]);
+                    }
+                }
+            }
+            for (pair<string, vector<string>> category_to_file_names : category_name_to_file_names) {
+                cerr << "    " << category_to_file_names.first << " in files:" << endl;
+                for (size_t i = 0; i < category_to_file_names.second.size(); i++) {
+                    cerr << "        " << category_to_file_names.second[i] << endl;
+                }
+            }
         }
     }
 
@@ -220,7 +258,7 @@ void process_data(ParsedArguments parsed_arguments) {
     cout << "The guildpoint parse function took " << ms << " milliseconds to run" << endl;
 
     for (map<UniqueId, CategoryWithinMultiplePacks>::iterator it = top_level_category_file_locations_by_pack.begin(); it != top_level_category_file_locations_by_pack.end(); it++) {
-        if (it->second.categories.size() != 1) {
+        if (it->second.categories.size() > 1) {
             duplicate_categories[it->first] = it->second;
         }
     }
@@ -232,17 +270,24 @@ void process_data(ParsedArguments parsed_arguments) {
         // options like selective merges or changing category names to be unique
         cout << "Please remove one of the packs or edit the name of the packs' top level category before running the program again." << endl;
         cout << "If you want to bypass this stop, use '--allow-duplicates'." << endl;
-        cout << "The following top level categories were found in more than one pack:" << endl;
+        cout << "The following top level categories had a conflict in IDs. For XML, these IDs may be generated from the 'name' attribute." << endl;
         for (map<UniqueId, CategoryWithinMultiplePacks>::iterator it = duplicate_categories.begin(); it != duplicate_categories.end(); it++) {
+            cout << "    Categories were found that share the ID \"" << it->first.get_value() << "\"" << endl;
+            map<string, vector<string>> category_name_to_file_names;
             for (CategoryWithinSinglePack category_within_single_pack : it->second.categories) {
-                if (category_within_single_pack.category->display_name_is_set) {
-                    cout << "    \"" << category_within_single_pack.category->display_name << "\" in files:" << endl;
-                }
-                else {
-                    cout << "    \"" << category_within_single_pack.category->name << "\" in files:" << endl;
-                }
                 for (size_t i = 0; i < category_within_single_pack.file_paths.size(); i++) {
-                    cout << "        " << category_within_single_pack.file_paths[i] << endl;
+                    if (category_within_single_pack.category->name == "") {
+                        category_name_to_file_names["not found"].push_back(category_within_single_pack.file_paths[i]);
+                    }
+                    else {
+                        category_name_to_file_names["\"" + category_within_single_pack.category->name + "\""].push_back(category_within_single_pack.file_paths[i]);
+                    }
+                }
+            }
+            for (pair<string, vector<string>> category_to_file_names : category_name_to_file_names) {
+                cout << "        In these files the Category 'name' is " << category_to_file_names.first << "" << endl;
+                for (size_t i = 0; i < category_to_file_names.second.size(); i++) {
+                    cout << "            " << category_to_file_names.second[i] << endl;
                 }
             }
         }

@@ -10,6 +10,7 @@
 #include "../state_structs/proto_writer_state.hpp"
 #include "../state_structs/xml_reader_state.hpp"
 #include "../state_structs/xml_writer_state.hpp"
+#include "../string_helper.hpp"
 
 class XMLError;
 
@@ -25,6 +26,10 @@ class UniqueId {
 
     bool operator<(const UniqueId& other) const {
         return guid < other.guid;
+    }
+
+    std::string get_value() const {
+        return base64_encode(&(guid[0]), guid.size());
     }
 };
 

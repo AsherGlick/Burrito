@@ -1,5 +1,7 @@
 <OverlayData>
-    <MarkerCategory DisplayName="My XML Category" Name="mc">
+    <MarkerCategory DisplayName="My Category" Name="mycategory" ID="92RAfU6hdh4=">
+    </MarkerCategory>
+    <MarkerCategory DisplayName="My 2nd XML Category" Name="mc2">
     </MarkerCategory>
 
     <POIs>

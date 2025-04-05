@@ -38,10 +38,7 @@ static Category* parse_marker_categories(
             errors->push_back(new XMLNodeNameError("Category attribute 'name' is missing so it cannot be properly referenced", node));
 
             // TODO: Maybe fall back on display name slugification.
-            name = {
-                "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER),
-                false,
-            };
+            name = "UNKNOWN_CATEGORY_" + to_string(UNKNOWN_CATEGORY_COUNTER);
             UNKNOWN_CATEGORY_COUNTER++;
         }
         else {
