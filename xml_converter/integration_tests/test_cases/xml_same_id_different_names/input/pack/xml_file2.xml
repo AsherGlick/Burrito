@@ -1,0 +1,8 @@
+<OverlayData>
+    <MarkerCategory DisplayName="Not My XML Category" Name="not_mc" ID="92RAfU6hdh4=">
+    </MarkerCategory>
+
+    <POIs>
+        <POI Type="not_mc" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+    </POIs>
+</OverlayData>

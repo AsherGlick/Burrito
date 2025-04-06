@@ -1,8 +1,10 @@
 <OverlayData>
-    <MarkerCategory DisplayName="MyCategory" Name="Mycategory">
+    <MarkerCategory DisplayName="My Category" Name="mycategory" ID="92RAfU6hdh4=">
+    </MarkerCategory>
+    <MarkerCategory DisplayName="My 2nd XML Category" Name="mc2">
     </MarkerCategory>
 
     <POIs>
-        <POI Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Type="mc" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
     </POIs>
 </OverlayData>

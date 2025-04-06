@@ -2,6 +2,7 @@ input_paths:
     "pack": "xml"
     "pack2": "proto"
     "pack3": "xml"
+    "pack4": "proto"
 expected_stdout: |
 expected_stderr: |
 expected_returncode: 0

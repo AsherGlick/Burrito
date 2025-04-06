@@ -24,7 +24,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-string parse_guildpoint_categories(
+Category* parse_guildpoint_categories(
     string full_category_name,
     ::guildpoint::Category proto_category,
     map<string, Category>* marker_categories,
@@ -59,7 +59,7 @@ string parse_guildpoint_categories(
     for (int i = 0; i < proto_category.children_size(); i++) {
         parse_guildpoint_categories(full_category_name + ".", proto_category.children(i), &(this_category->children), parsed_pois, state);
     }
-    return category_name;
+    return this_category;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ string parse_guildpoint_categories(
 //
 // Reads a protobuf file into memory.
 ////////////////////////////////////////////////////////////////////////////////
-set<string> read_protobuf_file(
+map<Attribute::UniqueId::UniqueId, Category*> read_protobuf_file(
     const MarkerPackFile& proto_filepath,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
@@ -81,11 +81,12 @@ set<string> read_protobuf_file(
     state.marker_pack_root_directory = proto_filepath.base;
     state.textures = proto_message.textures();
 
-    set<string> category_names;
+    map<Attribute::UniqueId::UniqueId, Category*> top_level_categories;
     for (int i = 0; i < proto_message.category_size(); i++) {
-        category_names.insert(parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state));
+        Category* category = parse_guildpoint_categories("", proto_message.category(i), marker_categories, parsed_pois, &state);
+        top_level_categories[category->menu_id] = category;
     }
-    return category_names;
+    return top_level_categories;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

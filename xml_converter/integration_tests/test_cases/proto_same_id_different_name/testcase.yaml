@@ -1,0 +1,15 @@
+input_paths: 
+    "pack": "proto"
+expected_stdout: |
+
+expected_stderr: |
+    Error: Different Category messages were found with same ID (92RAfU6hdh4=)
+        In these files the Category 'name' is ""
+            test_cases/proto_same_id_different_name/input/pack/markers4.guildpoint
+        In these files the Category 'name' is "mycategory"
+            test_cases/proto_same_id_different_name/input/pack/markers.guildpoint
+            test_cases/proto_same_id_different_name/input/pack/markers3.guildpoint
+        In these files the Category 'name' is "notmycategory"
+            test_cases/proto_same_id_different_name/input/pack/markers2.guildpoint
+
+expected_returncode: 0

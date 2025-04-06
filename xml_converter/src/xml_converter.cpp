@@ -18,6 +18,7 @@
 
 #include "argument_parser.hpp"
 #include "attribute/marker_category.hpp"
+#include "attribute/unique_id.hpp"
 #include "category_gen.hpp"
 #include "file_helper.hpp"
 #include "guildpoint.pb.h"
@@ -32,48 +33,125 @@
 #include "trail_gen.hpp"
 
 using namespace std;
+using namespace Attribute::UniqueId;
 
-map<string, vector<string>> read_taco_directory(
+class CategoryWithinSinglePack {
+ public:
+    Category* category;
+    vector<string> file_paths;
+
+    CategoryWithinSinglePack() {
+        this->category = nullptr;
+    }
+};
+
+struct CategoryWithinMultiplePacks {
+    vector<CategoryWithinSinglePack> categories;
+};
+
+struct CategoryNameAndFilePath {
+    string name;
+    string file_path;
+};
+
+map<UniqueId, CategoryWithinSinglePack> read_taco_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
 ) {
-    map<string, vector<string>> top_level_category_file_locations;
+    map<UniqueId, CategoryWithinSinglePack> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-
+    map<UniqueId, map<string, vector<CategoryNameAndFilePath>>> id_to_category_name_to_filepaths;
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
     for (const MarkerPackFile& path : xml_files) {
-        set<string> top_level_category_names = parse_xml_file(path, marker_categories, parsed_pois);
+        map<UniqueId, Category*> top_level_categories = parse_xml_file(path, marker_categories, parsed_pois);
         string file_path = join_file_paths(input_path, path.relative_filepath);
-        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-            top_level_category_file_locations[*it].push_back(file_path);
+        for (map<UniqueId, Category*>::iterator it = top_level_categories.begin(); it != top_level_categories.end(); it++) {
+            UniqueId id = it->first;
+            Category* category = it->second;
+            id_to_category_name_to_filepaths[id][lowercase(category->name)].push_back({category->name, file_path});
+            if (top_level_category_file_locations[id].category == nullptr || top_level_category_file_locations[id].category == category) {
+                top_level_category_file_locations[id].category = category;
+                top_level_category_file_locations[id].file_paths.push_back(file_path);
+            }
         }
     }
 
+    for (auto it = id_to_category_name_to_filepaths.begin(); it != id_to_category_name_to_filepaths.end(); it++) {
+        UniqueId id = it->first;
+        map<string, vector<CategoryNameAndFilePath>> category_name_to_filepaths = it->second;
+        if (category_name_to_filepaths.size() > 1) {
+            cerr << "Error: Different MarkerCategory nodes were found with same ID (" << id.get_value_as_base_64() << ")" << endl;
+            map<string, vector<string>> category_name_to_file_names;
+            for (auto name_to_file_names_it = category_name_to_filepaths.begin(); name_to_file_names_it != category_name_to_filepaths.end(); name_to_file_names_it++) {
+                vector<CategoryNameAndFilePath> category_name_and_filepath = name_to_file_names_it->second;
+                for (size_t i = 0; i < category_name_and_filepath.size(); i++) {
+                    category_name_to_file_names[category_name_and_filepath[i].name].push_back(category_name_and_filepath[i].file_path);
+                }
+            }
+            for (auto names_it = category_name_to_file_names.begin(); names_it != category_name_to_file_names.end(); names_it++) {
+                string category_name = names_it->first;
+                vector<string> file_paths = names_it->second;
+                cerr << "    In these files the Category 'name' is \"" + category_name + "\"" << endl;
+                for (size_t i = 0; i < file_paths.size(); i++) {
+                    cerr << "        " << file_paths[i] << endl;
+                }
+            }
+        }
+    }
     cleanup_xml_files();
     return top_level_category_file_locations;
 }
 
-map<string, vector<string>> read_burrito_directory(
+map<UniqueId, CategoryWithinSinglePack> read_burrito_directory(
     string input_path,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
 ) {
-    map<string, vector<string>> top_level_category_file_locations;
+    map<UniqueId, CategoryWithinSinglePack> top_level_category_file_locations;
     if (!filesystem::exists(input_path)) {
         cout << "Error: " << input_path << " is not an existing directory or file" << endl;
     }
-
+    map<UniqueId, map<string, vector<CategoryNameAndFilePath>>> id_to_category_name_to_filepaths;
+    map<UniqueId, map<string, vector<string>>> id_conflicts;
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
     for (const MarkerPackFile& path : burrito_files) {
-        set<string> top_level_category_names = read_protobuf_file(path, marker_categories, parsed_pois);
+        map<UniqueId, Category*> top_level_categories = read_protobuf_file(path, marker_categories, parsed_pois);
         string file_path = join_file_paths(input_path, path.relative_filepath);
-        for (set<string>::iterator it = top_level_category_names.begin(); it != top_level_category_names.end(); it++) {
-            top_level_category_file_locations[*it].push_back(file_path);
+        for (map<UniqueId, Category*>::iterator it = top_level_categories.begin(); it != top_level_categories.end(); it++) {
+            UniqueId id = it->first;
+            Category* category = it->second;
+            id_to_category_name_to_filepaths[id][lowercase(category->name)].push_back({category->name, file_path});
+            if (top_level_category_file_locations[id].category == nullptr || top_level_category_file_locations[id].category == category) {
+                top_level_category_file_locations[id].category = category;
+                top_level_category_file_locations[id].file_paths.push_back(file_path);
+            }
+        }
+    }
+    for (auto it = id_to_category_name_to_filepaths.begin(); it != id_to_category_name_to_filepaths.end(); it++) {
+        UniqueId id = it->first;
+        map<string, vector<CategoryNameAndFilePath>> category_name_to_filepaths = it->second;
+        if (category_name_to_filepaths.size() > 1) {
+            cerr << "Error: Different Category messages were found with same ID (" << id.get_value_as_base_64() << ")" << endl;
+            map<string, vector<string>> category_name_to_file_names;
+            for (auto name_to_file_names_it = category_name_to_filepaths.begin(); name_to_file_names_it != category_name_to_filepaths.end(); name_to_file_names_it++) {
+                vector<CategoryNameAndFilePath> category_name_and_filepath = name_to_file_names_it->second;
+                for (size_t i = 0; i < category_name_and_filepath.size(); i++) {
+                    category_name_to_file_names[category_name_and_filepath[i].name].push_back(category_name_and_filepath[i].file_path);
+                }
+            }
+            for (auto names_it = category_name_to_file_names.begin(); names_it != category_name_to_file_names.end(); names_it++) {
+                string category_name = names_it->first;
+                vector<string> file_paths = names_it->second;
+                cerr << "    In these files the Category 'name' is \"" + category_name + "\"" << endl;
+                for (size_t i = 0; i < file_paths.size(); i++) {
+                    cerr << "        " << file_paths[i] << endl;
+                }
+            }
         }
     }
 
@@ -135,8 +213,8 @@ void process_data(ParsedArguments parsed_arguments) {
     // All of the loaded pois and categories
     vector<Parseable*> parsed_pois;
     map<string, Category> marker_categories;
-    map<string, vector<vector<string>>> top_level_category_file_locations_by_pack;
-    map<string, set<string>> duplicate_categories;
+    map<UniqueId, CategoryWithinMultiplePacks> top_level_category_file_locations_by_pack;
+    map<UniqueId, CategoryWithinMultiplePacks> duplicate_categories;
     vector<MarkerPackConfig> marker_pack_config = parsed_arguments.marker_pack_configs;
 
     // Read in all the xml taco markerpacks
@@ -147,13 +225,13 @@ void process_data(ParsedArguments parsed_arguments) {
         }
         cout << "Loading taco pack " << marker_pack_config[i].path << endl;
 
-        map<string, vector<string>> top_level_category_file_locations = read_taco_directory(
+        map<UniqueId, CategoryWithinSinglePack> top_level_category_file_locations = read_taco_directory(
             marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois
         );
-        for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
-            top_level_category_file_locations_by_pack[it->first].push_back(it->second);
+        for (map<UniqueId, CategoryWithinSinglePack>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
+            top_level_category_file_locations_by_pack[it->first].categories.push_back(it->second);
         }
     }
     auto end = chrono::high_resolution_clock::now();
@@ -169,13 +247,13 @@ void process_data(ParsedArguments parsed_arguments) {
         }
         cout << "Loading guildpoint pack " << marker_pack_config[i].path << endl;
 
-        map<string, vector<string>> top_level_category_file_locations = read_burrito_directory(
+        map<UniqueId, CategoryWithinSinglePack> top_level_category_file_locations = read_burrito_directory(
             marker_pack_config[i].path,
             &marker_categories,
             &parsed_pois
         );
-        for (map<string, vector<string>>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
-            top_level_category_file_locations_by_pack[it->first].push_back(it->second);
+        for (map<UniqueId, CategoryWithinSinglePack>::iterator it = top_level_category_file_locations.begin(); it != top_level_category_file_locations.end(); it++) {
+            top_level_category_file_locations_by_pack[it->first].categories.push_back(it->second);
         }
     }
     end = chrono::high_resolution_clock::now();
@@ -183,13 +261,9 @@ void process_data(ParsedArguments parsed_arguments) {
     ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     cout << "The guildpoint parse function took " << ms << " milliseconds to run" << endl;
 
-    for (map<string, vector<vector<string>>>::iterator it = top_level_category_file_locations_by_pack.begin(); it != top_level_category_file_locations_by_pack.end(); it++) {
-        if (it->second.size() != 1) {
-            for (size_t i = 0; i < it->second.size(); i++) {
-                for (size_t j = 0; j < it->second[i].size(); j++) {
-                    duplicate_categories[it->first].insert(it->second[i][j]);
-                }
-            }
+    for (map<UniqueId, CategoryWithinMultiplePacks>::iterator it = top_level_category_file_locations_by_pack.begin(); it != top_level_category_file_locations_by_pack.end(); it++) {
+        if (it->second.categories.size() > 1) {
+            duplicate_categories[it->first] = it->second;
         }
     }
 
@@ -200,11 +274,27 @@ void process_data(ParsedArguments parsed_arguments) {
         // options like selective merges or changing category names to be unique
         cout << "Please remove one of the packs or edit the name of the packs' top level category before running the program again." << endl;
         cout << "If you want to bypass this stop, use '--allow-duplicates'." << endl;
-        cout << "The following top level categories were found in more than one pack:" << endl;
-        for (map<string, set<string>>::iterator it = duplicate_categories.begin(); it != duplicate_categories.end(); it++) {
-            cout << "    \"" << it->first << "\" in files:" << endl;
-            for (string str : it->second) {
-                cout << "        " << str << endl;
+        cout << "The following top level categories had a conflict in IDs. For XML, these IDs may be generated from the 'name' attribute." << endl;
+        for (map<UniqueId, CategoryWithinMultiplePacks>::iterator it = duplicate_categories.begin(); it != duplicate_categories.end(); it++) {
+            cout << "    Categories were found that share the ID \"" << it->first.get_value_as_base_64() << "\"" << endl;
+            map<string, vector<string>> files_grouped_by_header;
+            for (CategoryWithinSinglePack category_within_single_pack : it->second.categories) {
+                for (size_t i = 0; i < category_within_single_pack.file_paths.size(); i++) {
+                    string header;
+                    if (category_within_single_pack.category->name == "") {
+                        header = "In these files no name was found";
+                    }
+                    else {
+                        header = "In these files the Category 'name' is \"" + category_within_single_pack.category->name + "\"";
+                    }
+                    files_grouped_by_header[header].push_back(category_within_single_pack.file_paths[i]);
+                }
+            }
+            for (pair<string, vector<string>> header_to_file_names : files_grouped_by_header) {
+                cout << "        " << header_to_file_names.first << "" << endl;
+                for (size_t i = 0; i < header_to_file_names.second.size(); i++) {
+                    cout << "            " << header_to_file_names.second[i] << endl;
+                }
             }
         }
         return;
