@@ -84,7 +84,7 @@ map<UniqueId, CategoryWithinSinglePack> read_taco_directory(
         UniqueId id = it->first;
         map<string, vector<CategoryNameAndFilePath>> category_name_to_filepaths = it->second;
         if (category_name_to_filepaths.size() > 1) {
-            cerr << "Error: Different MarkerCategory nodes were found with same ID (" << id.get_value_as_string() << ")" << endl;
+            cerr << "Error: Different MarkerCategory nodes were found with same ID (" << id.get_value_as_base_64() << ")" << endl;
             map<string, vector<string>> category_name_to_file_names;
             for (auto name_to_file_names_it = category_name_to_filepaths.begin(); name_to_file_names_it != category_name_to_filepaths.end(); name_to_file_names_it++) {
                 vector<CategoryNameAndFilePath> category_name_and_filepath = name_to_file_names_it->second;

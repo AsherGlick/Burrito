@@ -28,7 +28,7 @@ class UniqueId {
         return guid < other.guid;
     }
 
-    std::string get_value_as_string() const {
+    std::string get_value_as_base_64() const {
         return base64_encode(&(guid[0]), guid.size());
     }
 };

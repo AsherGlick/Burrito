@@ -59,7 +59,10 @@ static func get_duplicate_categories(stdin: String) -> Dictionary:
 				# Remove the first 46 characters and the open quote
 				var line_without_prefix = line.substr(47)
 				var endquote_index = line_without_prefix.find("\"")
-				category = line_without_prefix.substr(0, endquote_index)
+				if endquote_index != -1:					
+					category = line_without_prefix.substr(0, endquote_index)
+				else:
+					category = ""
 				collisions[id][category] = []
 			else:
 				break

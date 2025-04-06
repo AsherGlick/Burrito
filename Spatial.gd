@@ -1187,11 +1187,11 @@ func import_marker_pack(dir: String, type):
 
 	var category_names: PoolStringArray
 	for id in duplicate_categories.keys():
-		for cat_name in duplicate_categories[id].keys():
-			for file in duplicate_categories[id][cat_name]:
+		for category_name in duplicate_categories[id].keys():
+			for file in duplicate_categories[id][category_name]:
 				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
-					if !(cat_name in category_names):
-						category_names.push_back(cat_name)
+					if !(category_name in category_names):
+						category_names.push_back(category_name)
 	self.overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + category_names.join("\n")
 	self.overwrite_confirmation.popup_centered()
 
