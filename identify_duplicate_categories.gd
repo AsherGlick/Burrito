@@ -51,6 +51,8 @@ static func get_duplicate_categories(stdin: String) -> Dictionary:
 				var endquote_index = line_without_prefix.find("\"")
 				id = line_without_prefix.substr(0, endquote_index)
 				collisions[id] = {}
+			elif line.begins_with("        In these files no name was found"):
+				collisions[id][""] = []
 			elif line.begins_with("            "):
 				# Remove the first 12 spaces
 				var file_name = line.substr(12)
@@ -59,10 +61,7 @@ static func get_duplicate_categories(stdin: String) -> Dictionary:
 				# Remove the first 46 characters and the open quote
 				var line_without_prefix = line.substr(47)
 				var endquote_index = line_without_prefix.find("\"")
-				if endquote_index != -1:					
-					category = line_without_prefix.substr(0, endquote_index)
-				else:
-					category = ""
+				category = line_without_prefix.substr(0, endquote_index)
 				collisions[id][category] = []
 			else:
 				break
