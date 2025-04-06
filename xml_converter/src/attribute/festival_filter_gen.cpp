@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a FestivalFilter from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::FestivalFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -65,6 +70,11 @@ void Attribute::FestivalFilter::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a FestivalFilter to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::FestivalFilter::to_xml_attribute(
     XMLWriterState*,
     const FestivalFilter* value,
@@ -96,6 +106,11 @@ void Attribute::FestivalFilter::to_xml_attribute(
     setter(output);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a FestivalFilter from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::FestivalFilter::from_proto_field(
     guildpoint::FestivalFilter input,
     ProtoReaderState*,
@@ -114,6 +129,11 @@ void Attribute::FestivalFilter::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a FestivalFilter to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::FestivalFilter::to_proto_field(
     FestivalFilter value,
     ProtoWriterState*,

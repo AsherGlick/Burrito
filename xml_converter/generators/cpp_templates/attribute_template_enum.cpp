@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a {{class_name}} from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::{{namespace}}::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -42,6 +47,11 @@ void Attribute::{{namespace}}::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a {{class_name}} to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::{{namespace}}::to_xml_attribute(
     XMLWriterState*,
     const {{class_name}}* value,
@@ -65,6 +75,11 @@ void Attribute::{{namespace}}::to_xml_attribute(
 }
 {% if exclude_from_protobuf == false %}
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // from_proto_field
+    //
+    // Reads a {{class_name}} from a proto field.
+    ////////////////////////////////////////////////////////////////////////////////
     void Attribute::{{namespace}}::from_proto_field(
         {{proto_field_cpp_type}} input,
         ProtoReaderState*,
@@ -85,6 +100,11 @@ void Attribute::{{namespace}}::to_xml_attribute(
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // to_proto_field
+    //
+    // Writes a {{class_name}} to a proto using the provided setter function.
+    ////////////////////////////////////////////////////////////////////////////////
     void Attribute::{{namespace}}::to_proto_field(
         {{class_name}} value,
         ProtoWriterState*,

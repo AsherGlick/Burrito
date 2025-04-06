@@ -7,10 +7,11 @@
 #include "../rapidxml-1.13/rapidxml.hpp"
 
 using namespace std;
+
 ////////////////////////////////////////////////////////////////////////////////
 // from_xml_attribute
 //
-// Parses a float from the value of a rapidxml::xml_attribute.
+// Reads a float from an xml attribute.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Float::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -26,7 +27,7 @@ void Attribute::Float::from_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // to_xml_attribute
 //
-// Converts a float into a fully qualified xml attribute string.
+// Writes a float to an xml attribute using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Float::to_xml_attribute(
     XMLWriterState*,
@@ -39,7 +40,7 @@ void Attribute::Float::to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // from_proto_field
 //
-// Parses a float from a proto field.
+// Reads a float from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Float::from_proto_field(
     float input,

@@ -10,11 +10,11 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// xml_attribute_to_bool
+// from_xml_attribute
 //
-// Parses a bool from the value of a rapidxml::xmlattribute. "true" or "1" are
-// evaluated as `true`. 'false' or '0' are evaluated as `false`. Everything
-// else appends an error to the errors vector.
+// Reads a bool from an xml_attribute. "true" and "1" are evaluated as `true`.
+// 'false' and '0' are evaluated as `false`. Everything else will trigger an
+// error to be added to the errors vector.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Bool::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -37,9 +37,9 @@ void Attribute::Bool::from_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// bool_to_xml_attribute
+// to_xml_attribute
 //
-// Converts a bool into a fully qualified xml attribute string.
+// Writes a bool to an xml attribute using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Bool::to_xml_attribute(
     XMLWriterState*,
@@ -55,54 +55,9 @@ void Attribute::Bool::to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// inverted_xml_attribute_to_bool
+// from_proto_field
 //
-// Parses an inverted bool from the value of a rapidxml::xmlattribute. "true"
-// or "1" are evaluated as `false`. 'false' or '0' are evaluated as `true`.
-// Everything else appends an error to the errors vector.
-////////////////////////////////////////////////////////////////////////////////
-void Attribute::InvertBool::from_xml_attribute(
-    rapidxml::xml_attribute<>* input,
-    std::vector<XMLError*>* errors,
-    XMLReaderState*,
-    bool* value,
-    bool* is_set
-) {
-    if (get_attribute_value(input) == "0" || get_attribute_value(input) == "false") {
-        *value = true;
-        *is_set = true;
-    }
-    else if (get_attribute_value(input) == "1" || get_attribute_value(input) == "true") {
-        *value = false;
-        *is_set = true;
-    }
-    else {
-        errors->push_back(new XMLAttributeValueError("Found a boolean value that was not a '1', '0', 'true', or 'false'", input));
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// bool_to_inverted_xml_attribute
-//
-// Inverts and converts a bool into a fully qualified xml attribute string.
-////////////////////////////////////////////////////////////////////////////////
-void Attribute::InvertBool::to_xml_attribute(
-    XMLWriterState*,
-    const bool* value,
-    std::function<void(std::string)> setter
-) {
-    if (*value) {
-        setter("false");
-    }
-    else {
-        setter("true");
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// proto_to_bool
-//
-// Parses a bool from a proto field.
+// Reads a bool from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Bool::from_proto_field(
     bool input,
@@ -115,7 +70,7 @@ void Attribute::Bool::from_proto_field(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// bool_to_proto
+// to_proto_field
 //
 // Writes a bool to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,4 +80,47 @@ void Attribute::Bool::to_proto_field(
     std::function<void(bool)> setter
 ) {
     setter(value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// InvertBool::from_xml_attribute
+//
+// Reads a bool from an xml attribute and inverts it. The logic for reading
+// the xml attribute is the inverse of Attribute::Bool::from_xml_attribute().
+////////////////////////////////////////////////////////////////////////////////
+void Attribute::InvertBool::from_xml_attribute(
+    rapidxml::xml_attribute<>* input,
+    std::vector<XMLError*>* errors,
+    XMLReaderState* reader_state,
+    bool* value,
+    bool* is_set
+) {
+    Attribute::Bool::from_xml_attribute(
+        input,
+        errors,
+        reader_state,
+        value,
+        is_set
+    );
+
+    *value = !*value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// InvertBool::to_xml_attribute
+//
+// Inverts and writes a bool to to an xml attribute using the provided
+// setter function.
+////////////////////////////////////////////////////////////////////////////////
+void Attribute::InvertBool::to_xml_attribute(
+    XMLWriterState* xml_writer_state,
+    const bool* value,
+    std::function<void(std::string)> setter
+) {
+    bool inverted_value = !*value;
+    Attribute::Bool::to_xml_attribute(
+        xml_writer_state,
+        &inverted_value,
+        setter
+    );
 }

@@ -17,9 +17,25 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// parse_trail_data
+// djb2_hash
 //
-// Parses a TrailData from the value of a rapidxml::xml_attribute.
+// A simple non cryptographic hash that we use to deterministically generate the
+// filename of the trl files.
+// TODO: Remove this in favor of a better naming scheme or move this to
+//       `hash_helpers.cpp` instead of here.
+////////////////////////////////////////////////////////////////////////////////
+static uint64_t djb2_hash(const unsigned char* str, size_t length) {
+    uint64_t hash = 5381;
+    for (size_t i = 0; i < length; i++) {
+        hash = ((hash << 5) + hash) + str[i]; /* hash * 33 + c */
+    }
+    return hash;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a TrailData from an xml attribute.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::TrailData::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -80,23 +96,9 @@ void Attribute::TrailData::from_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// djb2_hash
+// to_xml_attribute
 //
-// A simple non cryptographic hash that we use to deterministically generate the
-// filename of the trl files.
-////////////////////////////////////////////////////////////////////////////////
-uint64_t djb2_hash(const unsigned char* str, size_t length) {
-    uint64_t hash = 5381;
-    for (size_t i = 0; i < length; i++) {
-        hash = ((hash << 5) + hash) + str[i]; /* hash * 33 + c */
-    }
-    return hash;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// trail_data_to_xml_attribute
-//
-// Converts a traildata into a fully qualified xml attribute string.
+// Writes a TrailData to an xml attribute using the provided setter function.
 // TOOD: Determine a better trail path name
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t trail_version_number = 0;
@@ -148,9 +150,9 @@ void Attribute::TrailData::to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_trail_data
+// from_proto_field
 //
-// Parses a TrailData from a proto field.
+// Reads a TrailData from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::TrailData::from_proto_field(
     guildpoint::TrailData input,
@@ -177,9 +179,9 @@ void Attribute::TrailData::from_proto_field(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// trail_data_to_proto
+// to_proto_field
 //
-// Saves a TrailData object to a proto using the provided setter function.
+// Writes a TrailData to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::TrailData::to_proto_field(
     TrailData value,

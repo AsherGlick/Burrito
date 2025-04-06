@@ -11,6 +11,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a Position from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::Position::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
@@ -35,6 +40,11 @@ void Attribute::Position::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a Position from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::Position::from_proto_field(
     guildpoint::Position input,
     ProtoReaderState*,
@@ -49,6 +59,11 @@ void Attribute::Position::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a Position to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::Position::to_proto_field(
     Position value,
     ProtoWriterState*,

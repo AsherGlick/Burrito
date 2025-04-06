@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a UniqueId from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::UniqueId::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
@@ -27,9 +32,9 @@ void Attribute::UniqueId::from_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// unique_id_to_xml_attribute
+// to_xml_attribute
 //
-// Converts a unique id into a fully qualified xml attribute string.
+// Writes a UniqueId to an xml attribute using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::UniqueId::to_xml_attribute(
     XMLWriterState*,
@@ -40,9 +45,9 @@ void Attribute::UniqueId::to_xml_attribute(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// proto_to_unique_id
+// from_proto_field
 //
-// Parses a UniqueId from a proto field.
+// Reads a UniqueId from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::UniqueId::from_proto_field(
     std::string input,
@@ -58,9 +63,9 @@ void Attribute::UniqueId::from_proto_field(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// unique_id_to_proto
+// to_proto_field
 //
-// Writes a bool to a proto using the provided setter function.
+// Writes a UniqueId to a proto using the provided setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::UniqueId::to_proto_field(
     UniqueId value,

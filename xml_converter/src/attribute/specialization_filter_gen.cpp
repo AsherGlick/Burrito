@@ -12,6 +12,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a SpecializationFilter from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpecializationFilter::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>* errors,
@@ -403,6 +408,11 @@ void Attribute::SpecializationFilter::from_xml_attribute(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a SpecializationFilter to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpecializationFilter::to_xml_attribute(
     XMLWriterState*,
     const SpecializationFilter* value,
@@ -629,6 +639,11 @@ void Attribute::SpecializationFilter::to_xml_attribute(
     setter(output);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a SpecializationFilter from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpecializationFilter::from_proto_field(
     guildpoint::SpecializationFilter input,
     ProtoReaderState*,
@@ -712,6 +727,11 @@ void Attribute::SpecializationFilter::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a SpecializationFilter to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::SpecializationFilter::to_proto_field(
     SpecializationFilter value,
     ProtoWriterState*,

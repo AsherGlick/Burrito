@@ -11,6 +11,11 @@
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// from_xml_attribute
+//
+// Reads a EulerRotation from an xml attribute.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::EulerRotation::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
     std::vector<XMLError*>*,
@@ -34,6 +39,12 @@ void Attribute::EulerRotation::from_xml_attribute(
     *value = euler_rotation;
     *is_set = true;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// to_xml_attribute
+//
+// Writes a EulerRotation to an xml attribute using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::EulerRotation::to_xml_attribute(
     XMLWriterState*,
     const EulerRotation* value,
@@ -46,6 +57,11 @@ void Attribute::EulerRotation::to_xml_attribute(
     setter(output);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// from_proto_field
+//
+// Reads a EulerRotation from a proto field.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::EulerRotation::from_proto_field(
     guildpoint::EulerRotation input,
     ProtoReaderState*,
@@ -60,6 +76,11 @@ void Attribute::EulerRotation::from_proto_field(
     *is_set = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// to_proto_field
+//
+// Writes a EulerRotation to a proto using the provided setter function.
+////////////////////////////////////////////////////////////////////////////////
 void Attribute::EulerRotation::to_proto_field(
     EulerRotation value,
     ProtoWriterState*,

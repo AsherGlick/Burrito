@@ -13,8 +13,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 // from_xml_attribute
 //
-// Parses an int from the value of a rapidxml::xml_attribute. Adds an error
-// if the value cannot be parsed properly.
+// Reads an int from an xml attribute.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Int::from_xml_attribute(
     rapidxml::xml_attribute<>* input,
@@ -54,7 +53,7 @@ void Attribute::Int::to_xml_attribute(
 ////////////////////////////////////////////////////////////////////////////////
 // from_proto_field
 //
-// Parses an int from a proto field.
+// Reads an int from a proto field.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Int::from_proto_field(
     int input,
