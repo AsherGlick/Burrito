@@ -1,0 +1,145 @@
+<html>
+	<head>
+		<style>
+			:root {
+				--background-color: #222;
+				--text-color: #EEE;
+				--text-border-color: #808080;
+				--code-background-color: #222;
+			}
+
+			body {
+				font-family: sans-serif;
+				background: var(--background-color);
+				color: var(--text-color);
+			}
+			table.quickfinder td, th {
+				border: 1px solid #3c3c3c;
+				padding: 5px;
+			}
+			table.quickfinder {
+				border-collapse: collapse;
+			}
+
+			a {
+				color: #CCF;
+			}
+
+			.nav_bar {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, 300px);
+				justify-content: center;
+			}
+			.nav_item {
+				width: 300px;
+				float: left;
+				padding: 10px;
+				box-sizing: border-box;
+				text-align: center;
+				transition: 0.2s;
+				text-decoration: none;
+				color: var(--text-color);
+			}
+			.nav_item:hover {
+				background: #CCC;
+				border-radius: 5px;
+				color: #222;
+			}
+
+
+			.content {
+				max-width: 1200px;
+				margin: auto;
+			}
+
+			.codeblock {
+				white-space: pre-wrap;
+				font-family: monospace;
+				background: var(--code-background-color);
+				padding: 10px;
+				padding-left: 13px;
+
+				border: 1px solid var(--text-border-color);
+				border-radius: 3px;
+				margin: 10px 30px;
+			}
+			code {
+				display: inline-block;
+				background: var(--code-background-color);
+				padding: 1px 3px 0px 3px;
+				border: 1px solid var(--text-border-color);
+				border-radius: 3px;
+			}
+			.codehilite code {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 10px;
+				background-color: #282923;
+				font-size: 1.2em;
+			}
+
+			table.flagbox {
+				margin-top: -1em;
+				border-spacing: 0 1em;
+				width: 100%;
+			}
+
+			.flag_valuebox {
+				padding: 10px;
+				background: #333;
+				line-height: 1.5em;
+				border-radius: 3px;
+				text-align: center;
+			}
+			.flag_arrowbox{
+				padding: 10px;
+				/*background: #CCC;*/
+				text-align: center;
+
+			}
+			.flag_namebox {
+				padding: 10px;
+				background: #333;
+				border-radius: 3px;
+				text-align: center;
+			}
+
+			.infobox {
+				float: left;
+				text-align: center;
+				border: 1px solid var(--text-border-color);
+			}
+
+			.info_title {
+				background: #333;
+			}
+
+			.halfbox {
+				width: 50%;
+				box-sizing: border-box;
+				float: left;
+			}
+			.field_wrapper {
+				border:  1px solid var(--text-border-color);
+				padding: 10px;
+				background: var(--background-color);
+			}
+
+
+
+			.field_wrapper h1 {
+				border-bottom: 1px solid #777;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="./monokai.css">
+	</head>
+	<body>
+		<!-- <div class="header">Hello world</div> -->
+		<div class="nav_bar">
+			{% for link in content_nav %}
+				<a href="./{{link[1]}}.html"><div class="nav_item">{{link[0]}}</div></a>
+			{% endfor %}
+		</div>
+		<div class="content">{{generated_doc}}</div>
+	</body>
+</html>

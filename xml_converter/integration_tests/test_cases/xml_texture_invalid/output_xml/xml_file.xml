@@ -1,0 +1,7 @@
+<OverlayData>
+	<MarkerCategory DisplayName="MyCategory" ID="KOjMBsKTXpY=" Name="mycategory"/>
+	<POIs>
+		<POI Type="mycategory" IconFile="texture_01.png" MapID="50"/>
+	</POIs>
+</OverlayData>
+

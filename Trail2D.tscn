@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Trail2D.gd" type="Script" id=1]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+render_mode unshaded,blend_mix;
+
+uniform vec2 minimap_corner;
+uniform vec2 minimap_corner2;
+
+void fragment() {
+	COLOR = vec4(0,0,0,0);
+	vec2 screen_pixel_size = vec2(textureSize(SCREEN_TEXTURE, 0));
+	vec2 screen_pixel = SCREEN_UV * screen_pixel_size;
+	if (screen_pixel.x > minimap_corner.x && screen_pixel.x < minimap_corner2.x
+	&& screen_pixel.y > minimap_corner.y && screen_pixel.y < minimap_corner2.y) {
+		COLOR = texture(TEXTURE, vec2(UV.y, -UV.x));
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/minimap_corner = Vector2( 0, 0 )
+shader_param/minimap_corner2 = Vector2( 0, 0 )
+
+[node name="Line2D" type="Line2D"]
+material = SubResource( 2 )
+points = PoolVector2Array( 0, 0, 0, 0, 0, 0 )
+default_color = Color( 1, 1, 1, 1 )
+texture_mode = 1
+script = ExtResource( 1 )

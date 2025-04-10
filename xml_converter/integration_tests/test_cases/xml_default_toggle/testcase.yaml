@@ -1,0 +1,7 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+expected_stderr: |
+expected_returncode: 0
+exclude_output:
+    - "proto"

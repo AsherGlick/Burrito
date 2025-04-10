@@ -1,0 +1,49 @@
+<table width="100%" class="quickfinder">
+    <tr>
+        <th>Name</th>
+        <th>XML Attribute</th>
+        <th>Binary Field Name</th>
+        <th>Data Type</th>
+        <th>Usable On</th>
+    </tr>
+    {% for field_row in field_rows %}
+        <tr>
+            <td><a href="#{{field_row.binary_field}}">{% if field_row.is_sub_field %}&#8627; {% endif %}{{field_row.name}}</a></td>
+            <td>{{field_row.xml_attribute}}{% for alternate in field_row.alternate_xml_attributes %}, {{alternate}}{% endfor %}</td>
+            <td>{{field_row.binary_field}}</td>
+            <td>{{field_row.data_type}}</td>
+            <td>{{field_row.usable_on_html}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% for field_row in field_rows %}
+    <h2 id="{{field_row.binary_field}}">{{field_row.name}}</h2>
+    <div class="field_wrapper">
+
+        <table width="100%" class="quickfinder">
+            <tr>
+                <th>Name</th>
+                <th>XML Attribute</th>
+                <th>Binary Field Name</th>
+                <th>Data Type</th>
+                <th>Usable On</th>
+            </tr>
+            <tr>
+                <td><a href="#{{field_row.binary_field}}">{% if field_row.is_sub_field %}&#8627; {% endif %}{{field_row.name}}</a></td>
+                <td>{{field_row.xml_attribute}}{% for alternate in field_row.alternate_xml_attributes %}, {{alternate}}{% endfor %}</td>
+                <td>{{field_row.binary_field}} ({{field_row.binary_field_type}})</td>
+                <td>{{field_row.data_type}}</td>
+                <td>{{field_row.usable_on_html}}</td>
+            </tr>
+        </table>
+        <h3>Examples</h3>{{field_row.example}}<br>
+        <!-- </div><div class="halfbox"> -->
+        <h3>Valid XML Values</h3>{{field_row.valid_values_html}}<br>
+        <!-- </div><div style="clear: both"></div> -->
+        <h1>Description</h1>{{field_row.description}}<br>
+        <!-- <div style="clear: both"></div><div class="halfbox"> -->
+    </div>
+{% endfor %}
+</div>
+

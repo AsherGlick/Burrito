@@ -1,0 +1,27 @@
+input_paths: 
+    "pack": "xml"
+    "pack2": "proto"
+    "pack3": "xml"
+    "pack4": "proto"
+    "pack5": "xml"
+expected_stdout: |
+    Did not write due to duplicates in categories.
+    This commonly occurs when attempting to read the same pack multiple times or when separate packs coincidentally have the same name.
+    Please remove one of the packs or edit the name of the packs' top level category before running the program again.
+    If you want to bypass this stop, use '--allow-duplicates'.
+    The following top level categories had a conflict in IDs. For XML, these IDs may be generated from the 'name' attribute.
+        Categories were found that share the ID "3ANNJUDLSu0="
+            In these files the Category 'name' is "mc2"
+                test_cases/proto_and_xml_input_no_duplicates/input/pack/xml_file.xml
+                test_cases/proto_and_xml_input_no_duplicates/input/pack3/xml_file.xml
+                test_cases/proto_and_xml_input_no_duplicates/input/pack5/xml_file.xml
+        Categories were found that share the ID "92RAfU6hdh4="
+            In these files the Category 'name' is "mc"
+                test_cases/proto_and_xml_input_no_duplicates/input/pack/xml_file.xml
+                test_cases/proto_and_xml_input_no_duplicates/input/pack5/xml_file.xml
+            In these files the Category 'name' is "mycategory"
+                test_cases/proto_and_xml_input_no_duplicates/input/pack3/xml_file.xml
+                test_cases/proto_and_xml_input_no_duplicates/input/pack2/markers.guildpoint
+                test_cases/proto_and_xml_input_no_duplicates/input/pack4/markers.guildpoint
+expected_stderr: |
+expected_returncode: 0

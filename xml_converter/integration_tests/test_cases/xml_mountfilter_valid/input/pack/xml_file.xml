@@ -1,0 +1,11 @@
+<OverlayData>
+	<MarkerCategory DisplayName="My Category" Name="mycategory">
+	</MarkerCategory>
+
+	<POIs>
+		<POI Mount="Raptor" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI Mount="Raptor,Springer" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI Mount="Raptor, Springer" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+		<POI Mount="Raptor,Springer,Skimmer,Jackal,Griffon,RollerBeetle,Warclaw,Skyscale,Skiff,SeigeTurtle" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+	</POIs>
+</OverlayData>

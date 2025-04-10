@@ -1,0 +1,91 @@
+---
+name: Specialization Filter
+type: MultiflagValue
+applies_to: [Icon, Trail]
+xml_fields: ["Specialization"]
+protobuf_field: specialization_filter
+flags:
+    # Heart of Thorns Spec
+    elementalist_tempest: ["48", "Tempest"]
+    engineer_scrapper: ["43", "Scrapper"]
+    guardian_dragonhunter: ["27", "Dragonhunter"]
+    mesmer_chronomancer: ["40", "Chronomancer"]
+    necromancer_reaper: ["34", "Reaper"]
+    ranger_druid: ["5", "Druid"]
+    revenant_herald: ["52", "Herald"]
+    thief_daredevil: ["7", "Daredevil"]
+    warrior_berserker: ["18", "Berserker"]
+
+    # Path of Fire Spec
+    elementalist_weaver: ["56", "Weaver"]
+    engineer_holosmith: ["57", "Holosmith"]
+    guardian_firebrand: ["62", "Firebrand"]
+    mesmer_mirage: ["59", "Mirage"]
+    necromancer_scourge: ["60", "Scourge"]
+    ranger_soulbeast: ["55", "Soulbeast"]
+    revenant_renegade: ["63", "Renegade"]
+    thief_deadeye: ["58", "Deadeye"]
+    warrior_spellbreaker: ["61", "Spellbreaker"]
+
+    # TODO(#58): End of Dragons Spec Numbers
+    elementalist_catalyst: ["67", "Catalyst"]
+    engineer_mechanist: ["70", "Mechanist"]
+    guardian_willbender: ["65", "Willbender"]
+    mesmer_virtuoso: ["66", "Virtuoso"]
+    necromancer_harbinger: ["64", "Harbinger"]
+    ranger_untamed: ["72", "Untamed"]
+    revenant_vindicator: ["69", "Vindicator"]
+    thief_specter: ["71", "Specter"]
+    warrior_bladesworn: ["68", "Bladesworn"]
+
+    # Core Spec
+    elementalist_air: ["41"]
+    elementalist_arcane: ["37"]
+    elementalist_earth: ["26"]
+    elementalist_fire: ["31"]
+    elementalist_water: ["17"]
+    engineer_alchemy: ["29"]
+    engineer_explosives: ["6"]
+    engineer_firearms: ["38"]
+    engineer_inventions: ["47"]
+    engineer_tools: ["21"]
+    guardian_honor: ["49"]
+    guardian_radiance: ["16"]
+    guardian_valor: ["13"]
+    guardian_virtues: ["46"]
+    guardian_zeal: ["42"]
+    mesmer_chaos: ["45"]
+    mesmer_domination: ["10"]
+    mesmer_dueling: ["1"]
+    mesmer_illusions: ["24"]
+    mesmer_inspiration: ["23"]
+    necromancer_blood_magic: ["19"]
+    necromancer_curses: ["39"]
+    necromancer_death_magic: ["2"]
+    necromancer_soul_reaping: ["50"]
+    necromancer_spite: ["53"]
+    ranger_beastmastery: ["32"]
+    ranger_marksmanship: ["8"]
+    ranger_nature_magic: ["25"]
+    ranger_skirmishing: ["30"]
+    ranger_wilderness_survival: ["33"]
+    revenant_corruption: ["14"]
+    revenant_devastation: ["15"]
+    revenant_invocation: ["3"]
+    revenant_retribution: ["9"]
+    revenant_salvation: ["12"]
+    thief_acrobatics: ["54"]
+    thief_critical_strikes: ["35"]
+    thief_deadly_arts: ["28"]
+    thief_shadow_arts: ["20"]
+    thief_trickery: ["44"]
+    warrior_arms: ["36"]
+    warrior_defense: ["22"]
+    warrior_discipline: ["51"]
+    warrior_strength: ["4"]
+    warrior_tactics: ["11"]
+---
+The Specialization(s) that should be present to view this marker.
+
+Notes
+=====

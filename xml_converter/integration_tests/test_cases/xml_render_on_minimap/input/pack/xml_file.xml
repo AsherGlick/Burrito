@@ -1,0 +1,23 @@
+<OverlayData>
+    <MarkerCategory DisplayName="My Category" Name="mycategory">
+    </MarkerCategory>
+
+    <POIs>
+        <POI MinimapVisibility="false" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MinimapVisibility="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MinimapVisibility="true" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI MinimapVisibility="1" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMinimapVisibility="false" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMinimapVisibility="0" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMinimapVisibility="true" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI BHMinimapVisibility="1" Type="mycategory"  XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <Trail MinimapVisibility="false" Type="mycategory" />
+        <Trail MinimapVisibility="0" Type="mycategory" />
+        <Trail MinimapVisibility="true" Type="mycategory" />
+        <Trail MinimapVisibility="1" Type="mycategory" />
+        <Trail BHMinimapVisibility="false" Type="mycategory" />
+        <Trail BHMinimapVisibility="0" Type="mycategory" />
+        <Trail BHMinimapVisibility="true" Type="mycategory" />
+        <Trail BHMinimapVisibility="1" Type="mycategory" />
+    </POIs>
+</OverlayData>

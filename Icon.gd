@@ -1,9 +1,11 @@
 extends Sprite3D
 
-var texture_path
+const Guildpoint = preload("res://guildpoint.gd")
+
+var guildpoint: Guildpoint.Icon
+var category: TreeItem
+
 func set_icon_image(texture_path: String):
-	self.texture_path = texture_path
-	
 	var texture_file = File.new()
 	var image = Image.new()
 	texture_file.open(texture_path, File.READ)
@@ -17,3 +19,6 @@ func set_icon_image(texture_path: String):
 	
 	self.texture = texture
 	self.material_override.set_shader_param("texture_albedo", texture)
+
+func set_position(position: Vector3):
+	self.translation = position

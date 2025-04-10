@@ -5,7 +5,6 @@ var peers = []
 
 var map_id:int = 0
 
-
 var map_is_open: bool
 var compass_is_top_right: bool
 
@@ -13,13 +12,15 @@ var edit_panel_open: bool = false
 
 # This is the path to the texture that will be used for the next created 3d-path
 # object or icon object in the UI
-var next_texture_path: String = ""
+var next_texture_id: int = 0
 
-# A pointer to the path object that any new nodes should be appended to. If
-# the value is null then a new path will be created the next time a path point
+# A pointer to the trail object that any new nodes should be appended to. If
+# the value is null then a new trail will be created the next time a trail point
 # will be created.
-var currently_active_path = null
-var currently_active_path_2d = null
+var currently_active_trail3d = null
+var currently_active_trail2d = null
+var currently_active_guildpoint_trail = null
+var currently_active_category = null
 
 var map_was_open = false
 
@@ -36,16 +37,35 @@ var compass_width: int = 0;
 # A temporary setting able to be configured by the user. It is used to allow
 # for faster trail mesh generation. The higher the value the fewer samples are
 # taken for the MeshCSG leading to an overall lower number of polygons.
-var path_resolution = 1
+var trail_resolution = 1
 
-# Variables that store opposit corners of the compass
-var compass_corner1
-var compass_corner2
 #x11 fg and window id
 var x11_fg: X11_FG
 var taco_parser: TacoParser
 var x11_window_id_burrito: int
 var is_transient:bool = false
+
+# Scenes used throughout this scene
+const trail3d_scene = preload("res://Trail3D.tscn")
+const icon_scene = preload("res://Icon.tscn")
+const category3d_scene = preload("res://Category3D.tscn")
+const category2d_scene = preload("res://Category2D.tscn")
+const trail2d_scene = preload("res://Trail2D.tscn")
+const gizmo_scene = preload("res://Gizmo/PointEdit.tscn")
+
+# Scripts containing code used by this scene
+const CategoryData = preload("res://CategoryData.gd")
+const Guildpoint = preload("res://guildpoint.gd")
+const FileHandler = preload("res://FileHandler.gd")
+
+# File path for the the json that contains a hash of the data files
+const HASH_BY_MAP_ID_FILEPATH: String = "user://hash_by_map_id.json"
+
+##########Node Connections###########
+onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
+onready var markers_3d := $Markers3D as Spatial
+onready var markers_2d := $Control/Markers2D as Node2D
+onready var overwrite_confirmation := $Control/Dialogs/ImportPackDialogs/OverwriteConfirm as ConfirmationDialog
 
 # Variables that store informations about ui scaling
 # The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
@@ -66,6 +86,8 @@ const minimap_scale = {
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	self.markers_ui.set_column_expand(1, false)
+	self.markers_ui.set_column_min_width(1, 24)
 	get_tree().get_root().set_transparent_background(true)
 	x11_fg = X11_FG.new()
 	taco_parser = TacoParser.new()
@@ -80,6 +102,7 @@ func _ready():
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
+
 	server.listen(4242)
 
 	if (Settings.burrito_link_auto_launch_enabled):
@@ -232,9 +255,8 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var unchecked_flag = (ui_flags & 0xFFFFFF80) != 0x00000000;
 
 	if map_is_open != map_was_open:
-		$Paths.visible = !map_is_open
-		$Icons.visible = !map_is_open
-		reset_minimap_masks()
+		self.markers_3d.visible = !map_is_open
+		reset_minimap_masks(false)
 		map_was_open = map_is_open
 
 	if unchecked_flag:
@@ -284,15 +306,15 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 		delta_position = player_map_position - Vector2(x, y);
 
 		#print(map_rotation)
-		$Control/MiniMap.rotation = map_rotation
+		$Control/Markers2D.rotation = map_rotation
 	else:
-		$Control/MiniMap.rotation = 0
+		$Control/Markers2D.rotation = 0
 
 	var map_midpoint = map_size/2 + map_corner;
 
-	$Control/MiniMap.scale=Vector2(map_object_scaling, map_object_scaling)
+	$Control/Markers2D.scale=Vector2(map_object_scaling, map_object_scaling)
 	var map_translation = map_offset
-	$Control/MiniMap.position = (map_translation / map_scale) + map_midpoint - player_map_position + delta_position
+	$Control/Markers2D.position = (map_translation / map_scale) + map_midpoint - player_map_position + delta_position
 	var new_feet_location = Vector3(player_position.x, player_position.y, -player_position.z)
 	$FeetLocation.translation = new_feet_location
 
@@ -352,21 +374,20 @@ func decode_context_packet(spb: StreamPeerBuffer):
 
 	if self.map_id != old_map_id:
 		print("New Map")
-
-		print("Saving Old Map")
-		self.markerdata[str(old_map_id)] = data_from_renderview()
+		var old_texture_path: String = ""
+		old_texture_path = get_texture_path(self.next_texture_id)
+		if old_map_id != 0 and not read_hash(old_map_id) == make_hash(self.guildpoint_data.to_bytes()):
+			print("Saving Old Map")
+			save_map_data(old_map_id)
 		print("Loading New Map")
-		gen_map_markers()
-
-	# TODO move this to reset_minimap_masks
-	for child in $Paths.get_children():
-		child.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
-
-	# TODO move this to reset_minimap_masks
-	for icon in $Icons.get_children():
-		icon.material_override.set_shader_param("map_size", Vector2(compass_width, compass_height))
+		load_guildpoint_markers(self.map_id)
+		self.next_texture_id = get_texture_index(old_texture_path)
+		if self.next_texture_id == -1:
+			self.guildpoint_data.add_textures().set_filepath(old_texture_path)
+			self.next_texture_id = self.guildpoint_data.get_textures().size() - 1
 
 	reset_minimap_masks()
+
 
 
 func decode_timeout_packet(spb: StreamPeerBuffer):
@@ -376,63 +397,64 @@ func decode_timeout_packet(spb: StreamPeerBuffer):
 		launch_burrito_link()
 
 
-func reset_minimap_masks():
+func reset_minimap_masks(reset_3d: bool = true):
 	var viewport_size = get_viewport().size
-	compass_corner1 = Vector2(0, 0)
-	compass_corner2 = viewport_size
+	var compass_corner1 = Vector2(0, 0)
+	var compass_corner2 = viewport_size
 	if !map_is_open && !compass_is_top_right:
 		compass_corner1 = Vector2(viewport_size.x-compass_width, self.minimap_scale[self.ui_size]["offset"])
 		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
 	elif !map_is_open && compass_is_top_right:
-		compass_corner1 = viewport_size - Vector2(compass_width, compass_height)
-		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
+		compass_corner1 = viewport_size - Vector2(self.compass_width, self.compass_height)
+		compass_corner2 = compass_corner1 + Vector2(self.compass_width, self.compass_height)
 
-	for minimap_path in $Control/MiniMap.get_children():
-		minimap_path.material.set_shader_param("minimap_corner", compass_corner1)
-		minimap_path.material.set_shader_param("minimap_corner2", compass_corner2)
+	for category in self.markers_2d.subcategories:
+		reset_2D_minimap_masks(category, compass_corner1, compass_corner2)
 
-var markerdata = {}
+	if reset_3d:
+		for category in self.markers_3d.subcategories:
+			reset_3D_minimap_masks(category)
+
+func reset_2D_minimap_masks(category2d: Node2D, compass_corner1: Vector2, compass_corner2: Vector2):
+	for trail2d in category2d.trails2d:
+		trail2d.material.set_shader_param("minimap_corner", compass_corner1)
+		trail2d.material.set_shader_param("minimap_corner2", compass_corner2)
+	for subcategory in category2d.subcategories:
+		reset_2D_minimap_masks(subcategory, compass_corner1, compass_corner2)
+
+func reset_3D_minimap_masks(category: Spatial):
+	for trail in category.trails3d:
+		trail.get_node("MeshInstance").material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
+	for icon in category.icons:
+		icon.material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
+	for subcategory in category.subcategories:
+		reset_3D_minimap_masks(subcategory)
+
+
+var guildpoint_data = Guildpoint.Guildpoint.new()
+# We save the marker data in this directory when the files are have been split
+# by Map ID. All changes made by the editor are automatically saved in these
+# files prior to export.
+var unsaved_markers_dir = "user://protobin_by_map_id/"
+var saved_markers_dir = "user://protobin/"
 var marker_file_path = ""
-func load_taco_markers(marker_json_file):
-	self.marker_file_path = marker_json_file
 
-	if is_xml_file(marker_json_file):
-		print("Loading XML file from path ", marker_json_file)
-		var parsed_taco_tuple = taco_parser.parse_taco_xml(marker_json_file)
-		var json_payload = parsed_taco_tuple[0]
-		var error_message = parsed_taco_tuple[1]
-		if error_message != "":
-			print("XML parsing failed with error message: ", error_message)
-		self.markerdata = JSON.parse(json_payload).result
+func load_guildpoint_markers(map_id_to_load: int):
+	self.marker_file_path = self.unsaved_markers_dir + String(map_id_to_load) + ".guildpoint"
+	self.guildpoint_data = Guildpoint.Guildpoint.new()
+	clear_map_markers()
+	init_category_tree()
+	var file = File.new()
+	print("Loading protobuf file from path ", self.marker_file_path)
+	file.open(self.marker_file_path, file.READ)
+	var data = file.get_buffer(file.get_len())
+	self.guildpoint_data.from_bytes(data)
+	if !Guildpoint.PB_ERR.NO_ERRORS:
+		print("OK")
 	else:
-		print("Loading Json file from path ", marker_json_file)
-		var file = File.new()
-		file.open(marker_json_file, file.READ)
-		var text = file.get_as_text()
-		self.markerdata = JSON.parse(text).result
+		print(Guildpoint.PB_ERR)
+	guildpoint_categories_to_godot_nodes()
 
-	relative_textures_to_absolute_textures(marker_file_path.get_base_dir())
-
-	gen_map_markers()
-
-func is_xml_file(input_file):
-	return input_file.split(".")[-1] == "xml"
-
-func relative_textures_to_absolute_textures(marker_file_dir):
-	for map in markerdata:
-		for icon in markerdata[map]["icons"]:
-			if !icon["texture"].is_abs_path():
-				icon["texture"] = marker_file_dir + "/" + icon["texture"]
-			#print("ABS", icon["texture"])
-		for path in markerdata[map]["paths"]:
-			if !path["texture"].is_abs_path():
-				path["texture"] = marker_file_dir + "/" + path["texture"]
-
-
-var route_scene = load("res://Route.tscn")
-var icon_scene = load("res://Icon.tscn")
-var path2d_scene = load("res://Route2D.tscn")
-var gizmo_scene = load("res://Gizmo/PointEdit.tscn")
 
 ##########Gizmo Stuff###########
 # How long the ray to search for 3D clickable object should be.
@@ -505,41 +527,97 @@ func _unhandled_input(event):
 ################################################################################
 #
 ################################################################################
-onready var icons = $Icons
-onready var paths = $Paths
-onready var minimap = $Control/MiniMap
+func clear_map_markers():
+	# Clear all the rendered assets to make way for the new ones
+	self.markers_3d.clear_all()
+	self.markers_2d.clear_all()
 
-func gen_map_markers():
-	# Clear all the rendered assets to mak way for the new ones
-	for path in paths.get_children():
-		path.queue_free()
-
-	for path2d in minimap.get_children():
-		path2d.queue_free()
-
-	for icon in icons.get_children():
-		icon.queue_free()
-
-	# Load the data from the markers
-	if str(map_id) in markerdata:
-		var map_markerdata = markerdata[str(map_id)]
-		for path in map_markerdata["paths"]:
-			gen_new_path(path["points"], path["texture"])
-
-		for icon in map_markerdata["icons"]:
-			var position = Vector3(icon["position"][0], icon["position"][1], icon["position"][2])
-			gen_new_icon(position, icon["texture"])
-
-func gen_new_path(points: Array, texture_path: String):
-	var points_2d: PoolVector2Array = []
+func init_category_tree():
+	self.markers_ui.clear()
+	var root : TreeItem
+	root = self.markers_ui.create_item()
+	root.set_text(0, "Markers")
+	root.set_expand_right(0, true)
 
 
+
+func guildpoint_categories_to_godot_nodes():
+	for guildpoint_category in self.guildpoint_data.get_category():
+		_guildpoint_categories_to_godot_nodes(null, guildpoint_category, self.markers_3d, self.markers_2d, 0)
+
+
+func _guildpoint_categories_to_godot_nodes(item: TreeItem, guildpoint_category: Guildpoint.Category, parent_category3d: Spatial, parent_category2d: Node2D, depth: int):
+	var godot_category3d = category3d_scene.instance()
+	var godot_category2d = category2d_scene.instance()
+	parent_category3d.add_subcategory(godot_category3d)
+	parent_category2d.add_subcategory(godot_category2d)
+
+	var category_item: TreeItem = self.markers_ui.create_item(item)
+	var category_data = CategoryData.new()
+	category_data.guildpoint_category = guildpoint_category
+	category_data.category3d = godot_category3d
+	category_data.category2d = godot_category2d
+
+	category_item.set_metadata(0, category_data)
+	var category_name: String = guildpoint_category.get_name()
+	if category_name == "":
+		print("Category found with no name.")
+		category_name = "No Name"
+	category_item.set_text(0, category_name)
+	category_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
+	var checked = true
+	if depth in [0, 1]:
+		checked = false
+	category_item.set_checked(1, Settings.local_category_data.get(Marshalls.raw_to_base64(category_data.guildpoint_category.get_id()), {}).get("checked", checked))
+	category_item.set_tooltip(1, "Show/Hide")
+	category_item.set_editable(1, true)
+	var collapsed = true
+	if depth == 0:
+		collapsed = false
+	category_item.set_collapsed(collapsed)
+	category_item.set_selectable(1, false)
+
+	category_data.is_visible = category_item.is_checked(1)
+	godot_category3d.visible = category_data.is_visible
+	godot_category2d.visible = category_data.is_visible
+
+	for trail in guildpoint_category.get_trail():
+		gen_new_trail(trail, category_item)
+
+	for icon in guildpoint_category.get_icon():
+		gen_new_icon(icon, category_item)
+
+
+	for category_child in guildpoint_category.get_children():
+		_guildpoint_categories_to_godot_nodes(category_item, category_child, godot_category3d, godot_category2d, depth + 1)
+
+
+func apply_category_visibility_to_nodes(category_item: TreeItem):
+	var category_data = category_item.get_metadata(0)
+	var relative_path: String = self.markers_3d.get_path_to(category_data.category3d)
+	Settings.local_category_data[Marshalls.raw_to_base64(category_data.guildpoint_category.get_id())] = {
+		"checked" : category_item.is_checked(1),
+	}
+	Settings.save()
+
+	category_data.is_visible = category_item.is_checked(1)
+	category_data.category3d.visible = category_data.is_visible
+	category_data.category2d.visible = category_data.is_visible
+
+
+func gen_new_trail(guildpoint_trail: Guildpoint.Trail, category_item: TreeItem) -> Array:
 	# Create the texture to use from an image file
 	# TODO: We want to be able to cache this data so that if a texture is used
 	# by multiple objects we only need to keep ony copy of it in memory. #22.
 	# TODO: We want to have two copies of each texture in memory one for 2D
 	# which does not use srgb to render properly, and one for 3D which forces
 	# srgb to render properly. Issue #23.
+	var texture_id: int = guildpoint_trail.get_texture_id()
+	if texture_id == 0:
+		var category_data = category_item.get_metadata(0)
+		print("Warning: No texture found in " , category_data.guildpoint_category.get_name())
+	# TODO(330): Error Textures
+	var texture_path: String = self.unsaved_markers_dir + get_texture_path(texture_id)
 	var texture_file = File.new()
 	var image = Image.new()
 	if !texture_file.file_exists(texture_path):
@@ -552,93 +630,86 @@ func gen_new_path(points: Array, texture_path: String):
 	texture.storage = ImageTexture.STORAGE_COMPRESS_LOSSLESS
 	texture.create_from_image(image, 22)
 
+	var new_trail3d = trail3d_scene.instance()
+	new_trail3d.guildpoint = guildpoint_trail
+	new_trail3d.refresh_mesh()
+	new_trail3d.set_texture(texture)
+	var category_data = category_item.get_metadata(0)
+	category_data.category3d.add_trail3d(new_trail3d)
 
 
-	# Create a new 3D route
-	var new_route = route_scene.instance()
-#	var new_curve = Curve3D.new()
-#	for point in points:
-#		new_curve.add_point(Vector3(point[0], point[1], -point[2]))
-#		points_2d.append(Vector2(point[0], -point[2]))
+	# Create a new 2D Trail
+	var new_trail2d = trail2d_scene.instance()
+	var points_2d := PoolVector2Array()
+	new_trail2d.texture = texture
+	new_trail2d.guildpoint = guildpoint_trail
+	new_trail2d.refresh_points()
+	category_data.category2d.add_trail2d(new_trail2d)
 
-#	new_path.curve = new_curve
-	new_route.texture_path = texture_path # Save the location of the image for later
-	#path_3d_markers.append(new_path)
+	return [new_trail3d, new_trail2d]
 
-	var points_3d := PoolVector3Array()
-	for point in points:
-		points_3d.append(Vector3(point[0], point[1], -point[2]))
-
-	new_route.create_mesh(points_3d)
-	new_route.set_texture(texture)
-	paths.add_child(new_route)
-
-
-
-
-
-
-
-	for point in points:
-		points_2d.append(Vector2(point[0], -point[2]))
-
-
-	# Create a new 2D Path
-	var new_2d_path = path2d_scene.instance()
-	new_2d_path.points = points_2d
-	new_2d_path.texture = texture
-	minimap.add_child(new_2d_path)
-
-	self.currently_active_path = new_route
-	self.currently_active_path_2d = new_2d_path
-
-
-################################################################################
-#
-################################################################################
-func gen_new_icon(position: Vector3, texture_path: String):
-	position.z = -position.z
+func gen_new_icon(guildpoint_icon: Guildpoint.Icon, category_item: TreeItem):
+	var texture_id: int = guildpoint_icon.get_texture_id()
+	if texture_id == 0:
+		var category_data = category_item.get_metadata(0)
+		print("Warning: No texture found in " , category_data.guildpoint_category.get_name())
+	# TODO(330) Error Textures
+	var texture_path: String = self.unsaved_markers_dir + get_texture_path(texture_id)
+	var position = guildpoint_icon.get_position()
+	if position == null:
+		var category_data = category_item.get_metadata(0)
+		print("Warning: No position found for icon ", category_data.guildpoint_category.get_name())
+		return
+	var position_vector = Vector3(position.get_x(), position.get_y(), -position.get_z())
 	var new_icon = icon_scene.instance()
-	new_icon.translation = position
+	new_icon.translation = position_vector
 	new_icon.set_icon_image(texture_path)
+	new_icon.guildpoint = guildpoint_icon
+	var category_data = category_item.get_metadata(0)
+	category_data.category3d.add_icon(new_icon)
 
-	#icon_markers.append(new_icon)
-	icons.add_child(new_icon)
+################################################################################
+# Section of functions for saving data to file
+################################################################################
+func save_map_data(map_id: int):
+	var packed_bytes = self.guildpoint_data.to_bytes()
+	var file = File.new()
+	file.open(self.marker_file_path, file.WRITE)
+	file.store_buffer(packed_bytes)
 
-# This function take all of the currently rendered objects and converts it into
-# the data format that is saved/loaded from.
-func data_from_renderview():
-	var icons_data = []
-	var paths_data = []
-
-	for icon in $Icons.get_children():
-		icons_data.append({
-			"position": [icon.translation.x, icon.translation.y, -icon.translation.z],
-			"texture": icon.texture_path
-		})
-
-	for path in $Paths.get_children():
-		#print(path)
-		var points = []
-		for point in range(path.get_point_count()):
-			var point_position:Vector3 = path.get_point_position(point)
-			points.append([point_position.x, point_position.y, -point_position.z])
-		paths_data.append({
-			"points": points,
-			"texture": path.texture_path
-		})
-
-	var data_out = {"icons": icons_data, "paths": paths_data}
-	return data_out
-
-func _on_main_menu_toggle_pressed():
-	$Control/Dialogs/MainMenu.show()
-	set_maximal_mouse_block()
-
-func _on_FileDialog_file_selected(path):
-	load_taco_markers(path)
+func make_hash(data: PoolByteArray) -> String:
+	var ctx = HashingContext.new()
+	ctx.start(HashingContext.HASH_MD5)
+	ctx.update(data)
+	var res: PoolByteArray = ctx.finish()
+	return res.hex_encode()
 
 
+# Save all hashes
+func save_hashes():
+	var file = File.new()
+	var data = {}
+	var dir = Directory.new()
+	dir.open(self.unsaved_markers_dir)
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	while file_name != "":
+		if dir.file_exists(file_name):
+			file.open(file_name, File.READ)
+			data[file_name.get_basename()] = make_hash(file.get_buffer(file.get_len()))
+		file_name = dir.get_next()
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.WRITE)
+	file.store_string(JSON.print(data))
+
+func read_hash(map_id: int) -> String:
+	var file = File.new()
+	if not file.file_exists(HASH_BY_MAP_ID_FILEPATH):
+		return ""
+	file.open(HASH_BY_MAP_ID_FILEPATH, File.READ)
+	return JSON.parse(file.get_as_text()).result.get(String(map_id), "")
+
+################################################################################
+# Adjustment and gizmo functions
 ################################################################################
 # The adjust nodes button creates handles at all the node points to allow for
 # editing of them via in-game interface. (Nodes can only be edited if the input
@@ -652,59 +723,90 @@ func _on_AdjustNodesButton_pressed():
 
 
 func gen_adjustment_nodes():
-	for index in range(self.paths.get_child_count()):
-		var route = self.paths.get_child(index)
-		var path2d = self.minimap.get_child(index)
-		#var curve: Curve3D = path.curve
-		for i in range(route.get_point_count()):
-			var gizmo_position = route.get_point_position(i)
-
+	if self.currently_active_category == null:
+		print("No category selected")
+		return
+	var guildpoint_category = self.currently_active_category.get_metadata(0).guildpoint_category
+	var category3d = self.currently_active_category.get_metadata(0).category3d
+	var category2d = self.currently_active_category.get_metadata(0).category2d
+	for trail_index in guildpoint_category.get_trail().size():
+		var guildpoint_trail = guildpoint_category.get_trail()[trail_index]
+		var trail3d = category3d.trails3d[trail_index]
+		var trail2d = category2d.trails2d[trail_index]
+		for point_index in get_trail_point_count(guildpoint_trail):
+			var gizmo_position = get_trail_point_position(guildpoint_trail, point_index)
 			# Simplistic cull to prevent nodes that are too far away to be
 			# visible from being created. Additional work can be done here
 			# if this is not enough of an optimization in the future.
 			if (gizmo_position.distance_squared_to(self.correct_player_position) > 10000):
 				continue
-
 			var new_gizmo = gizmo_scene.instance()
 			new_gizmo.translation = gizmo_position
-			new_gizmo.link_point("path", route, path2d, i)
-			new_gizmo.connect("selected", self, "on_gizmo_selected")
+			new_gizmo.connect("selected", self, "on_trail_gizmo_selected", [guildpoint_trail, trail3d, trail2d, point_index])
 			new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+			new_gizmo.connect("updated", self, "set_trail_point_position", [guildpoint_trail, trail3d, trail2d, point_index])
 			$Gizmos.add_child(new_gizmo)
-
-	for index in range(self.icons.get_child_count()):
-		var icon = self.icons.get_child(index)
+	for icon_index in guildpoint_category.get_icon().size():
+		var guildpoint_icon = guildpoint_category.get_icon()[icon_index]
+		var icon = category3d.icons[icon_index]
 		var new_gizmo = gizmo_scene.instance()
-		new_gizmo.translation = icon.translation
-		new_gizmo.link_point("icon", icon)
-		new_gizmo.connect("selected", self, "on_gizmo_selected")
+		new_gizmo.translation = get_icon_position(guildpoint_icon)
+		new_gizmo.connect("selected", self, "on_icon_gizmo_selected", [guildpoint_icon, icon])
 		new_gizmo.connect("deselected", self, "on_gizmo_deselected")
+		new_gizmo.connect("updated", self, "set_icon_position", [guildpoint_icon, icon])
 		$Gizmos.add_child(new_gizmo)
 
+var currently_selected_gizmo = null
+var currently_selected_icon = null
+var currently_selected_guildpoint_icon = null
+var currently_selected_guildpoint_trail = null
+var currently_selected_trail3d = null
+var currently_selected_trail2d = null
+var currently_selected_point_index = null
 
-var currently_selected_node = null
-func on_gizmo_selected(object):
-	self.currently_selected_node = object
+func set_2D_position_from_3D_point(position: Vector3, trail2d: Line2D, index: int):
+	trail2d.set_point_position(index, Vector2(position.x, position.z))
+
+func on_icon_gizmo_selected(object: Spatial, guildpoint_icon: Guildpoint.Icon, icon: Sprite3D):
+	self.currently_selected_gizmo = object
+	self.currently_selected_icon = icon
+	self.currently_selected_guildpoint_icon = guildpoint_icon
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
-	# Only enable these buttons if the object selected is a point on the path not an icon
-	if object.point_type == "path":
-		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = false
-		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = false
-		$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
 
 
-func on_gizmo_deselected(object):
-	self.currently_selected_node = null
+func on_trail_gizmo_selected(object: Spatial, guildpoint_trail: Guildpoint.Trail, trail3d: Spatial, trail2d: Line2D, point_index: int):
+	self.currently_selected_gizmo = object
+	self.currently_selected_guildpoint_trail = guildpoint_trail
+	self.currently_selected_trail3d = trail3d
+	self.currently_selected_trail2d = trail2d
+	self.currently_selected_point_index = point_index
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewTrailPointAfter.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
+
+
+func on_gizmo_deselected():
+	self.currently_selected_gizmo = null
+	self.currently_selected_icon = null
+	self.currently_selected_guildpoint_icon = null
+	self.currently_selected_guildpoint_trail = null
+	self.currently_selected_trail3d = null
+	self.currently_selected_trail2d = null
+	self.currently_selected_point_index = null
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewNodeAfter.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewTrailPointAfter.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = true
 	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActivePath.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReversePathDirection.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail.disabled = true
+	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection.disabled = true
 
 
 func clear_adjustment_nodes():
@@ -712,35 +814,164 @@ func clear_adjustment_nodes():
 		$Gizmos.remove_child(child)
 		child.queue_free()
 
+################################################################################
+# Update Guildpoint datum
+################################################################################
+func get_texture_index(path: String) -> int:
+	if path == "":
+		return 0
+	for i in self.guildpoint_data.get_textures().size():
+		if path == self.guildpoint_data.get_textures()[i].get_filepath():
+			return i
+	return -1
 
-func is_any_dialog_visible():
-	for dialog in $Control/Dialogs.get_children():
-		if dialog.visible:
+func get_texture_path(texture_id: int) -> String:
+	if texture_id == 0:
+		return ""
+	if texture_id >= self.guildpoint_data.get_textures().size() or texture_id < 0:
+		toast("Invalid texture index found")
+		# TODO(330): This should return an error texture filepath instead of empty string
+		return ""
+	return self.guildpoint_data.get_textures()[texture_id].get_filepath()
+
+func set_icon_position(new_position: Vector3, guildpoint_icon: Guildpoint.Icon, icon: Sprite3D):
+	if icon.guildpoint != guildpoint_icon:
+		push_error("Desync between Guildpoint and Icon")
+	var position = guildpoint_icon.new_position()
+	position.set_x(new_position.x)
+	position.set_y(new_position.y)
+	position.set_z(new_position.z)
+	icon.set_position(new_position)
+
+func remove_icon(guildpoint_icon: Guildpoint.Icon, icon: Sprite3D):
+	if icon.guildpoint != guildpoint_icon:
+		push_error("Desync between Guildpoint and Icon")
+	var category: Node = icon.get_parent()
+	var icon_index: int = category.icons.find(icon)
+	category.guildpoint_category.get_icon().remove(icon_index)
+	category.category3d.remove_icon(icon)
+
+func get_icon_position(guildpoint_icon: Guildpoint.Icon):
+	var position: Vector3
+	position[0] = guildpoint_icon.get_position().get_x()
+	position[1] = guildpoint_icon.get_position().get_y()
+	position[2] = -guildpoint_icon.get_position().get_z()
+	return position
+
+func set_trail_point_position(position: Vector3, guildpoint_trail: Guildpoint.Trail, trail3d: Spatial, trail2d: Line2D, point_index: int):
+	if trail3d.guildpoint != trail2d.guildpoint or trail2d.guildpoint != guildpoint_trail:
+		push_error("Desync between Guildpoint, Trail3D, and Trail2D")
+	var trail_data = guildpoint_trail.get_trail_data()
+	trail_data.get_points_x()[point_index] = position.x
+	trail_data.get_points_y()[point_index] = position.y
+	trail_data.get_points_z()[point_index] = -position.z
+	refresh_trail3d_points(trail3d)
+	refresh_trail2d_points(trail2d)
+
+func reverse_trail(guildpoint_trail: Guildpoint.Trail, trail3d: Spatial, trail2d: Line2D):
+	if trail3d.guildpoint != trail2d.guildpoint or trail2d.guildpoint != guildpoint_trail:
+		push_error("Desync between Guildpoint, Trail3D, and Trail2D")
+	var trail_data = guildpoint_trail.get_trail_data()
+	trail_data.get_points_x().invert()
+	trail_data.get_points_y().invert()
+	trail_data.get_points_z().invert()
+	refresh_trail3d_points(trail3d)
+	refresh_trail2d_points(trail2d)
+
+func get_trail_point_count(guildpoint_trail: Guildpoint.Trail):
+	var trail_data = guildpoint_trail.get_trail_data()
+	return trail_data.get_points_x().size()
+
+func get_trail_point_position(guildpoint_trail: Guildpoint.Trail, point_index: int):
+	var position: Vector3
+	var trail_data = guildpoint_trail.get_trail_data()
+	position[0] = trail_data.get_points_x()[point_index]
+	position[1] = trail_data.get_points_y()[point_index]
+	position[2] = -trail_data.get_points_z()[point_index]
+	return position
+
+func add_trail_point(position: Vector3, guildpoint_trail: Guildpoint.Trail, trail3d: Spatial, trail2d: Line2D, point_index: int = -1):
+	if trail3d.guildpoint != trail2d.guildpoint or trail2d.guildpoint != guildpoint_trail:
+		push_error("Desync between Guildpoint, Trail3D, and Trail2D")
+	var trail_data = trail3d.guildpoint.get_trail_data()
+	if point_index == -1:
+		trail_data.get_points_x().append(position.x)
+		trail_data.get_points_y().append(position.y)
+		trail_data.get_points_z().append(position.z) 
+	else:
+		trail_data.get_points_x().insert(point_index, position.x)
+		trail_data.get_points_y().insert(point_index, position.y)
+		trail_data.get_points_z().insert(point_index, -position.z)
+	refresh_trail3d_points(trail3d)
+	refresh_trail2d_points(trail2d)
+
+func remove_trail_point(guildpoint_trail: Guildpoint.Trail, trail3d: Spatial, trail2d: Line2D, point_index: int):
+	if trail3d.guildpoint != trail2d.guildpoint or trail2d.guildpoint != guildpoint_trail:
+		push_error("Desync between Guildpoint, Trail3D, and Trail2D")
+	var trail_data = trail3d.guildpoint.get_trail_data()
+	trail_data.get_points_x().remove(point_index)
+	trail_data.get_points_y().remove(point_index)
+	trail_data.get_points_z().remove(point_index)
+	refresh_trail3d_points(trail3d)
+	refresh_trail2d_points(trail2d)
+
+func new_trail_point_after(guildpoint_trail: Guildpoint.Trail, trail3d: Spatial, trail2d: Line2D, point_index: int):
+	var start: Vector3 = get_trail_point_position(guildpoint_trail, point_index)
+	var target_position: Vector3
+	if get_trail_point_count(guildpoint_trail) > point_index+1:
+		var end: Vector3 = get_trail_point_position(guildpoint_trail, point_index+1)
+		target_position = ((start-end)/2) + end
+	else:
+		target_position = Vector3(self.player_position.x, self.player_position.y, -self.player_position.z)
+	add_trail_point(target_position, guildpoint_trail, trail3d, trail2d, point_index+1)
+
+func refresh_trail3d_points(trail3d: Spatial):
+	trail3d.refresh_mesh()
+
+func refresh_trail2d_points(trail2d: Line2D):
+	trail2d.refresh_points()
+
+func toast(message: String):
+	print(message)
+
+################################################################################
+# Signal Functions
+################################################################################
+func _on_main_menu_toggle_pressed():
+	$Control/Dialogs/MainMenu.show()
+	set_maximal_mouse_block()
+
+func is_any_dialog_visible(node = $Control/Dialogs):
+	for dialog in node.get_children():
+		if dialog.get_class() == "Control":
+			if is_any_dialog_visible(dialog):
+				return true
+		elif dialog.visible:
 			return true
 	return false
-
 
 func _on_Dialog_hide():
 	if !is_any_dialog_visible():
 		set_minimal_mouse_block()
 
 
-func _on_LoadPath_pressed():
-	var open_dialog: FileDialog = $Control/Dialogs/FileDialog
-	open_dialog.show()
-	open_dialog.set_current_dir(open_dialog.current_dir)
+func _on_LoadTrail_pressed():
+	if $Control/Dialogs/CategoriesDialog.is_visible():
+		$Control/Dialogs/CategoriesDialog.hide()
+	else:
+		$Control/Dialogs/CategoriesDialog.show()
 
 
 func _on_RangesButton_pressed():
 	$Control/Dialogs/RangesDialog.show()
 
 
-func _on_PathResolution_value_changed(value):
-	path_resolution = value
-	for path in $Paths.get_children():
-		var csg:CSGPolygon = path.get_node("CSGPolygon")
-		csg.path_interval = path_resolution
-		csg.material.set_shader_param("interval", path_resolution)
+func _on_TrailResolution_value_changed(value):
+	trail_resolution = value
+	for trail3d in $Trails.get_children():
+		var csg:CSGPolygon = trail3d.get_node("CSGPolygon")
+		csg.trail_interval = trail_resolution
+		csg.material.set_shader_param("interval", trail_resolution)
 
 
 func _on_CloseEditorQuickPanel_pressed():
@@ -760,128 +991,131 @@ func _on_ChangeTexture_pressed():
 	set_maximal_mouse_block()
 
 ################################################################################
-# Set the file that will be used to create a new path or icon when a new path
+# Set the file that will be used to create a new trail or icon when a new trail
 # or icon is created.
 ################################################################################
-func _on_TexturePathOpen_file_selected(path):
-	self.next_texture_path = path
+func _on_TexturePathOpen_file_selected(path: String):
+	var next_texture_path = FileHandler.find_image_duplicates(path, self.unsaved_markers_dir)
+	if next_texture_path == null:
+		FileHandler.create_directory_if_missing(self.unsaved_markers_dir.plus_file("Data"))
+		next_texture_path = "Data".plus_file(path.get_file())
+		var file = File.new()
+		if file.file_exists(self.unsaved_markers_dir.plus_file(next_texture_path)):
+			toast(String(["Error: A different image with the name ", path.get_file(), " has already been imported. Please rename the file and try again."]))
+			return
+		FileHandler.copy_file(path, self.unsaved_markers_dir.plus_file(next_texture_path))
+	var texture_index = get_texture_index(next_texture_path)
+	if texture_index == -1:
+		self.guildpoint_data.add_textures().set_filepath(next_texture_path)
+		texture_index = self.guildpoint_data.get_textures().size() - 1
+	self.next_texture_id = texture_index
+
 
 ################################################################################
-# Null out the currently active path so that a new one is created the next time
-# a path node is created.
+# Null out the currently active trail so that a new one is created the next time
+# a trail node is created.
 ################################################################################
-func _on_NewPath_pressed():
-	self.currently_active_path = null
+func _on_NewTrail_pressed():
+	self.currently_active_trail3d = null
+	self.currently_active_trail2d = null
+	self.currently_active_guildpoint_trail = null
 
 ################################################################################
 # Create a new icon and give it the texture
 ################################################################################
 func _on_NewIcon_pressed():
-	gen_new_icon(self.player_position, self.next_texture_path)
+	var guildpoint_category: Guildpoint.Category = self.currently_active_category.get_metadata(0).guildpoint_category
+	var guildpoint_icon = guildpoint_category.add_icon()
+	var position = guildpoint_icon.new_position()
+	position.set_x(self.player_position.x)
+	position.set_y(self.player_position.y)
+	position.set_z(-self.player_position.z)
+	guildpoint_icon.set_texture_id(self.next_texture_id)
+	gen_new_icon(guildpoint_icon, self.currently_active_category)
 
-# A new path point is created
-func _on_NewPathPoint_pressed():
-	if self.currently_active_path == null:
-		gen_new_path([self.player_position], self.next_texture_path)
+# A new trail point is created
+func _on_NewTrailPoint_pressed():
+	if self.currently_active_trail3d == null:
+		if self.currently_active_category == null:
+			print("No category selected")
+			return
+		var guildpoint_category: Guildpoint.Category = self.currently_active_category.get_metadata(0).guildpoint_category
+		var guildpoint_trail = guildpoint_category.add_trail()
+		var trail_data = guildpoint_trail.new_trail_data()
+		trail_data.add_points_x(self.player_position.x)
+		trail_data.add_points_y(self.player_position.y)
+		trail_data.add_points_z(-self.player_position.z)
+		guildpoint_trail.set_texture_id(self.next_texture_id)
+		var new_trails: Array = gen_new_trail(guildpoint_trail, self.currently_active_category)
+		self.currently_active_trail3d = new_trails[0]
+		self.currently_active_trail2d = new_trails[1]
 	else:
-		var z_accurate_player_position = player_position
-		z_accurate_player_position.z = -z_accurate_player_position.z
-		self.currently_active_path.add_point(z_accurate_player_position)
-		self.currently_active_path_2d.add_point(Vector2(self.player_position.x, -self.player_position.z))
-
-
-
-################################################################################
-# open the save dialog window. When a path is selected
-# _on_SaveDialog_file_selected() will be called with the user specified path.
-################################################################################
-func _on_SavePath_pressed():
-	$Control/Dialogs/SaveDialog.show()
-
-################################################################################
-# Save the current markers to a file, this includes all markers in memory not
-# just the markers on the current map.
-################################################################################
-func _on_SaveDialog_file_selected(path):
-	self.markerdata[str(self.map_id)] = data_from_renderview()
-	var save_game = File.new()
-	save_game.open(path, File.WRITE)
-	save_game.store_string(JSON.print(self.markerdata))
-
+		add_trail_point(self.player_position, self.currently_active_guildpoint_trail, self.currently_active_trail3d, self.currently_active_trail2d)
 
 func _on_NodeEditorDialog_hide():
-	self.currently_selected_node = null
+	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	_on_Dialog_hide()
 
 
 func _on_DeleteNode_pressed():
-	if self.currently_selected_node.point_type == "icon":
-		self.currently_selected_node.object_link.get_parent().remove_child(self.currently_selected_node.object_link)
-		self.currently_selected_node.object_link.queue_free()
-	elif self.currently_selected_node.point_type == "path":
-		var path =   self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
-		var index =  self.currently_selected_node.object_index
-
-		path.remove_point(index)
-		path2d.remove_point(index)
+	if self.currently_selected_guildpoint_icon != null:
+		remove_icon(self.currently_selected_guildpoint_icon, self.currently_selected_icon)
+	if self.currently_selected_guildpoint_trail != null :
+		remove_trail_point(self.currently_selected_guildpoint_trail, self.currently_selected_trail3d, self.currently_active_trail2d, self.currently_selected_point_index)
+	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
-	on_gizmo_deselected(self.currently_selected_node)
 
 
-func _on_NewNodeAfter_pressed():
-	if self.currently_selected_node.point_type == "icon":
-		print("Warning: Cannot add node to icon")
-	elif self.currently_selected_node.point_type == "path":
-		print("insert path node")
-		var path = self.currently_selected_node.object_link
-		var path2d = self.currently_selected_node.object_2d_link
-		var index = self.currently_selected_node.object_index
-
-		var start = path.get_point_position(index)
-		var midpoint = self.player_position
-		midpoint.z = -midpoint.z
-		if path.get_point_count() > index+1:
-			var end = path.get_point_position(index+1)
-			midpoint = ((start-end)/2) + end
-
-		path.add_point(midpoint, index+1)
-		path2d.add_point(Vector2(midpoint.x, midpoint.z), index+1)
-
-		clear_adjustment_nodes()
-		gen_adjustment_nodes()
-		on_gizmo_deselected(self.currently_selected_node)
+func _on_NewTrailPointAfter_pressed():
+	if self.currently_selected_guildpoint_trail != null:
+		new_trail_point_after(self.currently_selected_guildpoint_trail, self.currently_selected_trail3d, self.currently_selected_trail2d, self.currently_selected_point_index)
+	on_gizmo_deselected()
+	clear_adjustment_nodes()
+	gen_adjustment_nodes()
 
 func _on_XZSnapToPlayer_pressed():
-	self.currently_selected_node.translation.x = self.player_position.x
-	self.currently_selected_node.translation.z = -self.player_position.z
+	if self.currently_selected_gizmo == null:
+		print("Warning: No Point Selected")
+		return
+	self.currently_selected_gizmo.translation.x = self.player_position.x
+	self.currently_selected_gizmo.translation.z = -self.player_position.z
 
 
 func _on_YSnapToPlayer_pressed():
-	self.currently_selected_node.translation.y = self.player_position.y
+	if self.currently_selected_gizmo == null:
+		print("Warning: No Point Selected")
+		return
+	self.currently_selected_gizmo.translation.y = self.player_position.y
 
 
 func _on_SnapSelectedToPlayer_pressed():
-	self.currently_selected_node.translation.x = self.player_position.x
-	self.currently_selected_node.translation.z = -self.player_position.z
-	self.currently_selected_node.translation.y = self.player_position.y
+	if self.currently_selected_gizmo == null:
+		print("Warning: No Point Selected")
+		return
+	self.currently_selected_gizmo.translation.x = self.player_position.x
+	self.currently_selected_gizmo.translation.z = -self.player_position.z
+	self.currently_selected_gizmo.translation.y = self.player_position.y
 
 
-func _on_SetActivePath_pressed():
-	if self.currently_selected_node.point_type == "icon":
-		print("Warning: Cannot set icon as active path")
-	elif self.currently_selected_node.point_type == "path":
-		self.currently_active_path = self.currently_selected_node.object_link
-		self.currently_active_path_2d = self.currently_selected_node.object_2d_link
+func _on_SetActiveTrail_pressed():
+	self.currently_active_guildpoint_trail = self.currently_selected_guildpoint_trail
+	self.currently_active_trail3d = self.currently_selected_trail3d
+	self.currently_active_trail2d = self.currently_selected_trail2d
 
 
-func _on_ReversePathDirection_pressed():
-	self.currently_selected_node.object_link.reverse()
+func _on_ReverseTrailDirection_pressed():
+	if self.currently_selected_guildpoint_trail != null:
+		reverse_trail(self.currently_selected_guildpoint_trail, self.currently_selected_trail3d, self.currently_active_trail2d)
+	on_gizmo_deselected()
+	clear_adjustment_nodes()
+	gen_adjustment_nodes()
 
 
 func _on_ExitButton_pressed():
+	if not read_hash(self.map_id) == make_hash(self.guildpoint_data.to_bytes()):
+		save_map_data(self.map_id)
 	exit_burrito()
 
 
@@ -890,3 +1124,97 @@ func _on_Settings_pressed():
 	settings_dialog.load_settings()
 	settings_dialog.show()
 
+
+func _on_MarkersUI_cell_selected():
+	var category_item = self.markers_ui.get_selected()
+	self.currently_active_category = category_item
+	self.currently_active_trail2d = null
+	self.currently_active_trail3d = null
+	self.currently_active_guildpoint_trail = null
+	on_gizmo_deselected()
+	clear_adjustment_nodes()
+
+
+func _on_MarkersUI_item_edited():
+	var category_item = self.markers_ui.get_edited()
+	apply_category_visibility_to_nodes(category_item)
+
+
+func _on_ImportTaco_pressed():
+	$Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog.show()
+
+func _on_ImportBurrito_pressed():
+	$Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog.show()
+
+enum MarkerPackType {
+	XML,
+	GUILDPOINT,
+}
+
+func _on_ImportBurritoPackDialog_dir_selected(dir: String):
+	import_marker_pack(dir, MarkerPackType.GUILDPOINT)
+
+func _on_ImportBurritoPackDialog_file_selected(path: String):
+	import_marker_pack(path, MarkerPackType.GUILDPOINT)
+
+func _on_ImportTacoPackDialog_dir_selected(dir: String):
+	import_marker_pack(dir, MarkerPackType.XML)
+
+func _on_ImportTacoPackDialog_file_selected(path: String):
+	import_marker_pack(path, MarkerPackType.XML)
+
+func import_marker_pack(dir: String, type):
+	var args: PoolStringArray
+	if type == MarkerPackType.XML:
+		args.push_back("--input-taco-path")
+	elif type == MarkerPackType.GUILDPOINT:
+		args.push_back("--input-guildpoint-path")
+	args.push_back(dir)
+
+	args.append_array([
+		"--input-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--split-by-category",
+		"--output-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
+		"--split-by-map-id",
+	])
+
+	var duplicate_categories: Dictionary = FileHandler.call_xml_converter(args)
+	if duplicate_categories.empty():
+		save_hashes()
+		load_guildpoint_markers(self.map_id)
+		return
+
+	var category_names: PoolStringArray
+	for id in duplicate_categories.keys():
+		for category_name in duplicate_categories[id].keys():
+			for file in duplicate_categories[id][category_name]:
+				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+					if !(category_name in category_names):
+						category_names.push_back(category_name)
+	self.overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + category_names.join("\n")
+	self.overwrite_confirmation.popup_centered()
+
+	# Await result of pop up
+	var return_val = yield(self.overwrite_confirmation, "confirmation_result")
+	if return_val == true:
+		for id in duplicate_categories.keys():
+			for category in duplicate_categories[id]:
+				for file in duplicate_categories[id][category]:
+					if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+						FileHandler.delete_file(file)
+		duplicate_categories = FileHandler.call_xml_converter(args)
+		if duplicate_categories.empty():
+			save_hashes()
+			load_guildpoint_markers(self.map_id)
+		else:
+			push_error("Duplicates could not be resolved.")
+
+func _on_SaveData_pressed():
+	var user_data_dir = str(OS.get_user_data_dir())
+	var args: PoolStringArray = [
+		"--input-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
+		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--split-by-category",
+	]
+	FileHandler.call_xml_converter(args)

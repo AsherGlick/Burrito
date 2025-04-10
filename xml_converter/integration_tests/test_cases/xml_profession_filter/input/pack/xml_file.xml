@@ -1,0 +1,12 @@
+<OverlayData>
+    <MarkerCategory DisplayName="My Category" Name="mycategory">
+    </MarkerCategory>
+
+    <POIs>
+        <POI Profession="Guardian" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Profession="warrior,engineer" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Profession="warrior, engineer" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Profession="Guardian,Warrior" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+        <POI Profession="Guardian,Warrior,Engineer,Ranger,Thief,Elementalist,Mesmer,Necromancer,Revenant" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+    </POIs>
+</OverlayData>

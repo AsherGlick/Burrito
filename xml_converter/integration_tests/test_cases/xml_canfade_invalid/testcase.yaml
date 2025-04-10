@@ -1,0 +1,13 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+    Error: Found a boolean value that was not a '1', '0', 'true', or 'false'
+    test_cases/xml_canfade_invalid/input/pack/xml_file.xml
+    6 |        <POI CanFade="yes" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+      |                      ^^^
+    Error: Found a boolean value that was not a '1', '0', 'true', or 'false'
+    test_cases/xml_canfade_invalid/input/pack/xml_file.xml
+    7 |        <POI CanFade="はい" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+      |                      ^^^^^^
+expected_stderr: |
+expected_returncode: 0

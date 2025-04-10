@@ -1,0 +1,21 @@
+input_paths: 
+    "pack": "xml"
+expected_stdout: |
+    Error: Invalid Filter for MountFilter. Found 
+    test_cases/xml_mount_filter_invalid/input/pack/xml_file.xml
+    6 |        <POI Mount="" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+      |                    
+    Error: Invalid Filter for MountFilter. Found NotAMount
+    test_cases/xml_mount_filter_invalid/input/pack/xml_file.xml
+    7 |        <POI Mount="NotAMount" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+      |                    ^^^^^^^^^
+    Error: Invalid Filter for MountFilter. Found 
+    test_cases/xml_mount_filter_invalid/input/pack/xml_file.xml
+    8 |        <POI Mount="Raptor,Springer," Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+      |                    ^^^^^^^^^^^^^^^^
+    Error: Invalid Filter for MountFilter. Found NotAMount
+    test_cases/xml_mount_filter_invalid/input/pack/xml_file.xml
+    9 |        <POI Mount="Raptor,NotAMount,Springer" Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" />
+      |                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+expected_stderr: |
+expected_returncode: 0
