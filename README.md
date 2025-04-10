@@ -1,28 +1,34 @@
-Burrito Overlay
-===============
-Burrito is an early alpha overlay tool for Guildwars 2 that runs on linux without any display hacks.
+Burrito
+================================================================================
+Burrito is an overlay tool for Guild Wars 2 that runs on Linux.
 
-The primary goal is to render and edit POIs and routes based off of sharable data files while being able to run on linux with no workarounds.
+The primary goal is to render and edit real-time 3D UI elements on Linux.
 
-It functions natively linux via running a pre-compiled binary inside of wine that streams the memory mapped data back to the host.
+The Burrito UI functions natively on Linux, but requires running a small
+windows binary inside of Wine that reads the memory mapped real-time
+position data.
 
 
 Getting Started
-===============
-Go to [burrito.orthogonalprojects.com](https://burrito.orthogonalprojects.com) for instructions
+================================================================================
+Go to [burrito.orthogonalprojects.com](https://burrito.orthogonalprojects.com) for instructions.
 
 
 Roadmap
-=======
-* Automatically run the burrito_link binary when burrito starts.
-* Launch the burrito_link binary via an internal config instead of via an external script.
-  * A seperate script to generate the config from Lutris settings automatically.
-* Automatically close burrito when GW2 closes.
-* Automatically parse/convert TacO marker files instead of using a converter script.
+================================================================================
+* Support for all of the XML node attributes that are supported by TacO and BlishHUD
+* Native-looking user interface, with more-seamless mouse pass-through
+* Support for preventing icons and trails from rendering over UI elements
+* Automated testing for different desktop environments
+* Automated releases for the `burrito` and `burrito-next` channels
+* Marker pack documentation
+* Better Wayland support
 
 
 Known Bug Workarounds
-=====================
-* Burrito launches off-center or on the wrong monitor (This seems to be WM dependant.)
+================================================================================
+* Burrito launches off-center or on the wrong monitor (This seems to be WM dependent.)
   * On Gnome and KDE it can be solved by holding down the super key and dragging burrito to the right position.
-  * On KDE it is also possible to use [window-rules](https://docs.kde.org/stable5/en/kwin/kcontrol/windowspecific/examples.html) to set the position or a target monitor automatically by adding a new rule to `System Settings → Window Behavior → Window Rules` and setting `window class (application)` to `burrito`.
+  * On KDE it is also possible to use [window-rules](https://docs.kde.org/stable5/en/kwin/kcontrol/windowspecific/examples.html) to set the position or a target monitor automatically by adding a new rule to `System Settings` → `Window Behavior` → `Window Rules` and setting `window class (application)` to `burrito`.
+* Wayland / XWayland does not play nicely with transparency / mouse pass-through / window focus
+  * Many wayland implementations are not as mature as X11. It is recommended at this time to use X11.
