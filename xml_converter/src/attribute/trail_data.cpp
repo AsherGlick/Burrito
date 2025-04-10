@@ -106,7 +106,7 @@ void Attribute::TrailData::to_xml_attribute(
     XMLWriterState* state,
     const TrailData* value,
     const int* map_id_value,
-    const bool* is_map_id_set,
+    const bool*,  // is_map_id_set
     std::function<void(std::string)> setter
 ) {
     size_t byte_array_size = sizeof(int) + sizeof(uint32_t) + value->points.size() * 3 * sizeof(float);
