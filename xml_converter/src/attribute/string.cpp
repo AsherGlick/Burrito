@@ -85,8 +85,8 @@ void Attribute::NameAndDisplayname::to_proto_field(
     std::string value,
     ProtoWriterState*,
     std::function<void(std::string)> setter,
-    const std::string* name,
-    const bool* is_name_set
+    const std::string*,  // name
+    const bool*  // is_name_set
 ) {
     setter(value);
 }
