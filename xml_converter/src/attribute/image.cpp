@@ -46,7 +46,11 @@ void Attribute::Image::to_xml_attribute(
     std::function<void(std::string)> setter
 ) {
     MarkerPackFile output_path = MarkerPackFile(state->marker_pack_root_directory, value->filepath.relative_filepath);
-    copy_file(value->filepath, output_path);
+    auto file_lookup = state->written_textures.find(output_path.tmp_get_path());
+    if (file_lookup == state->written_textures.end()) {
+        copy_file(value->filepath, output_path);
+        state->written_textures.insert(output_path.tmp_get_path());
+    }
     setter(value->filepath.relative_filepath);
 }
 
