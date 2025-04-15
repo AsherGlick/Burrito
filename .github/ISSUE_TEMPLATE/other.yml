@@ -1,0 +1,12 @@
+name: Other
+description: You want to ask a question or praise the developers.
+title: "[Other]: "
+projects: ["AsherGlick/Burrito"]
+body:
+  - type: textarea
+    id: lets_talk
+    attributes:
+      label: Message
+      description: Feel free to ask what ever you want.
+    validations:
+      required: true
