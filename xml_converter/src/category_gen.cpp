@@ -47,7 +47,7 @@ void Category::init_from_xml(rapidxml::xml_node<>* node, vector<XMLError*>* erro
 
 bool Category::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLReaderState* state) {
     string attributename;
-    attributename = normalize(get_attribute_name(attribute));
+    attributename = get_attribute_name(attribute);
     if (attributename == "displayname") {
         Attribute::String::from_xml_attribute(attribute, errors, state, &(this->display_name), &(this->display_name_is_set));
     }

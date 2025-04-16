@@ -31,7 +31,7 @@ static Category* parse_marker_categories(
     int depth = 0
 ) {
     string name;
-    if (get_node_name(node) == "MarkerCategory") {
+    if (get_node_name(node) == "markercategory") {
         rapidxml::xml_attribute<>* name_attribute = find_attribute(node, "name");
         if (name_attribute == 0) {
             // TODO: This error should really be for the entire node not just the name
@@ -156,7 +156,7 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
     vector<XMLError*> ignored_errors;
 
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
-        if (get_node_name(node) == "POI") {
+        if (get_node_name(node) == "poi") {
             vector<Category*> categories = get_categories(node, marker_categories, errors);
 
             Icon* icon = new Icon();
@@ -174,7 +174,7 @@ static vector<Parseable*> parse_pois(rapidxml::xml_node<>* root_node, map<string
             icon->init_from_xml(node, errors, state);
             markers.push_back(icon);
         }
-        else if (get_node_name(node) == "Trail") {
+        else if (get_node_name(node) == "trail") {
             vector<Category*> categories = get_categories(node, marker_categories, errors);
 
             Trail* trail = new Trail();
@@ -258,7 +258,7 @@ map<Attribute::UniqueId::UniqueId, Category*> parse_xml_file(
 
     rapidxml::xml_node<>* root_node = xml_file_data->xml_document.first_node();
     // Validate the Root Node
-    if (get_node_name(root_node) != "OverlayData") {
+    if (get_node_name(root_node) != "overlaydata") {
         errors.push_back(new XMLNodeNameError("Root node should be of type OverlayData", root_node));
     }
     if (root_node->first_attribute() != nullptr) {
@@ -270,13 +270,13 @@ map<Attribute::UniqueId::UniqueId, Category*> parse_xml_file(
 
     map<Attribute::UniqueId::UniqueId, Category*> top_level_categories;
     for (rapidxml::xml_node<>* node = root_node->first_node(); node; node = node->next_sibling()) {
-        if (get_node_name(node) == "MarkerCategory") {
+        if (get_node_name(node) == "markercategory") {
             Category* category = parse_marker_categories(node, marker_categories, nullptr, &errors, &state);
             if (category != nullptr) {
                 top_level_categories[category->menu_id] = category;
             }
         }
-        else if (get_node_name(node) == "POIs") {
+        else if (get_node_name(node) == "pois") {
             vector<Parseable*> temp_vector = parse_pois(node, marker_categories, &errors, &state);
             move(temp_vector.begin(), temp_vector.end(), back_inserter(*parsed_pois));
         }

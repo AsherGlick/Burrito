@@ -1,0 +1,16 @@
+<overlaydata>
+    <markercategory DisplayName="My Category" Name="mycategory">
+    </markercategory>
+    <MARKERCATEGORY DisplayName="My Category" Name="mycategory">
+    </markercategory>
+
+    <pois>
+        <poi Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" >
+        </poi>
+        <PoI Type="mycategory" XPos="169.81" YPos="210.65" ZPos="215.83" MapID="50" >
+        </poi>
+        <TRAIL TrailData="trail.trl" Type="mycategory">
+        </trail>
+
+    </pois>
+</overlaydata>

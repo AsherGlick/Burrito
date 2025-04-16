@@ -21,7 +21,7 @@ string Icon::classname() {
 
 bool Icon::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLReaderState* state) {
     string attributename;
-    attributename = normalize(get_attribute_name(attribute));
+    attributename = get_attribute_name(attribute);
     if (attributename == "achievementbit") {
         Attribute::Int::from_xml_attribute(attribute, errors, state, &(this->achievement_bit_index), &(this->achievement_bit_index_is_set));
     }
