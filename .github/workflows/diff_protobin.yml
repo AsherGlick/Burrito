@@ -21,7 +21,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install ProtoC
-      run: sudo apt-get install -y protobuf-compiler
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y protobuf-compiler
 
     - name: Fetch PR commits
       run: |
