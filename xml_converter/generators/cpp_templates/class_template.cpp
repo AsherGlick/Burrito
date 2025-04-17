@@ -48,7 +48,7 @@ string {{cpp_class}}::classname() {
 
 bool {{cpp_class}}::init_xml_attribute(rapidxml::xml_attribute<>* attribute, vector<XMLError*>* errors, XMLReaderState* state) {
     string attributename;
-    attributename = normalize(get_attribute_name(attribute));
+    attributename = get_attribute_name(attribute);
     {% for n, attribute_variable in enumerate(attribute_variables) %}
         {% for i, value in enumerate(attribute_variable.xml_info.xml_fields) %}
             {{ "if" if i == n == 0 else "else if" }} (attributename == "{{value}}") {

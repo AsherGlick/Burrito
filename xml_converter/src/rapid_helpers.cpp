@@ -6,6 +6,7 @@
 #include <string>
 
 #include "rapidxml-1.13/rapidxml.hpp"
+#include "string_helper.hpp"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ rapidxml::xml_attribute<>* find_attribute(rapidxml::xml_node<>* node, string att
 }
 
 string get_attribute_name(rapidxml::xml_attribute<>* attribute) {
-    return string(attribute->name(), attribute->name_size());
+    return normalize(string(attribute->name(), attribute->name_size()));
 }
 
 string get_attribute_value(rapidxml::xml_attribute<>* attribute) {
@@ -22,7 +23,7 @@ string get_attribute_value(rapidxml::xml_attribute<>* attribute) {
 }
 
 string get_node_name(rapidxml::xml_node<>* node) {
-    return string(node->name(), node->name_size());
+    return normalize(string(node->name(), node->name_size()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
