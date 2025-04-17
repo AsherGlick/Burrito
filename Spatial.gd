@@ -99,6 +99,15 @@ func _ready():
 		OS.window_size = Vector2(Settings.override_size_width, Settings.override_size_height)
 	else:
 		OS.window_size = Vector2(Settings.minimum_width, Settings.minimum_height)
+
+	$Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideBurritoIconPosition.hint_tooltip = "Default horizontal positions:\n" \
++ "Small: {small}\n".format({"small": button_margin[0]["left"]}) \
++ "Normal: {normal}\n".format({"normal": button_margin[1]["left"]}) \
++ "Large: {large}\n".format({"large": button_margin[2]["left"]}) \
++ "Larger: {larger}\n".format({"larger": button_margin[3]["left"]}) \
++ "\n" \
++ "Width of icon: {icon_width}".format({"icon_width": $Control/GlobalMenuButton/TextureRect.get_texture().get_size().x})
+
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
@@ -364,8 +373,12 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	if !self.button_margin.has(self.ui_size):
 		self.ui_size = 1
 
-	$Control/GlobalMenuButton.margin_left = self.button_margin[self.ui_size]["left"]
-	$Control/GlobalMenuButton.margin_right = self.button_margin[self.ui_size]["right"]
+	if Settings.override_burrito_icon_position_enabled == true:
+		$Control/GlobalMenuButton.set_position(Vector2(Settings.override_burrito_icon_horizontal_position, Settings.override_burrito_icon_vertical_position))
+	else:
+		$Control/GlobalMenuButton.margin_left = self.button_margin[self.ui_size]["left"]
+		$Control/GlobalMenuButton.margin_right = self.button_margin[self.ui_size]["right"]
+
 	if !is_any_dialog_visible():
 		set_minimal_mouse_block()
 

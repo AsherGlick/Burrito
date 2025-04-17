@@ -12,6 +12,12 @@ func load_settings():
 	override_height.text = String(Settings.override_size_height)
 	var override_width: LineEdit = $ScrollContainer/GridContainer/OverrideWidth
 	override_width.text = String(Settings.override_size_width)
+	var override_burrito_icon_position: CheckButton = $ScrollContainer/GridContainer/OverrideBurritoIconPosition
+	override_burrito_icon_position.pressed = Settings.override_burrito_icon_position_enabled
+	var override_burrito_icon_horizontal_position: LineEdit = $ScrollContainer/GridContainer/OverrideBurritoIconHorizontalPosition
+	override_burrito_icon_horizontal_position.text = String(Settings.override_burrito_icon_horizontal_position)
+	var override_burrito_icon_vertical_position: LineEdit = $ScrollContainer/GridContainer/OverrideBurritoIconVerticalPosition
+	override_burrito_icon_vertical_position.text = String(Settings.override_burrito_icon_vertical_position)
 
 	var autolaunch_burrito_link: CheckButton = $ScrollContainer/GridContainer/AutoLaunchBurritoLink
 	autolaunch_burrito_link.pressed = Settings.burrito_link_auto_launch_enabled
@@ -32,6 +38,12 @@ func save_settings(new_value=null):
 	Settings.override_size_height = int(override_height.text)
 	var override_width: LineEdit = $ScrollContainer/GridContainer/OverrideWidth
 	Settings.override_size_width = int(override_width.text)
+	var override_burrito_icon_position: CheckButton = $ScrollContainer/GridContainer/OverrideBurritoIconPosition
+	Settings.override_burrito_icon_position_enabled = override_burrito_icon_position.pressed
+	var override_burrito_icon_horizontal_position: LineEdit = $ScrollContainer/GridContainer/OverrideBurritoIconHorizontalPosition
+	Settings.override_burrito_icon_horizontal_position = int(override_burrito_icon_horizontal_position.text)
+	var override_burrito_icon_vertical_position: LineEdit = $ScrollContainer/GridContainer/OverrideBurritoIconVerticalPosition
+	Settings.override_burrito_icon_vertical_position = int(override_burrito_icon_vertical_position.text)
 
 	var autolaunch_burrito_link: CheckButton = $ScrollContainer/GridContainer/AutoLaunchBurritoLink
 	Settings.burrito_link_auto_launch_enabled = autolaunch_burrito_link.pressed

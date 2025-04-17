@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/burrito-hover.png-e291af040b59ed814682e0a2fc235942.stex"
+path="res://.import/area.png-0dbfa0af6715786f190fd4e42409c7f2.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://burrito-hover.png"
-dest_files=[ "res://.import/burrito-hover.png-e291af040b59ed814682e0a2fc235942.stex" ]
+source_file="res://markers/area.png"
+dest_files=[ "res://.import/area.png-0dbfa0af6715786f190fd4e42409c7f2.stex" ]
 
 [params]
 

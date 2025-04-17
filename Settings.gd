@@ -1,5 +1,7 @@
 extends Node
 
+signal settings_updated
+
 const CONFIG_PATH = "user://settings.json"
 
 var _config_data = {}
@@ -11,6 +13,9 @@ var minimum_height: int = 600
 var override_size_enabled: bool = false;
 var override_size_height: int = 1080
 var override_size_width: int = 1920
+var override_burrito_icon_position_enabled: bool = false;
+var override_burrito_icon_horizontal_position: int = 0
+var override_burrito_icon_vertical_position: int = 0
 
 var burrito_link_auto_launch_enabled: bool = false
 var burrito_link_wine_path: String = ""
@@ -39,6 +44,12 @@ func _ready():
 		self.override_size_height = self._config_data["override_size_height"]
 	if "override_size_width" in self._config_data:
 		self.override_size_width = self._config_data["override_size_width"]
+	if "override_burrito_icon_position_enabled" in self._config_data:
+		self.override_burrito_icon_position_enabled = self._config_data["override_burrito_icon_position_enabled"]
+	if "override_burrito_icon_horizontal_position" in self._config_data:
+		self.override_burrito_icon_horizontal_position = self._config_data["override_burrito_icon_horizontal_position"]
+	if "override_burrito_icon_vertical_position" in self._config_data:
+		self.override_burrito_icon_vertical_position = self._config_data["override_burrito_icon_vertical_position"]
 	if "burrito_link_auto_launch_enabled" in self._config_data:
 		self.burrito_link_auto_launch_enabled = self._config_data["burrito_link_auto_launch_enabled"]
 	if "burrito_link_wine_path" in self._config_data:
@@ -54,6 +65,9 @@ func save():
 		"override_size_enabled": override_size_enabled,
 		"override_size_height": override_size_height,
 		"override_size_width": override_size_width,
+		"override_burrito_icon_position_enabled": override_burrito_icon_position_enabled,
+		"override_burrito_icon_horizontal_position": override_burrito_icon_horizontal_position,
+		"override_burrito_icon_vertical_position": override_burrito_icon_vertical_position,
 		"burrito_link_auto_launch_enabled": burrito_link_auto_launch_enabled,
 		"burrito_link_wine_path": burrito_link_wine_path,
 		"burrito_link_env_args": burrito_link_env_args,
@@ -63,3 +77,5 @@ func save():
 	var file = File.new()
 	file.open(CONFIG_PATH, File.WRITE)
 	file.store_string(JSON.print(self._config_data, "    "))
+
+	emit_signal("settings_updated")
