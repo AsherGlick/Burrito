@@ -777,7 +777,7 @@ size_flags_horizontal = 3
 margin_top = 233.0
 margin_right = 192.0
 margin_bottom = 247.0
-text = "Horizontal Icon Position"
+text = "Vertical Icon Position"
 
 [node name="OverrideBurritoIconVerticalPosition" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 196.0
