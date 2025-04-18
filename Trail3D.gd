@@ -12,6 +12,8 @@ func refresh_mesh():
 	var i = 0
 	var last_uv: float = 0.0
 	var trail_data = self.guildpoint.get_trail_data()
+	if trail_data == null:
+		return
 	for point_index in range(trail_data.get_points_x().size()-1):
 		var point:Vector3 = Vector3(trail_data.get_points_x()[point_index], trail_data.get_points_y()[point_index], -trail_data.get_points_z()[point_index])
 		var next_point:Vector3 = Vector3(trail_data.get_points_x()[point_index+1], trail_data.get_points_y()[point_index+1], -trail_data.get_points_z()[point_index+1])
