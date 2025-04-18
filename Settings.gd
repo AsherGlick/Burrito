@@ -4,6 +4,27 @@ signal settings_updated
 
 const CONFIG_PATH = "user://settings.json"
 
+# Variables that store informations about ui scaling
+# This dictionary holds the left and right margin for the main button for every ui-scale
+const button_margin = {
+	0: {"left": 292, "right": 318}, # small
+	1: {"left": 323, "right": 352}, # normal
+	2: {"left": 361, "right": 394}, # large
+	3: {"left": 395, "right": 431}  # larger
+}
+
+const minimap_scale = {
+	0: {"offset": 32, "factor": 0.9}, # small
+	1: {"offset": 36, "factor": 1}, # normal
+	2: {"offset": 40, "factor": 1.11}, # large
+	3: {"offset": 44, "factor": 1.22} # larger
+}
+
+# The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
+var ui_size: int = 1
+
+# User settings
+
 var _config_data = {}
 var local_category_data = {}
 
@@ -13,6 +34,7 @@ var minimum_height: int = 600
 var override_size_enabled: bool = false;
 var override_size_height: int = 1080
 var override_size_width: int = 1920
+
 var override_burrito_icon_position_enabled: bool = false;
 var override_burrito_icon_horizontal_position: int = 0
 var override_burrito_icon_vertical_position: int = 0

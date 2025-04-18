@@ -7,4 +7,6 @@ func _ready():
 func _update_global_menu_button_position():
 	if Settings.override_burrito_icon_position_enabled == true:
 		self.set_position(Vector2(Settings.override_burrito_icon_horizontal_position, Settings.override_burrito_icon_vertical_position))
-
+	else:
+		self.margin_left = Settings.button_margin[Settings.ui_size]["left"]
+		self.margin_right = Settings.button_margin[Settings.ui_size]["right"]

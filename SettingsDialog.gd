@@ -38,8 +38,15 @@ func save_settings(new_value=null):
 	Settings.override_size_height = int(override_height.text)
 	var override_width: LineEdit = $ScrollContainer/GridContainer/OverrideWidth
 	Settings.override_size_width = int(override_width.text)
+
 	var override_burrito_icon_position: CheckButton = $ScrollContainer/GridContainer/OverrideBurritoIconPosition
 	Settings.override_burrito_icon_position_enabled = override_burrito_icon_position.pressed
+	override_burrito_icon_position.hint_tooltip = "Default horizontal positions:\n" \
+	+ "Small: {small}\n".format({"small": Settings.button_margin[0]["left"]}) \
+	+ "Normal: {normal}\n".format({"normal": Settings.button_margin[1]["left"]}) \
+	+ "Large: {large}\n".format({"large": Settings.button_margin[2]["left"]}) \
+	+ "Larger: {larger}\n".format({"larger": Settings.button_margin[3]["left"]})
+
 	var override_burrito_icon_horizontal_position: LineEdit = $ScrollContainer/GridContainer/OverrideBurritoIconHorizontalPosition
 	Settings.override_burrito_icon_horizontal_position = int(override_burrito_icon_horizontal_position.text)
 	var override_burrito_icon_vertical_position: LineEdit = $ScrollContainer/GridContainer/OverrideBurritoIconVerticalPosition
