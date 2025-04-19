@@ -44,7 +44,6 @@ HMODULE GetOriginalD3D11Module() {
     return D3D11Library;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // FreeD3D11Module
 //
@@ -54,10 +53,8 @@ HMODULE GetOriginalD3D11Module() {
 void FreeD3D11Module() {
     if (D3D11Library) {
         FreeLibrary(D3D11Library);
-
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // D3D11CreateDeviceAndSwapChainOriginal
@@ -124,7 +121,6 @@ extern HRESULT WINAPI D3D11CreateDeviceAndSwapChain(
     );
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // D3D11CreateDeviceOriginal
 //
@@ -184,15 +180,14 @@ extern HRESULT WINAPI D3D11CreateDevice(
     );
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // D3D11CoreCreateDeviceOriginal
 //
 // A pointer to a function that looks like D3D11CoreCreateDevice()
 ////////////////////////////////////////////////////////////////////////////////
 typedef HRESULT(WINAPI* D3D11CoreCreateDeviceFunc)(
-    IDXGIFactory * pFactory,
-    IDXGIAdapter * pAdapter,
+    IDXGIFactory* pFactory,
+    IDXGIAdapter* pAdapter,
     UINT Flags,
     const D3D_FEATURE_LEVEL* pFeatureLevels,
     UINT FeatureLevels,
@@ -207,8 +202,8 @@ D3D11CoreCreateDeviceFunc D3D11CoreCreateDeviceOriginal = nullptr;
 // function, then returns the result.
 ////////////////////////////////////////////////////////////////////////////////
 extern HRESULT WINAPI D3D11CoreCreateDevice(
-    IDXGIFactory * pFactory,
-    IDXGIAdapter * pAdapter,
+    IDXGIFactory* pFactory,
+    IDXGIAdapter* pAdapter,
     UINT Flags,
     const D3D_FEATURE_LEVEL* pFeatureLevels,
     UINT FeatureLevels,
@@ -232,7 +227,6 @@ extern HRESULT WINAPI D3D11CoreCreateDevice(
     );
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // BurritoLinkThread
 //
@@ -244,7 +238,6 @@ void WINAPI BurritoLinkThread() {
     run_link();
     return;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // start_burrito_link_thread
@@ -271,9 +264,7 @@ void start_burrito_link_thread() {
         // Failed to create the thread.
         printf("Failed to create burrito link thread");
     }
-
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // stop_burrito_link_thread
@@ -286,7 +277,6 @@ void stop_burrito_link_thread() {
         TerminateThread(burrito_link_thread_handle, 0);
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // DllMain
@@ -306,12 +296,12 @@ void stop_burrito_link_thread() {
 // is safe and a good idea to call CreateThread in DllMain.
 ////////////////////////////////////////////////////////////////////////////////
 BOOL WINAPI DllMain(
-    HINSTANCE hinstDLL, // handle to the DLL module
-    DWORD  fdwReason, // reason for calling DllMain
-    LPVOID lpvReserved // Reserved
+    HINSTANCE hinstDLL,  // handle to the DLL module
+    DWORD fdwReason,  // reason for calling DllMain
+    LPVOID lpvReserved  // Reserved
 ) {
     // Perform actions based on the reason for calling.
-    switch(fdwReason) {
+    switch (fdwReason) {
         // Do process initialization. Return false if initialization fails.
         case DLL_PROCESS_ATTACH:
             printf("DLL_PROCESS_ATTACH\n");
@@ -344,7 +334,6 @@ BOOL WINAPI DllMain(
 
     return true;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // arcdps
