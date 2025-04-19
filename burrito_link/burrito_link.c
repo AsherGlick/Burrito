@@ -3,8 +3,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+// winsock2.h must be imported before windows.h or a warning is thrown.
+// clang-format wants to order these alphabetically which would put winsock2.h
+// after windows.h so clang-format must be disabled for this import.
+// clang-format off
 #include <winsock2.h>
 #include <windows.h>
+// clang-format on
 
 #include "linked_memory.h"
 
