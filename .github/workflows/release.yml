@@ -1,0 +1,188 @@
+name: publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        type: choice
+        description: "burrito (Minor Release)"
+        default: "burrito-next"
+        options:
+        - burrito-next (Preview build)
+        - burrito (Minor Release)
+        required: true
+
+jobs:
+  get_version:
+    runs-on: ubuntu-latest
+    outputs:
+      version_tag: ${{ steps.get-version-tags.outputs.version_tag }}
+      release_name: ${{ steps.get-version-tags.outputs.release_name }}
+      build_type: ${{ steps.get-version-tags.outputs.build_type }}
+      major_version: ${{ steps.get-version-tags.outputs.major_version }}
+      minor_version: ${{ steps.get-version-tags.outputs.minor_version }}
+      patch_version: ${{ steps.get-version-tags.outputs.patch_version }}
+      prerelease: ${{ steps.get-version-tags.outputs.prerelease }}
+    steps:
+      - name: Get Version Tags
+        id: get-version-tags
+        run: |
+          git init
+          git remote add origin https://github.com/${{ github.repository }}.git
+          tags=$(git ls-remote --tags origin | awk -F/ '{print $3}' | grep -v '\^{}')
+
+          echo "$tags"
+
+          highest_version=$(echo "$tags" | grep -E "burrito-[0-9]+\.[0-9]+\.[0-9]+" | sort --version-sort --reverse | head -n 1)
+          
+          version=${highest_version#burrito-}
+
+          IFS='.' read -r major minor patch <<< "$version"
+          
+          minor=$((minor + 1))
+          patch='0'
+          next_version="$major.$minor.$patch"
+          
+          timestamp=$(TZ="America/Chicago" date +"%Y%m%d")
+          # Other Timezones
+          # TZ="America/New_York" date +"%Y%m%d%H%M%S"
+          # TZ="America/Chicago" date +"%Y%m%d%H%M%S"
+          # TZ="America/Denver" date +"%Y%m%d%H%M%S"
+          # TZ="America/Los_Angeles" date +"%Y%m%d%H%M%S"
+          
+          burrito_next_tag_without_build_suffix="burrito-next-${next_version}-${timestamp}"
+          burrito_next_versions=$(echo "$tags" | grep "$burrito_next_tag_without_build_suffix" | cat)
+
+          echo "Version without suffix: ${burrito_next_tag_without_build_suffix}"
+          echo "Tags:"
+          echo "${tags}"
+          echo "Filtered:"
+          echo "${burrito_next_versions}"
+
+          build_count=$(echo -n "$burrito_next_versions" | grep -c "")
+          echo "Build Count: ${build_count}"
+          build_suffix=$(printf %02d $build_count)
+          combined_patch_number=$((patch * 10000000000000000 + timestamp * 100 + build_count))
+
+          release_type="${{ github.event.inputs.release_type }}"
+          case "$release_type" in
+            "burrito (Minor Release)")
+              echo "version_tag=burrito-${next_version}" >> $GITHUB_OUTPUT
+              echo "release_name=Burrito ${next_version}" >> $GITHUB_OUTPUT
+              echo "build_type=burrito" >> $GITHUB_OUTPUT
+              echo "major_version=${major}" >> $GITHUB_OUTPUT
+              echo "minor_version=${minor}" >> $GITHUB_OUTPUT
+              echo "patch_version=${patch}" >> $GITHUB_OUTPUT
+              echo "prerelease=false" >> $GITHUB_OUTPUT
+              ;;
+            "burrito-next (Preview build)")
+              echo "version_tag=${burrito_next_tag_without_build_suffix}${build_suffix}" >> $GITHUB_OUTPUT
+              echo "release_name=Burrito-next ${next_version} (${timestamp}${build_suffix})" >> $GITHUB_OUTPUT
+              echo "build_type=burrito-next" >> $GITHUB_OUTPUT
+              echo "major_version=${major}" >> $GITHUB_OUTPUT
+              echo "minor_version=${minor}" >> $GITHUB_OUTPUT
+              echo "patch_version=${combined_patch_number}" >> $GITHUB_OUTPUT
+              echo "prerelease=true" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "Error: Unknown release type '$MY_INPUT_VAR'"
+              return 1 2>/dev/null || exit 1
+              ;;
+          esac
+
+          # echo "Burrito Version Tag: burrito-${next_version}"
+          # echo "Burrito Release Name: Burrito ${next_version}"
+          # echo "Burrito Embedded Versions: ${major} ${minor} ${patch}"
+          # echo "Burrito Next Version Tag: ${burrito_next_tag_without_build_suffix}${build_suffix}"
+          # echo "Burrito Next Version Tag: Burrito-next ${next_version} (${timestamp}${build_suffix})"
+          # echo "Burrito Next Embedded Versions: ${major} ${minor} ${combined_patch_number}"
+
+
+  call_build:
+    needs: get_version
+    uses: ./.github/workflows/main.yml
+
+  publish:
+    needs:
+      - call_build
+      - get_version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Burrito Package
+        uses: actions/download-artifact@v4
+        # This is failing for some reason
+        #with:
+        #  name: Burrito_Linux
+
+      # Download artifact strips executable bits. We need a better solution
+      # but for now manually re-adding the bits will work.
+      # https://github.com/actions/download-artifact/issues/14
+      - name: Fix Executable Bits
+        run: |
+          cd Burrito_Linux
+          chmod +x burrito.x86_64
+          chmod +x xml_converter
+
+      - name: Zip up the download
+        run: |
+          mkdir -p "downloaded-artifact"
+          cd Burrito_Linux
+          zip -r "../downloaded-artifact/${{ needs.get_version.outputs.version_tag }}.zip" .
+
+      - name: Upload a new release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const tag = "${{ needs.get_version.outputs.version_tag }}";
+            const name = "${{ needs.get_version.outputs.release_name }}";
+            const prerelease = "${{ needs.get_version.outputs.prerelease }}" == "true";
+
+            const githubToken = process.env.GITHUB_TOKEN;
+
+            console.log(`Creating release with tag: ${tag}`);
+            console.log(`using ${context.repo.owner} and ${context.repo.repo}`);
+            console.log(`Found the release mode ${context.payload.inputs.release_type}`);
+
+            const release = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: name,
+              body: "A new Automated release",
+              target_commitish: '${{ github.sha }}',
+              draft: true,
+              prerelease: prerelease,
+            });
+
+            const releaseId = release.data.id;
+
+            console.log(`found release id ${releaseId}`);
+
+            // 2. Upload assets
+            const dir = 'downloaded-artifact';
+            const files = fs.readdirSync(dir);
+            for (const file of files) {
+              const filePath = path.join(dir, file);
+              const content = fs.readFileSync(filePath);
+              const stats = fs.statSync(filePath);
+
+              await github.rest.repos.uploadReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: releaseId,
+                name: file,
+                data: content,
+                headers: {
+                  'content-type': 'application/octet-stream',
+                  'content-length': stats.size,
+                }
+              });
+            }
+  

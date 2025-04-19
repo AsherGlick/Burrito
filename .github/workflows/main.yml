@@ -23,6 +23,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+  # Allows this workflow to be run via other workflows
+  workflow_call:
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -72,7 +75,7 @@ jobs:
           mkdir -v -p build
           cd build
           cmake ..
-          make
+          make -j $(nproc)
 
       - name: Validate xml_converter
         run: |
@@ -287,6 +290,14 @@ jobs:
           mv burrito_link.exe burrito_link/
           mv d3d11.dll burrito_link/
           mv arcdps_burrito_link.dll burrito_link/
+
+      # Download artifact strips executable bits. We need a better solution
+      # but for now manually re-adding the bits will work.
+      # https://github.com/actions/download-artifact/issues/14
+      - name: Mark linux executables as executable
+        run: |
+          chmod +x burrito.x86_64
+          chmod +x xml_converter
 
       - uses: actions/upload-artifact@v4
         with:
