@@ -416,15 +416,10 @@ func reset_3D_minimap_masks(category: Spatial):
 
 
 var guildpoint_data = Guildpoint.Guildpoint.new()
-# We save the marker data in this directory when the files are have been split
-# by Map ID. All changes made by the editor are automatically saved in these
-# files prior to export.
-var unsaved_markers_dir = "user://protobin_by_map_id/"
-var saved_markers_dir = "user://protobin/"
 var marker_file_path = ""
 
 func load_guildpoint_markers(map_id_to_load: int):
-	self.marker_file_path = self.unsaved_markers_dir + String(map_id_to_load) + ".guildpoint"
+	self.marker_file_path = Settings.get_unsaved_markers_dir() + String(map_id_to_load) + ".guildpoint"
 	self.guildpoint_data = Guildpoint.Guildpoint.new()
 	clear_map_markers()
 	init_category_tree()
@@ -601,7 +596,7 @@ func gen_new_trail(guildpoint_trail: Guildpoint.Trail, category_item: TreeItem) 
 		var category_data = category_item.get_metadata(0)
 		print("Warning: No texture found in " , category_data.guildpoint_category.get_name())
 	# TODO(330): Error Textures
-	var texture_path: String = self.unsaved_markers_dir + get_texture_path(texture_id)
+	var texture_path: String = Settings.get_unsaved_markers_dir() + get_texture_path(texture_id)
 	var texture_file = File.new()
 	var image = Image.new()
 	if !texture_file.file_exists(texture_path):
@@ -638,7 +633,7 @@ func gen_new_icon(guildpoint_icon: Guildpoint.Icon, category_item: TreeItem):
 		var category_data = category_item.get_metadata(0)
 		print("Warning: No texture found in " , category_data.guildpoint_category.get_name())
 	# TODO(330) Error Textures
-	var texture_path: String = self.unsaved_markers_dir + get_texture_path(texture_id)
+	var texture_path: String = Settings.get_unsaved_markers_dir() + get_texture_path(texture_id)
 	var position = guildpoint_icon.get_position()
 	if position == null:
 		var category_data = category_item.get_metadata(0)
@@ -674,7 +669,7 @@ func save_hashes():
 	var file = File.new()
 	var data = {}
 	var dir = Directory.new()
-	dir.open(self.unsaved_markers_dir)
+	dir.open(Settings.get_unsaved_markers_dir())
 	dir.list_dir_begin()
 	var file_name = dir.get_next()
 	while file_name != "":
@@ -979,15 +974,15 @@ func _on_ChangeTexture_pressed():
 # or icon is created.
 ################################################################################
 func _on_TexturePathOpen_file_selected(path: String):
-	var next_texture_path = FileHandler.find_image_duplicates(path, self.unsaved_markers_dir)
+	var next_texture_path = FileHandler.find_image_duplicates(path, Settings.get_unsaved_markers_dir())
 	if next_texture_path == null:
-		FileHandler.create_directory_if_missing(self.unsaved_markers_dir.plus_file("Data"))
+		FileHandler.create_directory_if_missing(Settings.get_unsaved_markers_dir().plus_file("Data"))
 		next_texture_path = "Data".plus_file(path.get_file())
 		var file = File.new()
-		if file.file_exists(self.unsaved_markers_dir.plus_file(next_texture_path)):
+		if file.file_exists(Settings.get_unsaved_markers_dir().plus_file(next_texture_path)):
 			toast(String(["Error: A different image with the name ", path.get_file(), " has already been imported. Please rename the file and try again."]))
 			return
-		FileHandler.copy_file(path, self.unsaved_markers_dir.plus_file(next_texture_path))
+		FileHandler.copy_file(path, Settings.get_unsaved_markers_dir().plus_file(next_texture_path))
 	var texture_index = get_texture_index(next_texture_path)
 	if texture_index == -1:
 		self.guildpoint_data.add_textures().set_filepath(next_texture_path)
@@ -1154,12 +1149,11 @@ func import_marker_pack(dir: String, type):
 	elif type == MarkerPackType.GUILDPOINT:
 		args.push_back("--input-guildpoint-path")
 	args.push_back(dir)
-
 	args.append_array([
-		"--input-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
-		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--input-guildpoint-path", ProjectSettings.globalize_path(Settings.get_saved_markers_dir()),
+		"--output-guildpoint-path", ProjectSettings.globalize_path(Settings.get_saved_markers_dir()),
 		"--split-by-category",
-		"--output-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
+		"--output-guildpoint-path", ProjectSettings.globalize_path(Settings.get_unsaved_markers_dir()),
 		"--split-by-map-id",
 	])
 
@@ -1173,7 +1167,7 @@ func import_marker_pack(dir: String, type):
 	for id in duplicate_categories.keys():
 		for category_name in duplicate_categories[id].keys():
 			for file in duplicate_categories[id][category_name]:
-				if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+				if file.begins_with(ProjectSettings.globalize_path(Settings.get_saved_markers_dir())):
 					if !(category_name in category_names):
 						category_names.push_back(category_name)
 	self.overwrite_confirmation.dialog_text = "The following marker packs will be overwritten. \n" + category_names.join("\n")
@@ -1185,7 +1179,7 @@ func import_marker_pack(dir: String, type):
 		for id in duplicate_categories.keys():
 			for category in duplicate_categories[id]:
 				for file in duplicate_categories[id][category]:
-					if file.begins_with(ProjectSettings.globalize_path(self.saved_markers_dir)):
+					if file.begins_with(ProjectSettings.globalize_path(Settings.get_saved_markers_dir())):
 						FileHandler.delete_file(file)
 		duplicate_categories = FileHandler.call_xml_converter(args)
 		if duplicate_categories.empty():
@@ -1197,8 +1191,8 @@ func import_marker_pack(dir: String, type):
 func _on_SaveData_pressed():
 	var user_data_dir = str(OS.get_user_data_dir())
 	var args: PoolStringArray = [
-		"--input-guildpoint-path", ProjectSettings.globalize_path(self.unsaved_markers_dir),
-		"--output-guildpoint-path", ProjectSettings.globalize_path(self.saved_markers_dir),
+		"--input-guildpoint-path", ProjectSettings.globalize_path(Settings.get_unsaved_markers_dir()),
+		"--output-guildpoint-path", ProjectSettings.globalize_path(Settings.get_saved_markers_dir()),
 		"--split-by-category",
 	]
 	FileHandler.call_xml_converter(args)

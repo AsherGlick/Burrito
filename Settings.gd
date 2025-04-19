@@ -3,6 +3,7 @@ extends Node
 signal settings_updated
 
 const CONFIG_PATH = "user://settings.json"
+const FileHandler = preload("res://FileHandler.gd")
 
 # Variables that store informations about ui scaling
 # This dictionary holds the left and right margin for the main button for every ui-scale
@@ -43,6 +44,11 @@ var burrito_link_auto_launch_enabled: bool = false
 var burrito_link_wine_path: String = ""
 var burrito_link_env_args: String = ""
 
+# We save the marker data in this directory when the files are have been split
+# by Map ID. All changes made by the editor are automatically saved in these
+# files prior to export.
+var unsaved_markers_dir = "user://protobin_by_map_id/"
+var saved_markers_dir = "user://protobin/"
 
 func _ready():
 	var file = File.new()
@@ -79,6 +85,13 @@ func _ready():
 	if "burrito_link_env_args" in self._config_data:
 		self.burrito_link_env_args = self._config_data["burrito_link_env_args"]
 
+func get_saved_markers_dir() -> String:
+	FileHandler.create_directory_if_missing(self.saved_markers_dir)
+	return self.saved_markers_dir
+
+func get_unsaved_markers_dir() -> String:
+	FileHandler.create_directory_if_missing(self.unsaved_markers_dir)
+	return self.unsaved_markers_dir
 
 func save():
 	_config_data = {
