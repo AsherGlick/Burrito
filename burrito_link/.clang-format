@@ -1,16 +1,19 @@
 ---
 Language: Cpp  # Validate C++
 # BasedOnStyle:  Google
-AccessModifierOffset: -3  # With a tab indent of 4 spaces this equals a 1 space access modifier indent.
-AlignAfterOpenBracket: AlwaysBreak  # Should be `BlockIndent` when it begins to work.
-AlignConsecutiveMacros: false  # Keep the value of a macro close to the macro name.
-AlignConsecutiveAssignments: false  # Keep the new value close to the variable it is being assigned to.
-AlignConsecutiveDeclarations: false  # Keep new variable names close to their type definitions.
-AlignEscapedNewlines: DontAlign  # Keep `\` for escaped newlines close to the last character in the line.
+AccessModifierOffset: -3  # With a tab indent of 4 spaces this equals a 1 space access modifier indent
+AlignAfterOpenBracket: BlockIndent
+AlignConsecutiveMacros: false
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlines: DontAlign
 AlignOperands: true
-AlignTrailingComments: false  # Keep trailing commens close to the last character in the line.
-AllowShortBlocksOnASingleLine: Never  # Force short blocks to have proper newlines.
-AllowShortCaseLabelsOnASingleLine: false  # Force contents of case statements onto the next line.
+AlignTrailingComments: false
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true  # V
+AllowAllParametersOfDeclarationOnNextLine: true  # V
+AllowShortBlocksOnASingleLine: Never  # V
+AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortLambdasOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: WithoutElse
@@ -83,11 +86,25 @@ IndentGotoLabels: true
 IndentPPDirectives: None
 IndentWidth: 4  # Use 4 spaces for an indent
 IndentWrappedFunctionNames: false
+JavaScriptQuotes: Leave
+JavaScriptWrapImports: true
 KeepEmptyLinesAtTheStartOfBlocks: false
 MacroBlockBegin: ''
 MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
+ObjCBinPackProtocolList: Never
+ObjCBlockIndentWidth: 2
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
+PenaltyBreakAssignment: 99999
+PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyBreakTemplateDeclaration: 10
+PenaltyExcessCharacter: 1 # 1000000
+PenaltyReturnTypeOnItsOwnLine: 200
 PointerAlignment: Left
 RawStringFormats:
   - Language:        Cpp
