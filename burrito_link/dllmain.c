@@ -396,20 +396,20 @@ struct AddonDefinition {
     // Required for nexus
 
     // Raidcore Addon ID, set to random unqiue negative integer if not on Raidcore
-    signed int Signature;
+    int32_t Signature;
 
     // Determines which AddonAPI struct revision the Loader will pass, use the NEXUS_API_VERSION define from Nexus.h
-    signed int APIVersion;
+    int32_t APIVersion;
 
     // Name of the addon as shown in the library
     const char* Name;
 
     // Vesion number of the addon
     struct AddonVersion {
-        signed short Major;
-        signed short Minor;
-        signed short Build;
-        signed short Revision;
+        int16_t Major;
+        int16_t Minor;
+        int16_t Build;
+        int16_t Revision;
     } Version;
 
     // Author of the addon
@@ -425,15 +425,14 @@ struct AddonDefinition {
     void* Unload;
 
     // Information about the addon
-    signed int Flags;
+    int32_t Flags;
 
     // Update fallback
     // What platform is the the addon hosted on
-    signed int Provider;
+    int32_t Provider;
 
     // Link to the update resource
     const char* UpdateLink;
-
 } AddonDef;
 
 extern __declspec(dllexport) struct AddonDefinition* GetAddonDef() {
