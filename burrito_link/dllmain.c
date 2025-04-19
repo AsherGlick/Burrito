@@ -397,44 +397,59 @@ extern __declspec(dllexport) void* get_release_addr() {
     return mod_release;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
-// Raidcore Nexus
-//
 // GetAddonDef()
-// 
 //
-//
-// These function is present to allow nexus to recognize this dll as a addon.
-// These function is the only function that is required all others are optional.
+// This function is used to communicate with Nexus and allow the linked library
+// to be loaded by nexus.
 ////////////////////////////////////////////////////////////////////////////////
 struct AddonDefinition {
-    /* required */
-    signed int      Signature;      /* Raidcore Addon ID, set to random unqiue negative integer if not on Raidcore */
-    signed int      APIVersion;     /* Determines which AddonAPI struct revision the Loader will pass, use the NEXUS_API_VERSION define from Nexus.h */
-    const char*     Name;           /* Name of the addon as shown in the library */
-    struct AddonVersion {
-        signed short      Major;
-        signed short      Minor;
-        signed short      Build;
-        signed short      Revision;
-    } Version;
-    const char*     Author;         /* Author of the addon */
-    const char*     Description;    /* Short description */
-    void*           Load;           /* Pointer to Load Function of the addon */
-    void*           Unload;         /* Pointer to Unload Function of the addon. Not required if EAddonFlags::DisableHotloading is set. */
-    signed int      Flags;          /* Information about the addon */
+    // Required for nexus
 
-    /* update fallback */
-    signed int      Provider;       /* What platform is the the addon hosted on */
-    const char*     UpdateLink;     /* Link to the update resource */
+    // Raidcore Addon ID, set to random unqiue negative integer if not on Raidcore
+    signed int Signature;
+
+    // Determines which AddonAPI struct revision the Loader will pass, use the NEXUS_API_VERSION define from Nexus.h
+    signed int APIVersion;
+
+    // Name of the addon as shown in the library
+    const char* Name;
+
+    // Vesion number of the addon
+    struct AddonVersion {
+        signed short Major;
+        signed short Minor;
+        signed short Build;
+        signed short Revision;
+    } Version;
+
+    // Author of the addon
+    const char* Author;
+
+    // Short description
+    const char* Description;
+
+    // Pointer to Load Function of the addon
+    void* Load;
+
+    // Pointer to Unload Function of the addon. Not required if EAddonFlags::DisableHotloading is set.
+    void* Unload;
+
+    // Information about the addon
+    signed int Flags;
+
+    // Update fallback
+    // What platform is the the addon hosted on
+    signed int Provider;
+
+    // Link to the update resource
+    const char* UpdateLink;
 
 } AddonDef;
 
-extern __declspec(dllexport) struct AddonDefinition* GetAddonDef()
-{
+extern __declspec(dllexport) struct AddonDefinition* GetAddonDef() {
     AddonDef.Signature = -1032686481;
-    AddonDef.APIVersion = 6; // taken from Nexus.h
+    AddonDef.APIVersion = 6;  // taken from Nexus.h
     AddonDef.Name = "Burrito Link";
     AddonDef.Version.Major = 0;
     AddonDef.Version.Minor = 0;
