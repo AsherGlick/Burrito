@@ -409,42 +409,42 @@ extern __declspec(dllexport) void* get_release_addr() {
 // These function is the only function that is required all others are optional.
 ////////////////////////////////////////////////////////////////////////////////
 struct AddonDefinition {
-	/* required */
-	signed int      Signature;      /* Raidcore Addon ID, set to random unqiue negative integer if not on Raidcore */
-	signed int      APIVersion;     /* Determines which AddonAPI struct revision the Loader will pass, use the NEXUS_API_VERSION define from Nexus.h */
-	const char*     Name;           /* Name of the addon as shown in the library */
-	struct AddonVersion {
-		signed short      Major;
-		signed short      Minor;
-		signed short      Build;
-		signed short      Revision;
-	} Version;
-	const char*     Author;         /* Author of the addon */
-	const char*     Description;    /* Short description */
-	void*           Load;           /* Pointer to Load Function of the addon */
-	void*           Unload;         /* Pointer to Unload Function of the addon. Not required if EAddonFlags::DisableHotloading is set. */
-	signed int      Flags;          /* Information about the addon */
+    /* required */
+    signed int      Signature;      /* Raidcore Addon ID, set to random unqiue negative integer if not on Raidcore */
+    signed int      APIVersion;     /* Determines which AddonAPI struct revision the Loader will pass, use the NEXUS_API_VERSION define from Nexus.h */
+    const char*     Name;           /* Name of the addon as shown in the library */
+    struct AddonVersion {
+        signed short      Major;
+        signed short      Minor;
+        signed short      Build;
+        signed short      Revision;
+    } Version;
+    const char*     Author;         /* Author of the addon */
+    const char*     Description;    /* Short description */
+    void*           Load;           /* Pointer to Load Function of the addon */
+    void*           Unload;         /* Pointer to Unload Function of the addon. Not required if EAddonFlags::DisableHotloading is set. */
+    signed int      Flags;          /* Information about the addon */
 
-	/* update fallback */
-	signed int      Provider;       /* What platform is the the addon hosted on */
-	const char*     UpdateLink;     /* Link to the update resource */
+    /* update fallback */
+    signed int      Provider;       /* What platform is the the addon hosted on */
+    const char*     UpdateLink;     /* Link to the update resource */
 
 } AddonDef;
 
 extern __declspec(dllexport) struct AddonDefinition* GetAddonDef()
 {
-	AddonDef.Signature = -1032686481;
-	AddonDef.APIVersion = 6; // taken from Nexus.h
-	AddonDef.Name = "Burrito Link";
-	AddonDef.Version.Major = 0;
-	AddonDef.Version.Minor = 0;
-	AddonDef.Version.Build = 0;
-	AddonDef.Version.Revision = 1;
-	AddonDef.Author = "AsherGlick";
-	AddonDef.Description = "Automatically provides the link for Burrito.";
-	AddonDef.Load = start_burrito_link_thread;
-	AddonDef.Unload = stop_burrito_link_thread;
-	AddonDef.Flags = 0;
+    AddonDef.Signature = -1032686481;
+    AddonDef.APIVersion = 6; // taken from Nexus.h
+    AddonDef.Name = "Burrito Link";
+    AddonDef.Version.Major = 0;
+    AddonDef.Version.Minor = 0;
+    AddonDef.Version.Build = 0;
+    AddonDef.Version.Revision = 1;
+    AddonDef.Author = "AsherGlick";
+    AddonDef.Description = "Automatically provides the link for Burrito.";
+    AddonDef.Load = start_burrito_link_thread;
+    AddonDef.Unload = stop_burrito_link_thread;
+    AddonDef.Flags = 0;
 
-	return &AddonDef;
+    return &AddonDef;
 }
