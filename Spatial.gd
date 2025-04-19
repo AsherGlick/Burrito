@@ -67,23 +67,6 @@ onready var markers_3d := $Markers3D as Spatial
 onready var markers_2d := $Control/Markers2D as Node2D
 onready var overwrite_confirmation := $Control/Dialogs/ImportPackDialogs/OverwriteConfirm as ConfirmationDialog
 
-# Variables that store informations about ui scaling
-# The ui-size as read from the link can have the values [0=small; 1=normal; 2=large; 3=larger]
-var ui_size: int = 1
-# This dictionary holds the left and right margin for the main button for every ui-scale
-const button_margin = {
-	0: {"left": 292, "right": 318}, # small
-	1: {"left": 323, "right": 352}, # normal
-	2: {"left": 361, "right": 394}, # large
-	3: {"left": 395, "right": 431}  # larger
-}
-const minimap_scale = {
-	0: {"offset": 32, "factor": 0.9}, # small
-	1: {"offset": 36, "factor": 1}, # normal
-	2: {"offset": 40, "factor": 1.11}, # large
-	3: {"offset": 44, "factor": 1.22} # larger
-}
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	self.markers_ui.set_column_expand(1, false)
@@ -99,6 +82,7 @@ func _ready():
 		OS.window_size = Vector2(Settings.override_size_width, Settings.override_size_height)
 	else:
 		OS.window_size = Vector2(Settings.minimum_width, Settings.minimum_height)
+
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
 	set_minimal_mouse_block()
@@ -286,7 +270,7 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	if (!map_is_open):
 		map_size = Vector2(compass_width, compass_height)
 		if !compass_is_top_right:
-			map_corner = get_viewport().size - Vector2(compass_width, compass_height + self.minimap_scale[self.ui_size]["offset"])
+			map_corner = get_viewport().size - Vector2(compass_width, compass_height + Settings.minimap_scale[Settings.ui_size]["offset"])
 		else:
 			map_corner = Vector2(get_viewport().size.x - compass_width, 0)
 
@@ -359,18 +343,18 @@ func decode_context_packet(spb: StreamPeerBuffer):
 	# this to just be a radian to degree conversion.
 
 	# Calculations to dynamically place the main icon/button
-	self.ui_size = int(identity["uisz"])
+	Settings.ui_size = int(identity["uisz"])
 	# If the value is not part of the dictionary use the "normal" size.
-	if !self.button_margin.has(self.ui_size):
-		self.ui_size = 1
+	if !Settings.button_margin.has(Settings.ui_size):
+		Settings.ui_size = 1
 
-	$Control/GlobalMenuButton.margin_left = self.button_margin[self.ui_size]["left"]
-	$Control/GlobalMenuButton.margin_right = self.button_margin[self.ui_size]["right"]
+	$Control/GlobalMenuButton._update_global_menu_button_position()
+
 	if !is_any_dialog_visible():
 		set_minimal_mouse_block()
 
-	compass_width = compass_width * self.minimap_scale[self.ui_size]["factor"]
-	compass_height = compass_height * self.minimap_scale[self.ui_size]["factor"]
+	compass_width = compass_width * Settings.minimap_scale[Settings.ui_size]["factor"]
+	compass_height = compass_height * Settings.minimap_scale[Settings.ui_size]["factor"]
 
 	if self.map_id != old_map_id:
 		print("New Map")
@@ -402,7 +386,7 @@ func reset_minimap_masks(reset_3d: bool = true):
 	var compass_corner1 = Vector2(0, 0)
 	var compass_corner2 = viewport_size
 	if !map_is_open && !compass_is_top_right:
-		compass_corner1 = Vector2(viewport_size.x-compass_width, self.minimap_scale[self.ui_size]["offset"])
+		compass_corner1 = Vector2(viewport_size.x-compass_width, Settings.minimap_scale[Settings.ui_size]["offset"])
 		compass_corner2 = compass_corner1 + Vector2(compass_width, compass_height)
 	elif !map_is_open && compass_is_top_right:
 		compass_corner1 = viewport_size - Vector2(self.compass_width, self.compass_height)
