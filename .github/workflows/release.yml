@@ -51,7 +51,7 @@ jobs:
           # TZ="America/Los_Angeles" date +"%Y%m%d%H%M%S"
           
           burrito_next_tag_without_build_suffix="burrito-next-${next_version}-${timestamp}"
-          burrito_next_versions=$(echo "$tags" | grep "$burrito_next_tag_without_build_suffix" | cat)
+          burrito_next_versions=$(echo "$tags" | grep "$burrito_next_tag_without_build_suffix" || true)
 
           echo "Version without suffix: ${burrito_next_tag_without_build_suffix}"
           echo "Tags:"
@@ -59,7 +59,7 @@ jobs:
           echo "Filtered:"
           echo "${burrito_next_versions}"
 
-          build_count=$(echo -n "$burrito_next_versions" | grep -c "")
+          build_count=$(echo -n "$burrito_next_versions" | grep -c "" || true)
           echo "Build Count: ${build_count}"
           build_suffix=$(printf %02d $build_count)
           combined_patch_number=$((patch * 10000000000000000 + timestamp * 100 + build_count))
