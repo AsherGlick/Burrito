@@ -9,8 +9,8 @@
 #include <vector>
 
 #include "../rapid_helpers.hpp"
-#include "../string_helper.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
+#include "../string_helper.hpp"
 #include "guildpoint.pb.h"
 
 using namespace std;
