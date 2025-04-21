@@ -323,7 +323,7 @@ std::string long_to_hex_string(uint64_t number) {
     return hex_string;
 }
 
-
+// clang-format off
 static const unsigned char hex_lookup[256] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -344,8 +344,9 @@ static const unsigned char hex_lookup[256] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255
 };
+// clang-format on
 
-bool is_hex(const string &value) {
+bool is_hex(const string& value) {
     for (size_t i = 0; i < value.length(); i++) {
         if (hex_lookup[(uint8_t)value[i]] == 255) {
             return false;

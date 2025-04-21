@@ -26,4 +26,4 @@ std::string join_file_paths(const std::string& path_a, const std::string& path_b
 
 std::string long_to_hex_string(uint64_t number);
 
-bool is_hex(const std::string &value);
+bool is_hex(const std::string& value);
