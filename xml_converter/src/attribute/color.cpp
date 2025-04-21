@@ -4,12 +4,12 @@
 
 #include <algorithm>
 #include <iosfwd>
-#include <ostream>
-#include <regex>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include "../rapid_helpers.hpp"
+#include "../string_helper.hpp"
 #include "../rapidxml-1.13/rapidxml.hpp"
 #include "guildpoint.pb.h"
 
@@ -72,9 +72,7 @@ void Attribute::Color::from_xml_attribute(
         hex_string = input_string;
     }
 
-    std::regex hex_pattern("^([A-Fa-f0-9]+)");
-
-    if (std::regex_match(hex_string, hex_pattern)) {
+    if (is_hex(hex_string)) {
         // Extract the R, G, B, and A values from the Hex string
         if (hex_string.size() == 6 || hex_string.size() == 8) {
             color.red = convert_color_channel_int_to_float(std::stoi(hex_string.substr(0, 2), nullptr, 16));
