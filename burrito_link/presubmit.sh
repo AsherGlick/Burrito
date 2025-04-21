@@ -63,22 +63,4 @@ if (( $? > 0 )); then
     error_count=`expr $error_count + 1`
 fi
 
-
-# # Run the python presubmit for the "generators" subdirectory.
-# pushd generators
-# ./presubmit.sh
-# if (( $? > 0 )); then
-#     error_count=`expr $error_count + 1`
-# fi
-# popd
-
-# # Run the python presubmit for the "integration_tests" subdirectory.
-# pushd integration_tests
-# ./presubmit.sh
-# if (( $? > 0 )); then
-#     error_count=`expr $error_count + 1`
-# fi
-# popd
-
-
 exit $error_count
