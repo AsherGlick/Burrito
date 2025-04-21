@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <windows.h>
+
 // Forward declare the run_link() function defined in burrito_link.c
 void run_link();
 
@@ -336,14 +337,17 @@ BOOL WINAPI DllMain(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// arcdps
+////////////////////////////// Arcdps Entrypoints //////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// arcdps_exports
 //
-// get_init_addr
-// get_release_addr
-//
-// These functions are present to allow arcdps to recognize this dll as a
-// plugin for arcdps and run it alongside arcdps. These two functions are the
-// only functions that are required for arcdps' api and all others are optional.
+// The Arcdps linked library metadata struct that contains information about
+// this linked library.
+// TODO: Rename this ArcdpsExports and have it initizlie the singleton itself
+// instead of creating a typedef of it to be used later. See the raidcore nexus
+// section as an example.
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef ImGuiContext
 #define ImGuiContext void
@@ -362,8 +366,15 @@ typedef struct arcdps_exports {
     void* wnd_filter;
     void* options_windows;
 } arcdps_exports;
-
 arcdps_exports arc_exports;
+
+////////////////////////////////////////////////////////////////////////////////
+// mod_init
+//
+// This function is called by arcdps when it loads this linked library. The
+// address of this function is returned by get_init_adder() which is how arcdps
+// knows to call it.
+////////////////////////////////////////////////////////////////////////////////
 arcdps_exports* mod_init() {
     memset(&arc_exports, 0, sizeof(arcdps_exports));
     arc_exports.sig = 0xFFFA;
@@ -373,24 +384,57 @@ arcdps_exports* mod_init() {
     return &arc_exports;
 }
 
-extern __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiContext* imguictx, void* id3dptr, HANDLE arcdll, void* mallocfn, void* freefn, uint32_t d3dversion) {
+////////////////////////////////////////////////////////////////////////////////
+// get_init_addr
+//
+// One of the two required functions to be exposed for arcdps to load this
+// linked library as an addon. It returns a pointer to the function that should
+// be calle when the addon is loaded.
+////////////////////////////////////////////////////////////////////////////////
+extern __declspec(dllexport) void* get_init_addr(
+    char* arcversion,
+    ImGuiContext* imguictx,
+    void* id3dptr,
+    HANDLE arcdll,
+    void* mallocfn,
+    void* freefn,
+    uint32_t d3dversion
+) {
     return mod_init;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// mod_release
+//
+// This function is called by acdps when it unloads this linked library. The
+// address of this function is returned by get_release_addr() which is how
+// arcdps knows to call it.
+////////////////////////////////////////////////////////////////////////////////
 uintptr_t mod_release() {
     FreeConsole();
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// get_release_addr
+//
+// One of the two required functions to be exposed for arcdps to load this
+// linked library as an addon. It returns a pointer to the function that should
+// be called when the addon is unloaded.
+////////////////////////////////////////////////////////////////////////////////
 extern __declspec(dllexport) void* get_release_addr() {
     return mod_release;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// GetAddonDef()
+////////////////////////// Raidcore Nexus Entrypoints //////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// AddonDefinition
 //
-// This function is used to communicate with Nexus and allow the linked library
-// to be loaded by nexus.
+// The Raidcore Nexus addon definition struct that contains information about
+// this linked library which nexus is able to read.
 ////////////////////////////////////////////////////////////////////////////////
 struct AddonDefinition {
     // Required for nexus
@@ -435,6 +479,12 @@ struct AddonDefinition {
     const char* UpdateLink;
 } AddonDef;
 
+////////////////////////////////////////////////////////////////////////////////
+// GetAddonDef()
+//
+// This function is used to communicate with Nexus and allow the linked library
+// to be loaded by nexus.
+////////////////////////////////////////////////////////////////////////////////
 extern __declspec(dllexport) struct AddonDefinition* GetAddonDef() {
     AddonDef.Signature = -1032686481;
     AddonDef.APIVersion = 6;  // taken from Nexus.h
