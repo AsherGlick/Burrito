@@ -8,7 +8,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-### Shared Infrastructure ######################################################
+################################################################################
+# Core Library
+#
+# A core library that is shared between all of the export types. CLI executable,
+# linked library, and test suite.
+################################################################################
 set(CORE_LIB core_lib)
 
 # Generate Protobuf
@@ -32,11 +37,13 @@ target_link_libraries(${CORE_LIB} PUBLIC ${Protobuf_LIBRARIES})
 if(MSVC)
   target_compile_options(${CORE_LIB} PUBLIC /W4 /WX)
 else()
-  target_compile_options(${CORE_LIB} PUBLIC -Wall -Wextra -Wpedantic)
+  target_compile_options(${CORE_LIB} PUBLIC -Wall -Wextra -Wpedantic -Werror=return-type)
 endif()
 
 
-### CLI Executable #############################################################
+################################################################################
+# CLI Executable
+################################################################################
 # Name Output File
 set(TARGET_NAME xml_converter)
 
@@ -44,7 +51,10 @@ set(TARGET_NAME xml_converter)
 add_executable(${TARGET_NAME} src/xml_converter.cpp)
 target_link_libraries(${TARGET_NAME} ${CORE_LIB})
 
-### TESTS ######################################################################
+
+################################################################################
+# Unit Tests Executable
+################################################################################
 set(TEST_TARGET_NAME test_xml_converter)
 
 # Enable testing using CMake's built-in functionality to be able to run `make test`
