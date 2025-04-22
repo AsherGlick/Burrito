@@ -50,6 +50,8 @@ var burrito_link_env_args: String = ""
 var unsaved_markers_dir = "user://protobin_by_map_id/"
 var saved_markers_dir = "user://protobin/"
 
+var start_with_open_menu: bool = false
+
 func _ready():
 	var file = File.new()
 	file.open(CONFIG_PATH, file.READ)
@@ -84,6 +86,8 @@ func _ready():
 		self.burrito_link_wine_path = self._config_data["burrito_link_wine_path"]
 	if "burrito_link_env_args" in self._config_data:
 		self.burrito_link_env_args = self._config_data["burrito_link_env_args"]
+	if "start_with_open_menu" in self._config_data:
+		self.start_with_open_menu = self._config_data["start_with_open_menu"]
 
 func get_saved_markers_dir() -> String:
 	FileHandler.create_directory_if_missing(self.saved_markers_dir)
@@ -107,6 +111,7 @@ func save():
 		"burrito_link_wine_path": burrito_link_wine_path,
 		"burrito_link_env_args": burrito_link_env_args,
 		"local_category_data": local_category_data
+		"start_with_open_menu": start_with_open_menu
 	}
 
 	var file = File.new()
