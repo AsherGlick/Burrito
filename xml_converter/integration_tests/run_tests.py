@@ -11,19 +11,32 @@ import shutil
 from src.proto_utils import compare_protos, compare_binary_file
 import zipfile
 from src.trail_utils import compare_trails
+from dataclasses import dataclass
 
 # Path to compiled C++ executable
 xml_converter_binary_path: str = "../build/xml_converter"
 
 
+@dataclass
+class OutputTacoArg:
+    path: Optional[str]
+    zip_output: bool
+
+
+@dataclass
+class OutputBurritoArg:
+    path: Optional[str]
+    split_by_map_id: bool
+    split_by_category: Optional[int]
+    zip_output: bool
+
+
 def run_xml_converter(
+    output_taco: OutputTacoArg,
+    output_burrito: OutputBurritoArg,
+    input_taco: Optional[List[str]] = None,
+    input_burrito: Optional[List[str]] = None,
     allow_duplicates: Optional[bool] = None,
-    input_xml: Optional[List[str]] = None,
-    output_xml: Optional[List[str]] = None,
-    input_proto: Optional[List[str]] = None,
-    output_proto: Optional[List[str]] = None,
-    split_by_map_id: Optional[bool] = None,
-    split_by_category: Optional[int] = None,
     verbose: bool = False,
 ) -> Tuple[str, str, int]:
 
@@ -32,19 +45,24 @@ def run_xml_converter(
 
     if allow_duplicates:
         cmd += ["--allow-duplicates"]
-    if input_xml:
-        cmd += ["--input-taco-path"] + input_xml
-    if output_xml:
-        cmd += ["--output-taco-path"] + output_xml
-    if input_proto:
-        cmd += ["--input-guildpoint-path"] + input_proto
-    if output_proto:
-        cmd += ["--output-guildpoint-path"] + output_proto
-    # TODO #388 adjust testcase files to allow different configurations
-    if split_by_map_id:
-        cmd += ["--split-by-map-id"]
-    if split_by_category is not None:
-        cmd += ["--split-by-category"] + [str(split_by_category)]
+    if input_taco:
+        cmd += ["--input-taco-path"] + input_taco
+    if output_taco.path:
+        cmd += ["--output-taco-path"] + [output_taco.path]
+        # TODO: Uncomment when we support zipping output files
+        # if output_taco.zip_output:
+        #     cmd += "--zip-output"
+    if input_burrito:
+        cmd += ["--input-guildpoint-path"] + input_burrito
+    if output_burrito.path:
+        cmd += ["--output-guildpoint-path"] + [output_burrito.path]
+        if output_burrito.split_by_map_id:
+            cmd += ["--split-by-map-id"]
+        if output_burrito.split_by_category is not None:
+            cmd += ["--split-by-category"] + [str(output_burrito.split_by_category)]
+        # TODO: Uncomment when we support zipping output files
+        # if output_burrito.zip_output:
+        #     cmd += "--zip-output"
 
     if verbose:
         print("Converter Command: ", cmd)
@@ -266,10 +284,11 @@ def run_testcase(
     testcase: Testcase,
     temp_directory_path: str,
     zip_input: bool,
+    zip_output: bool,
     verbose: bool,
 ) -> bool:
-    output_xml_paths: Optional[List[str]] = None
-    output_proto_paths: Optional[List[str]] = None
+    output_xml_path: Optional[str] = None
+    output_proto_path: Optional[str] = None
 
     testcase_display_name = testcase.name
 
@@ -280,12 +299,12 @@ def run_testcase(
     if testcase.expected_output_xml_path is not None:
         xml_output_dir_path = os.path.join(temp_directory_path, output_subdirectory, "xml", testcase.name)
         os.makedirs(xml_output_dir_path, exist_ok=True)
-        output_xml_paths = [xml_output_dir_path]
+        output_xml_path = xml_output_dir_path
 
     if testcase.expected_output_proto_path is not None:
         proto_output_dir_path = os.path.join(temp_directory_path, output_subdirectory, "proto", testcase.name)
         os.makedirs(proto_output_dir_path, exist_ok=True)
-        output_proto_paths = [proto_output_dir_path]
+        output_proto_path = proto_output_dir_path
 
     xml_input_paths = testcase.xml_input_paths
     proto_input_paths = testcase.proto_input_paths
@@ -308,13 +327,19 @@ def run_testcase(
         testcase_display_name = testcase_display_name + " (zipped_inputs)"
 
     rawstdout, rawstderr, returncode = run_xml_converter(
-        input_xml=xml_input_paths,
-        input_proto=proto_input_paths,
-        output_xml=output_xml_paths,
-        output_proto=output_proto_paths,
+        input_taco=xml_input_paths,
+        input_burrito=proto_input_paths,
+        output_taco=OutputTacoArg(
+            output_xml_path,
+            zip_output,
+        ),
+        output_burrito=OutputBurritoArg(
+            output_proto_path,
+            split_by_map_id=testcase.split_by_map_id,
+            split_by_category=testcase.split_by_category,
+            zip_output=zip_output,
+        ),
         allow_duplicates=testcase.allow_duplicates,
-        split_by_map_id=testcase.split_by_map_id,
-        split_by_category=testcase.split_by_category,
         verbose=verbose,
     )
 
@@ -405,19 +430,18 @@ def main() -> bool:
                 continue
 
         testcase_passed: bool = True
-        testcase_passed &= run_testcase(
-            testcase=testcase,
-            temp_directory_path=temp_directory_path,
-            zip_input=False,
-            verbose=args.verbose
-        )
 
-        testcase_passed &= run_testcase(
-            testcase=testcase,
-            temp_directory_path=temp_directory_path,
-            zip_input=True,
-            verbose=args.verbose
-        )
+        # TODO: Change the zip_output tuple from (False, ) to (False, True)
+        # when we support zipping output files.
+        for zip_output in (False, ):
+            for zip_input in (False, True):
+                testcase_passed &= run_testcase(
+                    testcase=testcase,
+                    temp_directory_path=temp_directory_path,
+                    zip_input=zip_input,
+                    zip_output=zip_output,
+                    verbose=args.verbose
+                )
 
         all_tests_passed &= testcase_passed
         test_run_count += 1
