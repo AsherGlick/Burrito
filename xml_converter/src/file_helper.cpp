@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <istream>
 #include <iterator>
 #include <memory>
 #include <sstream>
@@ -39,29 +40,20 @@ void copy_file(MarkerPackFile original_path, MarkerPackFile new_path) {
             filesystem::copy_options::overwrite_existing
         );
     }
-    // ZipFile to Directory
-    else if (filesystem::is_regular_file(original_path.base) && filesystem::is_directory(new_path.base)) {
-        auto original_file = open_file_for_read(original_path);
+    else {
+        auto original_file = read_file(original_path);
 
         if (original_file == nullptr) {
             cerr << "File does not exist to copy from " << original_path.tmp_get_path() << endl;
             return;
         }
 
-        filesystem::path output_path = filesystem::path(new_path.tmp_get_path());
-        filesystem::create_directories(output_path.parent_path());
-        ofstream outfile(new_path.tmp_get_path(), ios::binary);
-        outfile << original_file->rdbuf();
-    }
-    // Directory to ZipFile (Unsupported until writing to ZipFiles is implemnted)
-    else if (filesystem::is_directory(original_path.base) && filesystem::is_regular_file(new_path.base)) {
-        cerr << "Unsupported copy. Witing to zip files is not yet supported " << new_path.tmp_get_path() << endl;
-        return;
-    }
-    // ZipFile to ZipFile (Unsupported until writing to ZipFile is implemented)
-    else if (filesystem::is_regular_file(original_path.base) && filesystem::is_regular_file(new_path.base)) {
-        cerr << "Unsupported copy. Witing to zip files is not yet supported " << new_path.tmp_get_path() << endl;
-        return;
+        // TODO: This seems like we are copying the data twice in memory.
+        // Probably some element of this can be optimized to not do that.
+        stringstream data;
+        data << original_file->rdbuf();
+
+        write_file(new_path, data);
     }
 }
 
@@ -182,7 +174,7 @@ vector<MarkerPackFile> get_files_by_suffix(const string& base, const string& suf
 // Helper function for `open_file_for_read()` to open a file that is inside of
 // a directory.
 ////////////////////////////////////////////////////////////////////////////////
-unique_ptr<basic_istream<char>> _open_directory_file_for_read(
+static unique_ptr<basic_istream<char>> _open_directory_file_for_read(
     const string& base,
     const string& filename
 ) {
@@ -206,7 +198,7 @@ unique_ptr<basic_istream<char>> _open_directory_file_for_read(
 // Helper function for `open_file_for_read()` to open a file that is inside of
 // a zipfile.
 ////////////////////////////////////////////////////////////////////////////////
-unique_ptr<basic_istream<char>> _open_zip_file_for_read(
+static unique_ptr<basic_istream<char>> _open_zip_file_for_read(
     const string& zipfile,
     const string& filename
 ) {
@@ -240,14 +232,15 @@ unique_ptr<basic_istream<char>> _open_zip_file_for_read(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// open_file_for_read
+// read_file
 //
 // Opens a file to read from that is either inside of a directory or inside of
 // a zip file. If `base` is a file then it will be assumed to be a zip file and
 // `filename` will be opened inside of it. If `base` is a directory then
 // `filename` inside of that directory will be opened instead.
 ////////////////////////////////////////////////////////////////////////////////
-unique_ptr<basic_istream<char>> open_file_for_read(const MarkerPackFile& file) {
+unique_ptr<basic_istream<char>> read_file(const MarkerPackFile& file) {
+    // cout << "Open File for Read" << endl;
     if (!filesystem::exists(file.base)) {
         cout << "Error: " << file.base << " does not exist" << endl;
         return nullptr;
@@ -263,4 +256,65 @@ unique_ptr<basic_istream<char>> open_file_for_read(const MarkerPackFile& file) {
 
     cout << "Error: " << file.base << " is not a directory or a file" << endl;
     return nullptr;
+}
+
+static bool _write_directory_file(
+    const string& base,
+    const string& filename,
+    const stringstream& file_content
+) {
+    string filepath = join_file_paths(base, filename);
+
+    filesystem::path output_path = filesystem::path(filepath);
+    filesystem::create_directories(output_path.parent_path());
+
+    ofstream output_file(filepath);
+
+    output_file << file_content.rdbuf();
+    output_file.close();
+    return true;
+}
+
+static bool _write_zip_file(
+    const string& zipfile,
+    const string& filename,
+    const stringstream& file_content
+) {
+    mz_zip_archive zip_archive;
+    memset(&zip_archive, 0, sizeof(zip_archive));
+
+    // Start a new archive
+    if (!mz_zip_writer_init_file(&zip_archive, zipfile.c_str(), 0)) {
+        std::cerr << "Failed to initialize zip file: " << zipfile << endl;
+        return false;
+    }
+
+    auto file_buffer = file_content.str();
+
+    // Add the memory buffer as a file into the zip
+    if (!mz_zip_writer_add_mem(&zip_archive, filename.c_str(), file_buffer.c_str(), file_buffer.size(), MZ_BEST_COMPRESSION)) {
+        std::cerr << "Failed to add file to zip." << std::endl;
+        mz_zip_writer_end(&zip_archive);
+        return false;
+    }
+
+    // Finalize and close the archive
+    if (!mz_zip_writer_finalize_archive(&zip_archive)) {
+        std::cerr << "Failed to finalize zip archive." << std::endl;
+        mz_zip_writer_end(&zip_archive);
+        return false;
+    }
+
+    // Cleanup
+    mz_zip_writer_end(&zip_archive);
+    return true;
+}
+
+bool write_file(const MarkerPackFile& file, const stringstream& file_content) {
+    if (filesystem::exists(file.base) && filesystem::is_regular_file(file.base)) {
+        return _write_zip_file(file.base, file.relative_filepath, file_content);
+    }
+    else {
+        return _write_directory_file(file.base, file.relative_filepath, file_content);
+    }
 }

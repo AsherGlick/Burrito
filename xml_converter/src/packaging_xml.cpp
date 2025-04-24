@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <set>
+#include <sstream>
 #include <utility>
 
 #include "attribute/unique_id.hpp"
@@ -253,7 +254,7 @@ map<Attribute::UniqueId::UniqueId, Category*> parse_xml_file(
 ) {
     vector<XMLError*> errors;
 
-    XMLFileData* xml_file_data = new XMLFileData(open_file_for_read(xml_filepath), xml_filepath);
+    XMLFileData* xml_file_data = new XMLFileData(read_file(xml_filepath), xml_filepath);
     xml_files_to_cleanup.push_back(xml_file_data);
 
     rapidxml::xml_node<>* root_node = xml_file_data->xml_document.first_node();
@@ -303,8 +304,6 @@ void cleanup_xml_files() {
 ////////////////////////////////// SERIALIZE ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 void write_xml_file(const string marker_pack_root_directory, map<string, Category>* marker_categories, vector<Parseable*>* parsed_pois) {
-    ofstream outfile;
-    string tab_string;
     XMLWriterState state;
     state.marker_pack_root_directory = marker_pack_root_directory;
 
@@ -330,8 +329,9 @@ void write_xml_file(const string marker_pack_root_directory, map<string, Categor
         pois->append_node(parsed_poi->as_xml(&state));
     }
 
-    string xml_filepath = join_file_paths(marker_pack_root_directory, "xml_file.xml");
-    outfile.open(xml_filepath, ios::out);
+    stringstream outfile;
     rapidxml::print(std::ostream_iterator<char>(outfile), doc);
-    outfile.close();
+    const MarkerPackFile file = MarkerPackFile(marker_pack_root_directory, "xml_file.xml");
+
+    write_file(file, outfile);
 }
