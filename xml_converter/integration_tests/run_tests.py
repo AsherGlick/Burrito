@@ -333,8 +333,8 @@ def run_testcase(
 
     # Process standard out
     expected_stdout = find_and_replace(
-        testcase.expected_stdout,
-        find_and_replace_tokens,
+        lines=testcase.expected_stdout,
+        find_and_replace_tokens=find_and_replace_tokens,
     )
     stdout_diff: List[str] = list(difflib.unified_diff(expected_stdout, stdout, fromfile="Expected stdout", tofile="Actual stdout", lineterm=""))
     stdout_diff = color_unified_diff(stdout_diff)
@@ -346,8 +346,8 @@ def run_testcase(
 
     # Process standard error
     expected_stderr = find_and_replace(
-        testcase.expected_stderr,
-        find_and_replace_tokens,
+        lines=testcase.expected_stderr,
+        find_and_replace_tokens=find_and_replace_tokens,
     )
     stderr_diff: List[str] = list(difflib.unified_diff(expected_stderr, stderr, fromfile="Expected stderr", tofile="Actual stderr", lineterm=""))
     stderr_diff = color_unified_diff(stderr_diff)
