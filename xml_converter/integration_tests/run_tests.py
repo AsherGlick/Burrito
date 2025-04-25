@@ -219,6 +219,44 @@ def color_unified_diff(lines: List[str]) -> List[str]:
 
 
 ################################################################################
+# zip_inputs
+#
+# Zips up input files into a new location and returns the new filenames, as
+# well as a mapping of filenames to automatically adjust any test output to
+# match the zip file paths.
+################################################################################
+def zip_inputs(
+    temp_directory_path: str,
+    testcase_name: str,
+    xml_input_paths: List[str],
+    proto_input_paths: List[str],
+) -> Tuple[Dict[str, str], List[str], List[str]]:
+    find_and_replace_tokens: Dict[str, str] = {}
+    zipped_input_dir = os.path.join(temp_directory_path, "zipped_inputs", testcase_name)
+    os.makedirs(zipped_input_dir, exist_ok=True)
+
+    new_xml_input_paths: List[str] = []
+    for xml_input_path in xml_input_paths:
+        zip_path = os.path.join(zipped_input_dir, os.path.basename(xml_input_path) + ".taco")
+        zip_directory(xml_input_path, zip_path)
+        new_xml_input_paths.append(zip_path)
+        find_and_replace_tokens[xml_input_path] = zip_path
+
+    new_proto_input_paths: List[str] = []
+    for proto_input_path in proto_input_paths:
+        zip_path = os.path.join(zipped_input_dir, os.path.basename(proto_input_path) + ".burrito")
+        zip_directory(proto_input_path, zip_path)
+        new_proto_input_paths.append(zip_path)
+        find_and_replace_tokens[proto_input_path] = zip_path
+
+    return (
+        find_and_replace_tokens,
+        new_xml_input_paths,
+        new_proto_input_paths,
+    )
+
+
+################################################################################
 # run_testcase
 #
 # Runs a testcase, prints out the output of the testcase and returns if the
@@ -255,26 +293,19 @@ def run_testcase(
     find_and_replace_tokens: Dict[str, str] = {}
 
     if zip_input:
-        zipped_input_dir = os.path.join(temp_directory_path, "zipped_inputs", testcase.name)
-        os.makedirs(zipped_input_dir, exist_ok=True)
+        (
+            new_find_and_replace_tokens,
+            xml_input_paths,
+            proto_input_paths
+        ) = zip_inputs(
+            temp_directory_path,
+            testcase.name,
+            xml_input_paths,
+            proto_input_paths
+        )
 
-        new_xml_input_paths: List[str] = []
-        for xml_input_path in xml_input_paths:
-            zip_path = os.path.join(zipped_input_dir, os.path.basename(xml_input_path) + ".taco")
-            zip_directory(xml_input_path, zip_path)
-            new_xml_input_paths.append(zip_path)
-            find_and_replace_tokens[xml_input_path] = zip_path
-        xml_input_paths = new_xml_input_paths
-
-        new_proto_input_paths: List[str] = []
-        for proto_input_path in proto_input_paths:
-            zip_path = os.path.join(zipped_input_dir, os.path.basename(proto_input_path) + ".burrito")
-            zip_directory(proto_input_path, zip_path)
-            new_proto_input_paths.append(zip_path)
-            find_and_replace_tokens[proto_input_path] = zip_path
-        proto_input_paths = new_proto_input_paths
-
-        testcase_display_name = testcase_display_name + " (zipped)"
+        find_and_replace_tokens |= new_find_and_replace_tokens
+        testcase_display_name = testcase_display_name + " (zipped_inputs)"
 
     rawstdout, rawstderr, returncode = run_xml_converter(
         input_xml=xml_input_paths,
