@@ -1005,6 +1005,9 @@ func _on_NewTrail_pressed():
 # Create a new icon and give it the texture
 ################################################################################
 func _on_NewIcon_pressed():
+	if self.currently_active_category == null:
+		print("No category selected")
+		return
 	var guildpoint_category: Guildpoint.Category = self.currently_active_category.get_metadata(0).guildpoint_category
 	var guildpoint_icon = guildpoint_category.add_icon()
 	var position = guildpoint_icon.new_position()
