@@ -1054,7 +1054,7 @@ func _on_DeleteNode_pressed():
 	if self.currently_selected_guildpoint_icon != null:
 		remove_icon(self.currently_selected_guildpoint_icon, self.currently_selected_icon)
 	if self.currently_selected_guildpoint_trail != null :
-		remove_trail_point(self.currently_selected_guildpoint_trail, self.currently_selected_trail3d, self.currently_active_trail2d, self.currently_selected_point_index)
+		remove_trail_point(self.currently_selected_guildpoint_trail, self.currently_selected_trail3d, self.currently_selected_trail2d, self.currently_selected_point_index)
 	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
