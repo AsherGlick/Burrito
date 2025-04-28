@@ -110,7 +110,7 @@ func save():
 		"burrito_link_auto_launch_enabled": burrito_link_auto_launch_enabled,
 		"burrito_link_wine_path": burrito_link_wine_path,
 		"burrito_link_env_args": burrito_link_env_args,
-		"local_category_data": local_category_data
+		"local_category_data": local_category_data,
 		"start_with_open_menu": start_with_open_menu
 	}
 
