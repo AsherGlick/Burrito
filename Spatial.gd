@@ -878,7 +878,7 @@ func add_trail_point(position: Vector3, guildpoint_trail: Guildpoint.Trail, trai
 	if point_index == -1:
 		trail_data.get_points_x().append(position.x)
 		trail_data.get_points_y().append(position.y)
-		trail_data.get_points_z().append(position.z) 
+		trail_data.get_points_z().append(-position.z)
 	else:
 		trail_data.get_points_x().insert(point_index, position.x)
 		trail_data.get_points_y().insert(point_index, position.y)
@@ -1036,13 +1036,15 @@ func _on_NewTrailPoint_pressed():
 		var trail_data = guildpoint_trail.new_trail_data()
 		trail_data.add_points_x(self.player_position.x)
 		trail_data.add_points_y(self.player_position.y)
-		trail_data.add_points_z(-self.player_position.z)
+		trail_data.add_points_z(self.player_position.z)
 		guildpoint_trail.set_texture_id(self.next_texture_id)
+		self.currently_active_guildpoint_trail = guildpoint_trail
 		var new_trails: Array = gen_new_trail(guildpoint_trail, self.currently_active_category)
 		self.currently_active_trail3d = new_trails[0]
 		self.currently_active_trail2d = new_trails[1]
 	else:
-		add_trail_point(self.player_position, self.currently_active_guildpoint_trail, self.currently_active_trail3d, self.currently_active_trail2d)
+		var target_position = Vector3(self.player_position.x, self.player_position.y, -self.player_position.z)
+		add_trail_point(target_position, self.currently_active_guildpoint_trail, self.currently_active_trail3d, self.currently_active_trail2d)
 
 func _on_NodeEditorDialog_hide():
 	on_gizmo_deselected()
