@@ -983,8 +983,16 @@ func _on_TexturePathOpen_file_selected(path: String):
 		var file = File.new()
 		if file.file_exists(Settings.get_unsaved_markers_dir().plus_file(next_texture_path)):
 			toast(String(["Error: A different image with the name ", path.get_file(), " has already been imported. Please rename the file and try again."]))
-			return
-		FileHandler.copy_file(path, Settings.get_unsaved_markers_dir().plus_file(next_texture_path))
+			# TODO: We "could" exit  here. But we have no mechanism for
+			# selecting textures that have already been imported. Instead we
+			# will emit this warning and then proceed as if the file was
+			# imported correctly. This will function as a method to select the
+			# texture that was already imported. It is incredibly hacky and I
+			# hate it but I dont want to write a texture selector right now
+			# because I want to remake the entire UI anyways and
+			# I dont want to build this texture selector twice.
+		else:
+			FileHandler.copy_file(path, Settings.get_unsaved_markers_dir().plus_file(next_texture_path))
 	var texture_index = get_texture_index(next_texture_path)
 	if texture_index == -1:
 		self.guildpoint_data.add_textures().set_filepath(next_texture_path)
