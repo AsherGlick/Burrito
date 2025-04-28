@@ -1,10 +1,15 @@
 #include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <stdint.h>
+// winsock2.h must be imported before windows.h or a warning is thrown.
+// clang-format wants to order these alphabetically which would put winsock2.h
+// after windows.h so clang-format must be disabled for this import.
+// clang-format off
 #include <winsock2.h>
 #include <windows.h>
+// clang-format on
 
 #include "linked_memory.h"
 
@@ -58,7 +63,6 @@ struct rolling_average_5 playerz_avg;
 
 float fAvatarAveragePosition[3];
 
-
 // Handle to the shared memory. This is kept so that the handle can be closed
 // when the program exits because Windows will only release the shared memory
 // once all handles are closed.
@@ -76,16 +80,14 @@ struct LinkedMem *lm = NULL;
 // available after initMumble() is called.
 struct MumbleContext *lc = NULL;
 
-
 // How many "clocks", as defined by CLOCKS_PER_SECOND and by the return value
 // of clock(), will elapse before the program should time out. If this is left
 // at 0 burrito link will never time out.
-long program_timeout = 0;
+int64_t program_timeout = 0;
 
 // What was the value of `clock()` when the program started. This is used with
 // program_timeout to determine if the program should time out or continue.
-long program_startime = 0;
-
+int64_t program_startime = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 // initMumble
@@ -106,7 +108,8 @@ void initMumble() {
         PAGE_READWRITE,  // read/write access
         0,  // maximum object size (high-order DWORD)
         BUF_SIZE,  // maximum object size (low-order DWORD)
-        "MumbleLink");  // name of mapping object
+        "MumbleLink"  // name of mapping object
+    );
 
     // CreateFileMapping returns NULL when it fails, we print the error code for debugging purposes.
     if (handle_lm == NULL) {
@@ -119,7 +122,8 @@ void initMumble() {
         FILE_MAP_ALL_ACCESS,  // read/write permission
         0,
         0,
-        BUF_SIZE);
+        BUF_SIZE
+    );
 
     if (mapped_lm == NULL) {
         printf("Could not map view of file (%lu).\n", GetLastError());
@@ -133,7 +137,6 @@ void initMumble() {
     lc = (struct MumbleContext *)lm->context;
     printf("successfully opened mumble link shared memory..\n");
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // x11_window_id_from_windows_process_id()
@@ -322,14 +325,15 @@ int connect_and_or_send() {
             // encoded char and send.
             char utf8_identity[1024];
             UINT32 utf8_identity_size = WideCharToMultiByte(
-                CP_UTF8, // CodePage
-                0, // dwFlags
-                lm->identity, // lpWideCharStr
-                -1, // cchWideChar
-                utf8_identity, // lpMultiByteStr
-                1024, // cbMultiByte
-                NULL, // lpDefaultChar
-                NULL); // lpUsedDefaultChar
+                CP_UTF8,  // CodePage
+                0,  // dwFlags
+                lm->identity,  // lpWideCharStr
+                -1,  // cchWideChar
+                utf8_identity,  // lpMultiByteStr
+                1024,  // cbMultiByte
+                NULL,  // lpDefaultChar
+                NULL  // lpUsedDefaultChar
+            );
             memcpy(SendBuf + BufLength, &utf8_identity_size, sizeof(utf8_identity_size));
             BufLength += sizeof(utf8_identity_size);
             memcpy(SendBuf + BufLength, utf8_identity, utf8_identity_size);

@@ -1,3 +1,6 @@
+#ifndef BURRITO_LINK_LINKED_MEMORY_H_
+#define BURRITO_LINK_LINKED_MEMORY_H_
+
 #include <assert.h>
 #include <stdint.h>
 
@@ -54,7 +57,6 @@ struct LinkedMem {
     // An Empty Array, this field is not used by guild wars 2
     wchar_t description[2048];
 };
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // MumbleContext struct
@@ -130,3 +132,5 @@ static_assert(sizeof(uint8_t) == 1, "uint8_t is expected to be 8 bits long.");
 static_assert(sizeof(uint16_t) == 2, "uint16_t is expected to be 16 bits long.");
 static_assert(sizeof(uint32_t) == 4, "uint32_t is expected to be 32 bits long.");
 static_assert(sizeof(wchar_t) == 2, "wchar_t is expected to be 16 bits long.");
+
+#endif  // BURRITO_LINK_LINKED_MEMORY_H_

@@ -1,8 +1,9 @@
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <d3d11.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <windows.h>
+
 // Forward declare the run_link() function defined in burrito_link.c
 void run_link();
 
@@ -44,7 +45,6 @@ HMODULE GetOriginalD3D11Module() {
     return D3D11Library;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // FreeD3D11Module
 //
@@ -54,10 +54,8 @@ HMODULE GetOriginalD3D11Module() {
 void FreeD3D11Module() {
     if (D3D11Library) {
         FreeLibrary(D3D11Library);
-
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // D3D11CreateDeviceAndSwapChainOriginal
@@ -124,7 +122,6 @@ extern HRESULT WINAPI D3D11CreateDeviceAndSwapChain(
     );
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // D3D11CreateDeviceOriginal
 //
@@ -184,15 +181,14 @@ extern HRESULT WINAPI D3D11CreateDevice(
     );
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // D3D11CoreCreateDeviceOriginal
 //
 // A pointer to a function that looks like D3D11CoreCreateDevice()
 ////////////////////////////////////////////////////////////////////////////////
 typedef HRESULT(WINAPI* D3D11CoreCreateDeviceFunc)(
-    IDXGIFactory * pFactory,
-    IDXGIAdapter * pAdapter,
+    IDXGIFactory* pFactory,
+    IDXGIAdapter* pAdapter,
     UINT Flags,
     const D3D_FEATURE_LEVEL* pFeatureLevels,
     UINT FeatureLevels,
@@ -207,8 +203,8 @@ D3D11CoreCreateDeviceFunc D3D11CoreCreateDeviceOriginal = nullptr;
 // function, then returns the result.
 ////////////////////////////////////////////////////////////////////////////////
 extern HRESULT WINAPI D3D11CoreCreateDevice(
-    IDXGIFactory * pFactory,
-    IDXGIAdapter * pAdapter,
+    IDXGIFactory* pFactory,
+    IDXGIAdapter* pAdapter,
     UINT Flags,
     const D3D_FEATURE_LEVEL* pFeatureLevels,
     UINT FeatureLevels,
@@ -232,7 +228,6 @@ extern HRESULT WINAPI D3D11CoreCreateDevice(
     );
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // BurritoLinkThread
 //
@@ -244,7 +239,6 @@ void WINAPI BurritoLinkThread() {
     run_link();
     return;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // start_burrito_link_thread
@@ -271,9 +265,7 @@ void start_burrito_link_thread() {
         // Failed to create the thread.
         printf("Failed to create burrito link thread");
     }
-
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // stop_burrito_link_thread
@@ -286,7 +278,6 @@ void stop_burrito_link_thread() {
         TerminateThread(burrito_link_thread_handle, 0);
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // DllMain
@@ -306,12 +297,12 @@ void stop_burrito_link_thread() {
 // is safe and a good idea to call CreateThread in DllMain.
 ////////////////////////////////////////////////////////////////////////////////
 BOOL WINAPI DllMain(
-    HINSTANCE hinstDLL, // handle to the DLL module
-    DWORD  fdwReason, // reason for calling DllMain
-    LPVOID lpvReserved // Reserved
+    HINSTANCE hinstDLL,  // handle to the DLL module
+    DWORD fdwReason,  // reason for calling DllMain
+    LPVOID lpvReserved  // Reserved
 ) {
     // Perform actions based on the reason for calling.
-    switch(fdwReason) {
+    switch (fdwReason) {
         // Do process initialization. Return false if initialization fails.
         case DLL_PROCESS_ATTACH:
             printf("DLL_PROCESS_ATTACH\n");
@@ -345,16 +336,18 @@ BOOL WINAPI DllMain(
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// Arcdps Entrypoints //////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// arcdps
+// arcdps_exports
 //
-// get_init_addr
-// get_release_addr
-//
-// These functions are present to allow arcdps to recognize this dll as a
-// plugin for arcdps and run it alongside arcdps. These two functions are the
-// only functions that are required for arcdps' api and all others are optional.
+// The Arcdps linked library metadata struct that contains information about
+// this linked library.
+// TODO: Rename this ArcdpsExports and have it initizlie the singleton itself
+// instead of creating a typedef of it to be used later. See the raidcore nexus
+// section as an example.
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef ImGuiContext
 #define ImGuiContext void
@@ -373,8 +366,15 @@ typedef struct arcdps_exports {
     void* wnd_filter;
     void* options_windows;
 } arcdps_exports;
-
 arcdps_exports arc_exports;
+
+////////////////////////////////////////////////////////////////////////////////
+// mod_init
+//
+// This function is called by arcdps when it loads this linked library. The
+// address of this function is returned by get_init_adder() which is how arcdps
+// knows to call it.
+////////////////////////////////////////////////////////////////////////////////
 arcdps_exports* mod_init() {
     memset(&arc_exports, 0, sizeof(arcdps_exports));
     arc_exports.sig = 0xFFFA;
@@ -384,67 +384,120 @@ arcdps_exports* mod_init() {
     return &arc_exports;
 }
 
-extern __declspec(dllexport) void* get_init_addr(char* arcversion, ImGuiContext* imguictx, void* id3dptr, HANDLE arcdll, void* mallocfn, void* freefn, uint32_t d3dversion) {
+////////////////////////////////////////////////////////////////////////////////
+// get_init_addr
+//
+// One of the two required functions to be exposed for arcdps to load this
+// linked library as an addon. It returns a pointer to the function that should
+// be calle when the addon is loaded.
+////////////////////////////////////////////////////////////////////////////////
+extern __declspec(dllexport) void* get_init_addr(
+    char* arcversion,
+    ImGuiContext* imguictx,
+    void* id3dptr,
+    HANDLE arcdll,
+    void* mallocfn,
+    void* freefn,
+    uint32_t d3dversion
+) {
     return mod_init;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// mod_release
+//
+// This function is called by acdps when it unloads this linked library. The
+// address of this function is returned by get_release_addr() which is how
+// arcdps knows to call it.
+////////////////////////////////////////////////////////////////////////////////
 uintptr_t mod_release() {
     FreeConsole();
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// get_release_addr
+//
+// One of the two required functions to be exposed for arcdps to load this
+// linked library as an addon. It returns a pointer to the function that should
+// be called when the addon is unloaded.
+////////////////////////////////////////////////////////////////////////////////
 extern __declspec(dllexport) void* get_release_addr() {
     return mod_release;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////// Raidcore Nexus Entrypoints //////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// Raidcore Nexus
+// AddonDefinition
 //
-// GetAddonDef()
-// 
-//
-//
-// These function is present to allow nexus to recognize this dll as a addon.
-// These function is the only function that is required all others are optional.
+// The Raidcore Nexus addon definition struct that contains information about
+// this linked library which nexus is able to read.
 ////////////////////////////////////////////////////////////////////////////////
 struct AddonDefinition {
-	/* required */
-	signed int      Signature;      /* Raidcore Addon ID, set to random unqiue negative integer if not on Raidcore */
-	signed int      APIVersion;     /* Determines which AddonAPI struct revision the Loader will pass, use the NEXUS_API_VERSION define from Nexus.h */
-	const char*     Name;           /* Name of the addon as shown in the library */
-	struct AddonVersion {
-		signed short      Major;
-		signed short      Minor;
-		signed short      Build;
-		signed short      Revision;
-	} Version;
-	const char*     Author;         /* Author of the addon */
-	const char*     Description;    /* Short description */
-	void*           Load;           /* Pointer to Load Function of the addon */
-	void*           Unload;         /* Pointer to Unload Function of the addon. Not required if EAddonFlags::DisableHotloading is set. */
-	signed int      Flags;          /* Information about the addon */
+    // Required for nexus
 
-	/* update fallback */
-	signed int      Provider;       /* What platform is the the addon hosted on */
-	const char*     UpdateLink;     /* Link to the update resource */
+    // Raidcore Addon ID, set to random unqiue negative integer if not on Raidcore
+    int32_t Signature;
 
+    // Determines which AddonAPI struct revision the Loader will pass, use the NEXUS_API_VERSION define from Nexus.h
+    int32_t APIVersion;
+
+    // Name of the addon as shown in the library
+    const char* Name;
+
+    // Vesion number of the addon
+    struct AddonVersion {
+        int16_t Major;
+        int16_t Minor;
+        int16_t Build;
+        int16_t Revision;
+    } Version;
+
+    // Author of the addon
+    const char* Author;
+
+    // Short description
+    const char* Description;
+
+    // Pointer to Load Function of the addon
+    void* Load;
+
+    // Pointer to Unload Function of the addon. Not required if EAddonFlags::DisableHotloading is set.
+    void* Unload;
+
+    // Information about the addon
+    int32_t Flags;
+
+    // Update fallback
+    // What platform is the the addon hosted on
+    int32_t Provider;
+
+    // Link to the update resource
+    const char* UpdateLink;
 } AddonDef;
 
-extern __declspec(dllexport) struct AddonDefinition* GetAddonDef()
-{
-	AddonDef.Signature = -1032686481;
-	AddonDef.APIVersion = 6; // taken from Nexus.h
-	AddonDef.Name = "Burrito Link";
-	AddonDef.Version.Major = 0;
-	AddonDef.Version.Minor = 0;
-	AddonDef.Version.Build = 0;
-	AddonDef.Version.Revision = 1;
-	AddonDef.Author = "AsherGlick";
-	AddonDef.Description = "Automatically provides the link for Burrito.";
-	AddonDef.Load = start_burrito_link_thread;
-	AddonDef.Unload = stop_burrito_link_thread;
-	AddonDef.Flags = 0;
+////////////////////////////////////////////////////////////////////////////////
+// GetAddonDef()
+//
+// This function is used to communicate with Nexus and allow the linked library
+// to be loaded by nexus.
+////////////////////////////////////////////////////////////////////////////////
+extern __declspec(dllexport) struct AddonDefinition* GetAddonDef() {
+    AddonDef.Signature = -1032686481;
+    AddonDef.APIVersion = 6;  // taken from Nexus.h
+    AddonDef.Name = "Burrito Link";
+    AddonDef.Version.Major = 0;
+    AddonDef.Version.Minor = 0;
+    AddonDef.Version.Build = 0;
+    AddonDef.Version.Revision = 1;
+    AddonDef.Author = "AsherGlick";
+    AddonDef.Description = "Automatically provides the link for Burrito.";
+    AddonDef.Load = start_burrito_link_thread;
+    AddonDef.Unload = stop_burrito_link_thread;
+    AddonDef.Flags = 0;
 
-	return &AddonDef;
+    return &AddonDef;
 }
