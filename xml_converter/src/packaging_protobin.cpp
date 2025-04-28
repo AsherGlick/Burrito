@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "category_gen.hpp"
+#include "file_helper.hpp"
 #include "guildpoint.pb.h"
 #include "parseable.hpp"
 #include "state_structs/proto_writer_state.hpp"
@@ -72,7 +73,7 @@ map<Attribute::UniqueId::UniqueId, Category*> read_protobuf_file(
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
 ) {
-    unique_ptr<basic_istream<char>> infile = open_file_for_read(proto_filepath);
+    unique_ptr<basic_istream<char>> infile = read_file(proto_filepath);
 
     guildpoint::Guildpoint proto_message;
     proto_message.ParseFromIstream(&*infile);
@@ -182,19 +183,12 @@ void proto_post_processing(ProtoWriterState* state, guildpoint::Guildpoint* prot
 }
 
 void _write_protobuf_file(
-    const string& filepath,
+    const MarkerPackFile& filepath,
     const StringHierarchy& category_filter,
     const map<string, Category>* marker_categories,
     const std::map<string, std::vector<Parseable*>>& category_to_pois,
     ProtoWriterState* state
 ) {
-    ofstream outfile;
-    outfile.open(filepath, ios::out | ios::binary);
-
-    if (!outfile.is_open()) {
-        cout << "Unable to open " << filepath << endl;
-    }
-
     guildpoint::Guildpoint output_message;
 
     for (map<string, Category>::const_iterator it = marker_categories->begin(); it != marker_categories->end(); it++) {
@@ -217,8 +211,9 @@ void _write_protobuf_file(
 
     proto_post_processing(state, &output_message);
 
-    output_message.SerializeToOstream(&outfile);
-    outfile.close();
+    stringstream data;
+    output_message.SerializeToOstream(&data);
+    write_file(filepath, data);
 }
 
 std::map<string, std::vector<Parseable*>> construct_category_to_pois_map(const vector<Parseable*>* parsed_pois) {
@@ -255,7 +250,7 @@ void write_protobuf_file(
     std::map<string, std::vector<Parseable*>> category_to_pois = construct_category_to_pois_map(parsed_pois);
 
     _write_protobuf_file(
-        join_file_paths(state.marker_pack_root_directory, "markers.guildpoint"),
+        {state.marker_pack_root_directory, "markers.guildpoint"},
         category_filter,
         marker_categories,
         category_to_pois,
@@ -290,10 +285,8 @@ void write_protobuf_file_per_map_id(
     }
 
     for (auto iterator = mapid_to_category_to_pois.begin(); iterator != mapid_to_category_to_pois.end(); iterator++) {
-        string output_filepath = join_file_paths(state.marker_pack_root_directory, to_string(iterator->first) + ".guildpoint");
-
         _write_protobuf_file(
-            output_filepath,
+            {state.marker_pack_root_directory, to_string(iterator->first) + ".guildpoint"},
             category_filter,
             marker_categories,
             iterator->second,
@@ -346,10 +339,8 @@ void write_protobuf_file_per_category(
     std::map<string, std::vector<Parseable*>> category_to_pois = construct_category_to_pois_map(parsed_pois);
 
     for (auto iterator = category_hierarchies.begin(); iterator != category_hierarchies.end(); iterator++) {
-        string output_filepath = join_file_paths(state.marker_pack_root_directory, iterator->first + ".guildpoint");
-
         _write_protobuf_file(
-            output_filepath,
+            {state.marker_pack_root_directory, iterator->first + ".guildpoint"},
             iterator->second,
             marker_categories,
             category_to_pois,

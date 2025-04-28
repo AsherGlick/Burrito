@@ -57,7 +57,7 @@ void Attribute::TrailData::from_xml_attribute(
     }
 
     MarkerPackFile trail_file(state->marker_pack_root_directory, trail_data_relative_path);
-    auto trail_data_file = open_file_for_read(trail_file);
+    auto trail_data_file = read_file(trail_file);
 
     if (trail_data_file == nullptr) {
         errors->push_back(new XMLAttributeValueError("No trail file found at " + trail_file.tmp_get_path(), input));
@@ -135,15 +135,9 @@ void Attribute::TrailData::to_xml_attribute(
     }
 
     string trail_file_name = long_to_hex_string(djb2_hash(byte_array, byte_array_size)) + ".trl";
-    string trail_file_path = join_file_paths(state->marker_pack_root_directory, trail_file_name);
-
-    ofstream trail_data_file(trail_file_path, ios::binary);
-
-    if (!trail_data_file.good()) {
-        cerr << "Error opening file. " << trail_file_path << endl;
-    }
-    trail_data_file.write(reinterpret_cast<const char*>(byte_array), byte_array_size);
-    trail_data_file.close();
+    stringstream data;
+    data.write(reinterpret_cast<const char*>(byte_array), byte_array_size);
+    write_file({state->marker_pack_root_directory, trail_file_name}, data);
 
     delete[] byte_array;
     setter(trail_file_name);
