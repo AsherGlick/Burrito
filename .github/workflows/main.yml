@@ -62,41 +62,41 @@ jobs:
         run: |
           pip3 install cpplint==1.6.1
 
-      - name: Install xml_converter python Dependencies
+      - name: Install burrito_converter python Dependencies
         run: |
-          cd xml_converter
+          cd burrito_converter
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Build xml_converter
+      - name: Build burrito_converter
         run: |
-          cd xml_converter
+          cd burrito_converter
           mkdir -v -p build
           cd build
           cmake ..
           make -j $(nproc)
 
-      - name: Validate xml_converter
+      - name: Validate burrito_converter
         run: |
-          cd xml_converter
+          cd burrito_converter
           cp build/compile_commands.json ./compile_commands.json
           ./presubmit.sh
 
       - name: Run Integration Tests
         run: |
-          cd xml_converter/integration_tests
+          cd burrito_converter/integration_tests
           ./run_tests.py --no-build
 
       - name: Run Unit Tests
         run: |
-          xml_converter/build/test_xml_converter
+          burrito_converter/build/test_burrito_converter
 
       - name: Upload created file
         uses: actions/upload-artifact@v4
         with:
-          name: xml_converter
-          path: xml_converter/build/xml_converter
+          name: burrito_converter
+          path: burrito_converter/build/burrito_converter
           if-no-files-found: error 
 
   Build-BurritoLink-Linux:
@@ -264,10 +264,10 @@ jobs:
         with:
           name: TacoParser
 
-      - name: Download XML Converter
+      - name: Download Burrito Converter
         uses: actions/download-artifact@v4
         with:
-          name: xml_converter
+          name: burrito_converter
 
       - name: Download Burrito Link Exe
         uses: actions/download-artifact@v4
@@ -297,7 +297,7 @@ jobs:
       - name: Mark linux executables as executable
         run: |
           chmod +x burrito.x86_64
-          chmod +x xml_converter
+          chmod +x burrito_converter
 
       - uses: actions/upload-artifact@v4
         with:

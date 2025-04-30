@@ -1,7 +1,7 @@
 ################################################################################
 # get_duplicate_categories
 #
-# Parses the stdout of the xml_converter and extracts any category collisions
+# Parses the stdout of burrito_converter and extracts any category collisions
 # if there are any that exist.
 #
 # Example Input

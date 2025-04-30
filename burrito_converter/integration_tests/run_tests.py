@@ -14,7 +14,7 @@ from src.trail_utils import compare_trails
 from dataclasses import dataclass
 
 # Path to compiled C++ executable
-xml_converter_binary_path: str = "../build/xml_converter"
+burrito_converter_binary_path: str = "../build/burrito_converter"
 
 
 @dataclass
@@ -31,7 +31,7 @@ class OutputBurritoArg:
     zip_output: bool
 
 
-def run_xml_converter(
+def run_burrito_converter(
     output_taco: OutputTacoArg,
     output_burrito: OutputBurritoArg,
     input_taco: Optional[List[str]] = None,
@@ -41,7 +41,7 @@ def run_xml_converter(
 ) -> Tuple[str, str, int]:
 
     # Build the command to execute the C++ program with the desired function and arguments
-    cmd: List[str] = [xml_converter_binary_path]
+    cmd: List[str] = [burrito_converter_binary_path]
 
     if allow_duplicates:
         cmd += ["--allow-duplicates"]
@@ -112,13 +112,13 @@ def remove_ansi_color_escapecodes(lines: List[str]) -> List[str]:
 
 
 ################################################################################
-# rebuild_xml_converter_binary
+# rebuild_burrito_converter_binary
 #
-# Recompiles the XML Converter binary. If the compilation returns an error code
+# Recompiles the Burrito Converter binary. If the compilation returns an error code
 # then this function throws an error
 ################################################################################
-def rebuild_xml_converter_binary() -> None:
-    print("Building XML Converter Binary")
+def rebuild_burrito_converter_binary() -> None:
+    print("Building Burrito Converter Binary")
     cmake_build_directory = "../build"
 
     # Store the current working directory
@@ -135,7 +135,7 @@ def rebuild_xml_converter_binary() -> None:
         make_process = subprocess.run(["make"])
 
         if cmake_process.returncode != 0 or make_process.returncode != 0:
-            raise ValueError("Nonzero return code from xml_converter build process.")
+            raise ValueError("Nonzero return code from burrito_converter build process.")
 
         # Change back to the original working directory
         os.chdir(original_cwd)
@@ -326,7 +326,7 @@ def run_testcase(
         find_and_replace_tokens |= new_find_and_replace_tokens
         testcase_display_name = testcase_display_name + " (zipped_inputs)"
 
-    rawstdout, rawstderr, returncode = run_xml_converter(
+    rawstdout, rawstderr, returncode = run_burrito_converter(
         input_taco=xml_input_paths,
         input_burrito=proto_input_paths,
         output_taco=OutputTacoArg(
@@ -347,7 +347,7 @@ def run_testcase(
     stdout: List[str] = remove_ansi_color_escapecodes(remove_ignored_lines(rawstdout.split("\n")))
     stderr: List[str] = remove_ansi_color_escapecodes(remove_ignored_lines(rawstderr.split("\n")))
 
-    # Prints the results of xml_converter
+    # Prints the results of burrito_converter
     if verbose:
         print(f"Test {testcase_display_name}")
         print("    stdout :  {}".format("\n".join(stdout)))
@@ -408,7 +408,7 @@ def main() -> bool:
     parser = argparse.ArgumentParser(description="A test harness for evaluating the output of the xmlconverter program.")
     parser.add_argument("-v", "--verbose", help="Prints the results from xmlconverter in JSON format.", action="store_true")
     parser.add_argument("--filter", help="Filter which tests to run by a regex pattern.", type=str)
-    parser.add_argument("--no-build", help="Do not automatically build xml_converter before running the integration tests.", action="store_true")
+    parser.add_argument("--no-build", help="Do not automatically build burrito_converter before running the integration tests.", action="store_true")
     args = parser.parse_args()
 
     temp_directory_path = ".test_temp"
@@ -420,7 +420,7 @@ def main() -> bool:
     all_tests_passed = True
 
     if not args.no_build:
-        rebuild_xml_converter_binary()
+        rebuild_burrito_converter_binary()
 
     test_run_count = 0
 

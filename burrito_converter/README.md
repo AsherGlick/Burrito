@@ -1,4 +1,4 @@
-The XML Converter Module is tasked with parsing XML marker files and loading them into Burrito.
+The Burrito Converter Module is tasked with parsing various types of marker files and converting them into other types of marker files.
 
 In the future it may also preform the revers action and be able to export XML files as well.
 

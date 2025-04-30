@@ -125,7 +125,7 @@ jobs:
         run: |
           cd Burrito_Linux
           chmod +x burrito.x86_64
-          chmod +x xml_converter
+          chmod +x burrito_converter
 
       - name: Zip up the download
         run: |
