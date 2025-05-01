@@ -206,7 +206,7 @@ void write_burrito_directory(
 ////////////////////////////////////////////////////////////////////////////////
 // process_data
 //
-// The universal entrypoint into the xml converter functionality. Both the CLI
+// The universal entrypoint into burrito converter functionality. Both the CLI
 // and the library entrypoints direct here to do their actual processing.
 ////////////////////////////////////////////////////////////////////////////////
 void process_data(ParsedArguments parsed_arguments) {
@@ -330,7 +330,7 @@ void process_data(ParsedArguments parsed_arguments) {
 ////////////////////////////////////////////////////////////////////////////////
 // main
 //
-// Main is the CLI entrypoint to the xml converter.
+// Main is the CLI entrypoint to burrito converter.
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[]) {
     ParsedArguments parsed_arguments = parse_arguments(argc, argv);

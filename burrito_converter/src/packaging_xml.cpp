@@ -65,7 +65,7 @@ static Category* parse_marker_categories(
         else {
             category = &existing_category_search->second;
             if (category->parent != parent) {
-                errors->push_back(new XMLNodeNameError("Category somehow has a different parent then it used to. This might be a bug in xml_converter", node));
+                errors->push_back(new XMLNodeNameError("Category somehow has a different parent then it used to. This might be a bug in burrito_converter", node));
             }
         }
 

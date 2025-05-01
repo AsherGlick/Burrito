@@ -100,7 +100,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
             split_by_map_id = true;
         }
         else if (string(argv[i]) == "--help") {
-            cout << "usage: ./xml_converter [--help] [--allow-duplicates]" << endl;
+            cout << "usage: ./burrito_converter [--help] [--allow-duplicates]" << endl;
             cout << "                       [--input-taco-path <PATH> ...]" << endl;
             cout << "                       [--input-guildpoint=path <PATH> ...]" << endl;
             cout << "                       [--output-taco-path <PATH> ...]" << endl;

@@ -36,14 +36,14 @@ jobs:
           mkdir -p $(dirname "$file")
           if [ -n "$(git ls-tree "origin/${{ github.base_ref }}" -- "$file")" ]; then
             git show origin/${{ github.base_ref }}:$file > $file._old
-            protoc --decode=guildpoint.Guildpoint xml_converter/proto/guildpoint.proto < $file._old > $file.textproto._old
+            protoc --decode=guildpoint.Guildpoint burrito_converter/proto/guildpoint.proto < $file._old > $file.textproto._old
           else
             touch $file.textproto._old
           fi
 
           if [ -n "$(git ls-tree "refs/pull/${{ github.event.pull_request.number }}/head" -- "$file")" ]; then
             git show refs/pull/${{ github.event.pull_request.number }}/head:$file > $file._new
-            protoc --decode=guildpoint.Guildpoint xml_converter/proto/guildpoint.proto < $file._new > $file.textproto._new
+            protoc --decode=guildpoint.Guildpoint burrito_converter/proto/guildpoint.proto < $file._new > $file.textproto._new
           else
             touch $file.textproto._new
           fi
