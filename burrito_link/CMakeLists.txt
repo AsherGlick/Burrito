@@ -24,7 +24,7 @@ target_compile_options(${STANDALONE} PRIVATE -mconsole)
 # Create the D3D11.dll file
 set(CMAKE_SYSTEM_NAME Windows)
 
-SET(DX11LIB d3d11.dll)
+SET(DX11LIB burrito_link.dll)
 
 # Will this build a library
 add_library(${DX11LIB} SHARED dllmain.c burrito_link.c)
