@@ -6,6 +6,7 @@
 
 // Forward declare the run_link() function defined in burrito_link.c
 void run_link();
+void end_process();
 
 #ifndef true
 #define true TRUE
@@ -275,7 +276,7 @@ void start_burrito_link_thread() {
 ////////////////////////////////////////////////////////////////////////////////
 void stop_burrito_link_thread() {
     if (burrito_link_thread_handle != nullptr) {
-        TerminateThread(burrito_link_thread_handle, 0);
+        end_process();
     }
 }
 
