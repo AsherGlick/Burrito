@@ -1,10 +1,8 @@
 #ifndef BURRITO_LINK_SERIALIZER_H_
 #define BURRITO_LINK_SERIALIZER_H_
 // This file will contain macros or somesuch that helps identify how things should be serialized.
-#include <stddef.h>
-#include <string.h>
-
 #include <assert.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -17,7 +15,6 @@
 #include <windows.h>
 // clang-format on
 
-
 #include "linked_memory.h"
 
 // The max buffer size for data that is being sent to burrito over the UDP socket
@@ -29,7 +26,7 @@
 #define PACKET_LINK_TIMEOUT 3
 
 struct BurritoFrameData {
-    uint8_t message_type; // 0x01
+    uint8_t message_type;  // 0x01
     float camera_position[3];
     float camera_front[3];
     float avatar_position[3];
@@ -41,27 +38,24 @@ struct BurritoFrameData {
 } __attribute__((packed));
 static_assert(sizeof(struct BurritoFrameData) == 57, "BurritoFrameData is expected to be 57 bytes long.");
 
-
 struct MetadataMessage {
-    uint8_t message_type; // 0x02
+    uint8_t message_type;  // 0x02
     uint16_t compass_width;
     uint16_t compass_height;
     uint32_t map_id;
     uint32_t x11_window_id;
     uint32_t identity_size;
     uint8_t utf8_identity[1024];
-}__attribute__((packed));
+} __attribute__((packed));
 #define MetadataMessageFixedSize offsetof(struct MetadataMessage, utf8_identity)
 static_assert(MetadataMessageFixedSize == 17, "error");
-static_assert(sizeof(((struct MetadataMessage *)0)->utf8_identity) == 1024, "error");
+static_assert(sizeof(((struct MetadataMessage*)0)->utf8_identity) == 1024, "error");
 static_assert(sizeof(struct MetadataMessage) == 1041, "MetadataMessage is expected to be 1041 bytes long.");
 
-
 struct TimeoutMessage {
-    uint8_t message_type; // 0x03
+    uint8_t message_type;  // 0x03
 } __attribute__((packed));
 static_assert(sizeof(struct TimeoutMessage) == 1, "TimeoutMessage is expected to be 1 byte long.");
-
 
 // Sanity check our various datatypes on compile.
 static_assert(sizeof(float) == 4, "float is expected to be 32 bits long.");
@@ -76,7 +70,7 @@ void send_metadata_message(
     SOCKADDR_IN ReceiverAddr
 ) {
     uint32_t total_bytes_sent = 0;
-    total_bytes_sent = sendto(SendingSocket, (const char*)message, sizeof(*message), 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+    total_bytes_sent = sendto(SendingSocket, (const char*)message, sizeof(*message), 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
     if (total_bytes_sent != sizeof(*message)) {
         printf("Not all Bytes Sent");
     }
