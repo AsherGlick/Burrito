@@ -139,6 +139,20 @@ void initMumble() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// closeMumble
+//
+// Disconnects the struct representation of the mapped memory from the mapped
+// memory itself.
+////////////////////////////////////////////////////////////////////////////////
+void closeMumble() {
+    // Unmap the shared memory from our process address space.
+    UnmapViewOfFile(mapped_lm);
+
+    // close LinkedMemory handle
+    CloseHandle(handle_lm);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // x11_window_id_from_windows_process_id()
 //
 // When running a program in wine a property `__wine_x11_whole_window` is set.
@@ -371,10 +385,6 @@ int connect_and_or_send() {
         printf("Client: WSACleanup() is OK\n");
     }
 
-    // unmap the shared memory from our process address space.
-    UnmapViewOfFile(mapped_lm);
-    // close LinkedMemory handle
-    CloseHandle(handle_lm);
 
     // Back to the system
     return 0;
@@ -396,6 +406,8 @@ void run_link() {
     initMumble();
 
     connect_and_or_send();
+
+    closeMumble();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
