@@ -49,7 +49,7 @@ vector<string> split(string input, string delimiter) {
     return output;
 }
 
-string join(const vector<string>& input, const string& delimiter) {
+string join(const vector<string> &input, const string &delimiter) {
     string result;
     size_t size = 0;
     for (size_t i = 0; i < input.size(); i++) {
@@ -220,7 +220,7 @@ static unsigned char base64_lookup[256] = {
 };
 // clang-format on
 
-std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
+std::vector<uint8_t> base64_decode(std::string const &encoded_string) {
     int in_len = encoded_string.size();
 
     uint8_t char_array_4[4];
@@ -282,7 +282,7 @@ string get_base_dir(string filepath) {
     return filepath.substr(0, s);
 }
 
-bool has_suffix(std::string const& fullString, std::string const& ending) {
+bool has_suffix(std::string const &fullString, std::string const &ending) {
     if (fullString.length() >= ending.length()) {
         return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
     }
@@ -291,7 +291,7 @@ bool has_suffix(std::string const& fullString, std::string const& ending) {
     }
 }
 
-string join_file_paths(const string& path_a, const string& path_b) {
+string join_file_paths(const string &path_a, const string &path_b) {
     if (path_a.empty()) {
         return path_b;
     }
@@ -346,7 +346,7 @@ static const unsigned char hex_lookup[256] = {
 };
 // clang-format on
 
-bool is_hex(const string& value) {
+bool is_hex(const string &value) {
     for (size_t i = 0; i < value.length(); i++) {
         if (hex_lookup[(uint8_t)value[i]] == 255) {
             return false;

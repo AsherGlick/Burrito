@@ -42,7 +42,7 @@ struct rolling_average_5 {
     float points[5];
 };
 
-float get_rolling_average(struct rolling_average_5 *points) {
+float get_rolling_average(struct rolling_average_5* points) {
     float sum = 0;
     for (int i = 0; i < 5; i++) {
         sum += points->points[i];
@@ -50,7 +50,7 @@ float get_rolling_average(struct rolling_average_5 *points) {
     return sum / 5.0;
 }
 
-void replace_point_in_rolling_average(struct rolling_average_5 *points, float newvalue) {
+void replace_point_in_rolling_average(struct rolling_average_5* points, float newvalue) {
     points->points[points->index] = newvalue;
     points->index = points->index + 1;
     if (points->index > 4) {
@@ -74,11 +74,11 @@ LPCTSTR mapped_lm;
 
 // Pointer to the mapped LinkedMem object. Only available after initMumble()
 // is called.
-struct LinkedMem *lm = NULL;
+struct LinkedMem* lm = NULL;
 
 // Pointer to the mapped MumbleContext object found at `lm->context`. Only
 // available after initMumble() is called.
-struct MumbleContext *lc = NULL;
+struct MumbleContext* lc = NULL;
 
 // How many "clocks", as defined by CLOCKS_PER_SECOND and by the return value
 // of clock(), will elapse before the program should time out. If this is left
@@ -138,9 +138,9 @@ void initMumble() {
 
         return;
     }
-    lm = (struct LinkedMem *)mapped_lm;
+    lm = (struct LinkedMem*)mapped_lm;
 
-    lc = (struct MumbleContext *)lm->context;
+    lc = (struct MumbleContext*)lm->context;
     printf("successfully opened mumble link shared memory..\n");
 }
 
@@ -251,7 +251,7 @@ int connect_and_or_send() {
             SendBuf[0] = PACKET_LINK_TIMEOUT;
             BufLength = 1;
 
-            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
             if (TotalByteSent != BufLength) {
                 printf("Not all Bytes Sent");
             }
@@ -316,7 +316,7 @@ int connect_and_or_send() {
         // memcpy(SendBuf + BufLength, &lc->mountIndex, sizeof(lc->mountIndex));
         // BufLength += sizeof(lc->mountIndex);
 
-        TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+        TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
         if (TotalByteSent != BufLength) {
             printf("Not all Bytes Sent");
         }
@@ -363,7 +363,7 @@ int connect_and_or_send() {
             memcpy(SendBuf + BufLength, utf8_identity, utf8_identity_size);
             BufLength += utf8_identity_size;
 
-            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR *)&ReceiverAddr, sizeof(ReceiverAddr));
+            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
             if (TotalByteSent != BufLength) {
                 printf("Not all Bytes Sent");
             }
@@ -394,7 +394,6 @@ int connect_and_or_send() {
     else {
         printf("Client: WSACleanup() is OK\n");
     }
-
 
     // Back to the system
     return 0;
@@ -427,7 +426,7 @@ void run_link() {
 // data that needs to be configured for just command line executions, then
 // calls run_link() which sets up all other state necessary for burrito link.
 ////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     for (int i = 0; i < argc; i++) {
         // If a timeout flag is passed in then set the timeout value
         if (strcmp(argv[i], "--timeout") == 0) {

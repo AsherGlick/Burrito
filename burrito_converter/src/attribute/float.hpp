@@ -38,7 +38,7 @@ void from_proto_field(
 void to_proto_field(
     float value,
     ProtoWriterState* state,
-    std::function<void(float&)> setter
+    std::function<void(float &)> setter
 );
 
 }  // namespace Attribute::Float

@@ -36,7 +36,7 @@
         call_count_##TIMER += 1; \
     } \
     void print_timer_##TIMER(); \
-    void print_timer_##TIMER(std::ostream&);
+    void print_timer_##TIMER(std::ostream &);
 
 TIMER_PROTOTYPE(0)
 TIMER_PROTOTYPE(1)

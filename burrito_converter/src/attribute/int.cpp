@@ -26,7 +26,7 @@ void Attribute::Int::from_xml_attribute(
         *value = stoi(get_attribute_value(input));
         *is_set = true;
     }
-    catch (std::invalid_argument const& exception) {
+    catch (std::invalid_argument const &exception) {
         errors->push_back(new XMLAttributeValueError("Invalid integer value", input));
     }
     // TODO(#99): Do we need an out_of_range exception catch when parsing integers?
@@ -73,7 +73,7 @@ void Attribute::Int::from_proto_field(
 void Attribute::Int::to_proto_field(
     int value,
     ProtoWriterState*,
-    std::function<void(int&)> setter
+    std::function<void(int &)> setter
 ) {
     setter(value);
 }

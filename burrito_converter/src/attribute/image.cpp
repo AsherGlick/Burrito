@@ -78,7 +78,7 @@ void Attribute::Image::from_proto_field(
 // written to the proto setter function.
 ////////////////////////////////////////////////////////////////////////////////
 void Attribute::Image::to_proto_field(
-    const Image& value,
+    const Image &value,
     ProtoWriterState* state,
     std::function<void(unsigned int)> setter
 ) {

@@ -17,7 +17,7 @@ struct XMLWriterState {
     std::string marker_pack_root_directory;
 
     // A reference to the rapidxml document that is being written to
-    rapidxml::xml_document<char> *doc;
+    rapidxml::xml_document<char>* doc;
 
     // A set of all the textures that have been written to this taco file already
     std::set<std::string> written_textures;

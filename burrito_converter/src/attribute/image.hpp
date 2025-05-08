@@ -43,7 +43,7 @@ void from_proto_field(
 );
 
 void to_proto_field(
-    const Image& value,
+    const Image &value,
     ProtoWriterState* state,
     std::function<void(unsigned int)> setter
 );

@@ -69,7 +69,7 @@ Category* parse_guildpoint_categories(
 // Reads a protobuf file into memory.
 ////////////////////////////////////////////////////////////////////////////////
 map<Attribute::UniqueId::UniqueId, Category*> read_protobuf_file(
-    const MarkerPackFile& proto_filepath,
+    const MarkerPackFile &proto_filepath,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
 ) {
@@ -106,8 +106,8 @@ struct MaybeCategory {
 };
 MaybeCategory build_category_objects(
     const Category* category,
-    const StringHierarchy& category_filter,
-    const std::map<string, std::vector<Parseable*>>& category_to_pois,
+    const StringHierarchy &category_filter,
+    const std::map<string, std::vector<Parseable*>> &category_to_pois,
     vector<string>* category_vector,
     ProtoWriterState* state
 ) {
@@ -183,10 +183,10 @@ void proto_post_processing(ProtoWriterState* state, guildpoint::Guildpoint* prot
 }
 
 void _write_protobuf_file(
-    const MarkerPackFile& filepath,
-    const StringHierarchy& category_filter,
+    const MarkerPackFile &filepath,
+    const StringHierarchy &category_filter,
     const map<string, Category>* marker_categories,
-    const std::map<string, std::vector<Parseable*>>& category_to_pois,
+    const std::map<string, std::vector<Parseable*>> &category_to_pois,
     ProtoWriterState* state
 ) {
     guildpoint::Guildpoint output_message;
@@ -239,8 +239,8 @@ std::map<string, std::vector<Parseable*>> construct_category_to_pois_map(const v
 }
 
 void write_protobuf_file(
-    const string& marker_pack_root_directory,
-    const StringHierarchy& category_filter,
+    const string &marker_pack_root_directory,
+    const StringHierarchy &category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois
 ) {
@@ -260,8 +260,8 @@ void write_protobuf_file(
 
 // Write protobuf per map id
 void write_protobuf_file_per_map_id(
-    const string& marker_pack_root_directory,
-    const StringHierarchy& category_filter,
+    const string &marker_pack_root_directory,
+    const StringHierarchy &category_filter,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois
 ) {
@@ -326,7 +326,7 @@ map<string, StringHierarchy> category_filter_by_depth(
 
 // Write protobuf per category
 void write_protobuf_file_per_category(
-    const string& marker_pack_root_directory,
+    const string &marker_pack_root_directory,
     const int split_by_category_depth,
     const map<string, Category>* marker_categories,
     const vector<Parseable*>* parsed_pois

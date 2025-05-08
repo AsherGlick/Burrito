@@ -79,7 +79,7 @@ bool StringHierarchy::_in_hierarchy(
 //
 // A helper function to grab a sub hierarchy one level down from the top.
 ////////////////////////////////////////////////////////////////////////////////
-const StringHierarchy *StringHierarchy::sub_hierarchy(
+const StringHierarchy* StringHierarchy::sub_hierarchy(
     const std::string &node
 ) const {
     if (this->all_children_included) {
@@ -99,7 +99,7 @@ const StringHierarchy *StringHierarchy::sub_hierarchy(
 // An explicit version of sub_hierarchy that takes an initalizer list to
 // prevent ambiguity between the vector and string overloads of the function.
 ////////////////////////////////////////////////////////////////////////////////
-const StringHierarchy *StringHierarchy::sub_hierarchy(
+const StringHierarchy* StringHierarchy::sub_hierarchy(
     const std::initializer_list<std::string> &input
 ) const {
     std::vector<std::string> vec;
@@ -114,10 +114,10 @@ const StringHierarchy *StringHierarchy::sub_hierarchy(
 // entire hierarchy in the case where the use case is traversing down a tree
 // anyways and does not want to keep track of the parent's values.
 ////////////////////////////////////////////////////////////////////////////////
-const StringHierarchy *StringHierarchy::sub_hierarchy(
+const StringHierarchy* StringHierarchy::sub_hierarchy(
     const std::vector<std::string> &path
 ) const {
-    const StringHierarchy *sub_hierarchy = this;
+    const StringHierarchy* sub_hierarchy = this;
     for (size_t i = 0; i < path.size(); i++) {
         sub_hierarchy = sub_hierarchy->sub_hierarchy(path[i]);
         // Escape before segfaulting.

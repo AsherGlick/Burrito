@@ -53,7 +53,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
         auto it = arg_map.find(argv[i]);
         if (it != arg_map.end()) {
             if (!current_paths.empty()) {
-                for (const string& path : current_paths) {
+                for (const string &path : current_paths) {
                     marker_pack_configs.emplace_back(type, format, path, split_by_category_depth, split_by_map_id);
                 }
                 current_paths.clear();
@@ -116,7 +116,7 @@ ParsedArguments parse_arguments(int argc, char* argv[]) {
     }
 
     if (!current_paths.empty()) {
-        for (const auto& path : current_paths) {
+        for (const auto &path : current_paths) {
             marker_pack_configs.emplace_back(type, format, path, split_by_category_depth, split_by_map_id);
         }
     }
