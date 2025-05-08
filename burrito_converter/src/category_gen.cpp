@@ -103,7 +103,7 @@ rapidxml::xml_node<char>* Category::as_xml(XMLWriterState* state) const {
         Attribute::String::to_xml_attribute(state, &this->tooltip_description, setter);
     }
 
-    for (const auto& [key, val] : this->children) {
+    for (const auto &[key, val] : this->children) {
         xml_node->append_node(val.as_xml(state));
     }
     return xml_node;

@@ -38,7 +38,7 @@ void from_proto_field(
 void to_proto_field(
     int value,
     ProtoWriterState* state,
-    std::function<void(int&)> setter
+    std::function<void(int &)> setter
 );
 
 }  // namespace Attribute::Int

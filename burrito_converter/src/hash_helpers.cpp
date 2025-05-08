@@ -17,7 +17,7 @@ void Hash64::update(const unsigned char* str, size_t length) {
     }
 }
 
-void Hash64::update(const std::string& str) {
+void Hash64::update(const std::string &str) {
     this->update((unsigned char*)str.c_str(), str.length());
 }
 
@@ -59,7 +59,7 @@ void Hash128::update(const unsigned char* str, size_t length) {
     }
 }
 
-void Hash128::update(const std::string& str) {
+void Hash128::update(const std::string &str) {
     this->update((unsigned char*)str.c_str(), str.length());
 }
 

@@ -60,7 +60,7 @@ void Attribute::Float::from_proto_field(
 void Attribute::Float::to_proto_field(
     float value,
     ProtoWriterState*,
-    std::function<void(float&)> setter
+    std::function<void(float &)> setter
 ) {
     setter(value);
 }

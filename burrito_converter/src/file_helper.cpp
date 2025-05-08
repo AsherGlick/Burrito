@@ -79,7 +79,7 @@ const string MarkerPackFile::tmp_get_path() const {
 // Helper function to compare the full file paths of marker pack files so that
 // they can be sorted deterministically.
 ////////////////////////////////////////////////////////////////////////////////
-bool marker_pack_file_comp(const MarkerPackFile& a, const MarkerPackFile& b) {
+bool marker_pack_file_comp(const MarkerPackFile &a, const MarkerPackFile &b) {
     if (a.base == b.base) {
         return lowercase(a.relative_filepath) < lowercase(b.relative_filepath);
     }
@@ -93,9 +93,9 @@ bool marker_pack_file_comp(const MarkerPackFile& a, const MarkerPackFile& b) {
 // filepath `base`
 ////////////////////////////////////////////////////////////////////////////////
 vector<MarkerPackFile> get_files_by_suffix(
-    const string& base,
-    const string& suffix,
-    const string& subpath
+    const string &base,
+    const string &suffix,
+    const string &subpath
 ) {
     vector<MarkerPackFile> files;
 
@@ -164,7 +164,7 @@ vector<MarkerPackFile> get_files_by_suffix(
     return files;
 }
 
-vector<MarkerPackFile> get_files_by_suffix(const string& base, const string& suffix) {
+vector<MarkerPackFile> get_files_by_suffix(const string &base, const string &suffix) {
     return get_files_by_suffix(base, suffix, "");
 }
 
@@ -175,8 +175,8 @@ vector<MarkerPackFile> get_files_by_suffix(const string& base, const string& suf
 // a directory.
 ////////////////////////////////////////////////////////////////////////////////
 static unique_ptr<basic_istream<char>> _open_directory_file_for_read(
-    const string& base,
-    const string& filename
+    const string &base,
+    const string &filename
 ) {
     unique_ptr<ifstream> input_filestream = make_unique<ifstream>();
 
@@ -199,8 +199,8 @@ static unique_ptr<basic_istream<char>> _open_directory_file_for_read(
 // a zipfile.
 ////////////////////////////////////////////////////////////////////////////////
 static unique_ptr<basic_istream<char>> _open_zip_file_for_read(
-    const string& zipfile,
-    const string& filename
+    const string &zipfile,
+    const string &filename
 ) {
     mz_zip_archive zip_archive;
     memset(&zip_archive, 0, sizeof(zip_archive));
@@ -239,7 +239,7 @@ static unique_ptr<basic_istream<char>> _open_zip_file_for_read(
 // `filename` will be opened inside of it. If `base` is a directory then
 // `filename` inside of that directory will be opened instead.
 ////////////////////////////////////////////////////////////////////////////////
-unique_ptr<basic_istream<char>> read_file(const MarkerPackFile& file) {
+unique_ptr<basic_istream<char>> read_file(const MarkerPackFile &file) {
     // cout << "Open File for Read" << endl;
     if (!filesystem::exists(file.base)) {
         cout << "Error: " << file.base << " does not exist" << endl;
@@ -259,9 +259,9 @@ unique_ptr<basic_istream<char>> read_file(const MarkerPackFile& file) {
 }
 
 static bool _write_directory_file(
-    const string& base,
-    const string& filename,
-    const stringstream& file_content
+    const string &base,
+    const string &filename,
+    const stringstream &file_content
 ) {
     string filepath = join_file_paths(base, filename);
 
@@ -276,9 +276,9 @@ static bool _write_directory_file(
 }
 
 static bool _write_zip_file(
-    const string& zipfile,
-    const string& filename,
-    const stringstream& file_content
+    const string &zipfile,
+    const string &filename,
+    const stringstream &file_content
 ) {
     mz_zip_archive zip_archive;
     memset(&zip_archive, 0, sizeof(zip_archive));
@@ -310,7 +310,7 @@ static bool _write_zip_file(
     return true;
 }
 
-bool write_file(const MarkerPackFile& file, const stringstream& file_content) {
+bool write_file(const MarkerPackFile &file, const stringstream &file_content) {
     if (filesystem::exists(file.base) && filesystem::is_regular_file(file.base)) {
         return _write_zip_file(file.base, file.relative_filepath, file_content);
     }
