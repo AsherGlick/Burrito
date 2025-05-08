@@ -89,6 +89,12 @@ int64_t program_timeout = 0;
 // program_timeout to determine if the program should time out or continue.
 int64_t program_startime = 0;
 
+volatile int _end_process = 0;
+
+void end_process() {
+    _end_process = 1;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // initMumble
 //
@@ -254,6 +260,10 @@ int connect_and_or_send() {
             break;
         }
 
+        if (_end_process) {
+            printf("Exiting because the end_process flag was set.");
+            break;
+        }
         // If uiTick is the same value as it was the previous loop then Guild
         // Wars 2 has not updated any data. Sleep for 1ms and check again.
         if (lm->uiTick == last_ui_tick) {
