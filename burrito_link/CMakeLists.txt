@@ -39,3 +39,14 @@ set_target_properties(${DX11LIB} PROPERTIES
     SUFFIX ""
     LINK_FLAGS "../deffile.def -Wl,--allow-shlib-undefined,--no-insert-timestamp -Wl,-O1 -shared -static -static-libgcc -static-libstdc++ -Wl,--file-alignment=4096 -lm -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32"
 )
+
+################################################################################
+# Integration Tests ############################################################
+################################################################################
+set(INTEGRATION_TESTS integration_tests.exe)
+file(GLOB_RECURSE INTEGRATION_SOURCES "integration_tests/*.c")
+
+add_executable(${INTEGRATION_TESTS} ${INTEGRATION_SOURCES})
+target_link_libraries(${INTEGRATION_TESTS} PRIVATE "ws2_32")
+
+target_compile_options(${INTEGRATION_TESTS} PRIVATE -Wall -Os -g)
