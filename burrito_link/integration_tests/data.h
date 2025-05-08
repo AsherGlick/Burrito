@@ -1,8 +1,11 @@
-#include <stdint.h>
+#ifndef BURRITO_LINK_INTEGRATION_TEST_DATA_H_
+#define BURRITO_LINK_INTEGRATION_TEST_DATA_H_
+
 #include <stdarg.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 #define VARTYPE_BYTE (size_t)0
 #define VARTYPE_FLOAT (size_t)1
@@ -27,7 +30,7 @@ struct SizedBuffer my_sum_and_call(size_t num_args, ...) {
     size_t length = 0;
     va_list args;
     va_start(args, num_args);
-    for (size_t i = 0; i < num_args; i+=2) {
+    for (size_t i = 0; i < num_args; i += 2) {
         size_t vartype = va_arg(args, size_t);
         if (vartype == VARTYPE_STRING) {
             char* data = va_arg(args, char*);
@@ -46,7 +49,7 @@ struct SizedBuffer my_sum_and_call(size_t num_args, ...) {
     size_t buffer_position = 0;
 
     va_start(args, num_args);
-    for (size_t i = 0; i < num_args; i+=2) {
+    for (size_t i = 0; i < num_args; i += 2) {
         uint32_t vartype = va_arg(args, size_t);
         if (vartype == VARTYPE_BYTE) {
             int data = va_arg(args, int);
@@ -95,7 +98,7 @@ struct SizedBuffer my_sum_and_call(size_t num_args, ...) {
 
 void mask_bytes(size_t start_byte, uint32_t count, uint8_t* buffer) {
     for (size_t i = 0; i < count; i++) {
-        buffer[i+start_byte] = 0xFF;
+        buffer[i + start_byte] = 0xFF;
     }
 }
 
@@ -113,37 +116,27 @@ const size_t TESTCASE_COUNT = 1020;
 void build_testcases() {
     // Build Testcases for the LightData
     test_cases_1 = malloc(TESTCASE_COUNT * sizeof(struct SizedBuffer));
-    //                                             [ Camera Pos XYZ     ]  [ Camera Front XYZ      ]  [ Player XYZ            ]  [Mao offset XY  ]   [minimap Scale Rotation] UI State
-    test_cases_1[0] = MAKETESTCASE_BYTES(30, B(1), F(0.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(6.4),  F(6.4),  F(6.4),  F(-123.0), F(-124.0), F(2.5), F(130.0),        U(0));
-    test_cases_1[1] = MAKETESTCASE_BYTES(30, B(1), F(1.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(12.8), F(12.8), F(12.8), F(-123.0), F(-124.0), F(2.5), F(130.0),        U(0));
-    test_cases_1[2] = MAKETESTCASE_BYTES(30, B(1), F(2.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(19.2), F(19.2), F(19.2), F(-123.0), F(-124.0), F(2.5), F(130.0),        U(0));
-    test_cases_1[3] = MAKETESTCASE_BYTES(30, B(1), F(3.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(25.6), F(25.6), F(25.6), F(-123.0), F(-124.0), F(2.5), F(130.0),        U(0));
+    test_cases_1[0] = MAKETESTCASE_BYTES(30, B(1), F(0.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(6.4), F(6.4), F(6.4), F(-123.0), F(-124.0), F(2.5), F(130.0), U(0));
+    test_cases_1[1] = MAKETESTCASE_BYTES(30, B(1), F(1.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(12.8), F(12.8), F(12.8), F(-123.0), F(-124.0), F(2.5), F(130.0), U(0));
+    test_cases_1[2] = MAKETESTCASE_BYTES(30, B(1), F(2.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(19.2), F(19.2), F(19.2), F(-123.0), F(-124.0), F(2.5), F(130.0), U(0));
+    test_cases_1[3] = MAKETESTCASE_BYTES(30, B(1), F(3.0), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(25.6), F(25.6), F(25.6), F(-123.0), F(-124.0), F(2.5), F(130.0), U(0));
 
     for (size_t i = 4; i < TESTCASE_COUNT; i++) {
         float floati = i;
-        test_cases_1[i] = MAKETESTCASE_BYTES(30, B(1), F(floati), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(32.0), F(32.0), F(32.0), F(-123.0), F(-124.0), F(2.5), F(130.0),        U(0));
+        test_cases_1[i] = MAKETESTCASE_BYTES(30, B(1), F(floati), F(2.0), F(3.0), F(1.11), F(2.22), F(3.33), F(32.0), F(32.0), F(32.0), F(-123.0), F(-124.0), F(2.5), F(130.0), U(0));
     }
 
     // Build Testcases for the HeavyData
     test_case_heavy = MAKETESTCASE_BYTES(
         14, B(2),
-        U16(12), // Compass Width
-        U16(300), // Compass Height
-        U(12345), // Map ID
-        U(4294967295), // x11 window ID
-        U(183), // String Buffer Length
-        S("{\n  \"name\": \"Irwene\",\n  \"profession\": 4,\n  \"spec\": 55,\n  \"race\": 4,\n  \"map_id\": 50,\n  \"world_id\": 268435505,\n  \"team_color_id\": 0,\n  \"commander\": false,\n  \"fov\": 0.873,\n  \"uisz\": 1\n}") // Identify JSON
+        U16(12),  // Compass Width
+        U16(300),  // Compass Height
+        U(12345),  // Map ID
+        U(4294967295),  // x11 window ID
+        U(183),  // String Buffer Length
+        S("{\n  \"name\": \"Irwene\",\n  \"profession\": 4,\n  \"spec\": 55,\n  \"race\": 4,\n  \"map_id\": 50,\n  \"world_id\": 268435505,\n  \"team_color_id\": 0,\n  \"commander\": false,\n  \"fov\": 0.873,\n  \"uisz\": 1\n}")  // Identify JSON
     );
 }
-
-
-// 02 00000000 00000000 00000000 01000000 00
-// 02 00004041 00009643 39300000 C47D9B1C 0C0000006173666173646661736466
-
-// d  w    h    map      x11      length   str
-// 02 0C00 2C01 00000000 00000000 01000000 00
-// 02 0C00 2C01 39300000 C47D9B1C 0C000000 6173666173646661736466
-
 
 struct SizedBuffer get_testcase(size_t n) {
     if (n >= TESTCASE_COUNT) {
@@ -168,7 +161,6 @@ int compare(uint8_t* buffer_1, size_t buffer_len_1, uint8_t* buffer_2, size_t bu
 
     for (size_t i = 0; i < buffer_len_1; i++) {
         if (buffer_1[i] != buffer_2[i]) {
-
             for (size_t j = 0; j < buffer_len_1; j++) {
                 printf("%02X", buffer_1[j]);
             }
@@ -183,3 +175,5 @@ int compare(uint8_t* buffer_1, size_t buffer_len_1, uint8_t* buffer_2, size_t bu
     }
     return 1;
 }
+
+#endif // BURRITO_LINK_INTEGRATION_TEST_DATA_H_

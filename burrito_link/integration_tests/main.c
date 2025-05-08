@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stringapiset.h>
 #include <synchapi.h>
+#include <time.h>
 #include <winerror.h>
 #include <winsock2.h>
-#include <time.h>
 
 #include "../linked_memory.h"
 #include "../serializer.h"
@@ -14,7 +14,6 @@
 
 #define PORT 4242
 #define BUFFER_SIZE 1024
-
 
 #define bool int
 #define false 0
@@ -32,7 +31,7 @@ int get_message(
         buffer,
         BUFFER_SIZE,
         0,
-        (struct sockaddr *)&client_address,
+        (struct sockaddr*)&client_address,
         &client_address_length
     );
 
@@ -71,7 +70,6 @@ int clear_all_messages(
     return count;
 }
 
-
 int udp_listen(SOCKET* server_socket) {
     // Windows Socket API Data
     WSADATA win_sock_api_data;
@@ -91,9 +89,8 @@ int udp_listen(SOCKET* server_socket) {
         WSACleanup();
         return 1;
     }
-    unsigned long value = TRUE;
+    u_long value = TRUE;
     ioctlsocket(*server_socket, FIONBIO, &value);
-
 
     // Set up the server address
     server_address.sin_family = AF_INET;
@@ -101,7 +98,7 @@ int udp_listen(SOCKET* server_socket) {
     server_address.sin_addr.s_addr = INADDR_ANY;
 
     // Bind the socket
-    int bind_result = bind(*server_socket, (struct sockaddr *)&server_address, sizeof(server_address));
+    int bind_result = bind(*server_socket, (struct sockaddr*)&server_address, sizeof(server_address));
     if (bind_result == SOCKET_ERROR) {
         printf("Bind failed: %d\n", WSAGetLastError());
         closesocket(*server_socket);
@@ -113,14 +110,11 @@ int udp_listen(SOCKET* server_socket) {
     return 0;
 }
 
-
 int udp_close(SOCKET server_socket) {
     closesocket(server_socket);
     WSACleanup();
     return 0;
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // initMumble
@@ -132,8 +126,8 @@ int udp_close(SOCKET server_socket) {
 ////////////////////////////////////////////////////////////////////////////////
 HANDLE handle_lm;
 LPCTSTR mapped_lm;
-struct LinkedMem *lm = NULL;
-struct MumbleContext *lc = NULL;
+struct LinkedMem* lm = NULL;
+struct MumbleContext* lc = NULL;
 
 void initMumble() {
     size_t BUF_SIZE = sizeof(struct LinkedMem);
@@ -168,9 +162,9 @@ void initMumble() {
 
         return;
     }
-    lm = (struct LinkedMem *)mapped_lm;
+    lm = (struct LinkedMem*)mapped_lm;
 
-    lc = (struct MumbleContext *)lm->context;
+    lc = (struct MumbleContext*)lm->context;
     printf("successfully opened mumble link shared memory..\n");
 }
 
@@ -178,10 +172,8 @@ void closeMumble() {
     // unmap the shared memory from our process address space.
     UnmapViewOfFile(mapped_lm);
     // close LinkedMemory handle
-    CloseHandle(handle_lm);    
+    CloseHandle(handle_lm);
 }
-
-
 
 typedef int (*MyFunctionType)(int, int);  // Example function signature: int MyFunction(int, int)
 
@@ -226,22 +218,18 @@ int main() {
 
     lc->mapId = 12345;
 
-
     char* identity = "{\n  \"name\": \"Irwene\",\n  \"profession\": 4,\n  \"spec\": 55,\n  \"race\": 4,\n  \"map_id\": 50,\n  \"world_id\": 268435505,\n  \"team_color_id\": 0,\n  \"commander\": false,\n  \"fov\": 0.873,\n  \"uisz\": 1\n}";
     // char* identity = "randomidentity";
     MultiByteToWideChar(
-        CP_UTF8, // CodePage,
-        0, // dwFlags,
-        identity, // lpMultiByteStr,
-        -1, // cbMultiByte,
-        lm->identity, // lpWideCharStr,
-        256 // cchWideChar
+        CP_UTF8,  // CodePage,
+        0,  // dwFlags,
+        identity,  // lpMultiByteStr,
+        -1,  // cbMultiByte,
+        lm->identity,  // lpWideCharStr,
+        256  // cchWideChar
     );
 
-
     lc->mapId = 12345;
-
-
 
     // Load the burrito link dll
     HINSTANCE burrito_link_dll = LoadLibrary("burrito_link.dll");
@@ -256,8 +244,6 @@ int main() {
         FreeLibrary(burrito_link_dll);
         return 1;
     }
-
-
 
     // Launch the burrito_link using the thread function
     int buffer_length;
@@ -304,10 +290,9 @@ int main() {
 
         // Update shared memory
         QueryPerformanceFrequency(&frequency);
-        
+
         lm->fCameraPosition[0] = frame_message_count;
-    
-    
+
         lm->uiTick = frame_message_count;
         QueryPerformanceCounter(&start);
         // Wait for a response over the network (with a timeout?)
@@ -316,13 +301,12 @@ int main() {
         } while (buffer_length == -2);
         QueryPerformanceCounter(&end);
 
-
         while (buffer_length > 0) {
             // Sleep for a moment to allow network packets to fully send.
             Sleep(10);
             switch (buffer[0]) {
                 case 0x01: {
-                    struct BurritoFrameData* burrito_frame = (struct BurritoFrameData*)buffer; 
+                    struct BurritoFrameData* burrito_frame = (struct BurritoFrameData*)buffer;
                     // printf("!!FrameNumber: %f %i\n", burrito_frame->camera_position[0], frame_message_count);
 
                     if (!per_frame_message_expected) {
