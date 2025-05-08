@@ -116,6 +116,7 @@ jobs:
           cd burrito_link/build
           cmake ..
           make
+          mv burrito_link.dll d3d11.dll
 
       - name: Build ArcDPS Addon
         run: |
