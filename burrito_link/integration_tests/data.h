@@ -44,7 +44,6 @@ struct SizedBuffer my_sum_and_call(size_t num_args, ...) {
         }
     }
     va_end(args);
-    // printf("Hello world starting processing %zu\n", length);
     uint8_t* buffer = malloc(length * sizeof(uint8_t));
     size_t buffer_position = 0;
 
@@ -85,11 +84,7 @@ struct SizedBuffer my_sum_and_call(size_t num_args, ...) {
         }
     }
     va_end(args);
-    // printf("Hello World, done processing. %zu %zu\n", length, num_args);
 
-    // for (size_t i = 0; i < length; i++) {
-    //     printf("%02X", buffer[i]);
-    // }
     struct SizedBuffer sized_buffer;
     sized_buffer.buffer = buffer;
     sized_buffer.size = length;
