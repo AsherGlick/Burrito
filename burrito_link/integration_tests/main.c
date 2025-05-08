@@ -278,6 +278,10 @@ int main() {
     LARGE_INTEGER frequency;
     LARGE_INTEGER start, end;
 
+    const uint32_t MAX_VALUE = 1004;
+    uint32_t steps = MAX_VALUE - frame_message_count;
+    double average_time_taken = 0;
+
     // Repeat
     for (; frame_message_count <= 1004; frame_message_count++) {
         // printf("Starting with %i\n", frame_message_count);
@@ -356,7 +360,7 @@ int main() {
         }
 
         double elapsed_time = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1e3;
-        // printf("%.12fms\n", elapsed_time);
+        average_time_taken += elapsed_time / steps;
         // printf("Buffer Length %i\n", buffer_length);
 
         if (per_frame_message_expected) {
@@ -371,6 +375,8 @@ int main() {
         clear_all_messages(server_socket, &client_address, buffer);
     }
     printf("\n");
+
+    printf("Average Latency: %.12fms\n", average_time_taken);
 
     // Unload the burrito link dll
     FreeLibrary(burrito_link_dll);

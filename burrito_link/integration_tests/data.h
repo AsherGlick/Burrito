@@ -1,5 +1,5 @@
-#ifndef BURRITO_LINK_INTEGRATION_TEST_DATA_H_
-#define BURRITO_LINK_INTEGRATION_TEST_DATA_H_
+#ifndef BURRITO_LINK_INTEGRATION_TESTS_DATA_H_
+#define BURRITO_LINK_INTEGRATION_TESTS_DATA_H_
 
 #include <stdarg.h>
 #include <stdint.h>
@@ -176,4 +176,4 @@ int compare(uint8_t* buffer_1, size_t buffer_len_1, uint8_t* buffer_2, size_t bu
     return 1;
 }
 
-#endif // BURRITO_LINK_INTEGRATION_TEST_DATA_H_
+#endif  // BURRITO_LINK_INTEGRATION_TESTS_DATA_H_
