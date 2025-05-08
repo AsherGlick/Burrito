@@ -1,13 +1,13 @@
 const identify_duplicate_categories = preload("res://identify_duplicate_categories.gd")
 
-const converter_executable_path = "./burrito_converter"
-
 static func call_burrito_converter(args: PoolStringArray) -> Dictionary:
 	var output: Array = []
-	var path_to_executable: String = converter_executable_path
+	var path_to_executable: String
 	print(args)
 	if OS.has_feature("editor"):
-		path_to_executable += "/build/burrito_converter"
+		path_to_executable = "./burrito_converter/build/burrito_converter"
+	else:
+		path_to_executable = OS.get_executable_path().get_base_dir().plus_file("burrito_converter")
 	var result: int = OS.execute(path_to_executable, args, true, output, true)
 	print(output)
 	if result != OK:
