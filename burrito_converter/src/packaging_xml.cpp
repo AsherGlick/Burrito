@@ -232,7 +232,7 @@ class XMLFileData {
     string display_path;
     rapidxml::xml_document<char> xml_document;
 
-    XMLFileData(unique_ptr<basic_istream<char>> input, const MarkerPackFile& filepath) {
+    XMLFileData(unique_ptr<basic_istream<char>> input, const MarkerPackFile &filepath) {
         this->raw_file = std::move(input);
         this->xml_file = new rapidxml::file<char>(*this->raw_file);
         this->display_path = filepath.tmp_get_path();
@@ -248,7 +248,7 @@ vector<XMLFileData*> xml_files_to_cleanup;
 // A function which parses a single XML file into their corrisponding classes.
 ////////////////////////////////////////////////////////////////////////////////
 map<Attribute::UniqueId::UniqueId, Category*> parse_xml_file(
-    const MarkerPackFile& xml_filepath,
+    const MarkerPackFile &xml_filepath,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
 ) {
@@ -319,13 +319,13 @@ void write_xml_file(const string marker_pack_root_directory, map<string, Categor
     rapidxml::xml_node<char>* root = doc.allocate_node(rapidxml::node_element, "OverlayData");
     doc.append_node(root);
 
-    for (const auto& category : *marker_categories) {
+    for (const auto &category : *marker_categories) {
         root->append_node(category.second.as_xml(&state));
     }
 
     rapidxml::xml_node<char>* pois = doc.allocate_node(rapidxml::node_element, "POIs");
     root->append_node(pois);
-    for (const auto& parsed_poi : *parsed_pois) {
+    for (const auto &parsed_poi : *parsed_pois) {
         pois->append_node(parsed_poi->as_xml(&state));
     }
 

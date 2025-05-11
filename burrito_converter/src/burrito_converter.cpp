@@ -66,7 +66,7 @@ map<UniqueId, CategoryWithinSinglePack> read_taco_directory(
     map<UniqueId, map<string, vector<CategoryNameAndFilePath>>> id_to_category_name_to_filepaths;
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> xml_files = get_files_by_suffix(input_path, ".xml");
-    for (const MarkerPackFile& path : xml_files) {
+    for (const MarkerPackFile &path : xml_files) {
         map<UniqueId, Category*> top_level_categories = parse_xml_file(path, marker_categories, parsed_pois);
         string file_path = join_file_paths(input_path, path.relative_filepath);
         for (map<UniqueId, Category*>::iterator it = top_level_categories.begin(); it != top_level_categories.end(); it++) {
@@ -119,7 +119,7 @@ map<UniqueId, CategoryWithinSinglePack> read_burrito_directory(
     map<UniqueId, map<string, vector<string>>> id_conflicts;
     string directory_name = filesystem::path(input_path).filename();
     vector<MarkerPackFile> burrito_files = get_files_by_suffix(input_path, ".guildpoint");
-    for (const MarkerPackFile& path : burrito_files) {
+    for (const MarkerPackFile &path : burrito_files) {
         map<UniqueId, Category*> top_level_categories = read_protobuf_file(path, marker_categories, parsed_pois);
         string file_path = join_file_paths(input_path, path.relative_filepath);
         for (map<UniqueId, Category*>::iterator it = top_level_categories.begin(); it != top_level_categories.end(); it++) {

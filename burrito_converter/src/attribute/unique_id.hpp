@@ -24,7 +24,7 @@ class UniqueId {
  public:
     std::vector<uint8_t> guid;
 
-    bool operator<(const UniqueId& other) const {
+    bool operator<(const UniqueId &other) const {
         return guid < other.guid;
     }
 
