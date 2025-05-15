@@ -967,7 +967,6 @@ material/0 = SubResource( 4 )
 [connection signal="dir_selected" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_ImportTacoPackDialog_dir_selected"]
 [connection signal="file_selected" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_ImportTacoPackDialog_file_selected"]
 [connection signal="hide" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_Dialog_hide"]
-[connection signal="about_to_show" from="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" to="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" method="_on_OverwriteConfirm_about_to_show"]
 [connection signal="popup_hide" from="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" to="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" method="_on_OverwriteConfirm_popup_hide"]
 [connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
