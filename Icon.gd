@@ -11,7 +11,7 @@ func set_icon_image(texture_path: String):
 	var texture_file = File.new()
 	var image = Image.new()
 	if texture_file.open(texture_path, File.READ) != OK:
-		print (texture_path, " couldn't be opened")
+		print (texture_path, " could not be opened")
 		return
 	image.load_png_from_buffer(texture_file.get_buffer(texture_file.get_len()))
 	texture_file.close()

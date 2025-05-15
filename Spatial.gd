@@ -680,6 +680,7 @@ func save_hashes():
 		if dir.file_exists(file_name):
 			if file.open(Settings.get_unsaved_markers_dir().plus_file(file_name), File.READ) != OK:
 				print(file_name, " could not be opened")
+				continue
 			data[file_name.get_basename()] = make_hash(file.get_buffer(file.get_len()))
 		file_name = dir.get_next()
 	file.open(HASH_BY_MAP_ID_FILEPATH, File.WRITE)
