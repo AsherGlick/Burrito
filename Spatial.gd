@@ -427,7 +427,9 @@ func load_guildpoint_markers(map_id_to_load: int):
 	init_category_tree()
 	var file = File.new()
 	print("Loading protobuf file from path ", self.marker_file_path)
-	file.open(self.marker_file_path, file.READ)
+	if file.open(self.marker_file_path, file.READ) != OK:
+		print(self.marker_file_path, " could not be opened")
+		return
 	var data = file.get_buffer(file.get_len())
 	self.guildpoint_data.from_bytes(data)
 	if !Guildpoint.PB_ERR.NO_ERRORS:
@@ -676,7 +678,8 @@ func save_hashes():
 	var file_name = dir.get_next()
 	while file_name != "":
 		if dir.file_exists(file_name):
-			file.open(file_name, File.READ)
+			if file.open(Settings.get_unsaved_markers_dir().plus_file(file_name), File.READ) != OK:
+				print(file_name, " could not be opened")
 			data[file_name.get_basename()] = make_hash(file.get_buffer(file.get_len()))
 		file_name = dir.get_next()
 	file.open(HASH_BY_MAP_ID_FILEPATH, File.WRITE)
