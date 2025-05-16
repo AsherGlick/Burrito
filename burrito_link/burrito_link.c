@@ -140,7 +140,7 @@ void initMumble() {
     }
     lm = (struct LinkedMem*)mapped_lm;
 
-    lc = (struct MumbleContext*)lm->context;
+    lc = &lm->context;
     printf("successfully opened mumble link shared memory..\n");
 }
 
