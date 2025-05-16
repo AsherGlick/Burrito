@@ -310,7 +310,7 @@ int main() {
             Sleep(10);
             switch (buffer[0]) {
                 case 0x01: {
-                    struct BurritoFrameData* burrito_frame = (struct BurritoFrameData*)buffer;
+                    struct BurritoFrameMessage* burrito_frame = (struct BurritoFrameMessage*)buffer;
                     // printf("!!FrameNumber: %f %i\n", burrito_frame->camera_position[0], frame_message_count);
 
                     if (!per_frame_message_expected) {
