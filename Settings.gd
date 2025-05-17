@@ -54,10 +54,13 @@ var start_with_open_menu: bool = false
 
 func _ready():
 	var file = File.new()
-	file.open(CONFIG_PATH, file.READ)
-	var text = file.get_as_text()
-	var datum = JSON.parse(text)
-	self._config_data = JSON.parse(text).result
+	# If the file is not present or could not be opened, default settings are used.
+	var result = file.open(CONFIG_PATH, file.READ)
+	if result == OK:
+		var text = file.get_as_text()
+		self._config_data = JSON.parse(text).result
+	else:
+		print("Error when opening ", CONFIG_PATH, ". Error number ", result)
 
 	if self._config_data == null:
 		self._config_data = {}
