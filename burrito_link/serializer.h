@@ -25,7 +25,10 @@
 #define PACKET_METADATA 2
 #define PACKET_LINK_TIMEOUT 3
 
-struct BurritoFrameData {
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+struct BurritoFrameMessage {
     uint8_t message_type;  // 0x01
     float camera_position[3];
     float camera_front[3];
@@ -36,26 +39,94 @@ struct BurritoFrameData {
     float compass_rotation;
     uint32_t ui_state;
 } __attribute__((packed));
-static_assert(sizeof(struct BurritoFrameData) == 57, "BurritoFrameData is expected to be 57 bytes long.");
+static_assert(sizeof(struct BurritoFrameMessage) == 57, "BurritoFrameMessage is expected to be 57 bytes long.");
 
-struct MetadataMessage {
+struct BurritoFrameMessage buildBurritoFrameMessage(
+    const float camera_position[3],
+    const float camera_front[3],
+    const float avatar_position[3],
+    const float map_offset_x,
+    const float map_offset_y,
+    const float map_scale,
+    const float compass_rotation,
+    const uint32_t ui_state
+) {
+    struct BurritoFrameMessage data;
+    data.message_type = 0x01;
+    data.camera_position[0] = camera_position[0];
+    data.camera_position[1] = camera_position[1];
+    data.camera_position[2] = camera_position[2];
+    data.camera_front[0] = camera_front[0];
+    data.camera_front[1] = camera_front[1];
+    data.camera_front[2] = camera_front[2];
+    data.avatar_position[0] = avatar_position[0];
+    data.avatar_position[1] = avatar_position[1];
+    data.avatar_position[2] = avatar_position[2];
+    data.map_offset_x = map_offset_x;
+    data.map_offset_y = map_offset_y;
+    data.map_scale = map_scale;
+    data.compass_rotation = compass_rotation;
+    data.ui_state = ui_state;
+    return data;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+struct BurritoMetadataMessage {
     uint8_t message_type;  // 0x02
     uint16_t compass_width;
     uint16_t compass_height;
     uint32_t map_id;
     uint32_t x11_window_id;
     uint32_t identity_size;
-    uint8_t utf8_identity[1024];
+    char utf8_identity[1024];
 } __attribute__((packed));
-#define MetadataMessageFixedSize offsetof(struct MetadataMessage, utf8_identity)
-static_assert(MetadataMessageFixedSize == 17, "error");
-static_assert(sizeof(((struct MetadataMessage*)0)->utf8_identity) == 1024, "error");
-static_assert(sizeof(struct MetadataMessage) == 1041, "MetadataMessage is expected to be 1041 bytes long.");
+#define BurritoMetadataMessageFixedSize offsetof(struct BurritoMetadataMessage, utf8_identity)
+static_assert(BurritoMetadataMessageFixedSize == 17, "error");
+static_assert(sizeof(((struct BurritoMetadataMessage*)0)->utf8_identity) == 1024, "error");
+static_assert(sizeof(struct BurritoMetadataMessage) == 1041, "BurritoMetadataMessage is expected to be 1041 bytes long.");
 
-struct TimeoutMessage {
+struct BurritoMetadataMessage buildBurritoMetadataMessage(
+    uint16_t compass_width,
+    uint16_t compass_height,
+    uint32_t map_id,
+    uint32_t x11_window_id,
+    uint16_t* identity
+) {
+    struct BurritoMetadataMessage data;
+    data.message_type = 0x02;
+    data.compass_width = compass_width;
+    data.compass_height = compass_height;
+    data.map_id = map_id;
+    data.x11_window_id = x11_window_id;
+
+    // Convert the JSON 'identity' payload from widechar to utf8 encoded char
+    data.identity_size = WideCharToMultiByte(
+        CP_UTF8,  // CodePage
+        0,  // dwFlags
+        identity,  // lpWideCharStr
+        -1,  // cchWideChar
+        data.utf8_identity,  // lpMultiByteStr
+        1024,  // cbMultiByte
+        NULL,  // lpDefaultChar
+        NULL  // lpUsedDefaultChar
+    );
+
+    return data;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+struct BurritoTimeoutMessage {
     uint8_t message_type;  // 0x03
 } __attribute__((packed));
-static_assert(sizeof(struct TimeoutMessage) == 1, "TimeoutMessage is expected to be 1 byte long.");
+static_assert(sizeof(struct BurritoTimeoutMessage) == 1, "BurritoTimeoutMessage is expected to be 1 byte long.");
+
+
+
+
 
 // Sanity check our various datatypes on compile.
 static_assert(sizeof(float) == 4, "float is expected to be 32 bits long.");
@@ -63,17 +134,5 @@ static_assert(sizeof(uint8_t) == 1, "uint8_t is expected to be 8 bits long.");
 static_assert(sizeof(uint16_t) == 2, "uint16_t is expected to be 16 bits long.");
 static_assert(sizeof(uint32_t) == 4, "uint32_t is expected to be 32 bits long.");
 static_assert(sizeof(wchar_t) == 2, "wchar_t is expected to be 16 bits long.");
-
-void send_metadata_message(
-    struct MetadataMessage* message,
-    SOCKET SendingSocket,
-    SOCKADDR_IN ReceiverAddr
-) {
-    uint32_t total_bytes_sent = 0;
-    total_bytes_sent = sendto(SendingSocket, (const char*)message, sizeof(*message), 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
-    if (total_bytes_sent != sizeof(*message)) {
-        printf("Not all Bytes Sent");
-    }
-}
 
 #endif  // BURRITO_LINK_SERIALIZER_H_

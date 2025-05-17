@@ -12,6 +12,7 @@
 // clang-format on
 
 #include "linked_memory.h"
+#include "serializer.h"
 
 // Enumerations of the different packet types that can be sent
 #define PACKET_FRAME 1
@@ -178,7 +179,6 @@ uint32_t x11_window_id_from_windows_process_id(uint32_t windows_process_id) {
         return TRUE;
     }
     EnumWindows(EnumWindowsProcMy, windows_process_id);
-
     HANDLE possible_x11_window_id = GetProp(window_handle, "__wine_x11_whole_window");
     if (possible_x11_window_id != NULL) {
         x11_window_id = (size_t)possible_x11_window_id;
@@ -284,39 +284,19 @@ int connect_and_or_send() {
 
         // Set the first byte of the packet to indicate this packet is a
         // `Per Frame Updater` packet
-        SendBuf[0] = PACKET_FRAME;
-        BufLength = 1;
+        struct BurritoFrameMessage burrito_frame_message = buildBurritoFrameMessage(
+            lm->fCameraPosition,
+            lm->fCameraFront,
+            fAvatarAveragePosition,
+            lc->playerX - lc->mapCenterX,
+            lc->playerY - lc->mapCenterY,
+            lc->mapScale,
+            lc->compassRotation,
+            lc->uiState
+        );
 
-        memcpy(SendBuf + BufLength, lm->fCameraPosition, sizeof(lm->fCameraPosition));
-        BufLength += sizeof(lm->fCameraPosition);
-
-        memcpy(SendBuf + BufLength, lm->fCameraFront, sizeof(lm->fCameraFront));
-        BufLength += sizeof(lm->fCameraFront);
-
-        memcpy(SendBuf + BufLength, fAvatarAveragePosition, sizeof(fAvatarAveragePosition));
-        BufLength += sizeof(fAvatarAveragePosition);
-
-        float map_offset_x = lc->playerX - lc->mapCenterX;
-        memcpy(SendBuf + BufLength, &map_offset_x, sizeof(map_offset_x));
-        BufLength += sizeof(map_offset_x);
-
-        float map_offset_y = lc->playerY - lc->mapCenterY;
-        memcpy(SendBuf + BufLength, &map_offset_y, sizeof(map_offset_y));
-        BufLength += sizeof(map_offset_y);
-
-        memcpy(SendBuf + BufLength, &lc->mapScale, sizeof(lc->mapScale));
-        BufLength += sizeof(lc->mapScale);
-
-        memcpy(SendBuf + BufLength, &lc->compassRotation, sizeof(lc->compassRotation));
-        BufLength += sizeof(lc->compassRotation);
-
-        memcpy(SendBuf + BufLength, &lc->uiState, sizeof(lc->uiState));
-        BufLength += sizeof(lc->uiState);
-
-        // memcpy(SendBuf + BufLength, &lc->mountIndex, sizeof(lc->mountIndex));
-        // BufLength += sizeof(lc->mountIndex);
-
-        TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
+        BufLength = sizeof(burrito_frame_message);
+        TotalByteSent = sendto(SendingSocket, (char*)&burrito_frame_message, BufLength, 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
         if (TotalByteSent != BufLength) {
             printf("Not all Bytes Sent");
         }
@@ -327,43 +307,17 @@ int connect_and_or_send() {
         if (count == 0 || lc->mapId != last_map_id) {
             last_map_id = lc->mapId;
 
-            // Set the first byte of the packet to indicate this packet is a
             // `Heaver Context Updater` packet.
-            SendBuf[0] = PACKET_METADATA;
-            BufLength = 1;
-
-            memcpy(SendBuf + BufLength, &lc->compassWidth, sizeof(lc->compassWidth));
-            BufLength += sizeof(lc->compassWidth);
-
-            memcpy(SendBuf + BufLength, &lc->compassHeight, sizeof(lc->compassHeight));
-            BufLength += sizeof(lc->compassHeight);
-
-            memcpy(SendBuf + BufLength, &lc->mapId, sizeof(lc->mapId));
-            BufLength += sizeof(lc->mapId);
-
-            uint32_t x11_window_id = x11_window_id_from_windows_process_id(lc->processId);
-            memcpy(SendBuf + BufLength, &x11_window_id, sizeof(x11_window_id));
-            BufLength += sizeof(x11_window_id);
-
-            // Convert the JSON 'identity' payload from widechar to utf8
-            // encoded char and send.
-            char utf8_identity[1024];
-            UINT32 utf8_identity_size = WideCharToMultiByte(
-                CP_UTF8,  // CodePage
-                0,  // dwFlags
-                lm->identity,  // lpWideCharStr
-                -1,  // cchWideChar
-                utf8_identity,  // lpMultiByteStr
-                1024,  // cbMultiByte
-                NULL,  // lpDefaultChar
-                NULL  // lpUsedDefaultChar
+            struct BurritoMetadataMessage burrito_metadata_messsage = buildBurritoMetadataMessage(
+                lc->compassWidth,
+                lc->compassHeight,
+                lc->mapId,
+                x11_window_id_from_windows_process_id(lc->processId),
+                lm->identity
             );
-            memcpy(SendBuf + BufLength, &utf8_identity_size, sizeof(utf8_identity_size));
-            BufLength += sizeof(utf8_identity_size);
-            memcpy(SendBuf + BufLength, utf8_identity, utf8_identity_size);
-            BufLength += utf8_identity_size;
 
-            TotalByteSent = sendto(SendingSocket, SendBuf, BufLength, 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
+            BufLength = BurritoMetadataMessageFixedSize + burrito_metadata_messsage.identity_size;
+            TotalByteSent = sendto(SendingSocket, (char*)&burrito_metadata_messsage, BufLength, 0, (SOCKADDR*)&ReceiverAddr, sizeof(ReceiverAddr));
             if (TotalByteSent != BufLength) {
                 printf("Not all Bytes Sent");
             }
