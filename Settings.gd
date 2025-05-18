@@ -58,7 +58,11 @@ func _ready():
 	var result = file.open(CONFIG_PATH, file.READ)
 	if result == OK:
 		var text = file.get_as_text()
-		self._config_data = JSON.parse(text).result
+		var json_parse_result: JSONParseResult = JSON.parse(text)
+		if json_parse_result.error == OK:
+			self._config_data = json_parse_result.result
+		else:
+			print("Error when parsing ", CONFIG_PATH, ". Error number ", json_parse_result.error, ". ", json_parse_result.error_string)
 	else:
 		print("Error when opening ", CONFIG_PATH, ". Error number ", result)
 
