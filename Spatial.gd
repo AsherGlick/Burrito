@@ -427,8 +427,13 @@ func load_guildpoint_markers(map_id_to_load: int):
 	init_category_tree()
 	var file = File.new()
 	print("Loading protobuf file from path ", self.marker_file_path)
-	if file.open(self.marker_file_path, file.READ) != OK:
+	var err = file.open(self.marker_file_path, file.READ)
+	if err != OK:
 		print(self.marker_file_path, " could not be opened")
+		print(err)
+		return
+	if file.get_len() == 0:
+		print("No data found in file")
 		return
 	var data = file.get_buffer(file.get_len())
 	self.guildpoint_data.from_bytes(data)
