@@ -426,7 +426,7 @@ func load_guildpoint_markers(map_id_to_load: int):
 	clear_map_markers()
 	init_category_tree()
 	var file = File.new()
-	print("Loading protobuf file from path ", self.marker_file_path)
+	print("Attempting to load from path ", self.marker_file_path)
 	var err = file.open(self.marker_file_path, file.READ)
 	if err != OK:
 		print(self.marker_file_path, " could not be opened")
@@ -438,7 +438,7 @@ func load_guildpoint_markers(map_id_to_load: int):
 	var data = file.get_buffer(file.get_len())
 	self.guildpoint_data.from_bytes(data)
 	if !Guildpoint.PB_ERR.NO_ERRORS:
-		print("OK")
+		print("Loading successful")
 	else:
 		print(Guildpoint.PB_ERR)
 	guildpoint_categories_to_godot_nodes()
