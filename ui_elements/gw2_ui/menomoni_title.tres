@@ -1,0 +1,8 @@
+[gd_resource type="DynamicFont" load_steps=2 format=2]
+
+[ext_resource path="res://ui_elements/gw2_ui/menomonia.ttf" type="DynamicFontData" id=1]
+
+[resource]
+size = 15
+extra_spacing_char = -1
+font_data = ExtResource( 1 )
