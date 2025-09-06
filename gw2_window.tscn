@@ -7,7 +7,7 @@
 [ext_resource path="res://ui_elements/gw2_ui/background.png" type="Texture" id=5]
 [ext_resource path="res://ui_elements/gw2_ui/button-exit-active.png" type="Texture" id=6]
 [ext_resource path="res://ui_elements/gw2_ui/bottom-right.png" type="Texture" id=7]
-[ext_resource path="res://ui_elements/gw2_ui/menu_background.gdshader" type="Shader" id=8]
+[ext_resource path="res://ui_elements/gw2_ui/menu_background.shader" type="Shader" id=8]
 [ext_resource path="res://ui_elements/gw2_ui/divider.png" type="Texture" id=9]
 [ext_resource path="res://ui_elements/gw2_ui/menomoni_title.tres" type="DynamicFont" id=10]
 [ext_resource path="res://ui_elements/gw2_ui/title.png" type="Texture" id=12]
@@ -17,7 +17,7 @@
 [ext_resource path="res://ui_elements/gw2_ui/titlebar-active.png" type="Texture" id=16]
 [ext_resource path="res://ui_elements/gw2_ui/selection.png" type="Texture" id=18]
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 8 )
 shader_param/left_fade_end = 0.0
 shader_param/left_fade_start = 0.071
@@ -26,7 +26,7 @@ shader_param/left_edge_start = 0.071
 shader_param/selected_start = 0.074
 shader_param/selected_end = 0.131
 
-[sub_resource type="Shader" id=3]
+[sub_resource type="Shader" id=2]
 code = "// NOTE: Shader automatically converted from Godot Engine 3.4.4.stable's CanvasItemMaterial.
 shader_type canvas_item;
 render_mode blend_mix;
@@ -46,16 +46,12 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id=4]
-shader = SubResource( 3 )
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
 shader_param/selected_start = 0.074
 shader_param/selected_end = 0.131
 
-[node name="Control" type="Control"]
-margin_right = 40.0
-margin_bottom = 40.0
-
-[node name="GW2Menu" type="Control" parent="."]
+[node name="GW2Menu" type="Control"]
 margin_right = 1019.0
 margin_bottom = 766.0
 script = ExtResource( 14 )
@@ -66,8 +62,8 @@ button_textures = [ ExtResource( 13 ), ExtResource( 13 ), ExtResource( 13 ), Ext
 button_hover_textures = [ ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ) ]
 button_text = [ "Open Markers", "Save Markers", "Show Hide Markers", "Edit Markers", "Range Indicators", "Settings", "Super Secret Settings", "Exit Burrito" ]
 
-[node name="Background" type="TextureRect" parent="GW2Menu"]
-material = SubResource( 2 )
+[node name="Background" type="TextureRect" parent="."]
+material = SubResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -38.0
@@ -80,7 +76,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="TitleBar" type="TextureButton" parent="GW2Menu"]
+[node name="TitleBar" type="TextureButton" parent="."]
 margin_left = 0.122452
 margin_top = -8.69907
 margin_right = 1024.12
@@ -91,7 +87,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="BottomRightCorner" type="TextureRect" parent="GW2Menu"]
+[node name="BottomRightCorner" type="TextureRect" parent="."]
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -105,7 +101,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="TopRightTitlebar" type="TextureRect" parent="GW2Menu"]
+[node name="TopRightTitlebar" type="TextureRect" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -107.23
@@ -118,7 +114,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CloseButton" type="TextureButton" parent="GW2Menu"]
+[node name="CloseButton" type="TextureButton" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -39.0
@@ -132,7 +128,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Icon" type="TextureRect" parent="GW2Menu"]
+[node name="Icon" type="TextureRect" parent="."]
 margin_left = -26.7068
 margin_top = -30.0703
 margin_right = 101.293
@@ -143,7 +139,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="SubTitle" type="RichTextLabel" parent="GW2Menu"]
+[node name="SubTitle" type="RichTextLabel" parent="."]
 margin_left = 180.722
 margin_top = 13.133
 margin_right = 331.722
@@ -155,7 +151,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Title" type="TextureRect" parent="GW2Menu"]
+[node name="Title" type="TextureRect" parent="."]
 margin_left = 76.7665
 margin_top = 12.7493
 margin_right = 158.767
@@ -166,8 +162,8 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Divider" type="TextureRect" parent="GW2Menu"]
-material = SubResource( 4 )
+[node name="Divider" type="TextureRect" parent="."]
+material = SubResource( 3 )
 margin_left = 27.425
 margin_top = 14.0
 margin_right = 59.425
@@ -178,7 +174,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Selection" type="TextureRect" parent="GW2Menu"]
+[node name="Selection" type="TextureRect" parent="."]
 margin_left = -58.0
 margin_top = 44.0
 margin_right = 43.0
@@ -188,11 +184,11 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Buttons" type="Control" parent="GW2Menu"]
+[node name="Buttons" type="Control" parent="."]
 __meta__ = {
 "_edit_lock_": true
 }
 
-[connection signal="button_down" from="GW2Menu/TitleBar" to="GW2Menu" method="_on_TitleBar_button_down"]
-[connection signal="button_up" from="GW2Menu/TitleBar" to="GW2Menu" method="_on_TitleBar_button_up"]
-[connection signal="pressed" from="GW2Menu/CloseButton" to="GW2Menu" method="_on_CloseButton_pressed"]
+[connection signal="button_down" from="TitleBar" to="." method="_on_TitleBar_button_down"]
+[connection signal="button_up" from="TitleBar" to="." method="_on_TitleBar_button_up"]
+[connection signal="pressed" from="CloseButton" to="." method="_on_CloseButton_pressed"]

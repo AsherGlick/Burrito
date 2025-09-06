@@ -33,6 +33,10 @@ const button_left_offset = 1
 const button_width = 41
 const button_height = 41
 
+# A list of the subscenes attached to this node wherever it is instantiated
+# populated by icon_data_change. Excludes any children that are present inside
+# of this scene.
+var subscenes: Array = []
 
 func _ready():
 	print("Ready")
@@ -74,17 +78,27 @@ func icon_data_change():
 	for child in buttons_elem.get_children():
 		child.queue_free()
 
-	var max_size = [
-		button_textures.size(),
-		button_hover_textures.size(),
-		button_text.size()
-	].max()
+	#var max_size = [
+	#	button_textures.size(),
+	#	button_hover_textures.size(),
+	#	button_text.size()
+	#].max()
+
+
+	self.subscenes = []
+	for child in self.get_children():
+		# Skip over all of the children that are a part of these tscn file so
+		# we are only iterating over nodes that have been added externally.
+		if child.owner == self:
+			continue
+		self.subscenes.append(child)
+	var max_size = subscenes.size()
+
 
 	# A blank texture to use as the default
 	var default_texture: Texture
 
 	for i in max_size:
-
 		var button_texture: Texture = get_default(button_textures, i, default_texture)
 		var button_hover_texture: Texture = get_default(button_hover_textures, i, default_texture)
 
@@ -103,6 +117,7 @@ func icon_data_change():
 		)
 
 		button.connect("pressed", self, "_menu_button_press", [i])
+
 
 ################################################################################
 # _menu_button_press
@@ -139,6 +154,10 @@ func update_selected():
 	selection_elem.rect_position.y = 44 + 44 * selected_icon
 
 	subtitle_elem.text = get_default(button_text, selected_icon, "")
+
+	for scene in self.subscenes:
+		scene.hide()
+	self.subscenes[selected_icon].show()
 
 ################################################################################
 # Dragging start/stop logic

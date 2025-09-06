@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://Category3D.gd" type="Script" id=13]
 [ext_resource path="res://GlobalMenuButton.gd" type="Script" id=14]
 [ext_resource path="res://Category2D.gd" type="Script" id=15]
+[ext_resource path="res://gw2_window.tscn" type="PackedScene" id=16]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -71,6 +72,57 @@ __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
+
+[node name="Menu" parent="Control" instance=ExtResource( 16 )]
+margin_left = 15.3338
+margin_top = 28.7034
+margin_right = 1034.33
+margin_bottom = 794.703
+selected_icon = 1
+
+[node name="Box1" type="Control" parent="Control/Menu"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Label" type="Label" parent="Control/Menu/Box1"]
+margin_left = 192.55
+margin_top = 200.101
+margin_right = 268.55
+margin_bottom = 214.101
+text = "Hello World"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Box2" type="Control" parent="Control/Menu"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Control/Menu/Box2"]
+margin_left = 158.74
+margin_top = 147.628
+margin_right = 223.74
+margin_bottom = 161.628
+text = "Sup World"
+
+[node name="Box3" type="Control" parent="Control/Menu"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Control/Menu/Box3"]
+margin_left = 126.992
+margin_top = 107.943
+margin_right = 172.992
+margin_bottom = 121.943
+text = "Label 3"
 
 [node name="Markers2D" type="Node2D" parent="Control"]
 material = SubResource( 2 )
