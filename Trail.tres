@@ -10,4 +10,5 @@ shader_param/map_size = Vector2( 0, 0 )
 shader_param/map_flipped = null
 shader_param/map_bottom_offset = 36.0
 shader_param/interval = 1.0
+shader_param/cutout_data = null
 shader_param/texture_albedo = ExtResource( 1 )

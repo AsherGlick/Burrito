@@ -61,6 +61,13 @@ const FileHandler = preload("res://FileHandler.gd")
 # File path for the the json that contains a hash of the data files
 const HASH_BY_MAP_ID_FILEPATH: String = "user://hash_by_map_id.json"
 
+# Screenspace Player Cutout Projections
+var player_foot_projected_y = 0
+var player_head_projected_y = 1080
+var player_projected_width = 100
+var player_cutout_showing = false
+
+
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
@@ -304,6 +311,22 @@ func decode_frame_packet(spb: StreamPeerBuffer):
 	var new_feet_location = Vector3(player_position.x, player_position.y, -player_position.z)
 	$FeetLocation.translation = new_feet_location
 
+	# Update the cutouts
+	if Settings.enable_player_cutout:
+		self.player_projected_width = 50
+		self.player_foot_projected_y = 1080 - $CameraMount/Camera.unproject_position(correct_player_position - Vector3(0, .2, 0)).y
+		self.player_head_projected_y = 1080 - $CameraMount/Camera.unproject_position(correct_player_position + Vector3(0, 2, 0)).y
+		self.player_cutout_showing = true
+		for category in self.markers_3d.subcategories:
+			update_3d_character_cutout(category)
+	# Disable the cutout if it was previously enabled but switched off
+	elif self.player_cutout_showing:
+		self.player_projected_width = 0
+		self.player_foot_projected_y = 0
+		self.player_head_projected_y = 0
+		self.player_cutout_showing = false
+		for category in self.markers_3d.subcategories:
+			update_3d_character_cutout(category)
 
 func decode_context_packet(spb: StreamPeerBuffer):
 	compass_width = spb.get_16()
@@ -415,6 +438,29 @@ func reset_3D_minimap_masks(category: Spatial):
 		icon.material_override.set_shader_param("map_size", Vector2(self.compass_width, self.compass_height))
 	for subcategory in category.subcategories:
 		reset_3D_minimap_masks(subcategory)
+
+func update_3d_character_cutout(category: Spatial):
+	for trail in category.trails3d:
+		trail.get_node("MeshInstance").material_override.set_shader_param(
+			"cutout_data",
+			Vector3(
+				self.player_foot_projected_y,
+				self.player_head_projected_y,
+				self.player_projected_width
+			)
+		)
+	for icon in category.icons:
+		# TODO: Enable this parameter setting once we implement it in the icon shader
+		# icon.material_override.set_shader_param("cutout_data",
+		# 	Vector3(
+		# 		self.player_foot_projected_y,
+		# 		self.player_head_projected_y,
+		# 		self.player_projected_width
+		# 	)
+		# )
+		pass
+	for subcategory in category.subcategories:
+		update_3d_character_cutout(subcategory)
 
 
 var guildpoint_data = Guildpoint.Guildpoint.new()
