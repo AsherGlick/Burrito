@@ -9,6 +9,7 @@ from util import capitalize, Document
 from generate_cpp import write_cpp_classes, write_attribute
 import argparse
 from metadata import parse_data, MetadataType
+import shutil
 
 
 @dataclass
@@ -101,6 +102,9 @@ class Generator:
                     generated_doc=generated_doc,
                     content_nav=navigation_links
                 ))
+
+        # Copy syntax highlighting css
+        shutil.copy("./web_templates/monokai.css", os.path.join(output_directory, "monokai.css"))
 
     # TODO: This might not be a great tool unless we want to add special logic here for compound types
     def get_examples(self, field_type: str, field_key: str, examples: List[str] = []) -> List[str]:
