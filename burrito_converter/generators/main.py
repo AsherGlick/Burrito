@@ -106,7 +106,6 @@ class Generator:
         # Copy syntax highlighting css
         shutil.copy("./web_templates/monokai.css", os.path.join(output_directory, "monokai.css"))
 
-
     # TODO: This might not be a great tool unless we want to add special logic here for compound types
     def get_examples(self, field_type: str, field_key: str, examples: List[str] = []) -> List[str]:
         if len(examples) > 0:
