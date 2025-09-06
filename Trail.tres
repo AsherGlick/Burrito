@@ -1,7 +1,8 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://shaders/Trail3DMaterial.shader" type="Shader" id=2]
+[ext_resource path="res://ui_masks.png" type="Texture" id=3]
 
 [resource]
 resource_local_to_scene = true
@@ -12,3 +13,4 @@ shader_param/map_bottom_offset = 36.0
 shader_param/interval = 1.0
 shader_param/cutout_data = null
 shader_param/texture_albedo = ExtResource( 1 )
+shader_param/screen_ui_mask = ExtResource( 3 )
