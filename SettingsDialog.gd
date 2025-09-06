@@ -26,6 +26,10 @@ func load_settings():
 	var environment_vars: TextEdit = $ScrollContainer/GridContainer/EnvironmentVars
 	environment_vars.text = Settings.burrito_link_env_args
 
+	var enable_player_cutout: CheckButton = $ScrollContainer/GridContainer/EnablePlayerCutout
+	enable_player_cutout.pressed = Settings.enable_player_cutout
+
+
 func save_settings(new_value=null):
 	var minimum_width: LineEdit = $ScrollContainer/GridContainer/MinimumWidth
 	Settings.minimum_width = int(minimum_width.text)
@@ -58,6 +62,9 @@ func save_settings(new_value=null):
 	Settings.burrito_link_wine_path = wine_path.text
 	var environment_vars: TextEdit = $ScrollContainer/GridContainer/EnvironmentVars
 	Settings.burrito_link_env_args = environment_vars.text
+
+	var enable_player_cutout: CheckButton = $ScrollContainer/GridContainer/EnablePlayerCutout
+	Settings.enable_player_cutout = enable_player_cutout.pressed
 
 	Settings.save()
 

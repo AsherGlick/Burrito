@@ -9,6 +9,8 @@ uniform float map_bottom_offset = 36.0;
 
 uniform float interval = 1.0;
 
+uniform vec3 cutout_data;
+
 void vertex() {}
 
 
@@ -22,6 +24,14 @@ void fragment() {
 		if (!map_flipped && SCREEN_UV.y * VIEWPORT_SIZE.y < map_size.y + map_bottom_offset) {
 			return;
 		}
+	}
+
+	if (
+		abs(SCREEN_UV.x - 0.5)*VIEWPORT_SIZE.x < cutout_data.z
+		&& SCREEN_UV.y * VIEWPORT_SIZE.y > cutout_data.x
+		&& SCREEN_UV.y * VIEWPORT_SIZE.y < cutout_data.y
+	) {
+		return;
 	}
 
 	vec2 base_uv = vec2(UV.y, -UV.x * interval);
