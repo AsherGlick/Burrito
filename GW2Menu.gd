@@ -157,7 +157,8 @@ func update_selected():
 
 	for scene in self.subscenes:
 		scene.hide()
-	self.subscenes[selected_icon].show()
+	if selected_icon >= 0 && selected_icon < self.subscenes.size():
+		self.subscenes[selected_icon].show()
 
 ################################################################################
 # Dragging start/stop logic
