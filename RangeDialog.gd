@@ -1,9 +1,10 @@
-extends WindowDialog
+extends Control
 
 var distance_indicator: MeshInstance
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	self.distance_indicator = get_tree().get_root().get_node("Spatial/FeetLocation/DistanceIndicator")
+	on_change()
 
 func on_change(value=null):
 	var index = 1

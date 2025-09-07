@@ -69,7 +69,7 @@ var player_cutout_showing = false
 
 
 ##########Node Connections###########
-onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
+onready var markers_ui := $Control/Menu/Markers/MarkersUI as Tree
 onready var markers_3d := $Markers3D as Spatial
 onready var markers_2d := $Control/Markers2D as Node2D
 onready var overwrite_confirmation := $Control/Dialogs/ImportPackDialogs/OverwriteConfirm as ConfirmationDialog
