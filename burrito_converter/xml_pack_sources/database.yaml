@@ -1,131 +1,215 @@
-- name: Tryhard Markers
-  url: https://drive.google.com/file/d/15Eqex_HIO3B0Aga4qWL8kLc1vlVEIJ8e/view
+- name: The Tryhard Marker Pack
+  versions:
+  - url: https://drive.google.com/file/d/15Eqex_HIO3B0Aga4qWL8kLc1vlVEIJ8e/view
+    hash: null
   update_scheme: manual
 
 - name: Fast Taco Markers
-  url: https://fast.farming-community.eu/fast/markers/fast_TacO_pack.taco
+  versions:
+  - url: https://fast.farming-community.eu/fast/markers/fast_TacO_pack.taco
+    hash: null
   update_scheme: live_link
 
 - name: Nekres' Hoard of Lost 'n Forgotten Markers
-  url: https://github.com/agaertner/bhud-markers/releases/download/v0.0.2/Nekres.Markers.taco
+  versions:
+  - url: https://github.com/agaertner/bhud-markers/releases/download/v0.0.2/Nekres.Markers.taco
+    hash: null
   update_scheme: latest_github_release
 
 - name: Tutle Point
-  url: https://github.com/AsherGlick/TurtlePoint/releases/download/1.0/TurtlePoint.taco
+  versions:
+  - url: https://github.com/AsherGlick/TurtlePoint/releases/download/1.0/TurtlePoint.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/czokalapik/Czokalapik-s-Guides-for-GW2Taco/releases/download/v1.0.0/Czokalapik-s-Guides-for-GW2Taco.taco
+- name: Czokalapik's Guides
+  versions:
+  - url: https://github.com/czokalapik/Czokalapik-s-Guides-for-GW2Taco/releases/download/v1.0.0/Czokalapik-s-Guides-for-GW2Taco.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/dlamkins/heart-zones/releases/download/2.0.1/HeartZones.taco
+- name: Heart Zones
+  versions:
+  - url: https://github.com/dlamkins/heart-zones/releases/download/2.0.1/HeartZones.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Emythiel/gw2-blish-markers/releases/download/v1.0.6/emysmarkers.zip
+- name: Emythiel's GW2 Markers
+  versions:
+  - url: https://github.com/Emythiel/gw2-blish-markers/releases/download/v1.0.6/emysmarkers.zip
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Garfried/RACE-Beetle-Racing-Tracks/releases/download/v1.0/RACE_BeetleTracks.taco 
+- name: RACE Beetle Racing Tracks
+  versions:
+  - url: https://github.com/Garfried/RACE-Beetle-Racing-Tracks/releases/download/v1.0/RACE_BeetleTracks.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Girbilcannon/Pewpews-Power-Paths/releases/download/v1.2.0/Pewpews_Power_Paths.taco
+- name: Pewpew's Power Paths
+  versions:
+  - url: https://github.com/Girbilcannon/Pewpews-Power-Paths/releases/download/v1.2.0/Pewpews_Power_Paths.taco
+    hash: null
   upate_scheme: latest_github_release
 
 - name: Zippy
-  url: https://github.com/Girbilcannon/zippy/releases/download/Zippy1_8_0/Zippy.taco
+  versions:
+  - url: https://github.com/Girbilcannon/zippy/releases/download/Zippy1_8_0/Zippy.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/HeroineDark/HeroineDarks-Super-Adventure-Box-Guide/blob/main/HeroineDark%20SAB%20Guides.taco
+- name: HeroineDark's Guides
+  versions:
+  - url: https://github.com/HeroineDark/HeroineDarks-Super-Adventure-Box-Guide/releases/download/v3.1.12.69/HeroineDark_SAB_Guides.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/HeroineDark/HeroineDarks-Super-Adventure-Box-Guide/raw/main/HeroineDark%20SAB%20Guides.taco
+- name: Mesmer Fractal Skips
+  versions:
+  - url: https://github.com/Kaedalus/Mesmer-Fractal-Skips/releases/download/v1.0.2/MesmerFractalSkips.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Kaedalus/Mesmer-Fractal-Skips/releases/download/v1.0.2/MesmerFractalSkips.taco
+- name: Lady Elyssa's Guides
+  versions:
+  - url: https://github.com/LadyElyssa/LadyElyssaTacoTrails/releases/download/v12.2/LadyElyssa.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/LadyElyssa/LadyElyssaTacoTrails/releases/download/v12.2/LadyElyssa.taco
+- name: Lady Elyssa's Achievements & Collections
+  versions:
+  - url: https://github.com/LadyElyssa/LadyElyssaAchievementGuides/releases/download/v4.5/LadyElyssaAP.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Metallis/Metal-Marker-Myriad/releases/download/v7.3/Metal-Marker-Myriad.taco
+- name: Metal Marker Myriad (MMM)
+  versions:
+  - url: https://github.com/Metallis/Metal-Marker-Myriad/releases/download/v7.3/Metal-Marker-Myriad.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Metallis/Only-Fish-Marker-Pack/releases/download/v1.10/Only-Fish.taco
+- name: Only Fish
+  versions:
+  - url: https://github.com/Metallis/Only-Fish-Marker-Pack/releases/download/v1.10/Only-Fish.taco
+    hash: null
   upate_scheme: latest_github_release
 
 - name: Tyria Drift [DRFT] Racetracks
-  url: https://github.com/n1nj44r91/Tyria-Drift-DRFT-GW2-TacO-Racetracks/releases/download/v3.1/DRFT_Main.taco
+  versions:
+  - url: https://github.com/n1nj44r91/Tyria-Drift-DRFT-GW2-TacO-Racetracks/releases/download/v3.1/DRFT_Main.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Nexrym/Nexploration/releases/download/v0.9.0/Nexploration.taco
+- name: Nexploration
+  versions:
+  - url: https://github.com/Nexrym/Nexploration/releases/download/v0.9.0/Nexploration.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/OlivierCharton/JapyxTrails/releases/download/1.1/JapyxTrails.taco
+- name: Japyx's Trails
+  versions:
+  - url: https://github.com/OlivierCharton/JapyxTrails/releases/download/1.1/JapyxTrails.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/placeholderwastakentwice/flooch-friendly-collection-routes/releases/download/V3/ffcr.taco
+- name: Flooch's Friendly Collection Routes
+  versions:
+  - url: https://github.com/placeholderwastakentwice/flooch-friendly-collection-routes/releases/download/V3/ffcr.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/QuitarHero/Heros-Marker-Pack/releases/download/v2.7.0/Hero.Blish.Pack.zip
+- name: Hero's Marker Pack
+  versions:
+  - url: https://github.com/QuitarHero/Heros-Marker-Pack/releases/download/v2.7.0/Hero.Blish.Pack.zip
+    hash: null
   upate_scheme: latest_github_release
 
-- name: Rediche's Siege Pack
-  url: https://github.com/rediche/rediche-wvw-pack/releases/download/v1.0.8/RedicheWvwPack.taco
+- name: Rediche's WvW Marker Pack
+  versions:
+  - url: https://github.com/rediche/rediche-wvw-pack/releases/download/v1.0.8/RedicheWvwPack.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/Sutcenes/MovementOnTheWorld_TacoSupport/releases/download/31.05/MoW.taco
+- name: Movement on the World
+  versions:
+  - url: https://github.com/Sutcenes/MovementOnTheWorld_TacoSupport/releases/download/31.05/MoW.taco
+    hash: null
   upate_scheme: latest_github_release
 
 - name: Twisted Castle Guide
-  url: https://github.com/SZG5/gw2-twisted-castle/releases/download/0.4/TwistedCastle.taco
+  versions:
+  - url: https://github.com/SZG5/gw2-twisted-castle/releases/download/0.4/TwistedCastle.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/xrandox/Automatic-Arrows/releases/download/v1.1.0/AutomaticArrows.taco
+- name: Automatic Arrows
+  versions:
+  - url: https://github.com/xrandox/Automatic-Arrows/releases/download/v1.1.0/AutomaticArrows.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/xrandox/Tehs_Trails_MKL/releases/download/v1.2/TehsTrailsMKL.taco
+- name: Mad King's Labyrinth - Commander Pack
+  versions:
+  - url: https://github.com/xrandox/Tehs_Trails_MKL/releases/download/v1.2/TehsTrailsMKL.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/xrandox/TehsTrails-HeroPoints/releases/download/v1.0/TehsTrails-HeroPoints.taco
+- name: Teh's Trails - Hero Points
+  versions:
+  - url: https://github.com/xrandox/TehsTrails-HeroPoints/releases/download/v1.0/TehsTrails-HeroPoints.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://github.com/xrandox/TehsTrails/releases/download/v5.2.0/TehsTrails.taco
+- name: Teh's Trails - Map Completion
+  versions:
+  - url: https://github.com/xrandox/TehsTrails/releases/download/v5.2.0/TehsTrails.taco
+    hash: null
   upate_scheme: latest_github_release
 
-- name: 
-  url: https://gitlab.com/lepaperwan/gw2-abaddon/-/jobs/2400738870/artifacts/raw/Abaddon.taco
+- name: Abaddon
+  versions:
+  - url: https://gitlab.com/lepaperwan/gw2-abaddon/-/jobs/2400738870/artifacts/raw/Abaddon.taco
+    hash: null
   upate_scheme: latest_gitlab_release
 
-- name: 
-  url: https://moar-loot.web.app/releases/moar.taco
+- name: "MOAR Marker Pack"
+  versions:
+  - url: https://moar-loot.web.app/releases/moar.taco
+    hash: null
   update_scheme: live_link
 
-- name: 
-  url: https://www.heinze.fr/taco/download.php?f=3
+- name: ReActif EN
+  versions:
+  - url: https://www.heinze.fr/taco/download.php?f=3
+    hash: null
   update_scheme: live_link
 
-- name: 
-  url: https://www.heinze.fr/taco/download.php?f=6
+- name: ReActif FR
+  versions:
+  - url: https://www.heinze.fr/taco/download.php?f=6
+    hash: null
   update_scheme: live_link
 
-- name: 
-  url: https://www.tekkitsworkshop.net/download?download=1:tw-all-in-one
+- name: Tekkits All In One
+  versions:
+  - url: https://www.tekkitsworkshop.net/download?download=1:tw-all-in-one
+    hash: null
   update_scheme: live_link
+
+- name: FvD Dungeon Markers
+  versions:
+  - url: https://github.com/SZG5/gw2-dungeon-markers/releases/latest/download/FvD_Dungeon_Guide.taco
+    hash: null
+  update_scheme: latest_github_release
+
+- name: Aurizara's HP Train Guides
+  versions:
+  - url: https://github.com/aurizara/Aurizara-s-HP-Train-Guides/releases/latest/download/Aurizara_HP.taco
+    hash: null
+  update_scheme: latest_github_release
+
+- name: Haskha's Markers
+  versions:
+  - url: https://github.com/HasKha/gw2-markers/releases/latest/download/haskha_markers.zip
+    hash: null
+  update_scheme: latest_github_release
