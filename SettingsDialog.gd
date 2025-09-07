@@ -1,4 +1,4 @@
-extends WindowDialog
+extends Control
 
 func load_settings():
 	var minimum_width: LineEdit = $ScrollContainer/GridContainer/MinimumWidth
@@ -68,3 +68,7 @@ func save_settings(new_value=null):
 
 	Settings.save()
 
+
+
+func _on_Settings_visibility_changed():
+	load_settings()

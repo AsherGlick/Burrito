@@ -303,22 +303,226 @@ margin_bottom = 121.943
 text = "Marker Path Editor Tools will go here"
 
 [node name="Settings" type="Control" parent="Control/Menu"]
-visible = false
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 65.0
+margin_top = 60.0
+margin_right = 995.0
+margin_bottom = 740.0
+script = ExtResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="Control/Menu/Settings"]
-margin_left = 126.992
-margin_top = 107.943
-margin_right = 172.992
-margin_bottom = 121.943
-text = "Settings Will Go Here"
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/Menu/Settings"]
+anchor_left = -1.321
+anchor_top = -0.128
+anchor_right = 1.075
+anchor_bottom = 1.451
+margin_left = 1221.53
+margin_top = 91.04
+margin_right = -67.7501
+margin_bottom = -309.68
+scroll_horizontal_enabled = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="GridContainer" type="GridContainer" parent="Control/Menu/Settings/ScrollContainer"]
+margin_right = 939.0
+margin_bottom = 673.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MinimumWidthLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 5.0
+margin_right = 192.0
+margin_bottom = 19.0
+text = "Minimum Width"
+
+[node name="MinimumWidth" type="LineEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_right = 939.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="MinimumHeightLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 33.0
+margin_right = 192.0
+margin_bottom = 47.0
+text = "Minimum Height"
+
+[node name="MinimumHeight" type="LineEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 28.0
+margin_right = 939.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="OverrideSizeLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 69.0
+margin_right = 192.0
+margin_bottom = 83.0
+text = "Use Fixed Size"
+
+[node name="OverrideSize" type="CheckButton" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 56.0
+margin_right = 939.0
+margin_bottom = 96.0
+size_flags_horizontal = 3
+
+[node name="OverrideWidthLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 105.0
+margin_right = 192.0
+margin_bottom = 119.0
+text = "Fixed Width"
+
+[node name="OverrideWidth" type="LineEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 100.0
+margin_right = 939.0
+margin_bottom = 124.0
+size_flags_horizontal = 3
+
+[node name="OverrideHeightLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 133.0
+margin_right = 192.0
+margin_bottom = 147.0
+text = "Fixed Height"
+
+[node name="OverrideHeight" type="LineEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 128.0
+margin_right = 939.0
+margin_bottom = 152.0
+size_flags_horizontal = 3
+
+[node name="OverrideBurritoIconPositionLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 169.0
+margin_right = 192.0
+margin_bottom = 183.0
+text = "Override Burrito Icon Position"
+
+[node name="OverrideBurritoIconPosition" type="CheckButton" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 156.0
+margin_right = 939.0
+margin_bottom = 196.0
+size_flags_horizontal = 3
+
+[node name="OverrideBurritoIconHorizontalPositionLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 205.0
+margin_right = 192.0
+margin_bottom = 219.0
+text = "Horizontal Icon Position"
+
+[node name="OverrideBurritoIconHorizontalPosition" type="LineEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 200.0
+margin_right = 939.0
+margin_bottom = 224.0
+size_flags_horizontal = 3
+
+[node name="OverrideBurritoIconVerticalPositionLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 233.0
+margin_right = 192.0
+margin_bottom = 247.0
+text = "Vertical Icon Position"
+
+[node name="OverrideBurritoIconVerticalPosition" type="LineEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 228.0
+margin_right = 939.0
+margin_bottom = 252.0
+size_flags_horizontal = 3
+
+[node name="EnablePlayerCutoutLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 269.0
+margin_right = 192.0
+margin_bottom = 283.0
+text = "Enable Player Cutout"
+
+[node name="EnablePlayerCutout" type="CheckButton" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 256.0
+margin_right = 939.0
+margin_bottom = 296.0
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 300.0
+margin_right = 192.0
+margin_bottom = 304.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSeparator2" type="HSeparator" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 300.0
+margin_right = 939.0
+margin_bottom = 304.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AutoLaunchBurritoLinkLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 312.0
+margin_right = 192.0
+margin_bottom = 343.0
+text = "Auto Launch
+Burrito Link"
+
+[node name="AutoLaunchBurritoLink" type="CheckButton" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 308.0
+margin_right = 939.0
+margin_bottom = 348.0
+size_flags_horizontal = 3
+
+[node name="WinePathLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 357.0
+margin_right = 192.0
+margin_bottom = 371.0
+text = "Wine Path"
+
+[node name="WinePath" type="LineEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 352.0
+margin_right = 939.0
+margin_bottom = 376.0
+size_flags_horizontal = 3
+
+[node name="EnvironmentVarsLabel" type="Label" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_top = 423.0
+margin_right = 192.0
+margin_bottom = 437.0
+text = "Environment Vars"
+
+[node name="EnvironmentVars" type="TextEdit" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 380.0
+margin_right = 939.0
+margin_bottom = 480.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 3
+
+[node name="Spacer" type="Control" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+visible = false
+margin_top = 284.0
+margin_right = 112.0
+margin_bottom = 284.0
+
+[node name="LoadLutrisProfile" type="Button" parent="Control/Menu/Settings/ScrollContainer/GridContainer"]
+visible = false
+margin_left = 116.0
+margin_top = 284.0
+margin_right = 384.0
+margin_bottom = 304.0
+text = "Load Lutris Profile"
 
 [node name="ExitBurrito" type="Control" parent="Control/Menu"]
 visible = false
@@ -755,227 +959,6 @@ size_flags_horizontal = 3
 disabled = true
 text = "Reverse Trail Direction"
 
-[node name="SettingsDialog" type="WindowDialog" parent="Control/Dialogs"]
-margin_left = 592.0
-margin_top = 146.0
-margin_right = 981.0
-margin_bottom = 575.0
-window_title = "Settings"
-resizable = true
-script = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/Dialogs/SettingsDialog"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 5.0
-margin_bottom = -5.0
-scroll_horizontal_enabled = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="GridContainer" type="GridContainer" parent="Control/Dialogs/SettingsDialog/ScrollContainer"]
-margin_right = 384.0
-margin_bottom = 480.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-columns = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MinimumWidthLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 5.0
-margin_right = 192.0
-margin_bottom = 19.0
-text = "Minimum Width"
-
-[node name="MinimumWidth" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_right = 372.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-
-[node name="MinimumHeightLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 33.0
-margin_right = 192.0
-margin_bottom = 47.0
-text = "Minimum Height"
-
-[node name="MinimumHeight" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 28.0
-margin_right = 372.0
-margin_bottom = 52.0
-size_flags_horizontal = 3
-
-[node name="OverrideSizeLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 69.0
-margin_right = 192.0
-margin_bottom = 83.0
-text = "Use Fixed Size"
-
-[node name="OverrideSize" type="CheckButton" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 56.0
-margin_right = 372.0
-margin_bottom = 96.0
-size_flags_horizontal = 3
-
-[node name="OverrideWidthLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 105.0
-margin_right = 192.0
-margin_bottom = 119.0
-text = "Fixed Width"
-
-[node name="OverrideWidth" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 100.0
-margin_right = 372.0
-margin_bottom = 124.0
-size_flags_horizontal = 3
-
-[node name="OverrideHeightLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 133.0
-margin_right = 192.0
-margin_bottom = 147.0
-text = "Fixed Height"
-
-[node name="OverrideHeight" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 128.0
-margin_right = 372.0
-margin_bottom = 152.0
-size_flags_horizontal = 3
-
-[node name="OverrideBurritoIconPositionLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 169.0
-margin_right = 192.0
-margin_bottom = 183.0
-text = "Override Burrito Icon Position"
-
-[node name="OverrideBurritoIconPosition" type="CheckButton" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 156.0
-margin_right = 372.0
-margin_bottom = 196.0
-size_flags_horizontal = 3
-
-[node name="OverrideBurritoIconHorizontalPositionLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 205.0
-margin_right = 192.0
-margin_bottom = 219.0
-text = "Horizontal Icon Position"
-
-[node name="OverrideBurritoIconHorizontalPosition" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 200.0
-margin_right = 372.0
-margin_bottom = 224.0
-size_flags_horizontal = 3
-
-[node name="OverrideBurritoIconVerticalPositionLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 233.0
-margin_right = 192.0
-margin_bottom = 247.0
-text = "Vertical Icon Position"
-
-[node name="OverrideBurritoIconVerticalPosition" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 228.0
-margin_right = 372.0
-margin_bottom = 252.0
-size_flags_horizontal = 3
-
-[node name="EnablePlayerCutoutLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 269.0
-margin_right = 192.0
-margin_bottom = 283.0
-text = "Enable Player Cutout"
-
-[node name="EnablePlayerCutout" type="CheckButton" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 256.0
-margin_right = 372.0
-margin_bottom = 296.0
-size_flags_horizontal = 3
-
-[node name="HSeparator" type="HSeparator" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 300.0
-margin_right = 192.0
-margin_bottom = 304.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HSeparator2" type="HSeparator" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 300.0
-margin_right = 372.0
-margin_bottom = 304.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="AutoLaunchBurritoLinkLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 312.0
-margin_right = 192.0
-margin_bottom = 343.0
-text = "Auto Launch
-Burrito Link"
-
-[node name="AutoLaunchBurritoLink" type="CheckButton" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 308.0
-margin_right = 372.0
-margin_bottom = 348.0
-size_flags_horizontal = 3
-
-[node name="WinePathLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 357.0
-margin_right = 192.0
-margin_bottom = 371.0
-text = "Wine Path"
-
-[node name="WinePath" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 352.0
-margin_right = 372.0
-margin_bottom = 376.0
-size_flags_horizontal = 3
-
-[node name="EnvironmentVarsLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 423.0
-margin_right = 192.0
-margin_bottom = 437.0
-text = "Environment Vars"
-
-[node name="EnvironmentVars" type="TextEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_left = 196.0
-margin_top = 380.0
-margin_right = 372.0
-margin_bottom = 480.0
-rect_min_size = Vector2( 0, 100 )
-size_flags_horizontal = 3
-
-[node name="Spacer" type="Control" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-visible = false
-margin_top = 284.0
-margin_right = 112.0
-margin_bottom = 284.0
-
-[node name="LoadLutrisProfile" type="Button" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-visible = false
-margin_left = 116.0
-margin_top = 284.0
-margin_right = 384.0
-margin_bottom = 304.0
-text = "Load Lutris Profile"
-
 [node name="CategoriesDialog" type="WindowDialog" parent="Control/Dialogs"]
 margin_left = 280.0
 margin_top = 105.0
@@ -1079,6 +1062,19 @@ material/0 = SubResource( 4 )
 [connection signal="value_changed" from="Control/Menu/Range Indicator/GridContainer/SpinBox6" to="Control/Menu/Range Indicator" method="on_change"]
 [connection signal="pressed" from="Control/Menu/Range Indicator/GridContainer/CheckButton7" to="Control/Menu/Range Indicator" method="on_change"]
 [connection signal="value_changed" from="Control/Menu/Range Indicator/GridContainer/SpinBox7" to="Control/Menu/Range Indicator" method="on_change"]
+[connection signal="visibility_changed" from="Control/Menu/Settings" to="Control/Menu/Settings" method="_on_Settings_visibility_changed"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/MinimumWidth" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/MinimumHeight" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="pressed" from="Control/Menu/Settings/ScrollContainer/GridContainer/OverrideSize" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/OverrideWidth" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/OverrideHeight" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="pressed" from="Control/Menu/Settings/ScrollContainer/GridContainer/OverrideBurritoIconPosition" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/OverrideBurritoIconHorizontalPosition" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/OverrideBurritoIconVerticalPosition" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="pressed" from="Control/Menu/Settings/ScrollContainer/GridContainer/EnablePlayerCutout" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="pressed" from="Control/Menu/Settings/ScrollContainer/GridContainer/AutoLaunchBurritoLink" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/WinePath" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/EnvironmentVars" to="Control/Menu/Settings" method="save_settings"]
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]
@@ -1113,17 +1109,4 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail" to="." method="_on_SetActiveTrail_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection" to="." method="_on_ReverseTrailDirection_pressed"]
-[connection signal="hide" from="Control/Dialogs/SettingsDialog" to="." method="_on_NodeEditorDialog_hide"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumWidth" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumHeight" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideSize" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideWidth" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideHeight" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideBurritoIconPosition" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideBurritoIconHorizontalPosition" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideBurritoIconVerticalPosition" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/EnablePlayerCutout" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/AutoLaunchBurritoLink" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/WinePath" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/EnvironmentVars" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="hide" from="Control/Dialogs/CategoriesDialog" to="." method="_on_Dialog_hide"]

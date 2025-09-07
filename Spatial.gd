@@ -1169,9 +1169,7 @@ func _on_ExitButton_pressed():
 
 
 func _on_Settings_pressed():
-	var settings_dialog: WindowDialog = $Control/Dialogs/SettingsDialog
-	settings_dialog.load_settings()
-	settings_dialog.show()
+	pass
 
 
 func _on_MarkersUI_cell_selected():
