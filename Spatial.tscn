@@ -539,6 +539,14 @@ margin_right = 172.992
 margin_bottom = 121.943
 text = "Exit Burrito Will Go Here"
 
+[node name="ExitButton" type="Button" parent="Control/Menu/ExitBurrito"]
+margin_left = 93.9473
+margin_top = 141.402
+margin_right = 313.947
+margin_bottom = 181.402
+rect_min_size = Vector2( 0, 40 )
+text = "Exit Burrito"
+
 [node name="Markers2D" type="Node2D" parent="Control"]
 material = SubResource( 2 )
 scale = Vector2( 2, 2 )
@@ -1075,6 +1083,7 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Menu/Settings/ScrollContainer/GridContainer/AutoLaunchBurritoLink" to="Control/Menu/Settings" method="save_settings"]
 [connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/WinePath" to="Control/Menu/Settings" method="save_settings"]
 [connection signal="text_changed" from="Control/Menu/Settings/ScrollContainer/GridContainer/EnvironmentVars" to="Control/Menu/Settings" method="save_settings"]
+[connection signal="pressed" from="Control/Menu/ExitBurrito/ExitButton" to="." method="_on_ExitButton_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]
