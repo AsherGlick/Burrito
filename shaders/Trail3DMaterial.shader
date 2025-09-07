@@ -11,12 +11,16 @@ uniform float interval = 1.0;
 
 uniform vec3 cutout_data;
 
+uniform sampler2D screen_ui_mask;
+
 void vertex() {}
 
 
 
 
 void fragment() {
+	float ui_transparency = 1.0;
+	// Prevent the shader from rendering over the minimap
 	if (SCREEN_UV.x * VIEWPORT_SIZE.x > VIEWPORT_SIZE.x - map_size.x) {
 		if (map_flipped && SCREEN_UV.y * VIEWPORT_SIZE.y > VIEWPORT_SIZE.y - map_size.y) {
 			return;
@@ -26,7 +30,8 @@ void fragment() {
 		}
 	}
 
-	if (
+	// Prevent the shader from rendering over the player cutout
+	else if (
 		abs(SCREEN_UV.x - 0.5)*VIEWPORT_SIZE.x < cutout_data.z
 		&& SCREEN_UV.y * VIEWPORT_SIZE.y > cutout_data.x
 		&& SCREEN_UV.y * VIEWPORT_SIZE.y < cutout_data.y
@@ -34,11 +39,14 @@ void fragment() {
 		return;
 	}
 
+	// Prevent the shader from rendering over the UI mask texture
+	ui_transparency = 1.0 - texture(screen_ui_mask, vec2(SCREEN_UV.x, 1.0 - SCREEN_UV.y)).a;
+
 	vec2 base_uv = vec2(UV.y, -UV.x * interval);
 	base_uv = vec2(UV.x, -UV.y);
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
 	ALBEDO = albedo_tex.rgb;
-	ALPHA = albedo_tex.a;
+	ALPHA = albedo_tex.a * ui_transparency;
 	//EMISSION = albedo_tex.rgb;
 	//METALLIC = 0.0;
 	//ROUGHNESS = 1.0;
