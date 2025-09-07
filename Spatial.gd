@@ -753,7 +753,10 @@ func read_hash(map_id: int) -> String:
 ################################################################################
 var adjusting = false
 func _on_AdjustNodesButton_pressed():
-	$Control/Dialogs/NodeEditorDialog.show()
+	$Control/Menu.show()
+	# This is a magic number hack and once we get to godot4 where we can give
+	# nodes global names we can make this more robust.
+	$Control/Menu.selected_icon = 3
 	set_maximal_mouse_block()
 	gen_adjustment_nodes()
 
@@ -807,10 +810,11 @@ func on_icon_gizmo_selected(object: Spatial, guildpoint_icon: Guildpoint.Icon, i
 	self.currently_selected_gizmo = object
 	self.currently_selected_icon = icon
 	self.currently_selected_guildpoint_icon = guildpoint_icon
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
+	
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
 
 
 func on_trail_gizmo_selected(object: Spatial, guildpoint_trail: Guildpoint.Trail, trail3d: Spatial, trail2d: Line2D, point_index: int):
@@ -819,13 +823,13 @@ func on_trail_gizmo_selected(object: Spatial, guildpoint_trail: Guildpoint.Trail
 	self.currently_selected_trail3d = trail3d
 	self.currently_selected_trail2d = trail2d
 	self.currently_selected_point_index = point_index
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewTrailPointAfter.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/DeleteNode.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/NewTrailPointAfter.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/ReverseTrailDirection.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/SetActiveTrail.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = false
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = false
 
 
 func on_gizmo_deselected():
@@ -836,13 +840,13 @@ func on_gizmo_deselected():
 	self.currently_selected_trail3d = null
 	self.currently_selected_trail2d = null
 	self.currently_selected_point_index = null
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewTrailPointAfter.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail.disabled = true
-	$Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection.disabled = true
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/DeleteNode.disabled = true
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/NewTrailPointAfter.disabled = true
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/SnapSelectedToPlayer.disabled = true
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/XZSnapToPlayer.disabled = true
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/YSnapToPlayer.disabled = true
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/SetActiveTrail.disabled = true
+	$Control/Menu/EditorPanel/ScrollContainer/VBoxContainer/ReverseTrailDirection.disabled = true
 
 
 func clear_adjustment_nodes():
@@ -1156,7 +1160,7 @@ func _on_SetActiveTrail_pressed():
 
 func _on_ReverseTrailDirection_pressed():
 	if self.currently_selected_guildpoint_trail != null:
-		reverse_trail(self.currently_selected_guildpoint_trail, self.currently_selected_trail3d, self.currently_active_trail2d)
+		reverse_trail(self.currently_selected_guildpoint_trail, self.currently_selected_trail3d, self.currently_selected_trail2d)
 	on_gizmo_deselected()
 	clear_adjustment_nodes()
 	gen_adjustment_nodes()
