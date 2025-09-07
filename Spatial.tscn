@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Spatial.gd" type="Script" id=1]
 [ext_resource path="res://shaders/range_indicators.shader" type="Shader" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://GlobalMenuButton.gd" type="Script" id=14]
 [ext_resource path="res://Category2D.gd" type="Script" id=15]
 [ext_resource path="res://gw2_window.tscn" type="PackedScene" id=16]
+[ext_resource path="res://ui_elements/gw2_ui/SaveLoadMarkerPacks.gd" type="Script" id=17]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -110,19 +111,138 @@ __meta__ = {
 }
 
 [node name="SaveLoadMarkerPacks" type="Control" parent="Control/Menu"]
-visible = false
-margin_right = 40.0
-margin_bottom = 40.0
+anchor_left = 0.046
+anchor_top = 0.063
+anchor_right = 0.99
+anchor_bottom = 0.983
+margin_left = 0.126171
+margin_top = -0.257977
+margin_right = 0.193726
+margin_bottom = 0.0223389
+script = ExtResource( 17 )
 __meta__ = {
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="Control/Menu/SaveLoadMarkerPacks"]
-margin_left = 103.586
-margin_top = 88.9381
-margin_right = 168.586
-margin_bottom = 102.938
+margin_left = 34.6832
+margin_top = 9.65264
+margin_right = 320.683
+margin_bottom = 23.6526
 text = "Saving and Loading Marker packs will go here"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DirectoryPath" type="TextEdit" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 148.712
+margin_top = 132.434
+margin_right = 498.712
+margin_bottom = 172.434
+text = "/home/user/path"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FileList" type="ItemList" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 30.1386
+margin_top = 190.027
+margin_right = 501.139
+margin_bottom = 387.027
+items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false, "Item 4", null, false, "Item 5", null, false ]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImportTaco" type="Button" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 32.8063
+margin_top = 394.204
+margin_right = 256.806
+margin_bottom = 437.204
+rect_pivot_offset = Vector2( 0, 1.2966 )
+text = "Import Taco"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImportGuildpoint" type="Button" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 267.403
+margin_top = 394.169
+margin_right = 498.403
+margin_bottom = 437.169
+rect_pivot_offset = Vector2( 0, 1.2966 )
+text = "Import Guildpoint"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ExportTaco" type="Button" parent="Control/Menu/SaveLoadMarkerPacks"]
+visible = false
+margin_left = 32.4032
+margin_top = 442.169
+margin_right = 256.403
+margin_bottom = 485.169
+rect_pivot_offset = Vector2( 0, 1.2966 )
+text = "Export Taco"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ExportGuildpoint" type="Button" parent="Control/Menu/SaveLoadMarkerPacks"]
+visible = false
+margin_left = 266.403
+margin_top = 442.169
+margin_right = 498.403
+margin_bottom = 485.169
+rect_pivot_offset = Vector2( 0, 1.2966 )
+text = "Export Guildpoint"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SaveChanges" type="Button" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 32.0
+margin_top = 43.0
+margin_right = 495.0
+margin_bottom = 81.0
+rect_pivot_offset = Vector2( 0, -1.22095 )
+text = "Save Changes"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UpDirectory" type="Button" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 34.2808
+margin_top = 131.635
+margin_right = 142.281
+margin_bottom = 170.635
+text = "Up"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Warning" type="Label" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 39.6832
+margin_top = 532.653
+margin_right = 325.683
+margin_bottom = 580.653
+text = "Warning!
+This will overwrite existing marker packs!
+Do you want to continue?"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WarningContinue" type="Button" parent="Control/Menu/SaveLoadMarkerPacks"]
+margin_left = 80.2808
+margin_top = 595.635
+margin_right = 188.281
+margin_bottom = 634.635
+text = "Continue"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Range Indicator" type="Control" parent="Control/Menu"]
 visible = false
@@ -1064,6 +1184,10 @@ material/0 = SubResource( 4 )
 
 [connection signal="cell_selected" from="Control/Menu/Markers/MarkersUI" to="." method="_on_MarkersUI_cell_selected"]
 [connection signal="item_edited" from="Control/Menu/Markers/MarkersUI" to="." method="_on_MarkersUI_item_edited"]
+[connection signal="visibility_changed" from="Control/Menu/SaveLoadMarkerPacks" to="Control/Menu/SaveLoadMarkerPacks" method="onshow"]
+[connection signal="text_changed" from="Control/Menu/SaveLoadMarkerPacks/DirectoryPath" to="Control/Menu/SaveLoadMarkerPacks" method="_on_DirectoryPath_text_changed"]
+[connection signal="item_activated" from="Control/Menu/SaveLoadMarkerPacks/FileList" to="Control/Menu/SaveLoadMarkerPacks" method="_on_FileList_item_activated"]
+[connection signal="pressed" from="Control/Menu/SaveLoadMarkerPacks/UpDirectory" to="Control/Menu/SaveLoadMarkerPacks" method="_on_UpDirectory_pressed"]
 [connection signal="pressed" from="Control/Menu/Range Indicator/GridContainer/CheckButton" to="Control/Menu/Range Indicator" method="on_change"]
 [connection signal="value_changed" from="Control/Menu/Range Indicator/GridContainer/SpinBox" to="Control/Menu/Range Indicator" method="on_change"]
 [connection signal="pressed" from="Control/Menu/Range Indicator/GridContainer/CheckButton2" to="Control/Menu/Range Indicator" method="on_change"]
