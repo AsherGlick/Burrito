@@ -103,6 +103,15 @@ class Generator:
                     content_nav=navigation_links
                 ))
 
+        index = "Hello World"
+
+        with open(os.path.join(output_directory, "index.html"), 'w') as f:
+
+            f.write(template.render(
+                generated_doc=index,
+                content_nav=navigation_links
+            ))
+
         # Copy syntax highlighting css
         shutil.copy("./web_templates/monokai.css", os.path.join(output_directory, "monokai.css"))
 
