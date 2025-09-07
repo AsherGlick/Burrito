@@ -112,7 +112,6 @@ class Generator:
         )
 
         with open(os.path.join(output_directory, "index.html"), 'w') as f:
-
             f.write(template.render(
                 generated_doc=home_page_text,
                 content_nav=navigation_links
