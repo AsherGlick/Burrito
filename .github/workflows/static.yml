@@ -42,17 +42,6 @@ jobs:
           source ../venv/bin/activate
           python3 main.py --documentation
 
-      # - name: Generate index.html for web_docs
-      #   run: |
-      #     cd burrito_converter/web_docs
-      #     echo "<!DOCTYPE html><html><head><title>Documentation Index</title></head><body><h1>Documentation Files</h1><ul>" > index.html
-      #     for f in *; do
-      #       if [ "$f" != "index.html" ]; then
-      #         echo "<li><a href=\"$f\">$f</a></li>" >> index.html
-      #       fi
-      #     done
-      #     echo "</ul></body></html>" >> index.html
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
