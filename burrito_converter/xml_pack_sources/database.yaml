@@ -16,7 +16,7 @@
     hash: null
   update_scheme: latest_github_release
 
-- name: Tutle Point
+- name: Turtle Point
   versions:
   - url: https://github.com/AsherGlick/TurtlePoint/releases/download/1.0/TurtlePoint.taco
     hash: null
