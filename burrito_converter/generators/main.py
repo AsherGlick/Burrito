@@ -103,6 +103,20 @@ class Generator:
                     content_nav=navigation_links
                 ))
 
+        home_page_text = (
+            '<div style="margin-top: 2em; text-align: center;">\n'
+            'Welcome to Burrito\'s Attribute Documentation.<br>\n'
+            'Attributes are used in Burrito to define the behavior of icons, trails, and categories.<br>\n'
+            'Please click the above links for more details on each attribute.\n'
+            '</div>'
+        )
+
+        with open(os.path.join(output_directory, "index.html"), 'w') as f:
+            f.write(template.render(
+                generated_doc=home_page_text,
+                content_nav=navigation_links
+            ))
+
         # Copy syntax highlighting css
         shutil.copy("./web_templates/monokai.css", os.path.join(output_directory, "monokai.css"))
 
