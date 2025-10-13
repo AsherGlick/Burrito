@@ -173,16 +173,21 @@ void write_taco_directory(
     write_xml_file(input_path, marker_categories, parsed_pois);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// write_burrito_directory
+//
+// Writes a directory of burrito formatted guildpoint files.
+////////////////////////////////////////////////////////////////////////////////
 void write_burrito_directory(
-    string input_path,
+    string output_path,
     bool split_by_map_id,
     OptionalInt split_by_category_depth,
     map<string, Category>* marker_categories,
     vector<Parseable*>* parsed_pois
 ) {
-    if (!filesystem::is_directory(input_path)) {
-        if (!filesystem::create_directory(input_path)) {
-            cout << "Error: " << input_path << "is not a valid directory path" << endl;
+    if (!filesystem::is_directory(output_path)) {
+        if (!filesystem::create_directory(output_path)) {
+            cout << "Error: " << output_path << "is not a valid directory path" << endl;
             return;
         }
     }
@@ -193,13 +198,13 @@ void write_burrito_directory(
         return;
     }
     if (split_by_map_id) {
-        write_protobuf_file_per_map_id(input_path, category_filter, marker_categories, parsed_pois);
+        write_protobuf_file_per_map_id(output_path, category_filter, marker_categories, parsed_pois);
     }
     else if (split_by_category_depth.has_value()) {
-        write_protobuf_file_per_category(input_path, split_by_category_depth.get_value(), marker_categories, parsed_pois);
+        write_protobuf_file_per_category(output_path, split_by_category_depth.get_value(), marker_categories, parsed_pois);
     }
     else {
-        write_protobuf_file(input_path, category_filter, marker_categories, parsed_pois);
+        write_protobuf_file(output_path, category_filter, marker_categories, parsed_pois);
     }
 }
 
