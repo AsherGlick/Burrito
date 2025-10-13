@@ -2,39 +2,23 @@
 
 #include <cstring>
 #include <iostream>
-#include <map>
-#include <memory>
 
 #include "int_helper.hpp"
 
 using namespace std;
 
-InputTacoCommand::InputTacoCommand()
-    : path("") {
-}
 InputTacoCommand::InputTacoCommand(string path)
     : path(path) {
 }
 
-InputGuildpointCommand::InputGuildpointCommand()
-    : path("") {
-}
 InputGuildpointCommand::InputGuildpointCommand(string path)
     : path(path) {
 }
 
-OutputTacoCommand::OutputTacoCommand()
-    : path("") {
-}
 OutputTacoCommand::OutputTacoCommand(string path)
     : path(path) {
 }
 
-OutputGuildpointCommand::OutputGuildpointCommand()
-    : path(""),
-      split_by_category_depth(),
-      split_by_map_id(false) {
-}
 OutputGuildpointCommand::OutputGuildpointCommand(
     std::string path,
     OptionalInt split_by_category_depth,
