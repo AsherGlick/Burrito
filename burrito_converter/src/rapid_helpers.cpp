@@ -77,7 +77,8 @@ TextPosition get_line_number(char* source, char* start_index) {
         newline_count + 1,
         column_number,
         line_start,
-        line_length};
+        line_length
+    };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
