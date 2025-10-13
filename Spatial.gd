@@ -475,18 +475,20 @@ func load_guildpoint_markers(map_id_to_load: int):
 	print("Attempting to load from path ", self.marker_file_path)
 	var err = file.open(self.marker_file_path, file.READ)
 	if err != OK:
-		print(self.marker_file_path, " could not be opened")
-		print(err)
+		if err == ERR_FILE_NOT_FOUND:
+			print("No Guildpoint file found at ", self.marker_file_path, ". There will be no markers shown on this map.")
+		else:
+			print("Error when opening ", self.marker_file_path, ". Error Number ", err)
 		return
 	if file.get_len() == 0:
-		print("No data found in file")
+		print("No data found in file", self.marker_file_path)
 		return
 	var data = file.get_buffer(file.get_len())
 	self.guildpoint_data.from_bytes(data)
 	if !Guildpoint.PB_ERR.NO_ERRORS:
 		print("Loading successful")
 	else:
-		print(Guildpoint.PB_ERR)
+		print("Error when reading Guildpoint File. Guildpoint error number: ", Guildpoint.PB_ERR)
 	guildpoint_categories_to_godot_nodes()
 
 
