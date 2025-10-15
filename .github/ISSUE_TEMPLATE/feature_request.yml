@@ -1,0 +1,29 @@
+name: Feature Request
+description: Something is missing or not as good as it should be.
+title: "[Feature]: "
+projects: ["AsherGlick/Burrito"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: checkboxes
+    id: up-to-date
+    attributes:
+      label: Be up-to-date
+      description: Please make sure you are using the latest version of Burrito before opening a report.
+      options:
+        - label: I have tested the latest available release.
+          required: true
+  - type: textarea
+    id: what_is_wrong
+    attributes:
+      label: What feature do you miss in Burrito?
+      description: Please tell us what is missing or what improvements you want?
+    validations:
+      required: true
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Are there any details how to implement your feature?
+      description: If you have any references, examples or other material that might help us to implement your feature drop it here.
