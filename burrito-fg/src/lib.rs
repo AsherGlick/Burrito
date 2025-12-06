@@ -4,10 +4,61 @@ use breadx::{
     Display, DisplayBase, DisplayConnection, Window,
 };
 use gdnative::prelude::*;
+use std::os::raw::c_int;
+
+#[link(name = "X11")]
+#[link(name = "Xext")]
+extern "C" {
+    pub fn XOpenDisplay(name: *const i8) -> *mut XDisplay;
+    pub fn XPolygonRegion(
+        points: *const XPoint,
+        npoints: i32,
+        fill_rule: i32,
+    ) -> XRegion;
+    pub fn XShapeCombineRegion(
+        dpy: *mut XDisplay,
+        dest: XWindow,
+        dest_kind: i32,
+        xoff: i32,
+        yoff: i32,
+        region: XRegion,
+        op: i32,
+    );
+    pub fn XDestroyRegion(region: XRegion);
+    pub fn XFlush(dpy: *mut XDisplay) -> i32;
+}
+
+pub enum XDisplay {}
+pub type XWindow = u64;
+pub type XRegion = *mut std::ffi::c_void;
+
+#[repr(C)]
+pub struct XPoint {
+    pub x: i16,
+    pub y: i16,
+}
+
+#[repr(C)]
+#[derive(ToVariant, FromVariant)]
+pub struct GdRect {
+    pub x: i32,
+    pub y: i32,
+    pub w: i32,
+    pub h: i32,
+}
+
+#[allow(non_upper_case_globals)]
+const ShapeInput: c_int = 2;
+#[allow(non_upper_case_globals)]
+const ShapeSet: c_int = 0;
+#[allow(non_upper_case_globals)]
+const ShapeUnion: c_int = 1;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
-pub struct X11_FG;
+pub struct X11_FG {
+    dpy: *mut XDisplay,
+}
 // Function that registers all exposed classes to Godot
 fn init(handle: InitHandle) {
     handle.add_class::<X11_FG>();
@@ -16,7 +67,8 @@ fn init(handle: InitHandle) {
 impl X11_FG {
     /// The "constructor" of the class.
     fn new(_owner: &Node) -> Self {
-        X11_FG
+        let dpy = unsafe { XOpenDisplay(std::ptr::null()) };
+        X11_FG { dpy }
     }
 }
 
@@ -26,6 +78,44 @@ impl X11_FG {
     fn _ready(&self, _owner: &Node) {
         godot_print!("Hello,X11!");
         return;
+    }
+
+    #[export]
+    fn set_input_shapes(&self, _node: &Node, burrito_id: i32, rects: Vec<GdRect>) -> bool {
+        let window = burrito_id as XWindow;
+        if self.dpy.is_null() {
+            return false;
+        }
+
+        unsafe {
+            for (i, r) in rects.iter().enumerate() {
+                let pts = [
+                    XPoint { x: r.x         as i16,  y: r.y         as i16 },
+                    XPoint { x: (r.x + r.w) as i16,  y: r.y         as i16 },
+                    XPoint { x: (r.x + r.w) as i16,  y: (r.y + r.h) as i16 },
+                    XPoint { x: r.x         as i16,  y: (r.y + r.h) as i16 },
+                ];
+
+                let region = XPolygonRegion(pts.as_ptr(), pts.len() as c_int, 0);
+                let op = if i == 0 { ShapeSet } else { ShapeUnion };
+
+                XShapeCombineRegion(
+                    self.dpy,
+                    window,
+                    ShapeInput,
+                    0,
+                    0,
+                    region,
+                    op,
+                );
+
+                XDestroyRegion(region);
+                godot_print!("set_input_shapes called ({},{}) -> ({}, {})", pts[0].x, pts[0].y, pts[3].x, pts[3].y);
+            }
+            godot_print!("");
+            XFlush(self.dpy);
+        }
+        true
     }
 
     #[export]

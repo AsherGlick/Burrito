@@ -45,6 +45,7 @@ var burrito_link_wine_path: String = ""
 var burrito_link_env_args: String = ""
 
 var enable_player_cutout: bool = false
+var allow_optimal_mouse_block: bool = false
 
 # We save the marker data in this directory when the files are have been split
 # by Map ID. All changes made by the editor are automatically saved in these
@@ -102,6 +103,8 @@ func _ready():
 		self.start_with_open_menu = self._config_data["start_with_open_menu"]
 	if "enable_player_cutout" in self._config_data:
 		self.enable_player_cutout = self._config_data["enable_player_cutout"]
+	if "allow_optimal_mouse_block" in self._config_data:
+		self.allow_optimal_mouse_block = self._config_data["allow_optimal_mouse_block"]
 
 
 func get_saved_markers_dir() -> String:
@@ -127,7 +130,8 @@ func save():
 		"burrito_link_env_args": burrito_link_env_args,
 		"local_category_data": local_category_data,
 		"start_with_open_menu": start_with_open_menu,
-		"enable_player_cutout": enable_player_cutout
+		"enable_player_cutout": enable_player_cutout,
+		"allow_optimal_mouse_block": allow_optimal_mouse_block
 	}
 
 	var file = File.new()

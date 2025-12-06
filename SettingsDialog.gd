@@ -29,6 +29,9 @@ func load_settings():
 	var enable_player_cutout: CheckButton = $ScrollContainer/GridContainer/EnablePlayerCutout
 	enable_player_cutout.pressed = Settings.enable_player_cutout
 
+	var allow_optimal_mouse_block: CheckButton = $ScrollContainer/GridContainer/AllowOptimalMouseBlock
+	allow_optimal_mouse_block.pressed = Settings.allow_optimal_mouse_block
+
 
 func save_settings(new_value=null):
 	var minimum_width: LineEdit = $ScrollContainer/GridContainer/MinimumWidth
@@ -65,6 +68,9 @@ func save_settings(new_value=null):
 
 	var enable_player_cutout: CheckButton = $ScrollContainer/GridContainer/EnablePlayerCutout
 	Settings.enable_player_cutout = enable_player_cutout.pressed
+
+	var allow_optimal_mouse_block: CheckButton = $ScrollContainer/GridContainer/AllowOptimalMouseBlock
+	Settings.allow_optimal_mouse_block = allow_optimal_mouse_block.pressed
 
 	Settings.save()
 

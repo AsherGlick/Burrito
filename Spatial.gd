@@ -67,6 +67,9 @@ var player_head_projected_y = 1080
 var player_projected_width = 100
 var player_cutout_showing = false
 
+# Tracking last mouse block type
+enum MouseBlockState { NONE, MINIMAL, MAXIMAL, OPTIMAL }
+var current_mouse_block_state = MouseBlockState.NONE
 
 ##########Node Connections###########
 onready var markers_ui := $Control/Dialogs/CategoriesDialog/MarkersUI as Tree
@@ -92,7 +95,6 @@ func _ready():
 
 	# Postion at top left corner
 	OS.set_window_position(Vector2(0,0))
-	set_minimal_mouse_block()
 
 	server.listen(4242)
 
@@ -101,6 +103,8 @@ func _ready():
 
 	if (Settings.start_with_open_menu):
 		_on_main_menu_toggle_pressed()
+
+	Settings.connect("settings_updated", self, "update_mouse_block")
 
 ################################################################################
 # show_error
@@ -150,6 +154,81 @@ func exit_burrito():
 		close_burrito_link()
 	get_tree().quit()
 
+func update_mouse_block():
+	# First try to do an optimal mouse block, which is more convenient for the user
+	var mouse_block_done = false
+	if Settings.allow_optimal_mouse_block:
+		mouse_block_done = set_optimal_mouse_block()
+
+	# If we couldn't do optimal mouse block, fall back to the classical approach
+	if mouse_block_done:
+		current_mouse_block_state = MouseBlockState.OPTIMAL
+	else:
+		if is_any_dialog_visible():
+			if current_mouse_block_state != MouseBlockState.MAXIMAL:
+				set_maximal_mouse_block()
+				current_mouse_block_state = MouseBlockState.MAXIMAL
+		else:
+			if current_mouse_block_state != MouseBlockState.MINIMAL:
+				set_minimal_mouse_block()
+				current_mouse_block_state = MouseBlockState.MINIMAL
+
+func set_optimal_mouse_block() -> bool:
+	# Verify display backend support. Note that Godot 3 returns "X11" from OS.get_name() even for Linux+Wayland.
+	# Godot 4 has this fixed. It returns "Linux" as OS name and adds DisplayServer.get_name() to query X11/Wayland.
+	var is_linux = OS.get_name() == "X11"
+	if is_linux:
+		# Wayland support has to be implemented in burrito-fg.
+		var session := OS.get_environment("XDG_SESSION_TYPE").to_lower()
+		if session != "x11":
+			return false
+	else:
+		# Windows and Mac support has to be implemented in burrito-fg.
+		return false
+
+	var rects: Array = []
+
+	# Add rects that are not dialogs
+	var menu_button = $Control/GlobalMenuButton
+	rects.append({
+		"x": int(menu_button.get_position().x),
+		"y": int(menu_button.get_position().y),
+		"w": int(menu_button.get_size().x),
+		"h": int(menu_button.get_size().y),
+	})
+	var editor_quick_panel = $Control/GlobalMenuButton/EditorQuckPanel
+	if editor_quick_panel.visible:
+		rects.append({
+			"x": int(editor_quick_panel.get_global_rect().position.x),
+			"y": int(editor_quick_panel.get_global_rect().position.y),
+			"w": int(editor_quick_panel.get_size().x),
+			"h": int(editor_quick_panel.get_size().y),
+		})
+
+	# Add rects of dialogs
+	var dialogs = []
+	get_all_visible_dialogs($Control/Dialogs, dialogs)
+	for dialog in dialogs:
+		var pos = dialog.get_position()
+		var size = dialog.get_size()
+
+		var title_height = dialog.get_constant("title_height", "WindowDialog")
+		pos.y -= title_height
+		size.y += title_height
+
+		rects.append({
+			"x": int(pos.x),
+			"y": int(pos.y),
+			"w": int(size.x),
+			"h": int(size.y),
+		})
+
+	# Execute input set operation. Return result, so we can fallback to other approaches
+	# in case of any errors.
+	var success = x11_fg.set_input_shapes(x11_window_id_burrito, rects)
+	if success:
+		$Control/Border.hide()
+	return success
 
 func set_minimal_mouse_block():
 	var menu_button = $Control/GlobalMenuButton
@@ -374,9 +453,6 @@ func decode_context_packet(spb: StreamPeerBuffer):
 		Settings.ui_size = 1
 
 	$Control/GlobalMenuButton._update_global_menu_button_position()
-
-	if !is_any_dialog_visible():
-		set_minimal_mouse_block()
 
 	compass_width = compass_width * Settings.minimap_scale[Settings.ui_size]["factor"]
 	compass_height = compass_height * Settings.minimap_scale[Settings.ui_size]["factor"]
@@ -754,7 +830,6 @@ func read_hash(map_id: int) -> String:
 var adjusting = false
 func _on_AdjustNodesButton_pressed():
 	$Control/Dialogs/NodeEditorDialog.show()
-	set_maximal_mouse_block()
 	gen_adjustment_nodes()
 
 
@@ -973,9 +1048,11 @@ func toast(message: String):
 ################################################################################
 # Signal Functions
 ################################################################################
+func _on_dialog_change():
+	$InputRegionUpdateTimer.start()
+
 func _on_main_menu_toggle_pressed():
 	$Control/Dialogs/MainMenu.show()
-	set_maximal_mouse_block()
 
 func is_any_dialog_visible(node = $Control/Dialogs):
 	for dialog in node.get_children():
@@ -986,10 +1063,12 @@ func is_any_dialog_visible(node = $Control/Dialogs):
 			return true
 	return false
 
-func _on_Dialog_hide():
-	if !is_any_dialog_visible():
-		set_minimal_mouse_block()
-
+func get_all_visible_dialogs(node, array):
+	for sub_node in node.get_children():
+		if sub_node.get_class() == "Control":
+			get_all_visible_dialogs(sub_node, array)
+		elif sub_node.visible:
+			array.append(sub_node)
 
 func _on_LoadTrail_pressed():
 	if $Control/Dialogs/CategoriesDialog.is_visible():
@@ -1024,7 +1103,6 @@ func _on_ChangeTexture_pressed():
 	$Control/Dialogs/TexturePathOpen.show()
 	var texture_path_dialog:FileDialog = $Control/Dialogs/TexturePathOpen
 	texture_path_dialog.set_current_dir(texture_path_dialog.current_dir)
-	set_maximal_mouse_block()
 
 ################################################################################
 # Set the file that will be used to create a new trail or icon when a new trail
@@ -1104,7 +1182,6 @@ func _on_NewTrailPoint_pressed():
 func _on_NodeEditorDialog_hide():
 	on_gizmo_deselected()
 	clear_adjustment_nodes()
-	_on_Dialog_hide()
 
 
 func _on_DeleteNode_pressed():

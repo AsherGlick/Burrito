@@ -53,6 +53,10 @@ shader_param/custom_7_value = 500.0
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 1 )
 
+[node name="InputRegionUpdateTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
 [node name="Markers3D" type="Spatial" parent="."]
 script = ExtResource( 13 )
 
@@ -675,7 +679,7 @@ __meta__ = {
 
 [node name="GridContainer" type="GridContainer" parent="Control/Dialogs/SettingsDialog/ScrollContainer"]
 margin_right = 384.0
-margin_bottom = 480.0
+margin_bottom = 524.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
@@ -799,61 +803,74 @@ margin_right = 372.0
 margin_bottom = 296.0
 size_flags_horizontal = 3
 
-[node name="HSeparator" type="HSeparator" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 300.0
+[node name="AllowOptimalMouseBlockLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
+margin_top = 313.0
 margin_right = 192.0
-margin_bottom = 304.0
+margin_bottom = 327.0
+text = "Allow optimal mouse block"
+
+[node name="AllowOptimalMouseBlock" type="CheckButton" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
+margin_left = 196.0
+margin_top = 300.0
+margin_right = 372.0
+margin_bottom = 340.0
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
+margin_top = 344.0
+margin_right = 192.0
+margin_bottom = 348.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="HSeparator2" type="HSeparator" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 196.0
-margin_top = 300.0
+margin_top = 344.0
 margin_right = 372.0
-margin_bottom = 304.0
+margin_bottom = 348.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="AutoLaunchBurritoLinkLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 312.0
+margin_top = 356.0
 margin_right = 192.0
-margin_bottom = 343.0
+margin_bottom = 387.0
 text = "Auto Launch
 Burrito Link"
 
 [node name="AutoLaunchBurritoLink" type="CheckButton" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 196.0
-margin_top = 308.0
+margin_top = 352.0
 margin_right = 372.0
-margin_bottom = 348.0
+margin_bottom = 392.0
 size_flags_horizontal = 3
 
 [node name="WinePathLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 357.0
+margin_top = 401.0
 margin_right = 192.0
-margin_bottom = 371.0
+margin_bottom = 415.0
 text = "Wine Path"
 
 [node name="WinePath" type="LineEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 196.0
-margin_top = 352.0
+margin_top = 396.0
 margin_right = 372.0
-margin_bottom = 376.0
+margin_bottom = 420.0
 size_flags_horizontal = 3
 
 [node name="EnvironmentVarsLabel" type="Label" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
-margin_top = 423.0
+margin_top = 467.0
 margin_right = 192.0
-margin_bottom = 437.0
+margin_bottom = 481.0
 text = "Environment Vars"
 
 [node name="EnvironmentVars" type="TextEdit" parent="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer"]
 margin_left = 196.0
-margin_top = 380.0
+margin_top = 424.0
 margin_right = 372.0
-margin_bottom = 480.0
+margin_bottom = 524.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 
@@ -967,7 +984,12 @@ color = Color( 0, 0, 0, 1 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
+[connection signal="timeout" from="InputRegionUpdateTimer" to="." method="update_mouse_block"]
+[connection signal="item_rect_changed" from="Control/GlobalMenuButton" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/GlobalMenuButton" to="." method="_on_dialog_change"]
 [connection signal="pressed" from="Control/GlobalMenuButton/main_menu_toggle" to="." method="_on_main_menu_toggle_pressed"]
+[connection signal="item_rect_changed" from="Control/GlobalMenuButton/EditorQuckPanel" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/GlobalMenuButton/EditorQuckPanel" to="." method="_on_dialog_change"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/CloseEditorQuickPanel" to="." method="_on_CloseEditorQuickPanel_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/ChangeTexture" to="." method="_on_ChangeTexture_pressed"]
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/NewTrail" to="." method="_on_NewTrail_pressed"]
@@ -976,12 +998,17 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/GlobalMenuButton/EditorQuckPanel/HBoxContainer/AdjustPoints" to="." method="_on_AdjustNodesButton_pressed"]
 [connection signal="dir_selected" from="Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog" to="." method="_on_ImportBurritoPackDialog_dir_selected"]
 [connection signal="file_selected" from="Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog" to="." method="_on_ImportBurritoPackDialog_file_selected"]
-[connection signal="hide" from="Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog" to="." method="_on_Dialog_hide"]
+[connection signal="item_rect_changed" from="Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/ImportPackDialogs/ImportBurritoPackDialog" to="." method="_on_dialog_change"]
 [connection signal="dir_selected" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_ImportTacoPackDialog_dir_selected"]
 [connection signal="file_selected" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_ImportTacoPackDialog_file_selected"]
-[connection signal="hide" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_Dialog_hide"]
+[connection signal="item_rect_changed" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/ImportPackDialogs/ImportTacoPackDialog" to="." method="_on_dialog_change"]
+[connection signal="item_rect_changed" from="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" to="." method="_on_dialog_change"]
 [connection signal="popup_hide" from="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" to="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" method="_on_OverwriteConfirm_popup_hide"]
-[connection signal="hide" from="Control/Dialogs/MainMenu" to="." method="_on_Dialog_hide"]
+[connection signal="visibility_changed" from="Control/Dialogs/ImportPackDialogs/OverwriteConfirm" to="." method="_on_dialog_change"]
+[connection signal="item_rect_changed" from="Control/Dialogs/MainMenu" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/MainMenu" to="." method="_on_dialog_change"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/LoadTrail" to="." method="_on_LoadTrail_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportTaco" to="." method="_on_ImportTaco_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ImportBurrito" to="." method="_on_ImportBurrito_pressed"]
@@ -990,7 +1017,8 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Ranges" to="." method="_on_RangesButton_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/Settings" to="." method="_on_Settings_pressed"]
 [connection signal="pressed" from="Control/Dialogs/MainMenu/ScrollContainer/VBoxContainer/ExitButton" to="." method="_on_ExitButton_pressed"]
-[connection signal="hide" from="Control/Dialogs/RangesDialog" to="." method="_on_Dialog_hide"]
+[connection signal="item_rect_changed" from="Control/Dialogs/RangesDialog" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/RangesDialog" to="." method="_on_dialog_change"]
 [connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton2" to="Control/Dialogs/RangesDialog" method="on_change"]
@@ -1006,9 +1034,12 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/RangesDialog/GridContainer/CheckButton7" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="value_changed" from="Control/Dialogs/RangesDialog/GridContainer/SpinBox7" to="Control/Dialogs/RangesDialog" method="on_change"]
 [connection signal="file_selected" from="Control/Dialogs/TexturePathOpen" to="." method="_on_TexturePathOpen_file_selected"]
-[connection signal="hide" from="Control/Dialogs/TexturePathOpen" to="." method="_on_Dialog_hide"]
-[connection signal="hide" from="Control/Dialogs/SaveDialog" to="." method="_on_Dialog_hide"]
-[connection signal="hide" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_NodeEditorDialog_hide"]
+[connection signal="item_rect_changed" from="Control/Dialogs/TexturePathOpen" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/TexturePathOpen" to="." method="_on_dialog_change"]
+[connection signal="item_rect_changed" from="Control/Dialogs/SaveDialog" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/SaveDialog" to="." method="_on_dialog_change"]
+[connection signal="item_rect_changed" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/NodeEditorDialog" to="." method="_on_dialog_change"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/DeleteNode" to="." method="_on_DeleteNode_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/NewTrailPointAfter" to="." method="_on_NewTrailPointAfter_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SnapSelectedToPlayer" to="." method="_on_SnapSelectedToPlayer_pressed"]
@@ -1016,7 +1047,8 @@ material/0 = SubResource( 4 )
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/YSnapToPlayer" to="." method="_on_YSnapToPlayer_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/SetActiveTrail" to="." method="_on_SetActiveTrail_pressed"]
 [connection signal="pressed" from="Control/Dialogs/NodeEditorDialog/ScrollContainer/VBoxContainer/ReverseTrailDirection" to="." method="_on_ReverseTrailDirection_pressed"]
-[connection signal="hide" from="Control/Dialogs/SettingsDialog" to="." method="_on_NodeEditorDialog_hide"]
+[connection signal="item_rect_changed" from="Control/Dialogs/SettingsDialog" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/SettingsDialog" to="." method="_on_dialog_change"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumWidth" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/MinimumHeight" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideSize" to="Control/Dialogs/SettingsDialog" method="save_settings"]
@@ -1026,9 +1058,11 @@ material/0 = SubResource( 4 )
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideBurritoIconHorizontalPosition" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/OverrideBurritoIconVerticalPosition" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/EnablePlayerCutout" to="Control/Dialogs/SettingsDialog" method="save_settings"]
+[connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/AllowOptimalMouseBlock" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="pressed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/AutoLaunchBurritoLink" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/WinePath" to="Control/Dialogs/SettingsDialog" method="save_settings"]
 [connection signal="text_changed" from="Control/Dialogs/SettingsDialog/ScrollContainer/GridContainer/EnvironmentVars" to="Control/Dialogs/SettingsDialog" method="save_settings"]
-[connection signal="hide" from="Control/Dialogs/CategoriesDialog" to="." method="_on_Dialog_hide"]
+[connection signal="item_rect_changed" from="Control/Dialogs/CategoriesDialog" to="." method="_on_dialog_change"]
+[connection signal="visibility_changed" from="Control/Dialogs/CategoriesDialog" to="." method="_on_dialog_change"]
 [connection signal="cell_selected" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_MarkersUI_cell_selected"]
 [connection signal="item_edited" from="Control/Dialogs/CategoriesDialog/MarkersUI" to="." method="_on_MarkersUI_item_edited"]
